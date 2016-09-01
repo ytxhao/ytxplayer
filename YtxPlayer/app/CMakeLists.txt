@@ -9,7 +9,6 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
-#include_directories(src/main/cpp/include)
 
 add_library( # Sets the name of the library.
              native-lib
@@ -43,52 +42,71 @@ find_library( # Sets the name of the path variable.
 #              NO_CMAKE_FIND_ROOT_PATH
 #              )
 
-set(INC_DIR src/main/cpp/include)
-set(LINK_DIR src/main/jniLibs/armeabi-v7a)
+set(INC_DIR "${Project_SOURCE_DIR}/src/main/cpp/include")
+set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 
 include_directories(${INC_DIR})
-link_directories(${LINK_DIR})
+#link_directories(${LINK_DIR})
+#set(CMAKE_LIBRARY_PATH ${LINK_DIR})
 
-find_library(avutil
-              NAMES "avutil"
-              PATHS ${LINK_DIR}
-              CMAKE_FIND_ROOT_PATH_BOTH
+
+find_library(avutil-lib
+                NAMES "avutil"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
               )
 
-find_library(swscale
-            NAMES "swscale"
-            PATHS ${LINK_DIR}
-            CMAKE_FIND_ROOT_PATH_BOTH
+find_library(swscale-lib
+                NAMES "swscale"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
             )
 
-find_library(swresample
-              NAMES "swresample"
-              PATHS ${LINK_DIR}
-              CMAKE_FIND_ROOT_PATH_BOTH
+find_library(swresample-lib
+                NAMES "swresample"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
               )
-find_library(avcodec
-            NAMES "avcodec"
-            PATHS ${LINK_DIR}
-            CMAKE_FIND_ROOT_PATH_BOTH
+find_library(avcodec-lib
+                NAMES "avcodec"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
             )
-find_library(avformat
-              NAMES "avformat"
-              PATHS ${LINK_DIR}
-              CMAKE_FIND_ROOT_PATH_BOTH
+find_library(avformat-lib
+                NAMES "avformat"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
               )
 
-find_library(avfilter
-              NAMES "avfilter"
-              PATHS ${LINK_DIR}
-              CMAKE_FIND_ROOT_PATH_BOTH
+find_library(avfilter-lib
+                NAMES "avfilter"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
               )
-
-#            find_library(JIN_DEPEND
-#                        NAMES avutil swscale swresample
-#                        PATHS src/main/jniLibs/armeabi-v7a/ )
-
-#SET(CMAKE_MODULE_PATH src/main/cpp/)
-#find_package(FF REQUIRED)
 
 
 #-----------------------------------------------------------------
@@ -96,6 +114,8 @@ find_library(avfilter
 # can link multiple libraries, such as libraries you define in the
 # build script, prebuilt third-party libraries, or system libraries.
 
+#MESSAGE(STATUS "lsx result: " "${LINK_DIR}/libavformat.so")
+#message(FATAL_ERROR "Invalid Android lsx2 result: " "${avformat-lib}   ${LINK_DIR}")
 
 target_link_libraries( # Specifies the target library.
                        native-lib
@@ -103,10 +123,10 @@ target_link_libraries( # Specifies the target library.
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib}
-                       ${avutil}
-                       ${swscale}
-                       ${swresample}
-                       ${avcodec}
-                       ${avformat}
-                       ${avfilter}
+                       ${avutil-lib}
+                       ${swscale-lib}
+                       ${swresample-lib}
+                       ${avcodec-lib}
+                       ${avformat-lib}
+                       ${avfilter-lib}
                        )
