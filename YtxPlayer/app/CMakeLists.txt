@@ -19,7 +19,7 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             src/main/cpp/native-lib.cpp )
+             src/main/cpp/android_media_YtxMediaPlayer.cpp )
 
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because system libraries are included in the search path by
@@ -34,20 +34,13 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               log )
 #----------------------------------------------------------------
-#set(JIN_DEFINITIONS src/main/jniLibs/armeabi-v7a/)
-#LINK_DIRECTORIES(src/main/jniLibs/armeabi-v7a/)
-#find_library(JIN_DEPEND
-#              NAMES "avutil" "avformat" "swscale"
-#              PATHS "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a"
-#              NO_CMAKE_FIND_ROOT_PATH
-#              )
+
 
 set(INC_DIR "${Project_SOURCE_DIR}/src/main/cpp/include")
 set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 
 include_directories(${INC_DIR})
-#link_directories(${LINK_DIR})
-#set(CMAKE_LIBRARY_PATH ${LINK_DIR})
+
 
 
 find_library(avutil-lib
