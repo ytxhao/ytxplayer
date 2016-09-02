@@ -11,16 +11,18 @@
 extern "C" {
 #endif
 
-#include "libavformat/avformat.h"
+#define __STDC_CONSTANT_MACROS
 
-#ifdef __cplusplus
-}
-#endif
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
 
 jstring  Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */);
 
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif //YTXPLAYER_NATIVE_LIB_H

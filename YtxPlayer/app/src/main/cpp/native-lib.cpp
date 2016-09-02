@@ -1,6 +1,7 @@
 
 #include <string>
 #include "native-lib.h"
+
 jstring
 Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(
         JNIEnv* env,
@@ -10,5 +11,7 @@ Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(
     avformat_network_init();
     AVFormatContext *pFormatCtx;
     pFormatCtx = avformat_alloc_context();
-    return env->NewStringUTF(hello.c_str());
+    char str[1024];
+    sprintf(str, "avcodec_version=%d;avcodec_configuration=%s", avcodec_version(),avcodec_configuration());
+    return env->NewStringUTF(str);
 }

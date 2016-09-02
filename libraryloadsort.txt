@@ -1,0 +1,80 @@
+$NDK/arm-linux-androideabi-readelf -d libswscale.so
+
+4
+ 0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libpostproc.so]
+ 
+ 
+ 5
+ 0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libswresample.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libz.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libavcodec.so]
+ 7
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavfilter.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavformat.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavcodec.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libavdevice.so]
+ 8
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libswscale.so]
+ 0x00000001 (NEEDED)                     Shared library: [libpostproc.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavformat.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavcodec.so]
+ 0x00000001 (NEEDED)                     Shared library: [libswresample.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libavfilter.so]
+ 
+ 6
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavcodec.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libz.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libavformat.so]
+ 
+ 1
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libavutil.so]
+ 
+ 2
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libswresample.so]
+ 3
+  0x00000001 (NEEDED)                     Shared library: [libx264.so]
+ 0x00000001 (NEEDED)                     Shared library: [librtmp.so]
+ 0x00000001 (NEEDED)                     Shared library: [libfaac.so]
+ 0x00000001 (NEEDED)                     Shared library: [libavutil.so]
+ 0x00000001 (NEEDED)                     Shared library: [libm.so]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so]
+ 0x0000000e (SONAME)                     Library soname: [libswscale.so]
