@@ -18,7 +18,11 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     private EventHandler mEventHandler;
 
-    YtxMediaPlayer(){
+    private int mNativeContext; // accessed by native methods
+    private int mNativeSurfaceTexture;  // accessed by native methods
+    private int mListenerContext; // accessed by native methods
+
+    public YtxMediaPlayer(){
         this(sLocalLibLoader);
     }
 
@@ -75,6 +79,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
                     libLoader.loadLibrary("avformat");
                     libLoader.loadLibrary("avdevice");
                     libLoader.loadLibrary("avfilter");
+                    System.loadLibrary("native-lib");
                     mIsLibLoaded = true;
             }
         }
@@ -93,7 +98,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     @Override
     public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-
+        _setDataSource(path);
     }
 
     @Override
@@ -108,12 +113,12 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     @Override
     public void prepare() throws IllegalStateException {
-
+        _prepare();
     }
 
     @Override
     public void start() throws IllegalStateException {
-
+        _start();
     }
 
     @Override
@@ -181,14 +186,6 @@ public class YtxMediaPlayer implements IMediaPlayer {
         return 0;
     }
 
-    private static native void native_init();
-
-    private native void native_setup(Object YtxMediaPlayer_this);
-
-    private native void native_finalize();
-
-    private native void native_message_loop(Object YtxMediaPlayer_this);
-
 
     private static class EventHandler extends Handler {
         private final WeakReference<YtxMediaPlayer> mWeakPlayer;
@@ -215,4 +212,110 @@ public class YtxMediaPlayer implements IMediaPlayer {
             }
         }
     }
+
+
+    /*
+ * Called from native code when an interesting event happens. This method
+ * just uses the EventHandler system to post the event back to the main app
+ * thread. We use a weak reference to the original IjkMediaPlayer object so
+ * that the native code is safe from the object disappearing from underneath
+ * it. (This is the cookie passed to native_setup().)
+ */
+
+    private static void postEventFromNative(Object weakThiz, int what,
+                                            int arg1, int arg2, Object obj) {
+        if (weakThiz == null)
+            return;
+
+        @SuppressWarnings("rawtypes")
+        YtxMediaPlayer mp = (YtxMediaPlayer) ((WeakReference) weakThiz).get();
+        if (mp == null) {
+            return;
+        }
+
+//        if (what == MEDIA_INFO && arg1 == MEDIA_INFO_STARTED_AS_NEXT) {
+//            // this acquires the wakelock if needed, and sets the client side
+//            // state
+//            mp.start();
+//        }
+        if (mp.mEventHandler != null) {
+            Message m = mp.mEventHandler.obtainMessage(what, arg1, arg2, obj);
+            mp.mEventHandler.sendMessage(m);
+        }
+    }
+
+
+    private static native void native_init();
+
+    private native void native_setup(Object YtxMediaPlayer_this);
+
+    private native void native_finalize();
+
+    private native void native_message_loop(Object YtxMediaPlayer_this);
+
+
+
+
+    private native void _died();
+
+
+    private native void  _disconnect() ;
+
+    private native int  _setDataSource(String url) ;
+    private native int  _setDataSource(int fd, long offset, long length) ;
+
+    private native int  _prepare() ;
+
+    private native int  _prepareAsync() ;
+
+    private native int  _start() ;
+
+    private native int  _stop() ;
+
+    private native int  _pause() ;
+
+    private native int _isPlaying() ;
+
+    private native int  _getVideoWidth() ;
+
+    private native int  _getVideoHeight() ;
+
+    private native int  _seekTo(int msec) ;
+
+    private native int  _getCurrentPosition() ;
+
+    private native int  _getDuration() ;
+
+    private native int  _reset() ;
+
+    //    int        setAudioStreamType(audio_stream_type_t type);
+    private native int   _setLooping(int loop) ;
+
+    private native int  _isLooping() ;
+
+    private native int   _setVolume(float leftVolume, float rightVolume) ;
+
+    private native int   _setAudioSessionId(int sessionId) ;
+
+    private native int   _getAudioSessionId() ;
+
+    private native int   _setAuxEffectSendLevel(float level) ;
+
+    private native int   _attachAuxEffect(int effectId) ;
+
+    private native int   _setRetransmitEndpoint(String addrString, long port) ;
+
+
+    private native int _updateProxyConfig(String host, int  port, String exclusionList) ;
+
+    private native void _clear_l() ;
+
+    private native int  _seekTo_l(int msec) ;
+
+    private native int  _prepareAsync_l() ;
+
+    private native int  _getDuration_l() ;
+
+    private native int  _reset_l() ;
+
 }

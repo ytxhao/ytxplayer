@@ -39,6 +39,246 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_native_
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_native_1message_1loop
   (JNIEnv *, jobject, jobject);
 
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    died
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_died
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    disconnect
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_disconnect
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setDataSource
+ * Signature: (Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setDataSource__Ljava_lang_String_2
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setDataSource
+ * Signature: (IJJ)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setDataSource__IJJ
+  (JNIEnv *, jobject, jint, jlong, jlong);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    prepare
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_prepare
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    prepareAsync
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_prepareAsync
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    start
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_start
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    stop
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_stop
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    pause
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_pause
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    isPlaying
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_isPlaying
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getVideoWidth
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getVideoWidth
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getVideoHeight
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getVideoHeight
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    seekTo
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_seekTo
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getCurrentPosition
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getCurrentPosition
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getDuration
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getDuration
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    reset
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_reset
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setLooping
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setLooping
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    isLooping
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_isLooping
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setVolume
+ * Signature: (FF)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setVolume
+  (JNIEnv *, jobject, jfloat, jfloat);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setAudioSessionId
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setAudioSessionId
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getAudioSessionId
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getAudioSessionId
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setAuxEffectSendLevel
+ * Signature: (F)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setAuxEffectSendLevel
+  (JNIEnv *, jobject, jfloat);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    attachAuxEffect
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_attachAuxEffect
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setRetransmitEndpoint
+ * Signature: (Ljava/lang/String;J)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_setRetransmitEndpoint
+  (JNIEnv *, jobject, jstring, jlong);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    updateProxyConfig
+ * Signature: (Ljava/lang/String;ILjava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_updateProxyConfig
+  (JNIEnv *, jobject, jstring, jint, jstring);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    clear_l
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_clear_1l
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    seekTo_l
+ * Signature: (I)I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_seekTo_1l
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    prepareAsync_l
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_prepareAsync_1l
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    getDuration_l
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_getDuration_1l
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    reset_l
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_reset_1l
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif
