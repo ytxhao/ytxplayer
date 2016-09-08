@@ -26,8 +26,8 @@ public:
 
 protected:
     PacketQueue*                mQueue;
-    AVStream*             		mStream;
-    InputStream* stream;
+  //  AVStream*             		mStream;
+    InputStream*                mStream;
     virtual bool                prepare();
     virtual bool                decode(void* ptr);
     virtual bool                process(AVPacket *packet);

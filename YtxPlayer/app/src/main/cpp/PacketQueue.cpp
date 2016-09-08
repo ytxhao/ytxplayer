@@ -70,8 +70,7 @@ int PacketQueue::put(AVPacket* pkt)
 
     if (!mLast) {
         mFirst = pkt1;
-    }
-    else {
+    } else {
         mLast->next = pkt1;
     }
 

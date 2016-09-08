@@ -3,6 +3,7 @@
 //
 #include <android/log.h>
 #include "decoder_video.h"
+#include "YtxMediaPlayer.h"
 
 #define TAG "FFMpegVideoDecoder"
 
@@ -21,6 +22,7 @@ DecoderVideo::~DecoderVideo()
 
 bool DecoderVideo::prepare()
 {
+    ALOGI("ytxhao DecoderVideo::prepare");
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -40,7 +42,7 @@ double DecoderVideo::synchronize(AVFrame *src_frame, double pts) {
         pts = mVideoClock;
     }
     /* update the video clock */
-    frame_delay = av_q2d(mStream->codec->time_base);
+    frame_delay = av_q2d(mStream->dec_ctx->time_base);
     /* if we are repeating a frame, adjust clock accordingly */
     frame_delay += src_frame->repeat_pict * (frame_delay * 0.5);
     mVideoClock += frame_delay;
@@ -53,11 +55,13 @@ bool DecoderVideo::process(AVPacket *packet)
     int pts = 0;
 
     // Decode video frame
-    avcodec_decode_video2(mStream->codec,
+    __android_log_print(ANDROID_LOG_INFO, TAG, "process mStream->dec_ctx=%d,mStream=%d",mStream->dec_ctx,mStream);
+    avcodec_decode_video2(mStream->dec_ctx,
                          mFrame,
                          &completed,
                          packet);
 
+    /*
     if (packet->dts == AV_NOPTS_VALUE && mFrame->opaque
         && *(uint64_t*) mFrame->opaque != AV_NOPTS_VALUE) {
         pts = *(uint64_t *) mFrame->opaque;
@@ -67,8 +71,12 @@ bool DecoderVideo::process(AVPacket *packet)
         pts = 0;
     }
     pts *= av_q2d(mStream->time_base);
+*/
+
+
 
     if (completed) {
+        __android_log_print(ANDROID_LOG_INFO, TAG, "process mFrame=%d,mFrame->data=%d,mFrame->data[0]=%d",mFrame,mFrame->data,mFrame->data[0]);
         pts = synchronize(mFrame, pts);
 
         onDecode(mFrame, pts);
@@ -86,11 +94,14 @@ bool DecoderVideo::decode(void* ptr)
 
     while(mRunning)
     {
+
+        __android_log_print(ANDROID_LOG_INFO, TAG, "1 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d",pPacket.buf,pPacket.data,pPacket.size);
         if(mQueue->get(&pPacket, true) < 0)
         {
             mRunning = false;
             return false;
         }
+        __android_log_print(ANDROID_LOG_INFO, TAG, "2 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d",pPacket.buf,pPacket.data,pPacket.size);
         if(!process(&pPacket))
         {
             mRunning = false;

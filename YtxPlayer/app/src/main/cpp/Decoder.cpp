@@ -9,8 +9,8 @@
 IDecoder::IDecoder(InputStream* stream)
 {
     mQueue = new PacketQueue();
-    mStream = stream->st;
-    this->stream = stream;
+    mStream = stream;
+   // this->stream = stream;
 }
 
 IDecoder::~IDecoder()
@@ -20,7 +20,7 @@ IDecoder::~IDecoder()
         stop();
     }
     free(mQueue);
-    avcodec_close(stream->dec_ctx);
+    avcodec_close(mStream->dec_ctx);
 }
 
 void IDecoder::enqueue(AVPacket* packet)

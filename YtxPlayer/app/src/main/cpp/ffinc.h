@@ -36,7 +36,6 @@ libLoader.loadLibrary("avfilter");
 
 typedef struct InputStream {
     AVStream *st;
-
     AVCodecContext *dec_ctx;
 } InputStream;
 

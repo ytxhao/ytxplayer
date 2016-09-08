@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <pthread.h>
-#include "errors.h"
+#include "merrors.h"
 #include "ffinc.h"
 #include "decoder_video.h"
 #include <sys/types.h>
@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include <fstream>
 
 
 // ----------------------------------------------------------------------------
@@ -175,6 +175,7 @@ private:
     InputStream streamVideo;
     InputStream streamAudio;
     DecoderVideo*  mDecoderVideo;
+    FILE *fp_yuv;
 
 };
 

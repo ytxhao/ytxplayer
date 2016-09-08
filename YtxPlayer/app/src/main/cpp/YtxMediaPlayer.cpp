@@ -5,7 +5,70 @@
 
 #include "YtxMediaPlayer.h"
 
+#define FPS_DEBUGGING true
+
+void printfferr(){
+    ALOGI( "AVERROR_BSF_NOT_FOUND=%d",AVERROR_BSF_NOT_FOUND);
+
+    ALOGI( "AVERROR_BUG=%d",AVERROR_BUG);
+
+    ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d",AVERROR_BUFFER_TOO_SMALL);
+
+    ALOGI( "AVERROR_DECODER_NOT_FOUND=%d",AVERROR_DECODER_NOT_FOUND);
+
+    ALOGI( "AVERROR_DEMUXER_NOT_FOUND=%d",AVERROR_DEMUXER_NOT_FOUND);
+
+    ALOGI( "AVERROR_ENCODER_NOT_FOUND=%d",AVERROR_ENCODER_NOT_FOUND);
+
+    ALOGI( "AVERROR_EOF=%d",AVERROR_EOF);
+
+    ALOGI( "AVERROR_EXIT=%d",AVERROR_EXIT);
+
+    ALOGI( "AVERROR_EXTERNAL=%d",AVERROR_EXTERNAL);
+
+    ALOGI( "AVERROR_FILTER_NOT_FOUND=%d",AVERROR_FILTER_NOT_FOUND);
+
+    ALOGI( "AVERROR_INVALIDDATA=%d",AVERROR_INVALIDDATA);
+
+    ALOGI( "AVERROR_MUXER_NOT_FOUND=%d",AVERROR_MUXER_NOT_FOUND);
+
+    ALOGI( "AVERROR_OPTION_NOT_FOUND=%d",AVERROR_OPTION_NOT_FOUND);
+
+    ALOGI( "AVERROR_PATCHWELCOME=%d",AVERROR_PATCHWELCOME);
+
+    ALOGI( "AVERROR_PROTOCOL_NOT_FOUND=%d",AVERROR_PROTOCOL_NOT_FOUND);
+
+    ALOGI( "AVERROR_STREAM_NOT_FOUND=%d",AVERROR_STREAM_NOT_FOUND);
+/**
+ * This is semantically identical to AVERROR_BUG
+ * it has been introduced in Libav after our AVERROR_BUG and with a modified value.
+ */
+    ALOGI( "AVERROR_BUG2=%d",AVERROR_BUG2);
+
+    ALOGI( "AVERROR_UNKNOWN=%d",AVERROR_UNKNOWN);
+
+
+    ALOGI( "AVERROR_EXPERIMENTAL=%d",AVERROR_EXPERIMENTAL);
+
+    ALOGI( "AVERROR_INPUT_CHANGED=%d",AVERROR_INPUT_CHANGED);
+
+    ALOGI( "AVERROR_OUTPUT_CHANGED=%d",AVERROR_OUTPUT_CHANGED);
+/* HTTP & RTSP errors */
+
+    ALOGI( "AVERROR_HTTP_BAD_REQUEST=%d",AVERROR_HTTP_BAD_REQUEST);
+
+    ALOGI( "AVERROR_HTTP_UNAUTHORIZED=%d",AVERROR_HTTP_UNAUTHORIZED);
+
+    ALOGI( "AVERROR_HTTP_FORBIDDEN=%d",AVERROR_HTTP_FORBIDDEN);
+
+    ALOGI( "AVERROR_HTTP_NOT_FOUND=%d",AVERROR_HTTP_NOT_FOUND);
+
+    ALOGI( "AVERROR_HTTP_OTHER_4XX=%d",AVERROR_HTTP_OTHER_4XX);
+
+    ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d",AVERROR_HTTP_SERVER_ERROR);
+}
 static YtxMediaPlayer* sPlayer;
+
 
 
 YtxMediaPlayer::YtxMediaPlayer(){
@@ -73,7 +136,7 @@ int  YtxMediaPlayer::prepare() {
     for(int i=0; i<pFormatCtx->nb_streams; i++) {
         AVStream *st = pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
-        st->discard = AVDISCARD_ALL;
+       // st->discard = AVDISCARD_ALL;
         if (type >= 0 && wanted_stream_spec[type] && st_index[type] == -1) {
             if (avformat_match_stream_specifier(pFormatCtx, st, wanted_stream_spec[type]) > 0) {
                 st_index[type] = i;
@@ -89,12 +152,23 @@ int  YtxMediaPlayer::prepare() {
         }
     }
 
-//    mAudioStreamIndex = -1;
+//    mVideoStreamIndex = -1;
 //    for(int i=0; i<pFormatCtx->nb_streams; i++) {
-////        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
-////            mVideoStreamIndex = i;
+//        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+//            mVideoStreamIndex = i;
+//            break;
+//        }
+//
+////        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+////            mAudioStreamIndex = i;
 ////            break;
 ////        }
+//
+//    }
+//    ALOGI("mVideoStreamIndex=%d",mVideoStreamIndex);
+
+//    mAudioStreamIndex = -1;
+//    for(int i=0; i<pFormatCtx->nb_streams; i++) {
 //
 //        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
 //            mAudioStreamIndex = i;
@@ -102,6 +176,7 @@ int  YtxMediaPlayer::prepare() {
 //        }
 //
 //    }
+//    ALOGI("mAudioStreamIndex=%d",mAudioStreamIndex);
 //
 //    if(mAudioStreamIndex == -1){
 //        ALOGI("Didn't find a audio stream.\n");
@@ -134,6 +209,10 @@ int  YtxMediaPlayer::prepare() {
     if (codec == NULL) {
         return -1;
     }
+
+    printf("codec->codec_id=%d\n",codec->id);
+
+    streamVideo.dec_ctx->codec_id = codec->id;
 
     // Open codec
     if (avcodec_open2(codec_ctx, codec,NULL) < 0) {
@@ -179,7 +258,11 @@ int  YtxMediaPlayer::prepareAsync() {
 
 int  YtxMediaPlayer::start() {
 
-
+    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+    char datam[1024]="ytxh ytxhaooooolkaslfasl;'kf'as ";
+   // fwrite(datam,1,1024,fp_yuv);
+    ALOGI("start fp_yuv=%d",fp_yuv);
+    ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d",&streamVideo,streamVideo.dec_ctx);
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
 
     return 0;
@@ -188,6 +271,7 @@ int  YtxMediaPlayer::start() {
 void* YtxMediaPlayer::startPlayer(void* ptr)
 {
     ALOGI("starting main player thread");
+    printfferr();
     sPlayer->decodeMovie(ptr);
     return 0;
 }
@@ -195,7 +279,7 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
-    AVPacket pPacket;
+    AVPacket mPacket, *pPacket = &mPacket;
 
   //  AVStream* stream_audio = mMovieFile->streams[mAudioStreamIndex];
   //  mDecoderAudio = new DecoderAudio(stream_audio);
@@ -205,14 +289,14 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
    // AVStream* stream_video = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
 
 
-    mDecoderVideo = new DecoderVideo(&streamVideo);
-    mDecoderVideo->onDecode = decode;
-    mDecoderVideo->startAsync();
+  //  mDecoderVideo = new DecoderVideo(&streamVideo);
+  //  mDecoderVideo->onDecode = decode;
+  //  mDecoderVideo->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
     ALOGI("playing %ix%i", mVideoWidth, mVideoHeight);
     while (mCurrentState != MEDIA_PLAYER_DECODED && mCurrentState != MEDIA_PLAYER_STOPPED &&
-           mCurrentState != MEDIA_PLAYER_STATE_ERROR)
+           mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 //        if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE &&
 //            mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
@@ -220,14 +304,24 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 //            continue;
 //        }
 
-        if(av_read_frame(pFormatCtx, &pPacket) < 0) {
+        usleep(400);
+
+        int ret = av_read_frame(pFormatCtx, pPacket);
+       // ALOGI("decodeMovie ret=%d",ret);
+        if(ret < 0) {
             mCurrentState = MEDIA_PLAYER_DECODED;
             continue;
         }
 
+      //  mDecoderVideo->enqueue(pPacket);
+      //  ALOGI("decodeMovie st_index[AVMEDIA_TYPE_VIDEO]=%d",st_index[AVMEDIA_TYPE_VIDEO]);
         // Is this a packet from the video stream?
-        if (pPacket.stream_index == mVideoStreamIndex) {
-            mDecoderVideo->enqueue(&pPacket);
+    //    ALOGI("decodeMovie pPacket->stream_index=%d",pPacket->stream_index);
+    //    ALOGI("decodeMovie st_index[AVMEDIA_TYPE_VIDEO]=%d",st_index[AVMEDIA_TYPE_VIDEO]);
+        if (pPacket->stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
+          //  mDecoderVideo->enqueue(pPacket);
+        }else{
+            av_packet_unref(pPacket);
         }
 //
 //        else if (pPacket.stream_index == mAudioStreamIndex) {
@@ -235,16 +329,16 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 //        }
 //        else {
 //            // Free the packet that was allocated by av_read_frame
-//            av_free_packet(&pPacket);
+ //           av_free_packet(&pPacket);
 //        }
     }
 
     //waits on end of video thread
     ALOGI("waiting on video thread");
-    int ret = -1;
-    if((ret = mDecoderVideo->wait()) != 0) {
-        ALOGI("Couldn't cancel video thread: %i", ret);
-    }
+//    int ret = -1;
+//    if((ret = mDecoderVideo->wait()) != 0) {
+//        ALOGI("Couldn't cancel video thread: %i", ret);
+//    }
 
 //    ALOGI("waiting on audio thread");
 //    if((ret = mDecoderAudio->wait()) != 0) {
@@ -256,12 +350,15 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     }
     mCurrentState = MEDIA_PLAYER_PLAYBACK_COMPLETE;
     ALOGI( "end of playing");
+    fclose(fp_yuv);
 }
+
+
 
 
 void YtxMediaPlayer::decode(AVFrame* frame, double pts)
 {
-    if(false) {
+    if(FPS_DEBUGGING) {
         timeval pTime;
         static int frames = 0;
         static double t1 = -1;
@@ -278,16 +375,29 @@ void YtxMediaPlayer::decode(AVFrame* frame, double pts)
         frames++;
     }
 
+    ALOGI("decode frame %d; data[0]=%d",frame->data,frame->data[0]);
     // Convert the image from its native format to RGB
-//    sws_scale(mConvertCtx,
-//              (const uint8_t *const *) frame->data,
-//              frame->linesize,
-//              0,
-//              mVideoHeight,
-//              mFrame->data,
-//              mFrame->linesize);
+    sws_scale(sPlayer->mConvertCtx,
+              (const uint8_t *const *) frame->data,
+              frame->linesize,
+              0,
+              sPlayer->mVideoHeight,
+              sPlayer->mFrame->data,
+              sPlayer->mFrame->linesize);
 
-  //  Output::VideoDriver_updateSurface();
+//    ALOGI("decode mFrame %d; mFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mFrame->data,sPlayer->mFrame->data[0],sPlayer->fp_yuv);
+//    std::ofstream outfile("/storage/emulated/0/test.yuv",std::ios::binary);
+//
+//    if(outfile.bad()){
+//        ALOGI("outfile.bad");
+//    }
+
+    int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
+   // ALOGI("y_size=%d",y_size);
+//    fwrite(sPlayer->mFrame->data[0],1,y_size,sPlayer->fp_yuv);    //Y
+//    fwrite(sPlayer->mFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
+//    fwrite(sPlayer->mFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
+    // Output::VideoDriver_updateSurface();
 }
 
 int  YtxMediaPlayer::stop() {
