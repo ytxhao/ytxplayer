@@ -1,7 +1,6 @@
 //
 // Created by Administrator on 2016/9/7.
 //
-#include <android/log.h>
 #include "decoder.h"
 
 #define TAG "FFMpegIDecoder"
@@ -36,10 +35,10 @@ int IDecoder::packets()
 void IDecoder::stop()
 {
     mQueue->abort();
-    __android_log_print(ANDROID_LOG_INFO, TAG, "waiting on end of decoder thread");
+    ALOGI("waiting on end of decoder thread\n");
     int ret = -1;
     if((ret = wait()) != 0) {
-        __android_log_print(ANDROID_LOG_ERROR, TAG, "Couldn't cancel IDecoder: %i", ret);
+        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
 }
@@ -48,7 +47,7 @@ void IDecoder::handleRun(void* ptr)
 {
     if(!prepare())
     {
-        __android_log_print(ANDROID_LOG_INFO, TAG, "Couldn't prepare decoder");
+        ALOGI("Couldn't prepare decoder\n");
         return;
     }
     decode(ptr);

@@ -1,9 +1,8 @@
 //
 // Created by Administrator on 2016/9/7.
 //
-#include <android/log.h>
+
 #include "decoder_video.h"
-#include "YtxMediaPlayer.h"
 
 #define TAG "FFMpegVideoDecoder"
 
@@ -22,7 +21,7 @@ DecoderVideo::~DecoderVideo()
 
 bool DecoderVideo::prepare()
 {
-    ALOGI("ytxhao DecoderVideo::prepare");
+    ALOGI("ytxhao DecoderVideo::prepare\n");
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -55,8 +54,8 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
     int pts = 0;
     int ret=0;
     // Decode video frame
-    __android_log_print(ANDROID_LOG_INFO, TAG, "process mStream->dec_ctx=%d,mStream=%d",mStream->dec_ctx,mStream);
-    __android_log_print(ANDROID_LOG_INFO, TAG, "process mStream->dec_ctx codec_id=%d , i=%d",mStream->dec_ctx->codec_id,*i);
+    ALOGI("process mStream->dec_ctx=%d,mStream=%d\n",mStream->dec_ctx,mStream);
+    ALOGI("process mStream->dec_ctx codec_id=%d , i=%d\n",mStream->dec_ctx->codec_id,*i);
     ret = avcodec_decode_video2(mStream->st->codec,
                          mFrame,
                          &completed,
@@ -74,13 +73,13 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
     pts *= av_q2d(mStream->time_base);
 */
 
-//    if(ret < 0){
-//        return false;
-//    }
+    if(ret < 0){
+        return false;
+    }
 
 
     if (completed) {
-        __android_log_print(ANDROID_LOG_INFO, TAG, "process mFrame=%d,mFrame->data=%d,mFrame->data[0]=%d",mFrame,mFrame->data,mFrame->data[0]);
+        ALOGI("process mFrame=%d,mFrame->data=%d,mFrame->data[0]=%d\n",mFrame,mFrame->data,mFrame->data[0]);
      //   pts = synchronize(mFrame, pts);
 
         onDecode(mFrame, pts);
@@ -88,7 +87,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
         return true;
     }
 
-    return false;
+    return true;
 }
 
 bool DecoderVideo::decode(void* ptr)
@@ -96,20 +95,20 @@ bool DecoderVideo::decode(void* ptr)
     AVPacket        pPacket;
 
     int i;
-    __android_log_print(ANDROID_LOG_INFO, TAG, "decoding video");
+    ALOGI( "decoding video\n");
 
     while(mRunning)
     {
 
-        __android_log_print(ANDROID_LOG_INFO, TAG, "1 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d",pPacket.buf,pPacket.data,pPacket.size);
-        __android_log_print(ANDROID_LOG_INFO, TAG, "x decoding video &pPacket=%d",&pPacket);
-    //    __android_log_print(ANDROID_LOG_INFO, TAG, "x decoding video mQueue->get(&pPacket, true)=%d",mQueue->get(&pPacket, true,&i));
+        ALOGI("1 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d\n",pPacket.buf,pPacket.data,pPacket.size);
+        ALOGI( "x decoding video &pPacket=%d\n",&pPacket);
+
         if(mQueue->get(&pPacket, true,&i) < 0)
         {
             mRunning = false;
             return false;
         }
-        __android_log_print(ANDROID_LOG_INFO, TAG, "2 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d",pPacket.buf,pPacket.data,pPacket.size);
+        ALOGI( "2 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d\n",pPacket.buf,pPacket.data,pPacket.size);
         if(!process(&pPacket,&i))
         {
             mRunning = false;
@@ -119,7 +118,7 @@ bool DecoderVideo::decode(void* ptr)
         av_free_packet(&pPacket);
     }
 
-    __android_log_print(ANDROID_LOG_INFO, TAG, "decoding video ended");
+    ALOGI("decoding video ended\n");
 
     // Free the RGB image
     av_free(mFrame);

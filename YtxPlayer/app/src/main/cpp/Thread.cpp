@@ -1,9 +1,10 @@
 //
 // Created by Administrator on 2016/9/7.
 //
-#include <android/log.h>
-#include "thread.h"
 #define TAG "FFMpegThread"
+#include "thread.h"
+#include "ALog-priv.h"
+
 
 Thread::Thread()
 {
@@ -40,12 +41,12 @@ void Thread::stop()
 
 void* Thread::startThread(void* ptr)
 {
-    __android_log_print(ANDROID_LOG_INFO, TAG, "starting thread");
+    ALOGI("starting thread\n");
     Thread* thread = (Thread *) ptr;
     thread->mRunning = true;
     thread->handleRun(ptr);
     thread->mRunning = false;
-    __android_log_print(ANDROID_LOG_INFO, TAG, "thread ended");
+    ALOGI("thread ended\n");
 }
 
 void Thread::waitOnNotify()

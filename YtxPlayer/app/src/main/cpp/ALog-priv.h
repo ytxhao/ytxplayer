@@ -43,7 +43,7 @@
 #if LOG_NDEBUG
 #define ALOGV(...)   ((void)0)
 #else
-#define ALOGV(...) ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#define ALOGV(...) ((void)ALOG(LOG_VERBOSE, TAG, __VA_ARGS__))
 #endif
 #endif
 
@@ -51,20 +51,20 @@
 #if LOG_NDEBUG
 #define ALOGD(...)   ((void)0)
 #else
-#define ALOGD(...) ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+#define ALOGD(...) ((void)ALOG(LOG_DEBUG, TAG, __VA_ARGS__))
 #endif
 #endif
 
 #ifndef ALOGI
-#define ALOGI(...) ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__))
+#define ALOGI(...) ((void)ALOG(LOG_INFO, TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGW
-#define ALOGW(...) ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__))
+#define ALOGW(...) ((void)ALOG(LOG_WARN, TAG, __VA_ARGS__))
 #endif
 
 #ifndef ALOGE
-#define ALOGE(...) ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__))
+#define ALOGE(...) ((void)ALOG(LOG_ERROR, TAG, __VA_ARGS__))
 #endif
 
 #endif

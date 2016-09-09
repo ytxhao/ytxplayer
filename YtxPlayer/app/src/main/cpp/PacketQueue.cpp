@@ -4,7 +4,6 @@
 
 #define TAG "FFMpegPacketQueue"
 
-#include <android/log.h>
 #include "packetqueue.h"
 
 PacketQueue::PacketQueue()
