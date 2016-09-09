@@ -21,7 +21,7 @@ public:
     ~IDecoder();
 
     void						stop();
-    void						enqueue(AVPacket* packet);
+    void						enqueue(AVPacket* packet,int *i);
     int							packets();
 
 protected:

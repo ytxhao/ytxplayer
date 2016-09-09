@@ -16,6 +16,12 @@ extern "C" {
 
 } // end of extern C
 
+typedef struct MAVPacketList {
+    int i;
+    AVPacket pkt;
+    struct MAVPacketList *next;
+} MAVPacketList;
+
 class PacketQueue
 {
 public:
@@ -23,18 +29,18 @@ public:
     ~PacketQueue();
 
     void flush();
-    int put(AVPacket* pkt);
+    int put(AVPacket* pkt,int *i);
 
     /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-    int get(AVPacket *pkt, bool block);
+    int get(AVPacket *pkt, bool block,int *i);
 
     int size();
 
     void abort();
 
 private:
-    AVPacketList*		mFirst;
-    AVPacketList*		mLast;
+    MAVPacketList*		mFirst;
+    MAVPacketList*		mLast;
     int					mNbPackets;
     int					mSize;
     bool				mAbortRequest;

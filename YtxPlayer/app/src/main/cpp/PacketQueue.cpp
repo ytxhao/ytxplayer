@@ -35,7 +35,7 @@ int PacketQueue::size()
 
 void PacketQueue::flush()
 {
-    AVPacketList *pkt, *pkt1;
+    MAVPacketList *pkt, *pkt1;
 
     pthread_mutex_lock(&mLock);
 
@@ -52,17 +52,18 @@ void PacketQueue::flush()
     pthread_mutex_unlock(&mLock);
 }
 
-int PacketQueue::put(AVPacket* pkt)
+int PacketQueue::put(AVPacket* pkt,int *i)
 {
-    AVPacketList *pkt1;
+    MAVPacketList *pkt1;
 
     /* duplicate the packet */
     if (av_dup_packet(pkt) < 0)
         return -1;
 
-    pkt1 = (AVPacketList *) av_malloc(sizeof(AVPacketList));
+    pkt1 = (MAVPacketList *) av_malloc(sizeof(MAVPacketList));
     if (!pkt1)
         return -1;
+    pkt1->i = *i;
     pkt1->pkt = *pkt;
     pkt1->next = NULL;
 
@@ -86,9 +87,9 @@ int PacketQueue::put(AVPacket* pkt)
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-int PacketQueue::get(AVPacket *pkt, bool block)
+int PacketQueue::get(AVPacket *pkt, bool block,int *i)
 {
-    AVPacketList *pkt1;
+    MAVPacketList *pkt1;
     int ret;
 
     pthread_mutex_lock(&mLock);
@@ -107,6 +108,7 @@ int PacketQueue::get(AVPacket *pkt, bool block)
             mNbPackets--;
             mSize -= pkt1->pkt.size + sizeof(*pkt1);
             *pkt = pkt1->pkt;
+            *i = pkt1->i;
             av_free(pkt1);
             ret = 1;
             break;

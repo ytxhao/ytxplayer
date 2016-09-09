@@ -123,6 +123,8 @@ public:
 
     static void decode(AVFrame* frame, double pts);
 
+    InputStream streamVideo;
+    InputStream streamAudio;
 private:
     void decodeMovie(void* ptr);
     void clear_l();
@@ -173,8 +175,7 @@ private:
     int mStreamType;
     int mCurrentState;
     int st_index[AVMEDIA_TYPE_NB];
-    InputStream streamVideo;
-    InputStream streamAudio;
+
     DecoderVideo*  mDecoderVideo;
     FILE *fp_yuv;
     int  got_picture;

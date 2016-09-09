@@ -23,9 +23,9 @@ IDecoder::~IDecoder()
     avcodec_close(mStream->dec_ctx);
 }
 
-void IDecoder::enqueue(AVPacket* packet)
+void IDecoder::enqueue(AVPacket* packet,int *i)
 {
-    mQueue->put(packet);
+    mQueue->put(packet,i);
 }
 
 int IDecoder::packets()

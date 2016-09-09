@@ -22,7 +22,7 @@ private:
     bool                        prepare();
     double 						synchronize(AVFrame *src_frame, double pts);
     bool                        decode(void* ptr);
-    bool                        process(AVPacket *packet);
+    bool                        process(AVPacket *packet,int *i);
     static int					getBuffer(struct AVCodecContext *c, AVFrame *pic,int flags);
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
 };
