@@ -25,7 +25,7 @@ libLoader.loadLibrary("avformat");
 libLoader.loadLibrary("avdevice");
 libLoader.loadLibrary("avfilter");
 */
-#define __STDC_CONSTANT_MACROS
+//#define __STDC_CONSTANT_MACROS
 
 #include "ALog-priv.h"
 
@@ -33,7 +33,7 @@ libLoader.loadLibrary("avfilter");
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
 #include <libswscale/swscale.h>
-
+#include <libavutil/imgutils.h>
 typedef struct InputStream {
     AVStream *st;
     AVCodecContext *dec_ctx;

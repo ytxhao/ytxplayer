@@ -162,10 +162,11 @@ private:
     AVFormatContext *pFormatCtx;
     int mAudioStreamIndex;
     int mVideoStreamIndex;
-    const char* wanted_stream_spec[AVMEDIA_TYPE_NB] = {0};
+    const char* wanted_stream_spec[AVMEDIA_TYPE_NB]={0};
     int  mDuration;
     struct SwsContext*	mConvertCtx;
     AVFrame*					mFrame;
+    AVFrame*					mYuvFrame;
     pthread_mutex_t             mLock;
     pthread_t					mPlayerThread;
 
@@ -176,6 +177,8 @@ private:
     InputStream streamAudio;
     DecoderVideo*  mDecoderVideo;
     FILE *fp_yuv;
+    int  got_picture;
+    unsigned char *out_buffer;
 
 };
 

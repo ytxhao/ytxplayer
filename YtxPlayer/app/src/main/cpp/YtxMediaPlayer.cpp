@@ -3,6 +3,7 @@
 //
 
 
+
 #include "YtxMediaPlayer.h"
 
 #define FPS_DEBUGGING true
@@ -239,10 +240,15 @@ int  YtxMediaPlayer::prepare() {
     }
 
     mFrame = av_frame_alloc();
-    if (mFrame == NULL) {
+    mYuvFrame = av_frame_alloc();
+
+    if (mFrame == NULL || mYuvFrame ==NULL) {
         return -1;
     }
 
+    out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  streamVideo.dec_ctx->width, streamVideo.dec_ctx->height,1));
+    av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,out_buffer,
+                         AV_PIX_FMT_YUV420P,streamVideo.dec_ctx->width, streamVideo.dec_ctx->height,1);
     ALOGI("YtxMediaPlayer::prepare OUT");
     return 0;
 
@@ -275,6 +281,8 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     sPlayer->decodeMovie(ptr);
     return 0;
 }
+
+
 
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
@@ -313,6 +321,25 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             continue;
         }
 
+
+        ret = avcodec_decode_video2(streamVideo.dec_ctx, mFrame, &got_picture, pPacket);
+        if(ret < 0){
+            printf("Decode Error.\n");
+            //return -1;
+        }
+
+
+        if(got_picture){
+            ALOGI("decode mFrame %d; mFrame[0]=%d;sPlayer->fp_yuv=%d",mFrame->data,mFrame->data[0],fp_yuv);
+            sws_scale(mConvertCtx, (const unsigned char* const*)mFrame->data, mFrame->linesize, 0, streamVideo.dec_ctx->height, mYuvFrame->data, mYuvFrame->linesize);
+           // int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
+            int   y_size=streamVideo.dec_ctx->width*streamVideo.dec_ctx->height;
+
+				fwrite(mYuvFrame->data[0],1,y_size,fp_yuv);    //Y
+				fwrite(mYuvFrame->data[1],1,y_size/4,fp_yuv);  //U
+				fwrite(mYuvFrame->data[2],1,y_size/4,fp_yuv);  //V
+
+
       //  mDecoderVideo->enqueue(pPacket);
       //  ALOGI("decodeMovie st_index[AVMEDIA_TYPE_VIDEO]=%d",st_index[AVMEDIA_TYPE_VIDEO]);
         // Is this a packet from the video stream?
@@ -322,6 +349,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
           //  mDecoderVideo->enqueue(pPacket);
         }else{
             av_packet_unref(pPacket);
+        }
         }
 //
 //        else if (pPacket.stream_index == mAudioStreamIndex) {
@@ -377,13 +405,13 @@ void YtxMediaPlayer::decode(AVFrame* frame, double pts)
 
     ALOGI("decode frame %d; data[0]=%d",frame->data,frame->data[0]);
     // Convert the image from its native format to RGB
-    sws_scale(sPlayer->mConvertCtx,
-              (const uint8_t *const *) frame->data,
-              frame->linesize,
-              0,
-              sPlayer->mVideoHeight,
-              sPlayer->mFrame->data,
-              sPlayer->mFrame->linesize);
+//    sws_scale(sPlayer->mConvertCtx,
+//              (const uint8_t *const *) frame->data,
+//              frame->linesize,
+//              0,
+//              sPlayer->mVideoHeight,
+//              sPlayer->mFrame->data,
+//              sPlayer->mFrame->linesize);
 
 //    ALOGI("decode mFrame %d; mFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mFrame->data,sPlayer->mFrame->data[0],sPlayer->fp_yuv);
 //    std::ofstream outfile("/storage/emulated/0/test.yuv",std::ios::binary);
