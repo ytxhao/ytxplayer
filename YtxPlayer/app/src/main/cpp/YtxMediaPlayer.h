@@ -123,6 +123,8 @@ public:
 
     static void decode(AVFrame* frame, double pts);
 
+    static void finish();
+
     InputStream streamVideo;
     InputStream streamAudio;
 private:

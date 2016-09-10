@@ -7,6 +7,7 @@
 #include "decoder.h"
 
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
+typedef void (*VideoDecodeFinishHandler) ();
 class DecoderVideo : public IDecoder
 {
 public:
@@ -14,7 +15,8 @@ public:
     ~DecoderVideo();
 
     VideoDecodingHandler		onDecode;
-
+    VideoDecodeFinishHandler    onDecodeFinish;
+    int isFinish;
 private:
     AVFrame*					mFrame;
     double						mVideoClock;

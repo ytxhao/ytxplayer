@@ -47,6 +47,7 @@ void* Thread::startThread(void* ptr)
     thread->handleRun(ptr);
     thread->mRunning = false;
     ALOGI("thread ended\n");
+    pthread_exit(NULL);
 }
 
 void Thread::waitOnNotify()
