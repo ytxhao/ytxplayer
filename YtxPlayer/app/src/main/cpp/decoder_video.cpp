@@ -50,15 +50,13 @@ double DecoderVideo::synchronize(AVFrame *src_frame, double pts) {
 
 bool DecoderVideo::process(AVPacket *packet, int *i)
 {
-    ALOGI("process mStream->dec_ctx=%d,mStream=%d\n",mStream->dec_ctx,mStream);
-    ALOGI("process mStream->dec_ctx codec_id=%d , i=%d\n",mStream->dec_ctx->codec_id,*i);
     int	completed;
     int pts = 0;
     int ret=0;
     // Decode video frame
 
 //
-    if(*i == 0 && mQueue->size()==0){
+    if(*i == 1 && mQueue->size()==0){
         onDecodeFinish();
         return false;
     }
@@ -82,15 +80,9 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
     ALOGI("DecoderVideo::process ret=%d ; completed=%d \n",ret,completed);
     if (completed) {
-        ALOGI("process mFrame=%d,mFrame->data=%d,mFrame->data[0]=%d\n",mFrame,mFrame->data,mFrame->data[0]);
      //   pts = synchronize(mFrame, pts);
 
         onDecode(mFrame, pts);
-//        if(ret < 0 || (isFinish == 1 && mQueue->size()==0)){
-//            onDecodeFinish();
-//            ALOGI("DecoderVideo::process ret=%d\n",ret);
-//            return false;
-//        }
 
         return true;
     }
@@ -109,10 +101,6 @@ bool DecoderVideo::decode(void* ptr)
 
     while(mRunning)
     {
-
-       // ALOGI("1 decoding video pPacket.buf=%d,pPacket.data=%d,pPacket.size=%d\n",pPacket.buf,pPacket.data,pPacket.size);
-      //  ALOGI( "x decoding video &pPacket=%d\n",&pPacket);
-
         if(mQueue->get(&pPacket, true, &i) < 0)
         {
             mRunning = false;
@@ -127,15 +115,10 @@ bool DecoderVideo::decode(void* ptr)
             // Free the packet that was allocated by av_read_frame
             av_free_packet(&pPacket);
         }
-//        if(isFinish == 1){
-//            //mRunning = false;
-//            break;
-//        }
 
     }
 
     ALOGI("decoding video ended\n");
-
     // Free the RGB image
     av_free(mFrame);
 

@@ -9,65 +9,41 @@
 #define FPS_DEBUGGING true
 
 void printfferr(){
-    ALOGI( "AVERROR_BSF_NOT_FOUND=%d",AVERROR_BSF_NOT_FOUND);
-
-    ALOGI( "AVERROR_BUG=%d",AVERROR_BUG);
-
-    ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d",AVERROR_BUFFER_TOO_SMALL);
-
-    ALOGI( "AVERROR_DECODER_NOT_FOUND=%d",AVERROR_DECODER_NOT_FOUND);
-
-    ALOGI( "AVERROR_DEMUXER_NOT_FOUND=%d",AVERROR_DEMUXER_NOT_FOUND);
-
-    ALOGI( "AVERROR_ENCODER_NOT_FOUND=%d",AVERROR_ENCODER_NOT_FOUND);
-
-    ALOGI( "AVERROR_EOF=%d",AVERROR_EOF);
-
-    ALOGI( "AVERROR_EXIT=%d",AVERROR_EXIT);
-
-    ALOGI( "AVERROR_EXTERNAL=%d",AVERROR_EXTERNAL);
-
-    ALOGI( "AVERROR_FILTER_NOT_FOUND=%d",AVERROR_FILTER_NOT_FOUND);
-
-    ALOGI( "AVERROR_INVALIDDATA=%d",AVERROR_INVALIDDATA);
-
-    ALOGI( "AVERROR_MUXER_NOT_FOUND=%d",AVERROR_MUXER_NOT_FOUND);
-
-    ALOGI( "AVERROR_OPTION_NOT_FOUND=%d",AVERROR_OPTION_NOT_FOUND);
-
-    ALOGI( "AVERROR_PATCHWELCOME=%d",AVERROR_PATCHWELCOME);
-
-    ALOGI( "AVERROR_PROTOCOL_NOT_FOUND=%d",AVERROR_PROTOCOL_NOT_FOUND);
-
-    ALOGI( "AVERROR_STREAM_NOT_FOUND=%d",AVERROR_STREAM_NOT_FOUND);
+    ALOGI( "AVERROR_BSF_NOT_FOUND=%d\n",AVERROR_BSF_NOT_FOUND);
+    ALOGI( "AVERROR_BUG=%d\n",AVERROR_BUG);
+    ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d\n",AVERROR_BUFFER_TOO_SMALL);
+    ALOGI( "AVERROR_DECODER_NOT_FOUND=%d\n",AVERROR_DECODER_NOT_FOUND);
+    ALOGI( "AVERROR_DEMUXER_NOT_FOUND=%d\n",AVERROR_DEMUXER_NOT_FOUND);
+    ALOGI( "AVERROR_ENCODER_NOT_FOUND=%d\n",AVERROR_ENCODER_NOT_FOUND);
+    ALOGI( "AVERROR_EOF=%d\n",AVERROR_EOF);
+    ALOGI( "AVERROR_EXIT=%d\n",AVERROR_EXIT);
+    ALOGI( "AVERROR_EXTERNAL=%d\n",AVERROR_EXTERNAL);
+    ALOGI( "AVERROR_FILTER_NOT_FOUND=%d\n",AVERROR_FILTER_NOT_FOUND);
+    ALOGI( "AVERROR_INVALIDDATA=%d\n",AVERROR_INVALIDDATA);
+    ALOGI( "AVERROR_MUXER_NOT_FOUND=%d\n",AVERROR_MUXER_NOT_FOUND);
+    ALOGI( "AVERROR_OPTION_NOT_FOUND=%d\n",AVERROR_OPTION_NOT_FOUND);
+    ALOGI( "AVERROR_PATCHWELCOME=%d\n",AVERROR_PATCHWELCOME);
+    ALOGI( "AVERROR_PROTOCOL_NOT_FOUND=%d\n",AVERROR_PROTOCOL_NOT_FOUND);
+    ALOGI( "AVERROR_STREAM_NOT_FOUND=%d\n",AVERROR_STREAM_NOT_FOUND);
 /**
  * This is semantically identical to AVERROR_BUG
  * it has been introduced in Libav after our AVERROR_BUG and with a modified value.
  */
-    ALOGI( "AVERROR_BUG2=%d",AVERROR_BUG2);
-
-    ALOGI( "AVERROR_UNKNOWN=%d",AVERROR_UNKNOWN);
-
-
-    ALOGI( "AVERROR_EXPERIMENTAL=%d",AVERROR_EXPERIMENTAL);
-
-    ALOGI( "AVERROR_INPUT_CHANGED=%d",AVERROR_INPUT_CHANGED);
-
-    ALOGI( "AVERROR_OUTPUT_CHANGED=%d",AVERROR_OUTPUT_CHANGED);
+    ALOGI( "AVERROR_BUG2=%d\n",AVERROR_BUG2);
+    ALOGI( "AVERROR_UNKNOWN=%d\n",AVERROR_UNKNOWN);
+    ALOGI( "AVERROR_EXPERIMENTAL=%d\n",AVERROR_EXPERIMENTAL);
+    ALOGI( "AVERROR_INPUT_CHANGED=%d\n",AVERROR_INPUT_CHANGED);
+    ALOGI( "AVERROR_OUTPUT_CHANGED=%d\n",AVERROR_OUTPUT_CHANGED);
 /* HTTP & RTSP errors */
-
-    ALOGI( "AVERROR_HTTP_BAD_REQUEST=%d",AVERROR_HTTP_BAD_REQUEST);
-
-    ALOGI( "AVERROR_HTTP_UNAUTHORIZED=%d",AVERROR_HTTP_UNAUTHORIZED);
-
-    ALOGI( "AVERROR_HTTP_FORBIDDEN=%d",AVERROR_HTTP_FORBIDDEN);
-
-    ALOGI( "AVERROR_HTTP_NOT_FOUND=%d",AVERROR_HTTP_NOT_FOUND);
-
-    ALOGI( "AVERROR_HTTP_OTHER_4XX=%d",AVERROR_HTTP_OTHER_4XX);
-
-    ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d",AVERROR_HTTP_SERVER_ERROR);
+    ALOGI( "AVERROR_HTTP_BAD_REQUEST=%d\n",AVERROR_HTTP_BAD_REQUEST);
+    ALOGI( "AVERROR_HTTP_UNAUTHORIZED=%d\n",AVERROR_HTTP_UNAUTHORIZED);
+    ALOGI( "AVERROR_HTTP_FORBIDDEN=%d\n",AVERROR_HTTP_FORBIDDEN);
+    ALOGI( "AVERROR_HTTP_NOT_FOUND=%d\n",AVERROR_HTTP_NOT_FOUND);
+    ALOGI( "AVERROR_HTTP_OTHER_4XX=%d\n",AVERROR_HTTP_OTHER_4XX);
+    ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d\n",AVERROR_HTTP_SERVER_ERROR);
 }
+
+
 static YtxMediaPlayer* sPlayer;
 
 
@@ -152,43 +128,6 @@ int  YtxMediaPlayer::prepare() {
             st_index[i] = INT_MAX;
         }
     }
-
-//    mVideoStreamIndex = -1;
-//    for(int i=0; i<pFormatCtx->nb_streams; i++) {
-//        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-//            mVideoStreamIndex = i;
-//            break;
-//        }
-//
-////        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
-////            mAudioStreamIndex = i;
-////            break;
-////        }
-//
-//    }
-//    ALOGI("mVideoStreamIndex=%d",mVideoStreamIndex);
-
-//    mAudioStreamIndex = -1;
-//    for(int i=0; i<pFormatCtx->nb_streams; i++) {
-//
-//        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
-//            mAudioStreamIndex = i;
-//            break;
-//        }
-//
-//    }
-//    ALOGI("mAudioStreamIndex=%d",mAudioStreamIndex);
-//
-//    if(mAudioStreamIndex == -1){
-//        ALOGI("Didn't find a audio stream.\n");
-//        return -1;
-//    }
-//
-//
-//    if(mVideoStreamIndex==-1){
-//        ALOGI("Didn't find a video stream.\n");
-//        return -1;
-//    }
 
 
     if (st_index[AVMEDIA_TYPE_VIDEO] < 0 || st_index[AVMEDIA_TYPE_VIDEO] > pFormatCtx->nb_streams) {
@@ -289,7 +228,7 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
     AVPacket mPacket, *pPacket = &mPacket;
-    int i=1, *pI = &i;
+    int i=0, *pI = &i;
   //  AVStream* stream_audio = mMovieFile->streams[mAudioStreamIndex];
   //  mDecoderAudio = new DecoderAudio(stream_audio);
   //  mDecoderAudio->onDecode = decode;
@@ -316,7 +255,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         ALOGI("decodeMovie ret=%d",ret);
         if(ret < 0) {
             mCurrentState = MEDIA_PLAYER_DECODED;
-            *pI = 0;
+            *pI = 1;
             mDecoderVideo->enqueue(pPacket,pI);
           //  mDecoderVideo->stop();
           //  mDecoderVideo->isFinish = 1;
@@ -324,42 +263,12 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         }
 
         if (pPacket->stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
-          //  *pI = *pI +1;
             ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
             mDecoderVideo->enqueue(pPacket,pI);
-            mDecoderVideo->isFinish = 0;
+           // mDecoderVideo->isFinish = 0;
         } else {
             av_packet_unref(pPacket);
         }
-
-/*
-        if(pPacket->stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
-            ret = avcodec_decode_video2(streamVideo.dec_ctx, mFrame, &got_picture, pPacket);
-            if (ret < 0) {
-                ALOGI("Decode Error.\n");
-                return ;
-            }
-            if (got_picture) {
-                ALOGI("decode mFrame %d; mFrame[0]=%d;sPlayer->fp_yuv=%d\n", mFrame->data,mFrame->data[0], fp_yuv);
-                sws_scale(mConvertCtx, (const unsigned char *const *) mFrame->data,
-                          mFrame->linesize, 0, streamVideo.dec_ctx->height, mYuvFrame->data,
-                          mYuvFrame->linesize);
-                // int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
-                int y_size = streamVideo.dec_ctx->width * streamVideo.dec_ctx->height;
-
-                fwrite(mYuvFrame->data[0], 1, y_size, fp_yuv);    //Y
-                fwrite(mYuvFrame->data[1], 1, y_size / 4, fp_yuv);  //U
-                fwrite(mYuvFrame->data[2], 1, y_size / 4, fp_yuv);  //V
-
-
-                //  mDecoderVideo->enqueue(pPacket);
-                //  ALOGI("decodeMovie st_index[AVMEDIA_TYPE_VIDEO]=%d",st_index[AVMEDIA_TYPE_VIDEO]);
-                // Is this a packet from the video stream?
-                //    ALOGI("decodeMovie pPacket->stream_index=%d",pPacket->stream_index);
-                //    ALOGI("decodeMovie st_index[AVMEDIA_TYPE_VIDEO]=%d",st_index[AVMEDIA_TYPE_VIDEO]);
-            }
-        }
-        */
     }
 
     //waits on end of video thread
