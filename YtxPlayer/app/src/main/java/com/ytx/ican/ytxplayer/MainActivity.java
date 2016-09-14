@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
                 .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
+        //----------------------------------------
+        mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
+        mPlayer.setSurfaceView(mGLSurface);
+        //----------------------------------------
         try {
             mPlayer.setDataSource(filePath+"titanic.mkv");
         } catch (IOException e) {
@@ -41,9 +45,7 @@ public class MainActivity extends AppCompatActivity {
         }
         mPlayer.prepare();
         mPlayer.start();
-        //----------------------------------
-        mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
-        mPlayer.setSurfaceView(mGLSurface);
+
 
     }
 

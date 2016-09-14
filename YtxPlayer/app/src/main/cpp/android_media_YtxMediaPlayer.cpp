@@ -251,7 +251,10 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
         (JNIEnv *env, jobject obj, jobject VideoGlSurfaceViewFFMPEG)
 {
 
-    ALOGI("android_media_player_setGlSurface IN VideoGlSurfaceViewFFMPEG=%d\n",VideoGlSurfaceViewFFMPEG);
+    ALOGI("android_media_player_setGlSurface IN\n");
+
+    YtxMediaPlayer* mPlayer = getMediaPlayer(env,obj);;
+
     jclass glSurface_cls = env->GetObjectClass(VideoGlSurfaceViewFFMPEG); //或得Student类引用
     if(glSurface_cls == NULL)
     {
@@ -284,6 +287,7 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
 
     }
 
+    mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
 
     ALOGI("android_media_player_setGlSurface OUT\n");
 }

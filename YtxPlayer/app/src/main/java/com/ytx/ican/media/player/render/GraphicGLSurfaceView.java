@@ -102,6 +102,10 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     public void onResume() {
         super.onResume();
         mIsResume = true;
+        if (!isInitial) {
+            isInitial = true;
+            initial();
+        }
     }
 
 

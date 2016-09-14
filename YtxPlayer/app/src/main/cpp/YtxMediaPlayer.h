@@ -19,7 +19,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <fstream>
-
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
 
 // ----------------------------------------------------------------------------
 enum media_player_states {
@@ -121,6 +122,10 @@ public:
     int updateProxyConfig(
             const char *host, int32_t port, const char *exclusionList);
 
+    void setTexture(int textureY,int textureU,int textureV);
+
+    void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
+
     static void decode(AVFrame* frame, double pts);
 
     static void finish();
@@ -128,6 +133,7 @@ public:
     InputStream streamVideo;
     InputStream streamAudio;
 private:
+
     void decodeMovie(void* ptr);
     void clear_l();
 
@@ -182,6 +188,9 @@ private:
     FILE *fp_yuv;
     int  got_picture;
     unsigned char *out_buffer;
+    int textureY;
+    int textureU;
+    int textureV;
 
 };
 
