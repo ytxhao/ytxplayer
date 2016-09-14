@@ -22,6 +22,15 @@ jstring  Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(
         jobject /* this */);
 
 
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    _setGlSurface
+ * Signature: (Ljava/lang/Object;)V
+ */
+JNIEXPORT void JNICALL android_media_player_setGlSurface
+        (JNIEnv *, jobject, jobject);
+
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
  * Method:    died

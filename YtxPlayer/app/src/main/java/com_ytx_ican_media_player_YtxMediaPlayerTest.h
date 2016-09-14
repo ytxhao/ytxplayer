@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
  * Method:    native_init
- * Signature: ()V
+ * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_native_1init
-  (JNIEnv *, jclass);
+  (JNIEnv *, jclass, jintArray);
 
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
@@ -37,6 +37,14 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_native_
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest_native_1message_1loop
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    _setGlSurface
+ * Signature: (Ljava/lang/Object;)V
+ */
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_YtxMediaPlayerTest__1setGlSurface
   (JNIEnv *, jobject, jobject);
 
 /*

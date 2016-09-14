@@ -243,6 +243,55 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 
 /*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    _setGlSurface
+ * Signature: (Ljava/lang/Object;)V
+ */
+JNIEXPORT void JNICALL android_media_player_setGlSurface
+        (JNIEnv *env, jobject obj, jobject VideoGlSurfaceViewFFMPEG)
+{
+
+    ALOGI("android_media_player_setGlSurface IN VideoGlSurfaceViewFFMPEG=%d\n",VideoGlSurfaceViewFFMPEG);
+    jclass glSurface_cls = env->GetObjectClass(VideoGlSurfaceViewFFMPEG); //或得Student类引用
+    if(glSurface_cls == NULL)
+    {
+        ALOGI("GetObjectClass failed \n") ;
+    }
+
+//
+//    jfieldID intFieldID = env->GetFieldID(glSurface_cls,"mWidth","I"); //获得得Student类的属性id
+//    ALOGI("android_media_player_setGlSurface intFieldID=%d\n",intFieldID);
+//
+//    jint mWidth = env->GetIntField(VideoGlSurfaceViewFFMPEG , intFieldID);  //获得属性值
+//    ALOGI("android_media_player_setGlSurface mWidth=%d\n",mWidth);
+
+//-----------------------------------------------------------------
+    jfieldID surfaceFieldID = env->GetFieldID(glSurface_cls,"mYUVTextures","[I"); //获得得Student类的属性id
+
+    ALOGI("android_media_player_setGlSurface surfaceFieldID=%d\n",surfaceFieldID);
+    jintArray jYUVTextures = (jintArray) env->GetObjectField(VideoGlSurfaceViewFFMPEG , surfaceFieldID);  //获得属性值
+
+    ALOGI("android_media_player_setGlSurface jYUVTextures=%d\n",jYUVTextures);
+
+    jint* mYUVTextures;
+    mYUVTextures = env->GetIntArrayElements(jYUVTextures,NULL);//得到一个指向原始数据类型内容的指针
+    jint length = env->GetArrayLength(jYUVTextures);//得到数组的长度
+
+    int i=0;
+    for(i=0;i<length;i++){
+
+        ALOGI("android_media_player_setGlSurface mYUVTextures[%d]=%d\n",i,mYUVTextures[i]);
+
+    }
+
+
+    ALOGI("android_media_player_setGlSurface OUT\n");
+}
+
+
+
+
+/*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayer
  * Method:    died
  * Signature: ()V
@@ -616,6 +665,7 @@ static JNINativeMethod gMethods[] = {
         {"native_message_loop", "(Ljava/lang/Object;)V",         (void *)android_media_player_native_message_loop},
 
 
+        {"_setGlSurface", "(Ljava/lang/Object;)V",         (void *)android_media_player_setGlSurface},
         {"_died", "()V",         (void *)android_media_player_died},
         {"_setDataSource", "(Ljava/lang/String;)I",         (void *)android_media_player_setDataSource},
  //       {"native_message_loop", "(IJJ)I",         (void *)android_media_player_setDataSource},

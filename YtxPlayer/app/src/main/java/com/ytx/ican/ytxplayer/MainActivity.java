@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.ytx.ican.media.player.YtxLog;
 import com.ytx.ican.media.player.YtxMediaPlayer;
+import com.ytx.ican.media.player.render.VideoGlSurfaceViewFFMPEG;
+import com.ytx.ican.media.player.test.GLFrameRenderer;
+import com.ytx.ican.media.player.test.GLFrameSurface;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
+
+
+    VideoGlSurfaceViewFFMPEG mGLSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,21 +30,6 @@ public class MainActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.sample_text);
        // tv.setText(stringFromJNI());
         YtxMediaPlayer mPlayer = new YtxMediaPlayer();
-//        String[] path;
-//        try {
-//            YtxLog.d("MainActivity","0");
-//             path = getAssets().list("video");
-//            //path.length
-//            YtxLog.d("MainActivity","path.length="+path.length);
-//            for(int i=0;i<path.length;i++){
-//                YtxLog.d("MainActivity",path[i]);
-//            }
-//
-//            YtxLog.d("MainActivity","1");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        //  mPlayer.setDataSource();
         String filePath = android.os.Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
@@ -50,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         }
         mPlayer.prepare();
         mPlayer.start();
+        //----------------------------------
+        mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
+        mPlayer.setSurfaceView(mGLSurface);
+
     }
 
     public native String stringFromJNI();

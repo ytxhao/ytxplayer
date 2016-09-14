@@ -7,7 +7,7 @@ package com.ytx.ican.media.player;
 public class YtxMediaPlayerTest{
 
 
-    private static native void native_init();
+    private static native void native_init(int mYUVTextures[]);
 
     private native void native_setup(Object YtxMediaPlayer_this);
 
@@ -16,7 +16,7 @@ public class YtxMediaPlayerTest{
     private native void native_message_loop(Object YtxMediaPlayer_this);
 
 
-
+    private native void _setGlSurface(Object glSurface);
 
     private native void died();
 
