@@ -48,11 +48,11 @@ find_library( # Sets the name of the path variable.
             EGL )
 
 find_library( # Sets the name of the path variable.
-            GLESv3-lib
+            GLESv2-lib
 
             # Specifies the name of the NDK library that
             # you want CMake to locate.
-            GLESv3 )
+            GLESv2 )
 
 #----------------------------------------------------------------
 
@@ -138,7 +138,7 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
                        ${log-lib}
                        ${EGL-lib}
-                       ${GLESv3-lib}
+                       ${GLESv2-lib}
                        ${avutil-lib}
                        ${swscale-lib}
                        ${swresample-lib}

@@ -477,29 +477,6 @@ void YtxMediaPlayer::bindTexture(uint8_t *y,uint8_t *u,uint8_t *v) {
 
 
     // building texture for Y data
-//    if (_ytid < 0 || videoSizeChanged) {
-//        if (_ytid >= 0) {
-//            YtxLog.d("GLProgram","glDeleteTextures Y");
-//            GLES20.glDeleteTextures(1, new int[] { _ytid }, 0);
-//            checkGlError("glDeleteTextures");
-//        }
-//        // GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
-//        int[] textures = new int[1];
-//            GLES20.glGenTextures(1, textures, 0);
-//            checkGlError("glGenTextures");
-//            _ytid = textures[0];
-//            YtxLog.d("GLProgram","glGenTextures Y = " + _ytid);
-//        }
-//        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, _ytid);
-//        checkGlError("glBindTexture");
-//        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, _video_width, _video_height, 0,
-//                GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y);
-//        checkGlError("glTexImage2D");
-//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-//        GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-//        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-//        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-
 
     glBindTexture(GL_TEXTURE_2D,textureY);
 
@@ -508,8 +485,6 @@ void YtxMediaPlayer::bindTexture(uint8_t *y,uint8_t *u,uint8_t *v) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-
 
     glBindTexture(GL_TEXTURE_2D,textureU);
 

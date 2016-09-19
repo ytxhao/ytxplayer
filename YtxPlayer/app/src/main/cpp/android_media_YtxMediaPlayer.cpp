@@ -786,7 +786,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
     sVm = vm;
     ALOGI("main11 tid:%u,pid:%u\n", (unsigned)pthread_self(),
           (unsigned)getpid());
-    ALOGE("ERROR11: sVm=%d\n",sVm);
+    ALOGI("ERROR11: sVm=%d\n",sVm);
     if (sVm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("ERROR: GetEnv failed\n");
         goto bail;

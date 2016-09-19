@@ -4,6 +4,8 @@ package com.ytx.ican.media.player.render;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.ytx.ican.media.player.YtxLog;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -351,11 +353,15 @@ public class GlslFilter extends Filter{
 
     private static int loadShader(int shaderType, String source) {
         int shader = GLES20.glCreateShader(shaderType);
+        YtxLog.d("yuhaoo","loadShader1 shader="+shader);
         if (shader != 0) {
             GLES20.glShaderSource(shader, source);
+            YtxLog.d("yuhaoo","loadShader2 shader="+shader);
             GLES20.glCompileShader(shader);
+            YtxLog.d("yuhaoo","loadShader3 shader="+shader);
             int[] compiled = new int[1];
             GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0);
+            YtxLog.d("yuhaoo","loadShader4 compiled[0]="+compiled[0]);
             if (compiled[0] == 0) {
                 String info = GLES20.glGetShaderInfoLog(shader);
                 GLES20.glDeleteShader(shader);

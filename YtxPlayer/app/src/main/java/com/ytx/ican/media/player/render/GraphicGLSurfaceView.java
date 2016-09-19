@@ -28,7 +28,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
 
     public static final String TAG = "GraphicGLSurfaceView";
-    public  GraphicRenderer renderer;
+    public final GraphicRenderer renderer;
     public int mMaxTextureSize;
     long mAnimaStartTime;
     long mAnimaTime = 400;
@@ -59,7 +59,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     }
 
     public GraphicGLSurfaceView(Context context) {
-        super(context);
+        //super(context);
+        this(context,null);
     }
 
     public GraphicGLSurfaceView(Context context, AttributeSet attrs) {
@@ -68,11 +69,17 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
             throw new RuntimeException("not support gles 2.0");
         }
         renderer = new GraphicRenderer();
+        YtxLog.d(TAG,"GraphicGLSurfaceView 1");
         setEGLContextClientVersion(2);
+        YtxLog.d(TAG,"GraphicGLSurfaceView 2");
         setEGLConfigChooser(new CustomChooseConfig2.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
+        YtxLog.d(TAG,"GraphicGLSurfaceView 3");
         getHolder().setFormat(PixelFormat.RGBA_8888);
+        YtxLog.d(TAG,"GraphicGLSurfaceView 4");
         setRenderer(renderer);
+        YtxLog.d(TAG,"GraphicGLSurfaceView 5");
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        YtxLog.d(TAG,"GraphicGLSurfaceView 6");
     }
 
 
@@ -104,10 +111,16 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         super.onResume();
         mIsResume = true;
         YtxLog.d(TAG,"onResume yuhaoo isInitial="+isInitial);
-        if (!isInitial) {
-            isInitial = true;
-            initial();
-        }
+
+        queue(new Runnable() {
+            @Override
+            public void run() {
+                if (!isInitial) {
+                    isInitial = true;
+                    initial();
+                }
+            }
+        });
     }
 
 

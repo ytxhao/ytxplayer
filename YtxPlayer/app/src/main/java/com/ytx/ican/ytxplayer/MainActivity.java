@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-       // mGLSurface.onResume();
+        mGLSurface.onResume();
     }
 
     public native String stringFromJNI();
