@@ -22,6 +22,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 // ----------------------------------------------------------------------------
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
@@ -130,6 +131,9 @@ public:
 
     static void finish();
 
+  //  static void updateYuv(uint8_t *y,uint8_t *u,uint8_t *v);
+
+    updateYuvHandler updateYuv;
     InputStream streamVideo;
     InputStream streamAudio;
 private:

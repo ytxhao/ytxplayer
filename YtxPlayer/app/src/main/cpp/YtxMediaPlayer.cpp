@@ -313,7 +313,7 @@ void YtxMediaPlayer::decode(AVFrame* frame, double pts)
         frames++;
     }
 
-    ALOGI("decode frame %d; data[0]=%d\n",frame->data,frame->data[0]);
+  //  ALOGI("decode frame %d; data[0]=%d\n",frame->data,frame->data[0]);
     // Convert the image from its native format to RGB
     sws_scale(sPlayer->mConvertCtx,
               (const unsigned char *const *) frame->data,
@@ -323,20 +323,18 @@ void YtxMediaPlayer::decode(AVFrame* frame, double pts)
               sPlayer->mYuvFrame->data,
               sPlayer->mYuvFrame->linesize);
 
-    ALOGI("decode mYuvFrame %d; mYuvFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mYuvFrame->data,sPlayer->mYuvFrame->data[0],sPlayer->fp_yuv);
-//    std::ofstream outfile("/storage/emulated/0/test.yuv",std::ios::binary);
-//
-//    if(outfile.bad()){
-//        ALOGI("outfile.bad");
-//    }
+ //   ALOGI("decode mYuvFrame %d; mYuvFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mYuvFrame->data,sPlayer->mYuvFrame->data[0],sPlayer->fp_yuv);
+
 
     int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
-    ALOGI("y_size=%d ; sPlayer->fp_yuv=%d\n",y_size,sPlayer->fp_yuv);
+  //  ALOGI("y_size=%d ; sPlayer->fp_yuv=%d\n",y_size,sPlayer->fp_yuv);
     fwrite(sPlayer->mYuvFrame->data[0],1,y_size,sPlayer->fp_yuv);    //Y
     fwrite(sPlayer->mYuvFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
     fwrite(sPlayer->mYuvFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
     // Output::VideoDriver_updateSurface();
+    ALOGI("y_size=%d ; sPlayer->mYuvFrame->data[0]=%d\n",y_size,sPlayer->mYuvFrame->data[0]);
     sPlayer->bindTexture(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2]);
+    sPlayer->updateYuv(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2],y_size);
 }
 
 int  YtxMediaPlayer::stop() {

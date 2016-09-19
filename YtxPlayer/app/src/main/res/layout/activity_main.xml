@@ -16,4 +16,11 @@
         android:layout_height="wrap_content"
         android:text="Hello World!" />
 
+    <com.ytx.ican.media.player.render.VideoGlSurfaceViewFFMPEG
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
 </RelativeLayout>

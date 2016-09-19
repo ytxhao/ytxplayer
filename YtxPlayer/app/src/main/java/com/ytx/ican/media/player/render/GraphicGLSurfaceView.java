@@ -28,7 +28,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
 
     public static final String TAG = "GraphicGLSurfaceView";
-    private  GraphicRenderer renderer;
+    public  GraphicRenderer renderer;
     public int mMaxTextureSize;
     long mAnimaStartTime;
     long mAnimaTime = 400;
@@ -75,6 +75,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
+
     private boolean supportsOpenGLES2(final Context context) {
         final ActivityManager activityManager = (ActivityManager)
                 context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -102,6 +103,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     public void onResume() {
         super.onResume();
         mIsResume = true;
+        YtxLog.d(TAG,"onResume yuhaoo isInitial="+isInitial);
         if (!isInitial) {
             isInitial = true;
             initial();
@@ -141,7 +143,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
     class GraphicRenderer implements Renderer{
 
-       // Vector与数组最大区别在于，数组对象创建之后长度就不能改变了，而Vector的存储空间可扩充
+        // Vector与数组最大区别在于，数组对象创建之后长度就不能改变了，而Vector的存储空间可扩充
 
         final Vector<Runnable> queue = new Vector<Runnable>();
 
@@ -353,6 +355,14 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
         }
 
+        public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
 
+                YtxLog.d("GraphicRenderer","yuhao renderer updateYuv ydata.length="+ydata.length+" ydata[0]="+ydata[0]);
+        }
+
+    }
+
+    public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
+        renderer.updateYuv(ydata,udata,vdata);
     }
 }

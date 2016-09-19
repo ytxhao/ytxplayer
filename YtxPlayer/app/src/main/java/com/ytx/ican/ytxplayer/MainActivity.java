@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
         //----------------------------------------
-        mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
+      //  mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
+        mGLSurface = (VideoGlSurfaceViewFFMPEG) findViewById(R.id.surface);
         mPlayer.setSurfaceView(mGLSurface);
         //----------------------------------------
         try {
@@ -47,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
         mPlayer.start();
 
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+       // mGLSurface.onResume();
     }
 
     public native String stringFromJNI();

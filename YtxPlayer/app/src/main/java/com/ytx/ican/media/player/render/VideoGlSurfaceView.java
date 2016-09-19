@@ -19,6 +19,15 @@ public class VideoGlSurfaceView extends GraphicGLSurfaceView {
     Filter mFilter;
     Picture mMiddlePhoto;
 
+
+    public VideoGlSurfaceView(Context context) {
+        super(context);
+    }
+
+    public VideoGlSurfaceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public VideoGlSurfaceView(Context context, AttributeSet attrs, HardDecodeExceptionCallback callback) {
         super(context, attrs);
         if(callback!=null)
