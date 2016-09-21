@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 
 import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.render.GLProgram;
 
 import java.nio.ByteBuffer;
 
@@ -70,6 +71,7 @@ public class GLFrameRenderer implements GLSurfaceView.Renderer {
      * this method will be called from native code, it happens when the video is about to play or
      * the video size changes.
      */
+    /*
     public void update(int w, int h) {
         YtxLog.d("GLFrameRenderer","INIT E");
         if (w > 0 && h > 0) {
@@ -106,7 +108,7 @@ public class GLFrameRenderer implements GLSurfaceView.Renderer {
         mParentAct.onPlayStart();
         YtxLog.d("GLFrameRenderer","INIT X");
     }
-
+*/
     /**
      * this method will be called from native code, it's used for passing yuv data to me.
      */

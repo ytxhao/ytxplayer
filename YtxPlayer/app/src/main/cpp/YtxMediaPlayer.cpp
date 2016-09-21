@@ -249,7 +249,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 
-        usleep(400);
+        usleep(800);
 
         int ret = av_read_frame(pFormatCtx, pPacket);
         ALOGI("decodeMovie ret=%d",ret);
