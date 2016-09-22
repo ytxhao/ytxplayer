@@ -331,7 +331,7 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
 
     }
 
-    mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
+  //  mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
     mPlayer->updateYuv = android_media_player_updateYuv;
     //-----------------------------------------------------
 

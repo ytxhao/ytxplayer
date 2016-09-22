@@ -60,12 +60,10 @@ public class VideoGlSurfaceViewFFMPEG extends VideoGlSurfaceView {
     @Override
     protected void initial() {
         super.initial();
-        YtxLog.d(TAG,"initial yuhaoo");
+        YtxLog.d(TAG,"initial IN");
       //  mH264Decoder = new H264Decoder();
         mYUVFilter = new YUVFilter(getContext());
-        YtxLog.d(TAG,"initial yuhaoo 1");
         mYUVFilter.initial();
-        YtxLog.d(TAG,"initial yuhaoo 2");
         GLES20.glGenTextures(mYUVTextures.length, mYUVTextures, 0);
         YtxLog.d(TAG,"initial mYUVTextures[0]="+mYUVTextures[0]);
         YtxLog.d(TAG,"initial mYUVTextures[1]="+mYUVTextures[1]);
