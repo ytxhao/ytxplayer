@@ -187,7 +187,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     mDecoderAudio = new DecoderAudio(&streamAudio);
     mDecoderAudio->onDecode = decodeAudio;
-   // mDecoderAudio->startAsync();
+    mDecoderAudio->startAsync();
 
 
     mDecoderVideo = new DecoderVideo(&streamVideo);
@@ -244,10 +244,16 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     fclose(fp_yuv);
 }
 
-void YtxMediaPlayer::decodeAudio(int16_t* buffer, int buffer_size)
+void YtxMediaPlayer::decodeAudio(AVFrame* frame, double pts)
 {
 
     ALOGI("decode audio IN");
+    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), 44100*2, (const uint8_t **) frame->data, frame->nb_samples);
+    //获取sample的size
+    int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
+                                                     frame->nb_samples, sPlayer->out_sample_fmt, 1);
+    fwrite(sPlayer->out_buffer_audio,1,out_buffer_size,sPlayer->fp_pcm);
+    ALOGI("decode audio OUT");
 }
 
 
@@ -506,13 +512,13 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 swrCtx = swr_alloc();
                 //重采样设置参数-------------start
                 //输入的采样格式
-                enum AVSampleFormat in_sample_fmt = is->dec_ctx->sample_fmt;
+                in_sample_fmt = is->dec_ctx->sample_fmt;
                 //输出采样格式16bit PCM
-                enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+                out_sample_fmt = AV_SAMPLE_FMT_S16;
                 //输入采样率
-                int in_sample_rate = is->dec_ctx->sample_rate;
+                in_sample_rate = is->dec_ctx->sample_rate;
                 //输出采样率
-                int out_sample_rate = 44100;
+                out_sample_rate = 44100;
                 //获取输入的声道布局
                 //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
                 //av_get_default_channel_layout(codecCtx->channels);
@@ -527,7 +533,7 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 swr_init(swrCtx);
 
                 //输出的声道个数
-                int out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);
+                out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);
 
                 //重采样设置参数-------------end
                 //16bit 44100 PCM 数据

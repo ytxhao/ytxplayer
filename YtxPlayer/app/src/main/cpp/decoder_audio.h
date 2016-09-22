@@ -8,7 +8,7 @@
 
 #include "decoder.h"
 
-typedef void (*AudioDecodingHandler) (int16_t*,int);
+typedef void (*AudioDecodingHandler) (AVFrame*,double);
 
 class DecoderAudio : public IDecoder
 {
@@ -22,7 +22,7 @@ public:
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;
-
+    AVFrame*					mFrame;
     bool                        prepare();
     bool                        decode(void* ptr);
     bool                        process(AVPacket *packet);

@@ -128,7 +128,7 @@ public:
 
     void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
 
-    static void decodeAudio(int16_t* buffer, int buffer_size);
+    static void decodeAudio(AVFrame* frame, double pts);
     static void decodeVideo(AVFrame* frame, double pts);
 
     static void finish();
@@ -206,6 +206,15 @@ private:
     int textureY;
     int textureU;
     int textureV;
+
+    enum AVSampleFormat in_sample_fmt ;
+    //输出采样格式16bit PCM
+    enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+    //输入采样率
+    int in_sample_rate ;
+    //输出采样率
+    int out_sample_rate = 44100;
+    int out_channel_nb;
 
 };
 
