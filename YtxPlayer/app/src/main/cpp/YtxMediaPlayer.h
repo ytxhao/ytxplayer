@@ -128,7 +128,8 @@ public:
 
     void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
 
-    static void decode(AVFrame* frame, double pts);
+    static void decodeAudio(int16_t* buffer, int buffer_size);
+    static void decodeVideo(AVFrame* frame, double pts);
 
     static void finish();
 
@@ -181,7 +182,12 @@ private:
     const char* wanted_stream_spec[AVMEDIA_TYPE_NB]={0};
     int  mDuration;
     struct SwsContext*	mConvertCtx;
-    AVFrame*					mFrame;
+    SwrContext *swrCtx;
+
+
+
+    AVFrame*					mFrameVideo;
+    AVFrame*					mFrameAudio;
     AVFrame*					mYuvFrame;
     pthread_mutex_t             mLock;
     pthread_t					mPlayerThread;
@@ -193,8 +199,10 @@ private:
     DecoderVideo*  mDecoderVideo;
     DecoderAudio*  mDecoderAudio;
     FILE *fp_yuv;
+    FILE *fp_pcm;
     int  got_picture;
-    unsigned char *out_buffer;
+    unsigned char *out_buffer_video;
+    unsigned char *out_buffer_audio;
     int textureY;
     int textureU;
     int textureV;

@@ -34,6 +34,7 @@ libLoader.loadLibrary("avfilter");
 #include "libavcodec/avcodec.h"
 #include <libswscale/swscale.h>
 #include <libavutil/imgutils.h>
+#include "libswresample/swresample.h"
 typedef struct InputStream {
     AVStream *st;
     AVCodecContext *dec_ctx;

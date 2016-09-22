@@ -133,9 +133,9 @@ int  YtxMediaPlayer::prepare() {
         }
     }
 
-//    if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-//        streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
-//    }
+    if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+    }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
         streamComponentOpen(&streamVideo,st_index[AVMEDIA_TYPE_VIDEO]);
@@ -158,6 +158,7 @@ int  YtxMediaPlayer::prepareAsync() {
 int  YtxMediaPlayer::start() {
 
     fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
     char datam[1024]="ytxh ytxhaooooolkaslfasl;'kf'as ";
    // fwrite(datam,1,1024,fp_yuv);
     ALOGI("start fp_yuv=%d\n",fp_yuv);
@@ -184,15 +185,13 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     int i=0, *pI = &i;
 
 
-//    mDecoderAudio = new DecoderAudio(&streamAudio);
-//    mDecoderAudio->onDecode = decode;
-//    mDecoderAudio->startAsync();
-
-   // AVStream* stream_video = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
+    mDecoderAudio = new DecoderAudio(&streamAudio);
+    mDecoderAudio->onDecode = decodeAudio;
+   // mDecoderAudio->startAsync();
 
 
     mDecoderVideo = new DecoderVideo(&streamVideo);
-    mDecoderVideo->onDecode = decode;
+    mDecoderVideo->onDecode = decodeVideo;
     mDecoderVideo->onDecodeFinish = finish;
     mDecoderVideo->startAsync();
 
@@ -232,10 +231,10 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         ALOGI("Couldn't cancel video thread: %i", ret);
     }
 
-//    ALOGI("waiting on audio thread");
-//    if((ret = mDecoderAudio->wait()) != 0) {
-//        ALOGI( "Couldn't cancel audio thread: %i", ret);
-//    }
+    ALOGI("waiting on audio thread");
+    if((ret = mDecoderAudio->wait()) != 0) {
+        ALOGI( "Couldn't cancel audio thread: %i", ret);
+    }
 
     if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
         ALOGI( "playing err\n");
@@ -245,10 +244,14 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     fclose(fp_yuv);
 }
 
+void YtxMediaPlayer::decodeAudio(int16_t* buffer, int buffer_size)
+{
+
+    ALOGI("decode audio IN");
+}
 
 
-
-void YtxMediaPlayer::decode(AVFrame* frame, double pts)
+void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 {
     if(FPS_DEBUGGING) {
         timeval pTime;
@@ -464,61 +467,109 @@ void YtxMediaPlayer::bindTexture(uint8_t *y,uint8_t *u,uint8_t *v) {
 int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 {
 
-    if (st_index[AVMEDIA_TYPE_VIDEO] < 0 || st_index[AVMEDIA_TYPE_VIDEO] > pFormatCtx->nb_streams) {
+    if (stream_index < 0 || stream_index > pFormatCtx->nb_streams) {
         return -1;
     }
 
 
     is->dec_ctx = avcodec_alloc_context3(NULL);
-    avcodec_parameters_to_context(is->dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->codecpar);
+    avcodec_parameters_to_context(is->dec_ctx, pFormatCtx->streams[stream_index]->codecpar);
 
-    av_codec_set_pkt_timebase(is->dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->time_base);
+    av_codec_set_pkt_timebase(is->dec_ctx, pFormatCtx->streams[stream_index]->time_base);
 
     //  streamVideo.dec_ctx = codec_ctx;
-    is->st = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
+    is->st = pFormatCtx->streams[stream_index];
     //AVCodecContext* codec_ctx = stream->codecpar
     AVCodec* codec = avcodec_find_decoder(is->dec_ctx->codec_id);
     if (codec == NULL) {
         return -1;
     }
 
-    printf("streamVideo.dec_ctx->codec_id=%d\n",is->dec_ctx->codec_id);
+    ALOGI("streamVideo.dec_ctx->codec_id=%d\n",is->dec_ctx->codec_id);
 
     is->dec_ctx->codec_id = codec->id;
+
+
 
     // Open codec
     if (avcodec_open2(is->dec_ctx, codec,NULL) < 0) {
         return -1;
     }
 
-    mVideoWidth = is->dec_ctx->width;
-    mVideoHeight = is->dec_ctx->height;
-    mDuration =  pFormatCtx->duration;
 
-    mConvertCtx = sws_getContext(is->dec_ctx->width,
-                                 is->dec_ctx->height,
-                                 is->dec_ctx->pix_fmt,
-                                 is->dec_ctx->width,
-                                 is->dec_ctx->height,
-                                 AV_PIX_FMT_YUV420P,
-                                 SWS_BICUBIC,
-                                 NULL,
-                                 NULL,
-                                 NULL);
+    switch (is->dec_ctx->codec_type){
+        case AVMEDIA_TYPE_AUDIO:
+            {
+                //解压缩数据
+                mFrameAudio = av_frame_alloc();
+                //frame->16bit 44100 PCM 统一音频采样格式与采样率
+                swrCtx = swr_alloc();
+                //重采样设置参数-------------start
+                //输入的采样格式
+                enum AVSampleFormat in_sample_fmt = is->dec_ctx->sample_fmt;
+                //输出采样格式16bit PCM
+                enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+                //输入采样率
+                int in_sample_rate = is->dec_ctx->sample_rate;
+                //输出采样率
+                int out_sample_rate = 44100;
+                //获取输入的声道布局
+                //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
+                //av_get_default_channel_layout(codecCtx->channels);
+                uint64_t in_ch_layout = is->dec_ctx->channel_layout;
+                //输出的声道布局（立体声）
+                uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
 
-    if (mConvertCtx == NULL) {
-        return -1;
+                swr_alloc_set_opts(swrCtx,
+                                   out_ch_layout,out_sample_fmt,out_sample_rate,
+                                   in_ch_layout,in_sample_fmt,in_sample_rate,
+                                   0, NULL);
+                swr_init(swrCtx);
+
+                //输出的声道个数
+                int out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);
+
+                //重采样设置参数-------------end
+                //16bit 44100 PCM 数据
+                out_buffer_audio = (uint8_t *)av_malloc(out_sample_rate*2);
+            }
+            break;
+        case AVMEDIA_TYPE_VIDEO:
+
+            mVideoWidth = is->dec_ctx->width;
+            mVideoHeight = is->dec_ctx->height;
+            mDuration =  pFormatCtx->duration;
+
+            mConvertCtx = sws_getContext(is->dec_ctx->width,
+                                         is->dec_ctx->height,
+                                         is->dec_ctx->pix_fmt,
+                                         is->dec_ctx->width,
+                                         is->dec_ctx->height,
+                                         AV_PIX_FMT_YUV420P,
+                                         SWS_BICUBIC,
+                                         NULL,
+                                         NULL,
+                                         NULL);
+
+            if (mConvertCtx == NULL) {
+                return -1;
+            }
+
+            mFrameVideo = av_frame_alloc();
+            mYuvFrame = av_frame_alloc();
+
+            if (mFrameVideo == NULL || mYuvFrame ==NULL) {
+                return -1;
+            }
+
+            out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  is->dec_ctx->width, is->dec_ctx->height,1));
+            av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,out_buffer_video,
+                                 AV_PIX_FMT_YUV420P,is->dec_ctx->width, is->dec_ctx->height,1);
+            break;
+        case AVMEDIA_TYPE_SUBTITLE:
+            break;
     }
 
-    mFrame = av_frame_alloc();
-    mYuvFrame = av_frame_alloc();
 
-    if (mFrame == NULL || mYuvFrame ==NULL) {
-        return -1;
-    }
-
-    out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  is->dec_ctx->width, is->dec_ctx->height,1));
-    av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,out_buffer,
-                         AV_PIX_FMT_YUV420P,is->dec_ctx->width, is->dec_ctx->height,1);
-
+    return 0;
 }
