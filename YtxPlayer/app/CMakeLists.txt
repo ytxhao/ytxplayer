@@ -25,6 +25,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/PacketQueue.cpp
              src/main/cpp/Decoder.cpp
              src/main/cpp/decoder_video.cpp
+             src/main/cpp/decoder_audio.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

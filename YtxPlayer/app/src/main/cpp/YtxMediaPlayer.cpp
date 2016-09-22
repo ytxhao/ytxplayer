@@ -5,6 +5,7 @@
 
 
 #include "YtxMediaPlayer.h"
+#include "decoder_audio.h"
 
 #define FPS_DEBUGGING true
 
@@ -91,6 +92,9 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
     return 0;
 }
 
+
+
+
 int  YtxMediaPlayer::prepare() {
 
     av_register_all();
@@ -129,66 +133,15 @@ int  YtxMediaPlayer::prepare() {
         }
     }
 
+//    if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+//        streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+//    }
 
-    if (st_index[AVMEDIA_TYPE_VIDEO] < 0 || st_index[AVMEDIA_TYPE_VIDEO] > pFormatCtx->nb_streams) {
-        return -1;
+    if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        streamComponentOpen(&streamVideo,st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
 
-   // AVStream* stream = pFormatCtx->streams[mVideoStreamIndex];
-    // Get a pointer to the codec context for the video stream
-   // AVCodecContext* codec_ctx = avcodec_alloc_context3(NULL);
-    streamVideo.dec_ctx = avcodec_alloc_context3(NULL);
-    avcodec_parameters_to_context(streamVideo.dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->codecpar);
-
-    av_codec_set_pkt_timebase(streamVideo.dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->time_base);
-
-  //  streamVideo.dec_ctx = codec_ctx;
-    streamVideo.st = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
-    //AVCodecContext* codec_ctx = stream->codecpar
-    AVCodec* codec = avcodec_find_decoder(streamVideo.dec_ctx->codec_id);
-    if (codec == NULL) {
-        return -1;
-    }
-
-    printf("streamVideo.dec_ctx->codec_id=%d\n",streamVideo.dec_ctx->codec_id);
-
-    streamVideo.dec_ctx->codec_id = codec->id;
-
-    // Open codec
-    if (avcodec_open2(streamVideo.dec_ctx, codec,NULL) < 0) {
-        return -1;
-    }
-
-    mVideoWidth = streamVideo.dec_ctx->width;
-    mVideoHeight = streamVideo.dec_ctx->height;
-    mDuration =  pFormatCtx->duration;
-
-    mConvertCtx = sws_getContext(streamVideo.dec_ctx->width,
-                                 streamVideo.dec_ctx->height,
-                                 streamVideo.dec_ctx->pix_fmt,
-                                 streamVideo.dec_ctx->width,
-                                 streamVideo.dec_ctx->height,
-                                 AV_PIX_FMT_YUV420P,
-                                 SWS_BICUBIC,
-                                 NULL,
-                                 NULL,
-                                 NULL);
-
-    if (mConvertCtx == NULL) {
-        return -1;
-    }
-
-    mFrame = av_frame_alloc();
-    mYuvFrame = av_frame_alloc();
-
-    if (mFrame == NULL || mYuvFrame ==NULL) {
-        return -1;
-    }
-
-    out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  streamVideo.dec_ctx->width, streamVideo.dec_ctx->height,1));
-    av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,out_buffer,
-                         AV_PIX_FMT_YUV420P,streamVideo.dec_ctx->width, streamVideo.dec_ctx->height,1);
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
@@ -229,10 +182,11 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 {
     AVPacket mPacket, *pPacket = &mPacket;
     int i=0, *pI = &i;
-  //  AVStream* stream_audio = mMovieFile->streams[mAudioStreamIndex];
-  //  mDecoderAudio = new DecoderAudio(stream_audio);
-  //  mDecoderAudio->onDecode = decode;
- //   mDecoderAudio->startAsync();
+
+
+//    mDecoderAudio = new DecoderAudio(&streamAudio);
+//    mDecoderAudio->onDecode = decode;
+//    mDecoderAudio->startAsync();
 
    // AVStream* stream_video = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
 
@@ -502,5 +456,69 @@ void YtxMediaPlayer::bindTexture(uint8_t *y,uint8_t *u,uint8_t *v) {
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+}
+
+
+
+int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
+{
+
+    if (st_index[AVMEDIA_TYPE_VIDEO] < 0 || st_index[AVMEDIA_TYPE_VIDEO] > pFormatCtx->nb_streams) {
+        return -1;
+    }
+
+
+    is->dec_ctx = avcodec_alloc_context3(NULL);
+    avcodec_parameters_to_context(is->dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->codecpar);
+
+    av_codec_set_pkt_timebase(is->dec_ctx, pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]]->time_base);
+
+    //  streamVideo.dec_ctx = codec_ctx;
+    is->st = pFormatCtx->streams[st_index[AVMEDIA_TYPE_VIDEO]];
+    //AVCodecContext* codec_ctx = stream->codecpar
+    AVCodec* codec = avcodec_find_decoder(is->dec_ctx->codec_id);
+    if (codec == NULL) {
+        return -1;
+    }
+
+    printf("streamVideo.dec_ctx->codec_id=%d\n",is->dec_ctx->codec_id);
+
+    is->dec_ctx->codec_id = codec->id;
+
+    // Open codec
+    if (avcodec_open2(is->dec_ctx, codec,NULL) < 0) {
+        return -1;
+    }
+
+    mVideoWidth = is->dec_ctx->width;
+    mVideoHeight = is->dec_ctx->height;
+    mDuration =  pFormatCtx->duration;
+
+    mConvertCtx = sws_getContext(is->dec_ctx->width,
+                                 is->dec_ctx->height,
+                                 is->dec_ctx->pix_fmt,
+                                 is->dec_ctx->width,
+                                 is->dec_ctx->height,
+                                 AV_PIX_FMT_YUV420P,
+                                 SWS_BICUBIC,
+                                 NULL,
+                                 NULL,
+                                 NULL);
+
+    if (mConvertCtx == NULL) {
+        return -1;
+    }
+
+    mFrame = av_frame_alloc();
+    mYuvFrame = av_frame_alloc();
+
+    if (mFrame == NULL || mYuvFrame ==NULL) {
+        return -1;
+    }
+
+    out_buffer=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  is->dec_ctx->width, is->dec_ctx->height,1));
+    av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,out_buffer,
+                         AV_PIX_FMT_YUV420P,is->dec_ctx->width, is->dec_ctx->height,1);
 
 }

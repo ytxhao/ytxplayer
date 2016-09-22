@@ -13,6 +13,7 @@
 #include "merrors.h"
 #include "ffinc.h"
 #include "decoder_video.h"
+#include "decoder_audio.h"
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/stat.h>
@@ -138,6 +139,7 @@ public:
     InputStream streamAudio;
 private:
 
+    int streamComponentOpen(InputStream *is, int stream_index);
     void decodeMovie(void* ptr);
     void clear_l();
 
@@ -189,6 +191,7 @@ private:
     int st_index[AVMEDIA_TYPE_NB];
 
     DecoderVideo*  mDecoderVideo;
+    DecoderAudio*  mDecoderAudio;
     FILE *fp_yuv;
     int  got_picture;
     unsigned char *out_buffer;
