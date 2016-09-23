@@ -25,7 +25,7 @@ private:
     AVFrame*					mFrame;
     bool                        prepare();
     bool                        decode(void* ptr);
-    bool                        process(AVPacket *packet);
+    bool                        process(AVPacket *packet,int *i);
 };
 
 #endif //YTXPLAYER_DECODER_AUDIO_H

@@ -210,6 +210,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             mCurrentState = MEDIA_PLAYER_DECODED;
             *pI = 1;
             mDecoderVideo->enqueue(pPacket,pI);
+            mDecoderAudio->enqueue(pPacket,pI);
           //  mDecoderVideo->stop();
           //  mDecoderVideo->isFinish = 1;
             continue;
@@ -219,6 +220,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
             mDecoderVideo->enqueue(pPacket,pI);
            // mDecoderVideo->isFinish = 0;
+        }else if(pPacket->stream_index == st_index[AVMEDIA_TYPE_AUDIO]){
+            mDecoderAudio->enqueue(pPacket,pI);
         } else {
             av_packet_unref(pPacket);
         }
@@ -242,6 +245,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     mCurrentState = MEDIA_PLAYER_PLAYBACK_COMPLETE;
     ALOGI( "end of playing\n");
     fclose(fp_yuv);
+    fclose(fp_pcm);
 }
 
 void YtxMediaPlayer::decodeAudio(AVFrame* frame, double pts)

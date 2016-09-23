@@ -31,11 +31,15 @@ bool DecoderAudio::prepare()
     return true;
 }
 
-bool DecoderAudio::process(AVPacket *packet)
+bool DecoderAudio::process(AVPacket *packet,int *i)
 {
     int pts = 0;
     int size = mSamplesSize;
     int	completed;
+
+    if(*i == 1 && mQueue->size()==0){
+        return false;
+    }
     //int len = avcodec_decode_audio3(mStream->codec, mSamples, &size, packet);
     int ret = avcodec_decode_audio4(mStream->dec_ctx,mFrame,&completed,packet);
     ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
@@ -54,18 +58,19 @@ bool DecoderAudio::process(AVPacket *packet)
 
 bool DecoderAudio::decode(void* ptr)
 {
+    int i;
     AVPacket        pPacket;
 
     ALOGI( TAG, "decoding audio");
 
     while(mRunning)
     {
-//        if(mQueue->get(&pPacket, true) < 0)
-//        {
-//            mRunning = false;
-//            return false;
- //       }
-        if(!process(&pPacket))
+        if(mQueue->get(&pPacket, true,&i) < 0)
+        {
+            mRunning = false;
+            return false;
+        }
+        if(!process(&pPacket,&i))
         {
             mRunning = false;
             return false;
