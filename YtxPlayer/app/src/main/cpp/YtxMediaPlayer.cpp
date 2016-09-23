@@ -4,6 +4,7 @@
 
 
 
+
 #include "YtxMediaPlayer.h"
 #include "decoder_audio.h"
 
@@ -530,11 +531,32 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //输出的声道布局（立体声）
                 uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
 
-                swr_alloc_set_opts(swrCtx,
-                                   out_ch_layout,out_sample_fmt,out_sample_rate,
-                                   in_ch_layout,in_sample_fmt,in_sample_rate,
-                                   0, NULL);
+                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
+                ALOGI("### in_sample_rate=%d\n",in_sample_rate);
+                ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
+
+                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
+//                swr_alloc_set_opts(swrCtx,
+//                                   out_ch_layout,out_sample_fmt,out_sample_rate,
+//                                   in_ch_layout,in_sample_fmt,in_sample_rate,
+//                                   0, NULL);
+
+            /* set options */
+                av_opt_set_int(swrCtx, "in_channel_layout",    in_ch_layout, 0);
+                av_opt_set_int(swrCtx, "in_sample_rate",       in_sample_rate, 0);
+                av_opt_set_sample_fmt(swrCtx, "in_sample_fmt", in_sample_fmt, 0);
+
+
+                av_opt_set_int(swrCtx, "out_channel_layout",    out_ch_layout, 0);
+                av_opt_set_int(swrCtx, "out_sample_rate",       out_sample_rate, 0);
+                av_opt_set_sample_fmt(swrCtx, "out_sample_fmt", out_sample_fmt, 0);
+
                 swr_init(swrCtx);
+
+            //is->dec_ctx->
+
+            //int  dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, in_sample_rate, AV_ROUND_UP);
+
 
                 //输出的声道个数
                 out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);
