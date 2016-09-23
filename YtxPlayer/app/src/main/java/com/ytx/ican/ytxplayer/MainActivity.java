@@ -1,7 +1,12 @@
 package com.ytx.ican.ytxplayer;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -28,10 +33,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Example of a call to a native method
         TextView tv = (TextView) findViewById(R.id.sample_text);
+
+       // isGrantExternalRW(this);
        // tv.setText(stringFromJNI());
+
         YtxMediaPlayer mPlayer = new YtxMediaPlayer();
+     //   android.os.Environment.get
+     //   android.os.Environment.get
         String filePath = android.os.Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
+               // .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
         //----------------------------------------
@@ -40,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mPlayer.setSurfaceView(mGLSurface);
         //----------------------------------------
         try {
-            mPlayer.setDataSource(filePath+"titanic.mkv");
+            //mPlayer.setDataSource(filePath+"titanic.mkv");
+            mPlayer.setDataSource(filePath+"video2.mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mGLSurface.onResume();
+        //mGLSurface.onResume();
     }
 
     public native String stringFromJNI();
@@ -112,6 +124,41 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static boolean isGrantExternalRW(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            activity.requestPermissions(new String[]{
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, 1);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+
+                if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                        //授权成功后的逻辑
+                      //  ...
+                    } else {
+                      //  requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_CODE);
+                    }
+                }
+            }
         }
     }
 }

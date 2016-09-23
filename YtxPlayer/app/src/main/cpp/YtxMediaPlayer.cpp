@@ -8,6 +8,7 @@
 #include "YtxMediaPlayer.h"
 #include "decoder_audio.h"
 
+#define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
 
 void printfferr(){
@@ -216,9 +217,9 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
           //  mDecoderVideo->isFinish = 1;
             continue;
         }
-
+        ALOGI("pPacket->stream_index =%d st_index[AVMEDIA_TYPE_VIDEO]=%d st_index[AVMEDIA_TYPE_AUDIO]=%d\n",pPacket->stream_index ,st_index[AVMEDIA_TYPE_VIDEO],st_index[AVMEDIA_TYPE_AUDIO]);
         if (pPacket->stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
-            ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
+           // ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
             mDecoderVideo->enqueue(pPacket,pI);
            // mDecoderVideo->isFinish = 0;
         }else if(pPacket->stream_index == st_index[AVMEDIA_TYPE_AUDIO]){
@@ -253,10 +254,11 @@ void YtxMediaPlayer::decodeAudio(AVFrame* frame, double pts)
 {
 
     ALOGI("decode audio IN");
-    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), 44100*2, (const uint8_t **) frame->data, frame->nb_samples);
+    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), MAX_AUDIO_FRME_SIZE, (const uint8_t **) frame->data, frame->nb_samples);
     //获取sample的size
     int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
                                                      frame->nb_samples, sPlayer->out_sample_fmt, 1);
+    ALOGI("decode audio frame->nb_samples=%d\n",frame->nb_samples);
     fwrite(sPlayer->out_buffer_audio,1,out_buffer_size,sPlayer->fp_pcm);
     ALOGI("decode audio OUT");
 }
@@ -527,6 +529,8 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //获取输入的声道布局
                 //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
                 //av_get_default_channel_layout(codecCtx->channels);
+                out_nb_samples=is->dec_ctx->frame_size;
+                ALOGI("out_nb_samples=%d\n",out_nb_samples);
                 uint64_t in_ch_layout = is->dec_ctx->channel_layout;
                 //输出的声道布局（立体声）
                 uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
@@ -536,20 +540,20 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
 
                 ALOGI("### out_ch_layout=%d\n",out_ch_layout);
-//                swr_alloc_set_opts(swrCtx,
-//                                   out_ch_layout,out_sample_fmt,out_sample_rate,
-//                                   in_ch_layout,in_sample_fmt,in_sample_rate,
-//                                   0, NULL);
+                swr_alloc_set_opts(swrCtx,
+                                   out_ch_layout,out_sample_fmt,out_sample_rate,
+                                   in_ch_layout,in_sample_fmt,in_sample_rate,
+                                   0, NULL);
 
             /* set options */
-                av_opt_set_int(swrCtx, "in_channel_layout",    in_ch_layout, 0);
-                av_opt_set_int(swrCtx, "in_sample_rate",       in_sample_rate, 0);
-                av_opt_set_sample_fmt(swrCtx, "in_sample_fmt", in_sample_fmt, 0);
-
-
-                av_opt_set_int(swrCtx, "out_channel_layout",    out_ch_layout, 0);
-                av_opt_set_int(swrCtx, "out_sample_rate",       out_sample_rate, 0);
-                av_opt_set_sample_fmt(swrCtx, "out_sample_fmt", out_sample_fmt, 0);
+//                av_opt_set_int(swrCtx, "in_channel_layout",    in_ch_layout, 0);
+//                av_opt_set_int(swrCtx, "in_sample_rate",       in_sample_rate, 0);
+//                av_opt_set_sample_fmt(swrCtx, "in_sample_fmt", in_sample_fmt, 0);
+//
+//
+//                av_opt_set_int(swrCtx, "out_channel_layout",    out_ch_layout, 0);
+//                av_opt_set_int(swrCtx, "out_sample_rate",       out_sample_rate, 0);
+//                av_opt_set_sample_fmt(swrCtx, "out_sample_fmt", out_sample_fmt, 0);
 
                 swr_init(swrCtx);
 
@@ -563,7 +567,7 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 
                 //重采样设置参数-------------end
                 //16bit 44100 PCM 数据
-                out_buffer_audio = (uint8_t *)av_malloc(out_sample_rate*2);
+                out_buffer_audio = (uint8_t *)av_malloc(MAX_AUDIO_FRME_SIZE);
             }
             break;
         case AVMEDIA_TYPE_VIDEO:

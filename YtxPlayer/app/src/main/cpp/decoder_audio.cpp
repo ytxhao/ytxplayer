@@ -45,7 +45,7 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
     ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
     //call handler for posting buffer to os audio driver
 
-    if (completed) {
+    if (completed > 0) {
         //   pts = synchronize(mFrame, pts);
 
         onDecode(mFrame, pts);

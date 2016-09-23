@@ -215,6 +215,7 @@ private:
     //输出采样率
     int out_sample_rate = 44100;
     int out_channel_nb;
+    int out_nb_samples;
 
 };
 
