@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mPlayer.setSurfaceView(mGLSurface);
         //----------------------------------------
         try {
-            //mPlayer.setDataSource(filePath+"titanic.mkv");
-            mPlayer.setDataSource(filePath+"video2.mp4");
+            mPlayer.setDataSource(filePath+"titanic.mkv");
+            //mPlayer.setDataSource(filePath+"video2.mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }

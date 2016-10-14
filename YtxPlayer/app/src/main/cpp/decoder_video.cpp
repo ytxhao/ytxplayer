@@ -2,6 +2,9 @@
 // Created by Administrator on 2016/9/7.
 //
 
+
+
+
 #include "decoder_video.h"
 
 #define TAG "FFMpegVideoDecoder"
@@ -12,7 +15,9 @@ DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
 {
     stream->dec_ctx->get_buffer2 = getBuffer;
   //  mStream->codec->
-  //  mStream->codec->release_buffer = releaseBuffer;
+   // stream->dec_ctx->release_buffer = releaseBuffer;
+  //  frameQueue = new FrameQueue();
+    frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
 }
 
 DecoderVideo::~DecoderVideo()
@@ -51,7 +56,7 @@ double DecoderVideo::synchronize(AVFrame *src_frame, double pts) {
 bool DecoderVideo::process(AVPacket *packet, int *i)
 {
     int	completed;
-    int pts = 0;
+    double pts = 0;
     int ret=0;
     // Decode video frame
 
@@ -66,24 +71,72 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
                          &completed,
                          packet);
 
-    /*
-    if (packet->dts == AV_NOPTS_VALUE && mFrame->opaque
-        && *(uint64_t*) mFrame->opaque != AV_NOPTS_VALUE) {
-        pts = *(uint64_t *) mFrame->opaque;
-    } else if (packet->dts != AV_NOPTS_VALUE) {
-        pts = packet->dts;
-    } else {
-        pts = 0;
-    }
-    pts *= av_q2d(mStream->time_base);
+//
+//    if (packet->dts == AV_NOPTS_VALUE && mFrame->opaque
+//        && *(uint64_t*) mFrame->opaque != AV_NOPTS_VALUE) {
+//        pts = *(uint64_t *) mFrame->opaque;
+//    } else if (packet->dts != AV_NOPTS_VALUE) {
+//        pts = packet->dts;
+//    } else {
+//        pts = 0;
+//    }
+//    pts *= av_q2d(mStream->dec_ctx->time_base);
+
+
+
+    if (completed) {
+      //  pts = synchronize(mFrame, pts);
+    //    double dpts = NAN;
+        double duration;
+
+        mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
+
+//        if (mFrame->pts != AV_NOPTS_VALUE)
+//            dpts = av_q2d(mStream->st->time_base) * mFrame->pts;
+//        else
+//            ALOGI("DecoderVideo::process mFrame->pts == AV_NOPTS_VALUE");
+
+//        ALOGI("DecoderVideo::process ret=%d ; completed=%d mFrame->pts=%lld av_gettime_relative()=%lf\n",ret,completed,mFrame->pts,av_gettime_relative()/1000000.0);
+//        ALOGI("DecoderVideo::process av_q2d(mStream->dec_ctx->time_base)=%lf\n",av_q2d(mStream->dec_ctx->time_base));
+//        ALOGI("DecoderVideo::process av_q2d(mStream->dec_ctx->time_base)*mFrame->pts=%lf\n",av_q2d(mStream->dec_ctx->time_base)*mFrame->pts);
+//
+//        ALOGI("DecoderVideo::process av_q2d(mStream->st->time_base)=%lf\n",av_q2d(mStream->st->time_base));
+//        ALOGI("DecoderVideo::process av_q2d(mStream->st->time_base)*mFrame->pts=%lf\n",av_q2d(mStream->st->time_base)*mFrame->pts);
+
+        duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
+        pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
+
+        ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
+
+        Frame *vp;
+        if(!(vp = frameQueue.frameQueuePeekWritable())){
+            return true;
+        }
+ //       vp->sar = mFrame->sample_aspect_ratio;
+/*
+        if(vp->reallocate || !vp->allocated ||
+           vp->width  != mFrame->width ||
+           vp->height != mFrame->height){
+
+            vp->allocated  = 0;
+            vp->reallocate = 0;
+            vp->width = mFrame->width;
+            vp->height = mFrame->height;
+        }
+
+        vp->pts = pts;
+        vp->duration = duration;
+        vp->pos = av_frame_get_pkt_pos(mFrame);
+        vp->frame = mFrame;
+     //   vp->serial = serial;
 */
 
-    ALOGI("DecoderVideo::process ret=%d ; completed=%d \n",ret,completed);
-    if (completed) {
-     //   pts = synchronize(mFrame, pts);
+
 
         onDecode(mFrame, pts);
-
+        frameQueue.frameQueuePush();
+        //   av_usleep(30000);
+        av_frame_unref(mFrame);
         return true;
     }
 
@@ -98,6 +151,11 @@ bool DecoderVideo::decode(void* ptr)
 
     int i;
     ALOGI( "decoding video\n");
+  //  AVFrame *frame = av_frame_alloc();
+     timeBase = mStream->st->time_base;//is->video_st->time_base;
+     frameRate = av_guess_frame_rate(mStream->pFormatCtx, mStream->st, NULL);
+
+
 
     while(mRunning)
     {
@@ -106,7 +164,7 @@ bool DecoderVideo::decode(void* ptr)
             mRunning = false;
            // return false;
         }else{
-            ALOGI( "DecoderVideo::decode mQueue->size()=%d\n",mQueue->size());
+
             if(!process(&pPacket,&i))
             {
                 mRunning = false;
@@ -115,7 +173,7 @@ bool DecoderVideo::decode(void* ptr)
             // Free the packet that was allocated by av_read_frame
             av_free_packet(&pPacket);
         }
-
+        ALOGI( "DecoderVideo::decode mQueue->size()=%d\n",mQueue->size());
     }
 
     ALOGI("decoding video ended\n");

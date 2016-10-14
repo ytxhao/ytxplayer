@@ -6,7 +6,6 @@
 
 
 #include "YtxMediaPlayer.h"
-#include "decoder_audio.h"
 
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
@@ -46,6 +45,9 @@ void printfferr(){
     ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d\n",AVERROR_HTTP_SERVER_ERROR);
 }
 
+//#define MAX_QUEUE_SIZE (15 * 1024 * 1024)
+#define MAX_AUDIOQ_SIZE (5 * 16 * 1024)
+#define MAX_VIDEOQ_SIZE (5 * 256 * 1024)
 
 static YtxMediaPlayer* sPlayer;
 
@@ -135,6 +137,8 @@ int  YtxMediaPlayer::prepare() {
         }
     }
 
+    streamVideo.pFormatCtx = pFormatCtx;
+    streamAudio.pFormatCtx = pFormatCtx;
     if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
     }
@@ -166,7 +170,7 @@ int  YtxMediaPlayer::start() {
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
-
+    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
 }
 
@@ -178,7 +182,40 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     return 0;
 }
 
+void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
+    ALOGI("starting main player startPlayerRefresh\n");
+    //  printfferr();
+    double last_duration, duration, delay;
+    Frame *vp, *lastvp;
 
+    while (sPlayer->isFinish != 1) {
+        //usleep(1000);
+
+        if(sPlayer->mDecoderVideo !=NULL){
+            usleep(41000);
+
+            if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() == 0){
+                // nothing to do, no picture to display in the queue
+
+            }else{
+
+                /* dequeue the picture */
+           //     lastvp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
+           //     vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeek();
+
+                int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
+                sPlayer->updateYuv(sPlayer->mYuvFrame->data[0], sPlayer->mYuvFrame->data[1],
+                                   sPlayer->mYuvFrame->data[2], y_size);
+
+                sPlayer->mDecoderVideo->frameQueue.frameQueueNext();
+
+            }
+
+        }
+
+    }
+    pthread_exit(NULL);
+}
 
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
@@ -204,7 +241,11 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 
-        usleep(800);
+        if (mDecoderVideo->packets() > MAX_VIDEOQ_SIZE ||
+            mDecoderAudio->packets() > MAX_AUDIOQ_SIZE) {
+            usleep(100);
+            continue;
+        }
 
         int ret = av_read_frame(pFormatCtx, pPacket);
         ALOGI("decodeMovie ret=%d",ret);
@@ -267,22 +308,29 @@ void YtxMediaPlayer::decodeAudio(AVFrame* frame, double pts)
 void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 {
     if(FPS_DEBUGGING) {
-        timeval pTime;
-        static int frames = 0;
-        static double t1 = -1;
-        static double t2 = -1;
+//        timeval pTime;
+//        static int frames = 0;
+//        static double t1 = -1;
+//        static double t2 = -1;
+//
+//        gettimeofday(&pTime, NULL);
+//        t2 = pTime.tv_sec + (pTime.tv_usec / 1000000.0);
+//        if (t1 == -1 || t2 > t1 + 1) {
+//            ALOGI("Video fps:%i\n", frames);
+//            //sPlayer->notify(MEDIA_INFO_FRAMERATE_VIDEO, frames, -1);
+//            t1 = t2;
+//            frames = 0;
+//        }
+//        frames++;
+//        double time;
+//        time = av_gettime_relative() / 1000000.0;
 
-        gettimeofday(&pTime, NULL);
-        t2 = pTime.tv_sec + (pTime.tv_usec / 1000000.0);
-        if (t1 == -1 || t2 > t1 + 1) {
-            ALOGI("Video fps:%i\n", frames);
-            //sPlayer->notify(MEDIA_INFO_FRAMERATE_VIDEO, frames, -1);
-            t1 = t2;
-            frames = 0;
-        }
-        frames++;
+
+
+
     }
 
+//    usleep(30000);
   //  ALOGI("decode frame %d; data[0]=%d\n",frame->data,frame->data[0]);
     // Convert the image from its native format to RGB
     sws_scale(sPlayer->mConvertCtx,
@@ -293,6 +341,7 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
               sPlayer->mYuvFrame->data,
               sPlayer->mYuvFrame->linesize);
 
+
  //   ALOGI("decode mYuvFrame %d; mYuvFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mYuvFrame->data,sPlayer->mYuvFrame->data[0],sPlayer->fp_yuv);
 
 
@@ -302,9 +351,20 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
     fwrite(sPlayer->mYuvFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
     fwrite(sPlayer->mYuvFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
     // Output::VideoDriver_updateSurface();
-    ALOGI("y_size=%d ; sPlayer->mYuvFrame->data[0]=%d\n",y_size,sPlayer->mYuvFrame->data[0]);
-    sPlayer->bindTexture(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2]);
-    sPlayer->updateYuv(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2],y_size);
+   // ALOGI("y_size=%d ; sPlayer->mYuvFrame->data[0]=%d\n",y_size,sPlayer->mYuvFrame->data[0]);
+    //sPlayer->bindTexture(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2]);
+   // sPlayer->updateYuv(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2],y_size);
+
+//    double duration;
+//
+//    AVRational tb = is->video_st->time_base;
+//    AVRational frame_rate = av_guess_frame_rate(is->ic, is->video_st, NULL);
+//
+//    duration = (frame_rate.num && frame_rate.den ? av_q2d((AVRational){frame_rate.den, frame_rate.num}) : 0);
+//    pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
+//    ret = queue_picture(is, frame, pts, duration, av_frame_get_pkt_pos(frame), is->viddec.pkt_serial);
+
+
 }
 
 int  YtxMediaPlayer::stop() {
@@ -432,6 +492,7 @@ int  YtxMediaPlayer::setListener(const MediaPlayerListener* listener) {
 void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish");
+    sPlayer->isFinish = 1;
  //   fclose(sPlayer->fp_yuv);
   //  return ;
 }

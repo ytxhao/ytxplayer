@@ -73,6 +73,9 @@ public:
     int start();
 
     static void* startPlayer(void* ptr);
+
+    static void* startPlayerRefresh(void* ptr);
+
     int stop();
 
     int pause();
@@ -138,6 +141,8 @@ public:
     updateYuvHandler updateYuv;
     InputStream streamVideo;
     InputStream streamAudio;
+
+    int isFinish;
 private:
 
     int streamComponentOpen(InputStream *is, int stream_index);
@@ -191,6 +196,7 @@ private:
     AVFrame*					mYuvFrame;
     pthread_mutex_t             mLock;
     pthread_t					mPlayerThread;
+    pthread_t					mPlayerRefreshThread;
 
     int mStreamType;
     int mCurrentState;
@@ -206,6 +212,10 @@ private:
     int textureY;
     int textureU;
     int textureV;
+
+    //视频帧率
+    AVRational frame_rate_video;
+
 
     enum AVSampleFormat in_sample_fmt ;
     //输出采样格式16bit PCM

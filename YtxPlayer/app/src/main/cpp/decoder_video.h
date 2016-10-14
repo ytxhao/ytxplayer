@@ -5,6 +5,7 @@
 #ifndef YTXPLAYER_DECODER_VIDEO_H
 #define YTXPLAYER_DECODER_VIDEO_H
 #include "decoder.h"
+#include "frame_queue.h"
 
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
 typedef void (*VideoDecodeFinishHandler) ();
@@ -17,9 +18,14 @@ public:
     VideoDecodingHandler		onDecode;
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
+    FrameQueue frameQueue;
 private:
     AVFrame*					mFrame;
     double						mVideoClock;
+    AVRational timeBase ;
+    AVRational frameRate;
+
+
 
     bool                        prepare();
     double 						synchronize(AVFrame *src_frame, double pts);
@@ -27,5 +33,9 @@ private:
     bool                        process(AVPacket *packet,int *i);
     static int					getBuffer(struct AVCodecContext *c, AVFrame *pic,int flags);
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
+
+
+
+
 };
 #endif //YTXPLAYER_DECODER_VIDEO_H

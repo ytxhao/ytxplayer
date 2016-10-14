@@ -610,9 +610,9 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
         public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
 
-            YtxLog.d("GraphicRenderer","yuhao renderer updateYuv ydata.length="+ydata.length+" ydata[0]="+ydata[0]);
-            YtxLog.d("GraphicRenderer","yuhao renderer updateYuv udata.length="+udata.length+" udata[0]="+udata[0]);
-            YtxLog.d("GraphicRenderer","yuhao renderer updateYuv vdata.length="+vdata.length+" ydata[0]="+vdata[0]);
+           // YtxLog.d("GraphicRenderer","yuhao renderer updateYuv ydata.length="+ydata.length+" ydata[0]="+ydata[0]);
+          //  YtxLog.d("GraphicRenderer","yuhao renderer updateYuv udata.length="+udata.length+" udata[0]="+udata[0]);
+          //  YtxLog.d("GraphicRenderer","yuhao renderer updateYuv vdata.length="+vdata.length+" ydata[0]="+vdata[0]);
                 update(640,272);
                 synchronized (this) {
 
