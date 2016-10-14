@@ -135,7 +135,6 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
         onDecode(mFrame, pts);
         frameQueue.frameQueuePush();
-        //   av_usleep(30000);
         av_frame_unref(mFrame);
         return true;
     }

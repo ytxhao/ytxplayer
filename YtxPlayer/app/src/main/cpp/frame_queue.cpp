@@ -14,7 +14,7 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 //    }
 //    av_freep(&vp->subrects);
     av_frame_unref(vp->frame);
-    avsubtitle_free(&vp->sub);
+  //  avsubtitle_free(&vp->sub);
 
 }
 
