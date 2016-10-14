@@ -100,10 +100,6 @@ void FrameQueue::frameQueuePush() {
 void FrameQueue::frameQueueNext() {
     if(keep_last && !rindex_shown){
         rindex_shown = 1;
-        pthread_mutex_lock(&mutex);
-        size--;
-        pthread_cond_signal(&cond);
-        pthread_mutex_unlock(&mutex);
         return;
     }
 

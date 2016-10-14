@@ -189,10 +189,10 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     Frame *vp, *lastvp;
 
     while (sPlayer->isFinish != 1) {
-        //usleep(1000);
+
 
         if(sPlayer->mDecoderVideo !=NULL){
-            usleep(41000);
+            av_usleep(1000);
 
             if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() == 0){
                 // nothing to do, no picture to display in the queue
