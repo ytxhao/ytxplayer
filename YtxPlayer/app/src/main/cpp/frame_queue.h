@@ -55,14 +55,14 @@ public:
     int64_t frameQueueLastPos();
 
 
-
+    int size=0;
 
 private:
     Frame queue[FRAME_QUEUE_SIZE];
     //必须手动初始化否则是随机数据
     int rindex=0;
     int windex=0;
-    int size=0;
+
     int max_size=0;
     int keep_last =0 ;
     int rindex_shown = 0 ;

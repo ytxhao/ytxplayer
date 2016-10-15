@@ -113,7 +113,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
             return true;
         }
  //       vp->sar = mFrame->sample_aspect_ratio;
-/*
+
         if(vp->reallocate || !vp->allocated ||
            vp->width  != mFrame->width ||
            vp->height != mFrame->height){
@@ -126,10 +126,10 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
         vp->pts = pts;
         vp->duration = duration;
-        vp->pos = av_frame_get_pkt_pos(mFrame);
+   //     vp->pos = av_frame_get_pkt_pos(mFrame);
         vp->frame = mFrame;
      //   vp->serial = serial;
-*/
+
 
 
 

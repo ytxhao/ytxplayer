@@ -229,7 +229,8 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
             }else{
 
-
+                ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
+                ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
                 lastvp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
                 vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeek();
 
@@ -239,7 +240,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
 
                 time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
-                ALOGI("startPlayerRefresh last_duration=%lf  time=%lf frame_timer=%lf\n",last_duration,time,frame_timer);
+                ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
 
                 if (time < frame_timer + delay) { //要显示的视频未过期则显示
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -251,12 +252,14 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                     frame_timer = time;
                 }
 
+                sPlayer->mDecoderVideo->frameQueue.frameQueueNext();
+                
                 display:
                 int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
                 sPlayer->updateYuv(sPlayer->mYuvFrame->data[0], sPlayer->mYuvFrame->data[1],
                                    sPlayer->mYuvFrame->data[2], y_size);
 
-                sPlayer->mDecoderVideo->frameQueue.frameQueueNext();
+
 
             }
 
