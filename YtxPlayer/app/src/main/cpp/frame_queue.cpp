@@ -18,18 +18,21 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 
 }
 
-int FrameQueue::frameQueueInit(int max_size, int keep_last) {
+
+int FrameQueue::frameQueueInit(int max_size, int keep_last,InputStream*  mStream) {
     int i=0;
+    this->mStream = mStream;
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&cond, NULL);
     this->max_size = max_size;
     this->keep_last = keep_last;
     for(i=0;i<this->max_size;i++){
-        if(!(this->queue[i].frame = av_frame_alloc())){
+        this->queue[i].frame = av_frame_alloc();
+        if(this->queue[i].frame == NULL){
             return AVERROR(ENOMEM);
         }
     }
-    return 0;
+    return 1;
 }
 
 void FrameQueue::frameQueueDestory() {

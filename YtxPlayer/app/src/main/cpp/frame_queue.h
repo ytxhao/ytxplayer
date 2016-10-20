@@ -17,6 +17,7 @@
 
 typedef struct Frame {
     AVFrame *frame;
+    AVFrame *frameYuv;
     AVSubtitle sub;
     AVSubtitleRect **subrects;  /* rescaled subtitle rectangles in yuva */
     int serial;
@@ -35,7 +36,7 @@ class FrameQueue{
 public:
 
     void frameQueueUnrefItem(Frame *vp);
-    int frameQueueInit(int max_size,int keep_last);
+    int frameQueueInit(int max_size,int keep_last,InputStream*  mStream);
     void frameQueueDestory();
     void frameQueueSignal();
     Frame* frameQueuePeek();
@@ -57,7 +58,6 @@ public:
 
     int size=0;
 
-private:
     Frame queue[FRAME_QUEUE_SIZE];
     //必须手动初始化否则是随机数据
     int rindex=0;
@@ -68,6 +68,7 @@ private:
     int rindex_shown = 0 ;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
+    InputStream*                mStream;
 
 };
 

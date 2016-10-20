@@ -214,7 +214,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     while (sPlayer->isFinish != 1) {
 
 
-        if(sPlayer->mDecoderVideo != NULL){
+        if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh!=0){
 
             if(remaining_time > 0.0){
                 ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
@@ -242,7 +242,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
                 ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
 
-                if (time < frame_timer + delay) { //要显示的视频未过期则显示
+                if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
                     goto display;
                 }
@@ -256,8 +256,20 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 
                 display:
                 int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
-                sPlayer->updateYuv(sPlayer->mYuvFrame->data[0], sPlayer->mYuvFrame->data[1],
-                                   sPlayer->mYuvFrame->data[2], y_size);
+                Frame *vp;
+                vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
+                if(vp->frame != NULL){
+//                    sws_scale(sPlayer->mConvertCtx,
+//                              (const unsigned char *const *) vp->frame->data,
+//                              vp->frame->linesize,
+//                              0,
+//                              sPlayer->mVideoHeight,
+//                              sPlayer->mYuvFrame->data,
+//                              sPlayer->mYuvFrame->linesize);
+                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1],
+                                       vp->frame->data[2], y_size);
+                }
+
 
 
 
@@ -385,23 +397,23 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 //    usleep(30000);
   //  ALOGI("decode frame %d; data[0]=%d\n",frame->data,frame->data[0]);
     // Convert the image from its native format to RGB
-    sws_scale(sPlayer->mConvertCtx,
-              (const unsigned char *const *) frame->data,
-              frame->linesize,
-              0,
-              sPlayer->mVideoHeight,
-              sPlayer->mYuvFrame->data,
-              sPlayer->mYuvFrame->linesize);
+//    sws_scale(sPlayer->mConvertCtx,
+//              (const unsigned char *const *) frame->data,
+//              frame->linesize,
+//              0,
+//              sPlayer->mVideoHeight,
+//              sPlayer->mYuvFrame->data,
+//              sPlayer->mYuvFrame->linesize);
 
 
  //   ALOGI("decode mYuvFrame %d; mYuvFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mYuvFrame->data,sPlayer->mYuvFrame->data[0],sPlayer->fp_yuv);
 
 
-    int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
+//    int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
   //  ALOGI("y_size=%d ; sPlayer->fp_yuv=%d\n",y_size,sPlayer->fp_yuv);
-    fwrite(sPlayer->mYuvFrame->data[0],1,y_size,sPlayer->fp_yuv);    //Y
-    fwrite(sPlayer->mYuvFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
-    fwrite(sPlayer->mYuvFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
+//    fwrite(sPlayer->mYuvFrame->data[0],1,y_size,sPlayer->fp_yuv);    //Y
+//    fwrite(sPlayer->mYuvFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
+//    fwrite(sPlayer->mYuvFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
     // Output::VideoDriver_updateSurface();
    // ALOGI("y_size=%d ; sPlayer->mYuvFrame->data[0]=%d\n",y_size,sPlayer->mYuvFrame->data[0]);
     //sPlayer->bindTexture(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2]);

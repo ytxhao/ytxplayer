@@ -13,11 +13,11 @@ static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 
 DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
 {
-    stream->dec_ctx->get_buffer2 = getBuffer;
+   // stream->dec_ctx->get_buffer2 = getBuffer;
   //  mStream->codec->
    // stream->dec_ctx->release_buffer = releaseBuffer;
   //  frameQueue = new FrameQueue();
-    frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+    frameQueueInitFinsh = frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1,stream);
 }
 
 DecoderVideo::~DecoderVideo()
@@ -27,6 +27,16 @@ DecoderVideo::~DecoderVideo()
 bool DecoderVideo::prepare()
 {
     ALOGI("ytxhao DecoderVideo::prepare\n");
+    mConvertCtx = sws_getContext(mStream->dec_ctx->width,
+                                 mStream->dec_ctx->height,
+                                 mStream->dec_ctx->pix_fmt,
+                                 mStream->dec_ctx->width,
+                                 mStream->dec_ctx->height,
+                                 AV_PIX_FMT_YUV420P,
+                                 SWS_BICUBIC,
+                                 NULL,
+                                 NULL,
+                                 NULL);
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -127,9 +137,23 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
         vp->pts = pts;
         vp->duration = duration;
    //     vp->pos = av_frame_get_pkt_pos(mFrame);
-        vp->frame = mFrame;
+      //  vp->frame = mFrame;
      //   vp->serial = serial;
+//        out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
+//        av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
+//                             AV_PIX_FMT_YUV420P,mStream->dec_ctx->width, mStream->dec_ctx->height,1);
 
+        out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
+        av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
+                             AV_PIX_FMT_YUV420P,mStream->dec_ctx->width, mStream->dec_ctx->height,1);
+
+        sws_scale(mConvertCtx,
+          (const unsigned char *const *) mFrame->data,
+                  mFrame->linesize,
+                  0,
+                  mStream->dec_ctx->height,
+                  vp->frame->data,
+                  vp->frame->linesize);
 
 
 

@@ -19,6 +19,9 @@ public:
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
     FrameQueue frameQueue;
+    int frameQueueInitFinsh=0;
+    struct SwsContext*	mConvertCtx;
+    unsigned char *out_buffer_video;
 private:
     AVFrame*					mFrame;
     double						mVideoClock;
