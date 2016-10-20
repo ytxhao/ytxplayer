@@ -18,10 +18,12 @@ DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
    // stream->dec_ctx->release_buffer = releaseBuffer;
   //  frameQueue = new FrameQueue();
     frameQueueInitFinsh =  frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+   // frameQueueInitFinsh =  frameQueue.frameQueueInit(6,1);
 }
 
 DecoderVideo::~DecoderVideo()
 {
+    frameQueue.frameQueueDestory();
 }
 
 bool DecoderVideo::prepare()
@@ -37,6 +39,7 @@ bool DecoderVideo::prepare()
                                  NULL,
                                  NULL,
                                  NULL);
+    out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -90,6 +93,8 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
         ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
 
+
+
         Frame *vp;
         if(!(vp = frameQueue.frameQueuePeekWritable())){
             return true;
@@ -108,7 +113,8 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
         vp->pts = pts;
         vp->duration = duration;
 
-        out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
+
+   //     out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
         av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
                              AV_PIX_FMT_YUV420P,mStream->dec_ctx->width, mStream->dec_ctx->height,1);
 

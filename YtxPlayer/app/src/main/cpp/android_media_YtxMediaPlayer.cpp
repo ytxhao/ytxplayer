@@ -278,6 +278,7 @@ void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
    //  ALOGI("android_media_player_updateYuv jRandomNum=%d\n",jRandomNum);
    // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
    //        (unsigned)getpid());
+
     sVm->DetachCurrentThread();
     ALOGI("android_media_player_updateYuv OUT\n");
 
@@ -299,18 +300,11 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
 
     YtxMediaPlayer* mPlayer = getMediaPlayer(env,obj);;
 
-    jclass glSurface_cls = env->GetObjectClass(VideoGlSurfaceViewFFMPEG); //或得Student类引用
+    jclass glSurface_cls = env->GetObjectClass(VideoGlSurfaceViewFFMPEG);
     if(glSurface_cls == NULL)
     {
         ALOGI("GetObjectClass failed \n") ;
     }
-
-//
-//    jfieldID intFieldID = env->GetFieldID(glSurface_cls,"mWidth","I"); //获得得Student类的属性id
-//    ALOGI("android_media_player_setGlSurface intFieldID=%d\n",intFieldID);
-//
-//    jint mWidth = env->GetIntField(VideoGlSurfaceViewFFMPEG , intFieldID);  //获得属性值
-//    ALOGI("android_media_player_setGlSurface mWidth=%d\n",mWidth);
 
 //-----------------------------------------------------------------
     jfieldID surfaceFieldID = env->GetFieldID(glSurface_cls,"mYUVTextures","[I"); //获得得Student类的属性id
@@ -476,8 +470,9 @@ JNIEXPORT jint JNICALL android_media_player_isPlaying
 JNIEXPORT jint JNICALL android_media_player_getVideoWidth
         (JNIEnv *env, jobject obj)
 {
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
 
-    return 0;
+    return mPlayer->getVideoWidth();
 }
 
 /*
@@ -488,8 +483,8 @@ JNIEXPORT jint JNICALL android_media_player_getVideoWidth
 JNIEXPORT jint JNICALL android_media_player_getVideoHeight
         (JNIEnv *env, jobject obj)
 {
-
-    return 0;
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    return mPlayer->getVideoHeight();
 }
 
 /*

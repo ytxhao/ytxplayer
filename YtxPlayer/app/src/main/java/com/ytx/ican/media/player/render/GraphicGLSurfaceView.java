@@ -525,7 +525,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
                     y.position(0);
                     u.position(0);
                     v.position(0);
-                    prog.buildTextures(y, u, v, 640, 272);
+                   // prog.buildTextures(y, u, v, 640, 272);
+                    prog.buildTextures(y, u, v, 1280, 720);
                     GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                     prog.drawFrame();
@@ -597,9 +598,19 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
                     int yarraySize = w * h;
                     int uvarraySize = yarraySize / 4;
                     synchronized (this) {
-                        y = ByteBuffer.allocate(yarraySize);
-                        u = ByteBuffer.allocate(uvarraySize);
-                        v = ByteBuffer.allocate(uvarraySize);
+//                        y = ByteBuffer.allocate(yarraySize);
+//                        u = ByteBuffer.allocate(uvarraySize);
+//                        v = ByteBuffer.allocate(uvarraySize);
+
+//                        if(y == null){
+//                            y = ByteBuffer.allocate(yarraySize);
+//                        }
+//                        if(u == null){
+//                            u = ByteBuffer.allocate(uvarraySize);
+//                        }
+//                        if(v == null){
+//                            v = ByteBuffer.allocate(uvarraySize);
+//                        }
                     }
                 }
             }
@@ -613,12 +624,21 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
            // YtxLog.d("GraphicRenderer","yuhao renderer updateYuv ydata.length="+ydata.length+" ydata[0]="+ydata[0]);
           //  YtxLog.d("GraphicRenderer","yuhao renderer updateYuv udata.length="+udata.length+" udata[0]="+udata[0]);
           //  YtxLog.d("GraphicRenderer","yuhao renderer updateYuv vdata.length="+vdata.length+" ydata[0]="+vdata[0]);
-                update(640,272);
+                update(640,272); //显示视频区域宽高
                 synchronized (this) {
 
-                    y = ByteBuffer.allocate(ydata.length);
-                    u = ByteBuffer.allocate(udata.length);
-                    v = ByteBuffer.allocate(vdata.length);
+                    if(y == null){
+                        y = ByteBuffer.allocate(ydata.length);
+                    }
+                    if(u == null){
+                        u = ByteBuffer.allocate(udata.length);
+                    }
+                    if(v == null){
+                        v = ByteBuffer.allocate(vdata.length);
+                    }
+//                    y = ByteBuffer.allocate(ydata.length);
+//                    u = ByteBuffer.allocate(udata.length);
+//                    v = ByteBuffer.allocate(vdata.length);
 
                     y.clear();
                     u.clear();

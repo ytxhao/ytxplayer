@@ -151,6 +151,7 @@ public class VideoGlSurfaceViewFFMPEG extends VideoGlSurfaceView {
     }
 
     public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
+
         super.updateYuv(ydata,udata,vdata);
         try {
             fos.write(ydata,0,ydata.length);
@@ -159,6 +160,7 @@ public class VideoGlSurfaceViewFFMPEG extends VideoGlSurfaceView {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

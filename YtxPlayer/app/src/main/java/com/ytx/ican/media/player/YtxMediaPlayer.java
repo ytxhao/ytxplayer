@@ -150,12 +150,12 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     @Override
     public int getVideoWidth() {
-        return 0;
+        return _getVideoWidth();
     }
 
     @Override
     public int getVideoHeight() {
-        return 0;
+        return _getVideoHeight();
     }
 
     @Override

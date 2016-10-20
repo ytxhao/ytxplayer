@@ -38,25 +38,26 @@ public class MainActivity extends AppCompatActivity {
        // tv.setText(stringFromJNI());
 
         YtxMediaPlayer mPlayer = new YtxMediaPlayer();
-     //   android.os.Environment.get
-     //   android.os.Environment.get
+
         String filePath = android.os.Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
                // .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
         //----------------------------------------
-      //  mGLSurface =  new  VideoGlSurfaceViewFFMPEG(this);//(VideoGlSurfaceViewFFMPEG) findViewById(R.id.glsurface);
         mGLSurface = (VideoGlSurfaceViewFFMPEG) findViewById(R.id.surface);
         mPlayer.setSurfaceView(mGLSurface);
         //----------------------------------------
         try {
-            mPlayer.setDataSource(filePath+"titanic.mkv");
-            //mPlayer.setDataSource(filePath+"video2.mp4");
+            //rtmp://live.hkstv.hk.lxdns.com/live/hks
+           // mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
+           // mPlayer.setDataSource(filePath+"titanic.mkv");
+            mPlayer.setDataSource(filePath+"video2.mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }
         mPlayer.prepare();
+        YtxLog.d("MainActivity","getVideoHeight="+mPlayer.getVideoHeight()+" getVideoWidth="+mPlayer.getVideoWidth());
         mPlayer.start();
 
 
@@ -67,32 +68,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //mGLSurface.onResume();
-    }
-
-    public native String stringFromJNI();
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-/*
-        System.loadLibrary("gnustl_shared");
-        System.loadLibrary("mp4v2");
-        System.loadLibrary("faad");
-        System.loadLibrary("faac");
-        System.loadLibrary("rtmp");
-        System.loadLibrary("x264");
-        System.loadLibrary("avutil");
-        System.loadLibrary("swresample");
-        System.loadLibrary("swscale");
-        System.loadLibrary("postproc");
-        System.loadLibrary("avcodec");
-        System.loadLibrary("avformat");
-        System.loadLibrary("avdevice");
-        System.loadLibrary("avfilter");
-
-        System.loadLibrary("native-lib");
-        */
-
-
     }
 
     /**

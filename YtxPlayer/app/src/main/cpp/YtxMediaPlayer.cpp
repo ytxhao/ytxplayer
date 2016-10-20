@@ -211,7 +211,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;
-   // usleep(40000);
+
     while (sPlayer->isFinish != 1) {
 
         if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh == 1){
@@ -222,11 +222,13 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
             }
             remaining_time = REFRESH_RATE;
+            //usleep(20000);
 
             if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() < 2 ){
                 // nothing to do, no picture to display in the queue
 
             }else{
+
 
               //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
               //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
@@ -258,8 +260,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
                 if(vp->frame != NULL){
-                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1],
-                                       vp->frame->data[2], y_size);
+                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
                 }
 
             }
@@ -378,14 +379,14 @@ bool YtxMediaPlayer::isPlaying() {
     return 0;
 }
 
-int  YtxMediaPlayer::getVideoWidth(int *w) {
+int  YtxMediaPlayer::getVideoWidth() {
 
-    return 0;
+    return mVideoWidth;
 }
 
-int  YtxMediaPlayer::getVideoHeight(int *h) {
+int  YtxMediaPlayer::getVideoHeight() {
 
-    return 0;
+    return mVideoHeight;
 }
 
 int  YtxMediaPlayer::seekTo(int msec) {

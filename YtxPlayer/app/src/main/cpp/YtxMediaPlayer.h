@@ -82,9 +82,9 @@ public:
 
     bool isPlaying();
 
-    int getVideoWidth(int *w);
+    int getVideoWidth();
 
-    int getVideoHeight(int *h);
+    int getVideoHeight();
 
     int seekTo(int msec);
 
