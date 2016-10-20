@@ -169,6 +169,7 @@ int  YtxMediaPlayer::start() {
    // fwrite(datam,1,1024,fp_yuv);
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
+
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
     pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
@@ -210,27 +211,25 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;
-
+   // usleep(40000);
     while (sPlayer->isFinish != 1) {
 
-
-        if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh!=0){
+        if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh == 1){
 
             if(remaining_time > 0.0){
-                ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
+            //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
                 av_usleep((int64_t)(remaining_time * 1000000.0));
 
             }
             remaining_time = REFRESH_RATE;
 
-         //   usleep(40000);
-            if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() == 0){
+            if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() < 2 ){
                 // nothing to do, no picture to display in the queue
 
             }else{
 
-                ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
-                ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
+              //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
+              //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
                 lastvp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
                 vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeek();
 
@@ -240,7 +239,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
 
                 time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
-                ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
+              //  ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
 
                 if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -259,19 +258,9 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
                 if(vp->frame != NULL){
-//                    sws_scale(sPlayer->mConvertCtx,
-//                              (const unsigned char *const *) vp->frame->data,
-//                              vp->frame->linesize,
-//                              0,
-//                              sPlayer->mVideoHeight,
-//                              sPlayer->mYuvFrame->data,
-//                              sPlayer->mYuvFrame->linesize);
                     sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1],
                                        vp->frame->data[2], y_size);
                 }
-
-
-
 
             }
 
@@ -287,11 +276,9 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     AVPacket mPacket, *pPacket = &mPacket;
     int i=0, *pI = &i;
 
-
     mDecoderAudio = new DecoderAudio(&streamAudio);
     mDecoderAudio->onDecode = decodeAudio;
     mDecoderAudio->startAsync();
-
 
     mDecoderVideo = new DecoderVideo(&streamVideo);
     mDecoderVideo->onDecode = decodeVideo;
@@ -372,63 +359,8 @@ void YtxMediaPlayer::decodeAudio(AVFrame* frame, double pts)
 void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 {
     if(FPS_DEBUGGING) {
-//        timeval pTime;
-//        static int frames = 0;
-//        static double t1 = -1;
-//        static double t2 = -1;
-//
-//        gettimeofday(&pTime, NULL);
-//        t2 = pTime.tv_sec + (pTime.tv_usec / 1000000.0);
-//        if (t1 == -1 || t2 > t1 + 1) {
-//            ALOGI("Video fps:%i\n", frames);
-//            //sPlayer->notify(MEDIA_INFO_FRAMERATE_VIDEO, frames, -1);
-//            t1 = t2;
-//            frames = 0;
-//        }
-//        frames++;
-//        double time;
-//        time = av_gettime_relative() / 1000000.0;
-
-
-
 
     }
-
-//    usleep(30000);
-  //  ALOGI("decode frame %d; data[0]=%d\n",frame->data,frame->data[0]);
-    // Convert the image from its native format to RGB
-//    sws_scale(sPlayer->mConvertCtx,
-//              (const unsigned char *const *) frame->data,
-//              frame->linesize,
-//              0,
-//              sPlayer->mVideoHeight,
-//              sPlayer->mYuvFrame->data,
-//              sPlayer->mYuvFrame->linesize);
-
-
- //   ALOGI("decode mYuvFrame %d; mYuvFrame[0]=%d;sPlayer->fp_yuv=%d",sPlayer->mYuvFrame->data,sPlayer->mYuvFrame->data[0],sPlayer->fp_yuv);
-
-
-//    int y_size= sPlayer->streamVideo.dec_ctx->width*sPlayer->streamVideo.dec_ctx->height;
-  //  ALOGI("y_size=%d ; sPlayer->fp_yuv=%d\n",y_size,sPlayer->fp_yuv);
-//    fwrite(sPlayer->mYuvFrame->data[0],1,y_size,sPlayer->fp_yuv);    //Y
-//    fwrite(sPlayer->mYuvFrame->data[1],1,y_size/4,sPlayer->fp_yuv);  //U
-//    fwrite(sPlayer->mYuvFrame->data[2],1,y_size/4,sPlayer->fp_yuv);  //V
-    // Output::VideoDriver_updateSurface();
-   // ALOGI("y_size=%d ; sPlayer->mYuvFrame->data[0]=%d\n",y_size,sPlayer->mYuvFrame->data[0]);
-    //sPlayer->bindTexture(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2]);
-   // sPlayer->updateYuv(sPlayer->mYuvFrame->data[0],sPlayer->mYuvFrame->data[1],sPlayer->mYuvFrame->data[2],y_size);
-
-//    double duration;
-//
-//    AVRational tb = is->video_st->time_base;
-//    AVRational frame_rate = av_guess_frame_rate(is->ic, is->video_st, NULL);
-//
-//    duration = (frame_rate.num && frame_rate.den ? av_q2d((AVRational){frame_rate.den, frame_rate.num}) : 0);
-//    pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
-//    ret = queue_picture(is, frame, pts, duration, av_frame_get_pkt_pos(frame), is->viddec.pkt_serial);
-
-
 }
 
 int  YtxMediaPlayer::stop() {
@@ -557,8 +489,6 @@ void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish");
     sPlayer->isFinish = 1;
- //   fclose(sPlayer->fp_yuv);
-  //  return ;
 }
 
 void YtxMediaPlayer::setTexture(int textureY,int textureU,int textureV)
@@ -614,10 +544,7 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
     avcodec_parameters_to_context(is->dec_ctx, pFormatCtx->streams[stream_index]->codecpar);
 
     av_codec_set_pkt_timebase(is->dec_ctx, pFormatCtx->streams[stream_index]->time_base);
-
-    //  streamVideo.dec_ctx = codec_ctx;
     is->st = pFormatCtx->streams[stream_index];
-    //AVCodecContext* codec_ctx = stream->codecpar
     AVCodec* codec = avcodec_find_decoder(is->dec_ctx->codec_id);
     if (codec == NULL) {
         return -1;
@@ -670,22 +597,7 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                                    in_ch_layout,in_sample_fmt,in_sample_rate,
                                    0, NULL);
 
-            /* set options */
-//                av_opt_set_int(swrCtx, "in_channel_layout",    in_ch_layout, 0);
-//                av_opt_set_int(swrCtx, "in_sample_rate",       in_sample_rate, 0);
-//                av_opt_set_sample_fmt(swrCtx, "in_sample_fmt", in_sample_fmt, 0);
-//
-//
-//                av_opt_set_int(swrCtx, "out_channel_layout",    out_ch_layout, 0);
-//                av_opt_set_int(swrCtx, "out_sample_rate",       out_sample_rate, 0);
-//                av_opt_set_sample_fmt(swrCtx, "out_sample_fmt", out_sample_fmt, 0);
-
                 swr_init(swrCtx);
-
-            //is->dec_ctx->
-
-            //int  dst_nb_samples = av_rescale_rnd(src_nb_samples, out_sample_rate, in_sample_rate, AV_ROUND_UP);
-
 
                 //输出的声道个数
                 out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);

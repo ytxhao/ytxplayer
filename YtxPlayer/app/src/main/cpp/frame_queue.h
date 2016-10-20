@@ -36,7 +36,7 @@ class FrameQueue{
 public:
 
     void frameQueueUnrefItem(Frame *vp);
-    int frameQueueInit(int max_size,int keep_last,InputStream*  mStream);
+    int frameQueueInit(int max_size,int keep_last);
     void frameQueueDestory();
     void frameQueueSignal();
     Frame* frameQueuePeek();
@@ -68,7 +68,6 @@ public:
     int rindex_shown = 0 ;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-    InputStream*                mStream;
 
 };
 

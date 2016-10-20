@@ -19,9 +19,8 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 }
 
 
-int FrameQueue::frameQueueInit(int max_size, int keep_last,InputStream*  mStream) {
+int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     int i=0;
-    this->mStream = mStream;
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&cond, NULL);
     this->max_size = max_size;
