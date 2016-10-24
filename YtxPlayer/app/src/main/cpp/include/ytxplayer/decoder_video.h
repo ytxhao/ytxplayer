@@ -4,7 +4,7 @@
 
 #ifndef YTXPLAYER_DECODER_VIDEO_H
 #define YTXPLAYER_DECODER_VIDEO_H
-#include "decoder.h"
+#include "Decoder.h"
 #include "frame_queue.h"
 
 typedef void (*VideoDecodingHandler) (AVFrame*,double);

@@ -6,7 +6,7 @@
 #define YTXPLAYER_DECODER_AUDIO_H
 
 
-#include "decoder.h"
+#include "Decoder.h"
 
 typedef void (*AudioDecodingHandler) (AVFrame*,double);
 

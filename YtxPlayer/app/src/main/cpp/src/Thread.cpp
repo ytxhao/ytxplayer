@@ -2,8 +2,8 @@
 // Created by Administrator on 2016/9/7.
 //
 #define TAG "FFMpegThread"
-#include "thread.h"
-#include "ALog-priv.h"
+#include "ytxplayer/Thread.h"
+#include "ytxplayer/ALog-priv.h"
 
 
 Thread::Thread()

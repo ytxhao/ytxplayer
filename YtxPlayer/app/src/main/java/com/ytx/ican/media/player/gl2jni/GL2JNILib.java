@@ -28,6 +28,9 @@ public class GL2JNILib {
      * @param width the current view width
      * @param height the current view height
      */
-     public static native void init(int width, int height);
-     public static native void step();
+
+    public static native void native_resize_opengl(int width, int height);
+    public static native void native_step_opengl();
+    public static native void native_init_opengl();
+
 }

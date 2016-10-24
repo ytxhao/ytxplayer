@@ -2,8 +2,8 @@
 // Created by Administrator on 2016/10/13.
 //
 
-#include "frame_queue.h"
-#include "YtxMediaPlayer.h"
+#include "ytxplayer/frame_queue.h"
+#include "ytxplayer/YtxMediaPlayer.h"
 
 void FrameQueue::frameQueueUnrefItem(Frame *vp) {
     int i;

@@ -6,9 +6,9 @@
 #define LOG_TAG "YTX-PLAYER-JNI"
 
 #include <string>
-#include "ffinc.h"
-#include "android_media_YtxMediaPlayer.h"
-#include "YtxMediaPlayer.h"
+#include "ytxplayer/ffinc.h"
+#include "ytxplayer/android_media_YtxMediaPlayer.h"
+#include "ytxplayer/YtxMediaPlayer.h"
 // 获取数组的大小
 #ifndef NELEM
 # define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))

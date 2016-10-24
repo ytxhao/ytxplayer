@@ -265,10 +265,6 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     private native void native_message_loop(Object YtxMediaPlayer_this);
 
-    public static native void native_init_opengl(int width, int height);
-    public static native void native_step_opengl();
-
-
 
     private native void _setGlSurface(Object glSurface);
 

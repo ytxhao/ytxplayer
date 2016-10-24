@@ -5,7 +5,8 @@
 
 
 
-#include "YtxMediaPlayer.h"
+#include <ytxplayer/gl_code.h>
+#include "ytxplayer/YtxMediaPlayer.h"
 
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
@@ -261,7 +262,10 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
                 if(vp->frame != NULL){
-                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
+             //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
+                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
+                              sPlayer->streamVideo.dec_ctx->width,
+                              sPlayer->streamVideo.dec_ctx->height);
                 }
 
             }
