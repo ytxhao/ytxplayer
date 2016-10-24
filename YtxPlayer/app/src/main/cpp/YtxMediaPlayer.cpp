@@ -245,7 +245,8 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
                 if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
-                    goto display;
+                    //goto display;
+                    continue;
                 }
 
                 frame_timer += delay; //下一帧需要在这个时间显示
