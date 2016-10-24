@@ -327,7 +327,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     }
 
     public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
-        renderer.updateYuv(ydata,udata,vdata);
-        requestRender();
+     //   renderer.updateYuv(ydata,udata,vdata);
+     //   requestRender();
     }
 }
