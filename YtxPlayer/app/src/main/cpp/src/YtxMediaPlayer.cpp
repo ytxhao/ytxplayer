@@ -52,7 +52,7 @@ void printfferr(){
 
 static YtxMediaPlayer* sPlayer;
 
-
+FrameQueue frameQueue;
 
 YtxMediaPlayer::YtxMediaPlayer(){
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
@@ -171,6 +171,7 @@ int  YtxMediaPlayer::start() {
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
 
+    frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
     pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
@@ -215,7 +216,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
     while (sPlayer->isFinish != 1) {
 
-        if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh == 1){
+        if(sPlayer->mDecoderVideo != NULL){
 
             if(remaining_time > 0.0){
             //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
@@ -225,7 +226,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
             remaining_time = REFRESH_RATE;
             //usleep(20000);
 
-            if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() < 2 ){
+            if(sPlayer->mDecoderVideo->frameQueue->frameQueueNumRemaining() < 2 ){
                 // nothing to do, no picture to display in the queue
 
             }else{
@@ -233,8 +234,8 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
               //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
               //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
-                lastvp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
-                vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeek();
+                lastvp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
+                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeek();
 
 
                 last_duration = vp_duration(lastvp, vp);
@@ -255,17 +256,17 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                     frame_timer = time;
                 }
 
-                sPlayer->mDecoderVideo->frameQueue.frameQueueNext();
+                sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
                 
                 display:
                 int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
                 Frame *vp;
-                vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
+                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
              //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
-                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
-                              sPlayer->streamVideo.dec_ctx->width,
-                              sPlayer->streamVideo.dec_ctx->height);
+             //       updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
+             //                 sPlayer->streamVideo.dec_ctx->width,
+             //                 sPlayer->streamVideo.dec_ctx->height);
                 }
 
             }
@@ -283,10 +284,12 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     int i=0, *pI = &i;
 
     mDecoderAudio = new DecoderAudio(&streamAudio);
+
     mDecoderAudio->onDecode = decodeAudio;
     mDecoderAudio->startAsync();
 
     mDecoderVideo = new DecoderVideo(&streamVideo);
+    mDecoderVideo->setFrameQueue(&frameQueue);
     mDecoderVideo->onDecode = decodeVideo;
     mDecoderVideo->onDecodeFinish = finish;
     mDecoderVideo->startAsync();
