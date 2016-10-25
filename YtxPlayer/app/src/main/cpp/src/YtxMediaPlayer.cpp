@@ -52,7 +52,7 @@ void printfferr(){
 
 static YtxMediaPlayer* sPlayer;
 
-FrameQueue frameQueue;
+FrameQueue *frameQueue;
 
 YtxMediaPlayer::YtxMediaPlayer(){
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
@@ -171,7 +171,15 @@ int  YtxMediaPlayer::start() {
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
 
-    frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+    frameQueue = new FrameQueue();
+    frameQueue->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+    mDecoderAudio = new DecoderAudio(&streamAudio);
+    mDecoderVideo = new DecoderVideo(&streamVideo);
+    mDecoderVideo->setFrameQueue(frameQueue);
+
+    mDecoderAudio->onDecode = decodeAudio;
+    mDecoderVideo->onDecode = decodeVideo;
+    mDecoderVideo->onDecodeFinish = finish;
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
     pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
@@ -283,15 +291,18 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     AVPacket mPacket, *pPacket = &mPacket;
     int i=0, *pI = &i;
 
-    mDecoderAudio = new DecoderAudio(&streamAudio);
-
-    mDecoderAudio->onDecode = decodeAudio;
+//    mDecoderAudio = new DecoderAudio(&streamAudio);
+//    mDecoderVideo = new DecoderVideo(&streamVideo);
+//    mDecoderVideo->setFrameQueue(frameQueue);
+//
+//    mDecoderAudio->onDecode = decodeAudio;
+//    mDecoderVideo->onDecode = decodeVideo;
+//    mDecoderVideo->onDecodeFinish = finish;
     mDecoderAudio->startAsync();
 
-    mDecoderVideo = new DecoderVideo(&streamVideo);
-    mDecoderVideo->setFrameQueue(&frameQueue);
-    mDecoderVideo->onDecode = decodeVideo;
-    mDecoderVideo->onDecodeFinish = finish;
+
+
+
     mDecoderVideo->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
