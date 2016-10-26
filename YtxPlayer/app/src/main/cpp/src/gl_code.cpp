@@ -29,7 +29,7 @@
 #include "ALog-priv.h"
 #include "gl_code.h"
 
-#define  TAG    "libgl2jni"
+#define  TAG    "gl2jni"
 //#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 //#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
@@ -375,15 +375,17 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(JNIEnv *env, jclass clazz, jint width, jint height)
 {
 
+    ALOGI("native_1resize_1opengl IN out");
 }
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1step_1opengl(JNIEnv *env, jclass clazz)
 {
     //renderFrame();
+    ALOGI("native_1step_1opengl IN out");
     drawFrame();
 }
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1init_1opengl(JNIEnv *env, jclass clazz)
 {
-
+    ALOGI("native_1init_1opengl IN out");
     //创建program
     setupGraphics();
     pthread_mutex_init(&mutex, NULL);

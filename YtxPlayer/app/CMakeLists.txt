@@ -9,20 +9,6 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
-
-add_library(gl2jni-lib SHARED
-            src/main/cpp/src/gl_code.cpp)
-
-# add lib dependencies
-target_link_libraries(gl2jni-lib
-                      android
-                      log
-                      EGL
-                      GLESv2)
-
-
-
 add_library( # Sets the name of the library.
              native-lib
 
@@ -40,6 +26,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/decoder_video.cpp
              src/main/cpp/src/decoder_audio.cpp
              src/main/cpp/src/frame_queue.cpp
+             src/main/cpp/src/gl_code.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -71,8 +58,6 @@ find_library( # Sets the name of the path variable.
 
 #----------------------------------------------------------------
 
-
-#set(INC_DIR "${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg")
 set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 
 
@@ -80,15 +65,6 @@ set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
 
 
-find_library( # Sets the name of the path variable.
-              gl2jni-lib
-              NAMES "gl2jni"
-              PATHS PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH )
 
 
 find_library(avutil-lib
@@ -172,7 +148,6 @@ target_link_libraries( # Specifies the target library.
                        ${avcodec-lib}
                        ${avformat-lib}
                        ${avfilter-lib}
-                       ${gl2jni-lib}
                        )
 
 

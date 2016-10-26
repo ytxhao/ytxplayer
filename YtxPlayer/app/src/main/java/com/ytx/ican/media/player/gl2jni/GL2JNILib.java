@@ -20,9 +20,9 @@ package com.ytx.ican.media.player.gl2jni;
 
 public class GL2JNILib {
 
-     static {
-         System.loadLibrary("gl2jni");
-     }
+//     static {
+//         System.loadLibrary("gl2jni");
+//     }
 
     /**
      * @param width the current view width
