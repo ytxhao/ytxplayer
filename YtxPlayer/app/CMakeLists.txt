@@ -10,12 +10,13 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 
-add_library(gl2jni-lib SHARED
+add_library(gl2jni SHARED
             src/main/cpp/src/gl_code.cpp)
 
 # add lib dependencies
-target_link_libraries(gl2jni-lib
+target_link_libraries(gl2jni
                       android
                       log
                       EGL
@@ -70,12 +71,22 @@ find_library( # Sets the name of the path variable.
             GLESv2 )
 ################################################################################
 
-
-#set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 #message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
 
 include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
 
+
+set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
+
+find_library( # Sets the name of the path variable.
+              gl2jni-lib
+              NAMES "gl2jni"
+              PATHS  ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH )
 ################################################################################
 add_library( avutil-lib
              SHARED
