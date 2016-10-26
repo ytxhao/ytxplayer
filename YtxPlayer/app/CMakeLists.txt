@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
+
 
 add_library(gl2jni-lib SHARED
             src/main/cpp/src/gl_code.cpp)
@@ -68,95 +68,110 @@ find_library( # Sets the name of the path variable.
             # Specifies the name of the NDK library that
             # you want CMake to locate.
             GLESv2 )
-
-#----------------------------------------------------------------
-
-
-#set(INC_DIR "${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg")
-set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
+################################################################################
 
 
+#set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 #message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
+
 include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
 
+################################################################################
+add_library( avutil-lib
+             SHARED
+             IMPORTED )
 
-find_library( # Sets the name of the path variable.
-              gl2jni-lib
-              NAMES "gl2jni"
-              PATHS PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH )
+set_target_properties( # Specifies the target library.
+                       avutil-lib
 
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
 
-find_library(avutil-lib
-                NAMES "avutil"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libavutil.so )
 
-find_library(swscale-lib
-                NAMES "swscale"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-            )
+################################################################################
 
-find_library(swresample-lib
-                NAMES "swresample"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
-find_library(avcodec-lib
-                NAMES "avcodec"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-            )
-find_library(avformat-lib
-                NAMES "avformat"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+add_library( swscale-lib
+             SHARED
+             IMPORTED )
 
-find_library(avfilter-lib
-                NAMES "avfilter"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+set_target_properties( # Specifies the target library.
+                       swscale-lib
 
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libswscale.so )
+
+################################################################################
+
+add_library( swresample-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       swresample-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libswresample.so )
+
+################################################################################
+
+add_library( avcodec-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avcodec-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libavcodec.so )
+
+################################################################################
+
+add_library( avformat-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avformat-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libavformat.so )
+
+################################################################################
+
+add_library( avfilter-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avfilter-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       src/main/jniLibs/armeabi-v7a/libavfilter.so )
+
+################################################################################
 
 #-----------------------------------------------------------------
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in the
 # build script, prebuilt third-party libraries, or system libraries.
 
-#MESSAGE(STATUS "lsx result: " "${LINK_DIR}/libavformat.so")
-#message(FATAL_ERROR "Invalid Android lsx2 result: " "${avformat-lib}   ${LINK_DIR}")
 
 target_link_libraries( # Specifies the target library.
                        native-lib
