@@ -272,9 +272,9 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
              //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
-             //       updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
-             //                 sPlayer->streamVideo.dec_ctx->width,
-             //                 sPlayer->streamVideo.dec_ctx->height);
+                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
+                              sPlayer->streamVideo.dec_ctx->width,
+                              sPlayer->streamVideo.dec_ctx->height);
                 }
 
             }

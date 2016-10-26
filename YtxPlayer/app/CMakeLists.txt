@@ -9,17 +9,17 @@ cmake_minimum_required(VERSION 3.4.1)
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
 
-#add_library(gl2jni SHARED
-#            src/main/cpp/src/gl_code.cpp)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
+
+add_library(gl2jni-lib SHARED
+            src/main/cpp/src/gl_code.cpp)
 
 # add lib dependencies
-#target_link_libraries(gl2jni
-#                      android
-#                      log
-#                      EGL
-#                      GLESv2)
-
-
+target_link_libraries(gl2jni-lib
+                      android
+                      log
+                      EGL
+                      GLESv2)
 
 
 

@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.ytx.ican.ytxplayer"
         minSdkVersion 15
@@ -11,15 +11,20 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+
+        ndk{
+            abiFilters 'armeabi-v7a'
+        }
         //--------------------------------------------------------------------------
         externalNativeBuild {
             cmake {
-                abiFilters 'armeabi-v7a'
+//                abiFilters 'armeabi-v7a'
               //  cFlags "-D__STDC_CONSTANT_MACROS"
                 cppFlags "-std=gnu++11 -D__STDC_CONSTANT_MACROS"
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -29,6 +34,12 @@ android {
             jniDebuggable true
         }
     }
+
+
+//    sourceSets.main {
+//
+//            jniLibs.srcDirs = ['src/main/jniLibs']
+//    }
 
     //-------------------------------------------
     externalNativeBuild {
