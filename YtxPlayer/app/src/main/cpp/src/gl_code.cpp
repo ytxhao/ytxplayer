@@ -307,12 +307,23 @@ pthread_cond_t cond;
 
 void updateYUV(char *y,char *u,char *v, int video_width, int video_height)
 {
+    int mSize = video_width*video_height;
 
-    plane[0]=y;
-    plane[1]=u;
-    plane[2]=v;
+    if(plane[0] == 0 || plane[1] == 0 || plane[2] == 0){
+        plane[0] = (char *) malloc(mSize);
+        plane[1] = (char *) malloc(mSize/4);
+        plane[2] = (char *) malloc(mSize/4);
+    }
+    memcpy(plane[0],y,mSize);
+    memcpy(plane[1],y,mSize/4);
+    memcpy(plane[2],y,mSize/4);
+
     videoWidth =video_width;
     videoHeight = video_height;
+    glViewport(0, 0, video_width, video_height);
+    checkGlError("glViewport");
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glFlush();
 
 
 }
@@ -324,6 +335,7 @@ void drawFrame(){
 
     if(plane[0]!=0,plane[1]!=0,plane[2]!=0) {
 
+        ALOGI("drawFrame videoWidth=%d videoHeight=%d\n",videoWidth,videoHeight);
         buildTextures(plane[0], plane[1], plane[2], videoWidth, videoHeight);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -388,8 +400,9 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
     ALOGI("native_1init_1opengl IN out");
     //创建program
     setupGraphics();
-    pthread_mutex_init(&mutex, NULL);
-    pthread_cond_init(&cond, NULL);
+
+   // pthread_mutex_init(&mutex, NULL);
+   // pthread_cond_init(&cond, NULL);
 
 }
 
