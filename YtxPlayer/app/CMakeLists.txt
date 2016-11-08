@@ -27,6 +27,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/decoder_audio.cpp
              src/main/cpp/src/frame_queue.cpp
              src/main/cpp/src/gl_code.cpp
+             src/main/cpp/src/native-audio.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -148,6 +149,6 @@ target_link_libraries( # Specifies the target library.
                        ${avcodec-lib}
                        ${avformat-lib}
                        ${avfilter-lib}
-                       )
+                       OpenSLES )
 
 
