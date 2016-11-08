@@ -7,6 +7,7 @@
 
 #include <ytxplayer/gl_code.h>
 #include "ytxplayer/YtxMediaPlayer.h"
+#include "native_audio.h"
 
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
@@ -98,7 +99,26 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
 }
 
 
-
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
+{
+    assert(bq == bqPlayerBufferQueue);
+    assert(NULL == context);
+    // for streaming playback, replace this test by logic to find and fill the next buffer
+    if (--nextCount > 0 && NULL != nextBuffer && 0 != nextSize) {
+        SLresult result;
+        // enqueue another buffer
+        result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
+        // the most likely other result is SL_RESULT_BUFFER_INSUFFICIENT,
+        // which for this code example would indicate a programming error
+        if (SL_RESULT_SUCCESS != result) {
+            pthread_mutex_unlock(&audioEngineLock);
+        }
+        (void)result;
+    } else {
+        releaseResampleBuf();
+        pthread_mutex_unlock(&audioEngineLock);
+    }
+}
 
 int  YtxMediaPlayer::prepare() {
 
@@ -149,13 +169,17 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
+    createEngine();
+
+    createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback);
+
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
-
-
-
 }
+
+
+
 
 int  YtxMediaPlayer::prepareAsync() {
 
@@ -600,7 +624,8 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //输入采样率
                 in_sample_rate = is->dec_ctx->sample_rate;
                 //输出采样率
-                out_sample_rate = 44100;
+                //out_sample_rate = 44100;
+                out_sample_rate = in_sample_rate;
                 //获取输入的声道布局
                 //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
                 //av_get_default_channel_layout(codecCtx->channels);

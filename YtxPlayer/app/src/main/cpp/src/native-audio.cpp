@@ -2,104 +2,25 @@
 // Created by Administrator on 2016/11/8.
 //
 
-#include <assert.h>
-#include <jni.h>
-#include <string.h>
-#include <pthread.h>
 
-// for native audio
-#include <SLES/OpenSLES.h>
-#include <SLES/OpenSLES_Android.h>
 
 #include "ALog-priv.h"
-
-
-
-// engine interfaces
-static SLObjectItf engineObject = NULL;
-static SLEngineItf engineEngine;
-
-// output mix interfaces
-static SLObjectItf outputMixObject = NULL;
-static SLEnvironmentalReverbItf outputMixEnvironmentalReverb = NULL;
-
-// buffer queue player interfaces
-static SLObjectItf bqPlayerObject = NULL;
-static SLPlayItf bqPlayerPlay;
-static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
-static SLEffectSendItf bqPlayerEffectSend;
-static SLMuteSoloItf bqPlayerMuteSolo;
-static SLVolumeItf bqPlayerVolume;
-static SLmilliHertz bqPlayerSampleRate = 0;
-static jint   bqPlayerBufSize = 0;
-static short *resampleBuf = NULL;
-// a mutext to guard against re-entrance to record & playback
-// as well as make recording and playing back to be mutually exclusive
-// this is to avoid crash at situations like:
-//    recording is in session [not finished]
-//    user presses record button and another recording coming in
-// The action: when recording/playing back is not finished, ignore the new request
-static pthread_mutex_t  audioEngineLock = PTHREAD_MUTEX_INITIALIZER;
-
-// aux effect on the output mix, used by the buffer queue player
-static const SLEnvironmentalReverbSettings reverbSettings =
-        SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
-
-// URI player interfaces
-static SLObjectItf uriPlayerObject = NULL;
-static SLPlayItf uriPlayerPlay;
-static SLSeekItf uriPlayerSeek;
-static SLMuteSoloItf uriPlayerMuteSolo;
-static SLVolumeItf uriPlayerVolume;
-
-// file descriptor player interfaces
-static SLObjectItf fdPlayerObject = NULL;
-static SLPlayItf fdPlayerPlay;
-static SLSeekItf fdPlayerSeek;
-static SLMuteSoloItf fdPlayerMuteSolo;
-static SLVolumeItf fdPlayerVolume;
-
-//pcm player interfaces
-static SLObjectItf pcmPlayerObject = NULL;
-static SLPlayItf pcmPlayerPlay;
-static SLSeekItf pcmPlayerSeek;
-static SLMuteSoloItf pcmPlayerMuteSolo;
-static SLVolumeItf pcmPlayerVolume;
-
-// recorder interfaces
-static SLObjectItf recorderObject = NULL;
-static SLRecordItf recorderRecord;
-static SLAndroidSimpleBufferQueueItf recorderBufferQueue;
-
-// synthesized sawtooth clip
-#define SAWTOOTH_FRAMES 8000
-static short sawtoothBuffer[SAWTOOTH_FRAMES];
-
-// 5 seconds of recorded audio at 16 kHz mono, 16-bit signed little endian
-#define RECORDER_FRAMES (16000 * 5)
-static short recorderBuffer[RECORDER_FRAMES];
-static unsigned recorderSize = 0;
-
-// pointer and size of the next player buffer to enqueue, and number of remaining buffers
-static short *nextBuffer;
-static unsigned nextSize;
-static int nextCount;
-
+#include "native_audio.h"
 
 
 
 void releaseResampleBuf(void) {
     if( 0 == bqPlayerSampleRate) {
-        /*
-         * we are not using fast path, so we were not creating buffers, nothing to do
-         */
+
+         // we are not using fast path, so we were not creating buffers, nothing to do
+
         return;
     }
 
     free(resampleBuf);
     resampleBuf = NULL;
 }
-
+/*
 // this callback handler is called every time a buffer finishes playing
 void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
@@ -121,7 +42,7 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
         pthread_mutex_unlock(&audioEngineLock);
     }
 }
-
+*/
 void createEngine(){
     SLresult result;
 
@@ -164,7 +85,7 @@ void createEngine(){
     // 忽略环境混响失败的结果,对这个sample来说是可选的
 }
 
-void createBufferQueueAudioPlayer(int sampleRate, int bufSize){
+void createBufferQueueAudioPlayer(int sampleRate, int bufSize,slAndroidSimpleBufferQueueCallback callback){
     SLresult result;
     if(sampleRate >= 0 && bufSize >= 0){
         bqPlayerBufSize = sampleRate*1000;
@@ -221,7 +142,7 @@ void createBufferQueueAudioPlayer(int sampleRate, int bufSize){
 
 
     // register callback on the buffer queue
-    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, bqPlayerCallback, NULL);
+    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, callback, NULL);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
