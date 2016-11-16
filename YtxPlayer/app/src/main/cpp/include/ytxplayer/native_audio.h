@@ -93,4 +93,5 @@ static int nextCount;
 void createEngine();
 void createBufferQueueAudioPlayer(int sampleRate, int bufSize,slAndroidSimpleBufferQueueCallback callback);
 void releaseResampleBuf(void);
+void selectClip(int which, int count);
 #endif //YTXPLAYER_NATIVE_AUDIO_H
