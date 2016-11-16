@@ -7,8 +7,9 @@
 
 
 #include "Decoder.h"
-
+#include "frame_queue.h"
 typedef void (*AudioDecodingHandler) (AVFrame*,double);
+typedef void (*AudioDecodeFirstFrameHandler) ();
 
 class DecoderAudio : public IDecoder
 {
@@ -18,7 +19,9 @@ public:
     ~DecoderAudio();
 
     AudioDecodingHandler		onDecode;
-
+    AudioDecodeFirstFrameHandler  firstFrameHandler;
+    FrameQueue *frameQueue;
+    void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;
@@ -26,6 +29,13 @@ private:
     bool                        prepare();
     bool                        decode(void* ptr);
     bool                        process(AVPacket *packet,int *i);
+    AVRational tb;
+    Frame *af;
+
+    int64_t next_pts;
+    AVRational next_pts_tb;
+
+    bool                        isFirstFrame;
 };
 
 #endif //YTXPLAYER_DECODER_AUDIO_H

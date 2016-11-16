@@ -422,7 +422,7 @@ JNIEXPORT jint JNICALL android_media_player_start
 {
     YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
 
-    mPlayer->start();
+   // mPlayer->start();
     return 0;
 }
 

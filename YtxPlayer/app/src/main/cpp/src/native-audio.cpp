@@ -47,17 +47,17 @@ void createEngine(){
     SLresult result;
 
     //创建engine
-    result = slCreateEngine(&engineObject,0,NULL,0,NULL,NULL);
+    result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
     //实例化realize
-    result = (*engineObject)->Realize(engineObject,SL_BOOLEAN_FALSE);
+    result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
     //获取引擎接口,这个接口是为了获取其他需要的对象
-    result = (*engineObject)->GetInterface(engineObject,SL_IID_ENGINE,&engineEngine);
+    result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
@@ -65,21 +65,22 @@ void createEngine(){
     //创建输出混合器,这个混合器是对于环境的说明.他是一个非必须的接口
     const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
     const SLboolean req[1] = {SL_BOOLEAN_FALSE};
-    result = (*engineEngine)->CreateOutputMix(engineEngine,&outputMixObject,1,ids,req);
+    result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
     //实例化输出混合器
-    result = (*outputMixObject)->Realize(outputMixObject,SL_BOOLEAN_FALSE);
+    result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
     //获取环境混响接口.如果环境混响效果不可用这可能会失败,要么是这个特性不被支持因为过多的CPU负荷,
     // 要么是请求MODIFY_AUDIO_SETTINGS许可不被允许或获取
-    result = (*outputMixObject)->GetInterface(outputMixObject,SL_IID_ENVIRONMENTALREVERB,&outputMixEnvironmentalReverb);
-    if(SL_RESULT_SUCCESS == result){
+    result = (*outputMixObject)->GetInterface(outputMixObject, SL_IID_ENVIRONMENTALREVERB,
+                                              &outputMixEnvironmentalReverb);
+    if (SL_RESULT_SUCCESS == result) {
         result = (*outputMixEnvironmentalReverb)->SetEnvironmentalReverbProperties(
-                outputMixEnvironmentalReverb,&reverbSettings);
+                outputMixEnvironmentalReverb, &reverbSettings);
         (void)result;
     }
     // 忽略环境混响失败的结果,对这个sample来说是可选的
@@ -134,9 +135,8 @@ void createBufferQueueAudioPlayer(int sampleRate, int bufSize,slAndroidSimpleBuf
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 
-    // get the buffer queue interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_BUFFERQUEUE,
-                                             &bqPlayerBufferQueue);
+    // get the buffer queue interface SL_IID_BUFFERQUEUE
+    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_BUFFERQUEUE, &bqPlayerBufferQueue);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
 

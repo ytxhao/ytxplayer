@@ -12,7 +12,7 @@
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
 
-void printfferr(){
+void printferr(){
     ALOGI( "AVERROR_BSF_NOT_FOUND=%d\n",AVERROR_BSF_NOT_FOUND);
     ALOGI( "AVERROR_BUG=%d\n",AVERROR_BUG);
     ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d\n",AVERROR_BUFFER_TOO_SMALL);
@@ -53,7 +53,8 @@ void printfferr(){
 
 static YtxMediaPlayer* sPlayer;
 
-FrameQueue *frameQueue;
+FrameQueue *frameQueueVideo;
+FrameQueue *frameQueueAudio;
 
 YtxMediaPlayer::YtxMediaPlayer(){
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
@@ -98,9 +99,32 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
     return 0;
 }
 
+int audioDecodeFrame(){
+
+    Frame *af;
+    // do{
+
+    if (!(af = sPlayer->mDecoderAudio->frameQueue->frameQueuePeekReadable())){
+        return -1;
+    }
+
+    sPlayer->mDecoderAudio->frameQueue->frameQueueNext();
+
+    // }while(af->serial != is->audioq.serial);
+
+    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), MAX_AUDIO_FRME_SIZE, (const uint8_t **) af->frame->data, af->frame->nb_samples);
+    //获取sample的size
+    int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
+                                                     af->frame->nb_samples, sPlayer->out_sample_fmt, 1);
+
+    (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
+
+
+}
 
 void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
+    /*
     assert(bq == bqPlayerBufferQueue);
     assert(NULL == context);
     // for streaming playback, replace this test by logic to find and fill the next buffer
@@ -118,9 +142,18 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
         releaseResampleBuf();
         pthread_mutex_unlock(&audioEngineLock);
     }
+     */
+
+    assert(bq == bqPlayerBufferQueue);
+    assert(NULL == context);
+    audioDecodeFrame();
+
 }
 
+
 int  YtxMediaPlayer::prepare() {
+
+
 
     av_register_all();
     avformat_network_init();
@@ -162,6 +195,9 @@ int  YtxMediaPlayer::prepare() {
     streamAudio.pFormatCtx = pFormatCtx;
     if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+        createEngine();
+        createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback);
+        sleep(1);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
@@ -169,9 +205,6 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
-    createEngine();
-
-    createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback);
 
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
@@ -195,16 +228,24 @@ int  YtxMediaPlayer::start() {
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
 
-    frameQueue = new FrameQueue();
-    frameQueue->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+    frameQueueVideo = new FrameQueue();
+    frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+
+    frameQueueAudio = new FrameQueue();
+    frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
+
     mDecoderAudio = new DecoderAudio(&streamAudio);
     mDecoderVideo = new DecoderVideo(&streamVideo);
-    mDecoderVideo->setFrameQueue(frameQueue);
+
+    mDecoderAudio->setFrameQueue(frameQueueAudio);
+    mDecoderVideo->setFrameQueue(frameQueueVideo);
 
 
     mDecoderAudio->onDecode = decodeAudio;
     mDecoderVideo->onDecode = decodeVideo;
     mDecoderVideo->onDecodeFinish = finish;
+    mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+   // decodeAudioFirstFrameHandler
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
     pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
@@ -213,7 +254,7 @@ int  YtxMediaPlayer::start() {
 void* YtxMediaPlayer::startPlayer(void* ptr)
 {
     ALOGI("starting main player thread\n");
-  //  printfferr();
+  //  printferr();
     sPlayer->decodeMovie(ptr);
     return 0;
 }
@@ -232,7 +273,9 @@ static double vp_duration(Frame *vp, Frame *nextvp) {
     }
 }
 
-
+void YtxMediaPlayer::decodeAudioFirstFrameHandler(){
+    audioDecodeFrame();
+}
 
 
 /* polls for possible required screen refresh at least this often, should be less than 1/fps */
@@ -240,7 +283,7 @@ static double vp_duration(Frame *vp, Frame *nextvp) {
 #define AV_SYNC_THRESHOLD_MAX 0.1
 void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     ALOGI("starting main player startPlayerRefresh\n");
-    //  printfferr();
+    //  printferr();
     double last_duration, duration, delay;
     Frame *vp, *lastvp;
     double remaining_time = 0.0;

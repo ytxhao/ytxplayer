@@ -133,6 +133,7 @@ public:
 
     static void decodeAudio(AVFrame* frame, double pts);
     static void decodeVideo(AVFrame* frame, double pts);
+    static void decodeAudioFirstFrameHandler();
 
     static void finish();
 
@@ -143,7 +144,9 @@ public:
     InputStream streamAudio;
 
     int isFinish;
-private:
+    DecoderVideo*  mDecoderVideo;
+    DecoderAudio*  mDecoderAudio;
+//private:
 
     int streamComponentOpen(InputStream *is, int stream_index);
     void decodeMovie(void* ptr);
@@ -202,8 +205,7 @@ private:
     int mCurrentState;
     int st_index[AVMEDIA_TYPE_NB];
 
-    DecoderVideo*  mDecoderVideo;
-    DecoderAudio*  mDecoderAudio;
+
     FILE *fp_yuv;
     FILE *fp_pcm;
     int  got_picture;

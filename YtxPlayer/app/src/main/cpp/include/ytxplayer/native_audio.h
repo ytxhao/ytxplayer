@@ -10,10 +10,16 @@
 #include <string.h>
 #include <pthread.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 // for native audio
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 
+#ifdef __cplusplus
+}
+#endif
 // engine interfaces
 static SLObjectItf engineObject = NULL;
 static SLEngineItf engineEngine;

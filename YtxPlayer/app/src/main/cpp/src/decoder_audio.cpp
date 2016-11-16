@@ -9,7 +9,7 @@
 
 DecoderAudio::DecoderAudio(InputStream* stream) : IDecoder(stream)
 {
-
+    isFirstFrame = true;
 }
 
 DecoderAudio::~DecoderAudio()
@@ -48,9 +48,45 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
     if (completed > 0) {
         //   pts = synchronize(mFrame, pts);
 
-        onDecode(mFrame, pts);
+       // onDecode(mFrame, pts);
+        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
+        tb = (AVRational){1, mFrame->sample_rate};
 
-        return true;
+        if (mFrame->pts != AV_NOPTS_VALUE){
+            ALOGI("DecoderAudio::process mFrame->pts != AV_NOPTS_VALUE");
+            mFrame->pts = av_rescale_q(mFrame->pts, mStream->dec_ctx->time_base, tb);
+        } else if (mFrame->pkt_pts != AV_NOPTS_VALUE){
+            ALOGI("DecoderAudio::process mFrame->pkt_pts != AV_NOPTS_VALUE");
+            mFrame->pts = av_rescale_q(mFrame->pkt_pts, av_codec_get_pkt_timebase(mStream->dec_ctx), tb);
+        } else if (next_pts != AV_NOPTS_VALUE){
+            ALOGI("DecoderAudio::process next_pts != AV_NOPTS_VALUE");
+            mFrame->pts = av_rescale_q(next_pts, next_pts_tb, tb);
+        }
+
+        if (mFrame->pts != AV_NOPTS_VALUE) {
+            next_pts = mFrame->pts + mFrame->nb_samples;
+            next_pts_tb = tb;
+        }
+
+        ALOGI("DecoderAudio::process 1 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
+//////////////////////////////////////////////////////////////////////
+        if(!(af = frameQueue->frameQueuePeekWritable())){
+            return true;
+        }
+
+        tb = (AVRational){1, mFrame->sample_rate};
+        af->pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(tb);
+        af->pos = av_frame_get_pkt_pos(mFrame);
+      //  af->serial = is->auddec.pkt_serial;
+        af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
+        ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
+        av_frame_move_ref(af->frame, mFrame);
+        frameQueue->frameQueuePush();
+
+        if(isFirstFrame){
+            isFirstFrame = false;
+            firstFrameHandler();
+        }
     }
 
     return true;

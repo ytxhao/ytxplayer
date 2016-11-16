@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             //rtmp://live.hkstv.hk.lxdns.com/live/hks
            // mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
-           // mPlayer.setDataSource(filePath+"titanic.mkv");
-            mPlayer.setDataSource(filePath+"video2.mp4");
+            mPlayer.setDataSource(filePath+"titanic.mkv");
+           // mPlayer.setDataSource(filePath+"video2.mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }
