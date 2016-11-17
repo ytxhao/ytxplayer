@@ -6,8 +6,9 @@
 
 
 #include <ytxplayer/gl_code.h>
+#include <ytxplayer/native_audio.h>
 #include "ytxplayer/YtxMediaPlayer.h"
-#include "native_audio.h"
+
 
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
@@ -52,7 +53,7 @@ void printferr(){
 #define MAX_VIDEOQ_SIZE (5 * 256 * 1024)
 
 static YtxMediaPlayer* sPlayer;
-extern SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
+
 FrameQueue *frameQueueVideo;
 FrameQueue *frameQueueAudio;
 
@@ -117,21 +118,23 @@ int audioDecodeFrame(){
     int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
                                                      af->frame->nb_samples, sPlayer->out_sample_fmt, 1);
 
-    (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
+    //sPlayer->audioEngine->(*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
 
 
 }
 
-void bqPlayerCallback1(SLAndroidSimpleBufferQueueItf bq, void *context)
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
 
-    assert(bq == bqPlayerBufferQueue);
+    assert(bq == sPlayer->audioEngine->bqPlayerBufferQueue);
     assert(NULL == context);
     // for streaming playback, replace this test by logic to find and fill the next buffer
-    if (--nextCount > 0 && NULL != nextBuffer && 0 != nextSize) {
+    if (--sPlayer->audioEngine->nextCount > 0 && NULL != sPlayer->audioEngine->nextBuffer && 0 != sPlayer->audioEngine->nextSize) {
         SLresult result;
         // enqueue another buffer
-        result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
+        result = (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue,
+                                                                       sPlayer->audioEngine->nextBuffer,
+                                                                       sPlayer->audioEngine->nextSize);
         // the most likely other result is SL_RESULT_BUFFER_INSUFFICIENT,
         // which for this code example would indicate a programming error
 //        if (SL_RESULT_SUCCESS != result) {
@@ -139,6 +142,7 @@ void bqPlayerCallback1(SLAndroidSimpleBufferQueueItf bq, void *context)
 //        }
         (void)result;
     }
+
     /*
     assert(bq == bqPlayerBufferQueue);
     assert(NULL == context);
@@ -210,10 +214,11 @@ int  YtxMediaPlayer::prepare() {
     streamAudio.pFormatCtx = pFormatCtx;
     if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
-        createEngine();
-        createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback1);
+        audioEngine = new AudioEngine();
+        audioEngine->createEngine();
+        audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback);
       //  sleep(1);
-        selectClip(1,10);
+        audioEngine->selectClip(2,10);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){

@@ -5,6 +5,7 @@
 #ifndef YTXPLAYER_NATIVE_AUDIO_H
 #define YTXPLAYER_NATIVE_AUDIO_H
 
+/*
 #include <assert.h>
 #include <jni.h>
 #include <string.h>
@@ -94,4 +95,5 @@ void createEngine();
 void createBufferQueueAudioPlayer(int sampleRate, int bufSize,slAndroidSimpleBufferQueueCallback callback);
 void releaseResampleBuf(void);
 void selectClip(int which, int count);
+ */
 #endif //YTXPLAYER_NATIVE_AUDIO_H

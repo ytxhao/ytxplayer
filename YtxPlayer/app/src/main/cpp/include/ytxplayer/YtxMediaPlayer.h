@@ -23,6 +23,7 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+#include "audio_engine.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 // ----------------------------------------------------------------------------
 enum media_player_states {
@@ -228,6 +229,9 @@ public:
     int out_sample_rate = 44100;
     int out_channel_nb;
     int out_nb_samples;
+
+    AudioEngine *audioEngine;
+
 
 };
 
