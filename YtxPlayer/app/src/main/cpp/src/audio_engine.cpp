@@ -3,7 +3,9 @@
 //
 
 #include <ytxplayer/audio_engine.h>
-//#include "audio_engine.h"
+#define LOG_NDEBUG 0
+#define TAG "AudioEngine"
+#include "ALog-priv.h"
 
 // pre-recorded sound clips, both are 8 kHz mono 16-bit signed little endian
 static const char hello[] =
@@ -59,42 +61,45 @@ void AudioEngine::createEngine() {
 
 }
 
-void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize,
+void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel,
                                                slAndroidSimpleBufferQueueCallback callback) {
 
     SLresult result;
     if (sampleRate >= 0 && bufSize >= 0 ) {
         bqPlayerSampleRate = sampleRate * 1000;
-        /*
-         * device native buffer size is another factor to minimize audio latency, not used in this
-         * sample: we only play one giant buffer here
-         */
+        //
+        // 设备本地buffer size 是减少音频延时的一个因素,我们这里仅播放一个较大的buffer
+        //
         bqPlayerBufSize = bufSize;
     }
 
-    // configure audio source
+    // 配置音频输入源
     SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
     SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
                                    SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
                                    SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
-    /*
-     * Enable Fast Audio when possible:  once we set the same rate to be the native, fast audio path
-     * will be triggered
-     */
+    //当可能的时候使能fast audio:一旦我们设置相同的rate到本地,快速音频路径将被触发
     if(bqPlayerSampleRate) {
         format_pcm.samplesPerSec = bqPlayerSampleRate;       //sample rate in mili second
     }
+
+    ALOGI("createBufferQueueAudioPlayer channel=%d\n",channel);
+    if(channel == 2){
+        format_pcm.numChannels = 2;
+        format_pcm.channelMask = SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT;
+    }else if(channel == 1){
+        format_pcm.numChannels = 1;
+    }
+
     SLDataSource audioSrc = {&loc_bufq, &format_pcm};
 
-    // configure audio sink
+    //配置音频接收器
     SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
     SLDataSink audioSnk = {&loc_outmix, NULL};
 
-    /*
-     * create audio player:
-     *     fast audio does not support when SL_IID_EFFECTSEND is required, skip it
-     *     for fast audio case
-     */
+    //创建audio player:
+    //     fast audio 不被支持当 SL_IID_EFFECTSEND(效果输出) 被请求,对fast audio跳过他
+    //
     const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME, SL_IID_EFFECTSEND,
             /*SL_IID_MUTESOLO,*/};
     const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,

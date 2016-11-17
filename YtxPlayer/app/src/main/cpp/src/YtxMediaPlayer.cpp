@@ -118,16 +118,19 @@ int audioDecodeFrame(){
     int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
                                                      af->frame->nb_samples, sPlayer->out_sample_fmt, 1);
 
-    //sPlayer->audioEngine->(*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
+    (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
+  //  fwrite(sPlayer->out_buffer_audio,1,out_buffer_size,sPlayer->fp_pcm);
 
+    return 0;
 
 }
 
 void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
-
     assert(bq == sPlayer->audioEngine->bqPlayerBufferQueue);
     assert(NULL == context);
+#if 0
+
     // for streaming playback, replace this test by logic to find and fill the next buffer
     if (--sPlayer->audioEngine->nextCount > 0 && NULL != sPlayer->audioEngine->nextBuffer && 0 != sPlayer->audioEngine->nextSize) {
         SLresult result;
@@ -142,31 +145,9 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 //        }
         (void)result;
     }
-
-    /*
-    assert(bq == bqPlayerBufferQueue);
-    assert(NULL == context);
-    // for streaming playback, replace this test by logic to find and fill the next buffer
-    if (--nextCount > 0 && NULL != nextBuffer && 0 != nextSize) {
-        SLresult result;
-        // enqueue another buffer
-        result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
-        // the most likely other result is SL_RESULT_BUFFER_INSUFFICIENT,
-        // which for this code example would indicate a programming error
-        if (SL_RESULT_SUCCESS != result) {
-            pthread_mutex_unlock(&audioEngineLock);
-        }
-        (void)result;
-    } else {
-        releaseResampleBuf();
-        pthread_mutex_unlock(&audioEngineLock);
-    }
-     */
-
-//    assert(bq == bqPlayerBufferQueue);
-//    assert(NULL == context);
-//    audioDecodeFrame();
-
+#else
+    audioDecodeFrame();
+#endif
 }
 
 
@@ -216,9 +197,9 @@ int  YtxMediaPlayer::prepare() {
         streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
         audioEngine = new AudioEngine();
         audioEngine->createEngine();
-        audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,bqPlayerCallback);
+        audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
       //  sleep(1);
-        audioEngine->selectClip(2,10);
+      //  audioEngine->selectClip(2,10);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
@@ -694,16 +675,11 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
                 //av_get_default_channel_layout(codecCtx->channels);
                 out_nb_samples=is->dec_ctx->frame_size;
-                ALOGI("out_nb_samples=%d\n",out_nb_samples);
+
                 uint64_t in_ch_layout = is->dec_ctx->channel_layout;
                 //输出的声道布局（立体声）
                 uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
 
-                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
-                ALOGI("### in_sample_rate=%d\n",in_sample_rate);
-                ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
-
-                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
                 swr_alloc_set_opts(swrCtx,
                                    out_ch_layout,out_sample_fmt,out_sample_rate,
                                    in_ch_layout,in_sample_fmt,in_sample_rate,
@@ -717,6 +693,16 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //重采样设置参数-------------end
                 //16bit 44100 PCM 数据
                 out_buffer_audio = (uint8_t *)av_malloc(MAX_AUDIO_FRME_SIZE);
+
+                ALOGI("### in_sample_rate=%d\n",in_sample_rate);
+                ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
+                ALOGI("### out_nb_samples=%d\n",out_nb_samples);
+                ALOGI("### out_sample_rate=%d\n",out_sample_rate);
+                ALOGI("### out_sample_fmt=%d\n",out_sample_fmt);
+                ALOGI("### out_channel_nb=%d\n",out_channel_nb);
+
+                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
+                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
             }
             break;
         case AVMEDIA_TYPE_VIDEO:

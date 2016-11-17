@@ -95,7 +95,7 @@ public:
 
 public:
     void createEngine();
-    void createBufferQueueAudioPlayer(int sampleRate, int bufSize,slAndroidSimpleBufferQueueCallback callback);
+    void createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel,slAndroidSimpleBufferQueueCallback callback);
     void releaseResampleBuf(void);
     void selectClip(int which, int count);
     short* createResampledBuf(uint32_t idx, uint32_t srcRate, unsigned *size);
