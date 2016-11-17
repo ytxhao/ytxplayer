@@ -29,6 +29,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/gl_code.cpp
 #             src/main/cpp/src/native-audio.cpp
              src/main/cpp/src/audio_engine.cpp
+             src/main/cpp/src/gl_engine.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

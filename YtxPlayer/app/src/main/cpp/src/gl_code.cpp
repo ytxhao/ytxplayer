@@ -45,42 +45,42 @@ static void checkGlError(const char* op) {
     }
 }
 
-//auto gVertexShader =
-//    "attribute vec4 vPosition;\n"
-//    "void main() {\n"
-//    "  gl_Position = vPosition;\n"
-//    "}\n";
-//
-//auto gFragmentShader =
-//    "precision mediump float;\n"
-//    "void main() {\n"
-//    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-//    "}\n";
-
 auto gVertexShader =
-        "attribute vec4 vPosition;\n"
-        "attribute vec2 a_texCoord;\n"
-        "varying vec2 tc;\n"
-        "void main() {\n"
-        "gl_Position = vPosition;\n"
-        "tc = a_texCoord;\n"
-        "}\n";
+    "attribute vec4 vPosition;\n"
+    "void main() {\n"
+    "  gl_Position = vPosition;\n"
+    "}\n";
 
 auto gFragmentShader =
-        "precision mediump float;\n"
-        "uniform sampler2D tex_y;\n"
-        "uniform sampler2D tex_u;\n"
-        "uniform sampler2D tex_v;\n"
-        "varying vec2 tc;\n"
-        "void main() {\n"
-        "vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n"
-        "vec4 U = vec4(texture2D(tex_u, tc).r - 128./255.);\n"
-        "vec4 V = vec4(texture2D(tex_v, tc).r - 128./255.);\n"
-        "c += V * vec4(1.596, -0.813, 0, 0);\n"
-        "c += U * vec4(0, -0.392, 2.017, 0);\n"
-        "c.a = 1.0;\n"
-        "gl_FragColor = c;\n"
-        "}\n";
+    "precision mediump float;\n"
+    "void main() {\n"
+    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "}\n";
+//
+//auto gVertexShader =
+//        "attribute vec4 vPosition;\n"
+//        "attribute vec2 a_texCoord;\n"
+//        "varying vec2 tc;\n"
+//        "void main() {\n"
+//        "gl_Position = vPosition;\n"
+//        "tc = a_texCoord;\n"
+//        "}\n";
+//
+//auto gFragmentShader =
+//        "precision mediump float;\n"
+//        "uniform sampler2D tex_y;\n"
+//        "uniform sampler2D tex_u;\n"
+//        "uniform sampler2D tex_v;\n"
+//        "varying vec2 tc;\n"
+//        "void main() {\n"
+//        "vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n"
+//        "vec4 U = vec4(texture2D(tex_u, tc).r - 128./255.);\n"
+//        "vec4 V = vec4(texture2D(tex_v, tc).r - 128./255.);\n"
+//        "c += V * vec4(1.596, -0.813, 0, 0);\n"
+//        "c += U * vec4(0, -0.392, 2.017, 0);\n"
+//        "c.a = 1.0;\n"
+//        "gl_FragColor = c;\n"
+//        "}\n";
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
@@ -373,6 +373,52 @@ void drawFrame(){
     }
 
 }
+
+
+void renderFrameTest() {
+    static float grey;
+    grey += 0.01f;
+    if (grey > 1.0f) {
+        grey = 0.0f;
+    }
+    glClearColor(grey, grey, grey, 1.0f);
+    checkGlError("glClearColor");
+    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError("glClear");
+
+    glUseProgram(gProgram);
+    checkGlError("glUseProgram");
+
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvPositionHandle);
+    checkGlError("glEnableVertexAttribArray");
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    checkGlError("glDrawArrays");
+}
+
+bool setupGraphicsTest(int w, int h) {
+    printGLString("Version", GL_VERSION);
+    printGLString("Vendor", GL_VENDOR);
+    printGLString("Renderer", GL_RENDERER);
+    printGLString("Extensions", GL_EXTENSIONS);
+
+    ALOGI("setupGraphics(%d, %d)", w, h);
+    gProgram = createProgram(gVertexShader, gFragmentShader);
+    if (!gProgram) {
+        ALOGI("Could not create program.");
+        return false;
+    }
+    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
+    checkGlError("glGetAttribLocation");
+    ALOGI("glGetAttribLocation(\"vPosition\") = %d\n",
+         gvPositionHandle);
+
+    glViewport(0, 0, w, h);
+    checkGlError("glViewport");
+    return true;
+}
+
 extern "C" {
 //    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_init(JNIEnv * env, jobject obj,  jint width, jint height);
 //    JNIEXPORT void JNICALL Java_com_android_gl2jni_GL2JNILib_step(JNIEnv * env, jobject obj);
@@ -386,20 +432,21 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
 
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(JNIEnv *env, jclass clazz, jint width, jint height)
 {
-
+    setupGraphicsTest(width,height);
     ALOGI("native_1resize_1opengl IN out");
 }
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1step_1opengl(JNIEnv *env, jclass clazz)
 {
+    renderFrameTest();
     //renderFrame();
     ALOGI("native_1step_1opengl IN out");
-    drawFrame();
+   // drawFrame();
 }
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1init_1opengl(JNIEnv *env, jclass clazz)
 {
     ALOGI("native_1init_1opengl IN out");
     //创建program
-    setupGraphics();
+   // setupGraphics();
 
    // pthread_mutex_init(&mutex, NULL);
    // pthread_cond_init(&cond, NULL);
