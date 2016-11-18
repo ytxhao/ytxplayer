@@ -28,8 +28,6 @@ libLoader.loadLibrary("avfilter");
 */
 //#define __STDC_CONSTANT_MACROS
 
-#include "ALog-priv.h"
-
 #include "libavutil/avutil.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"

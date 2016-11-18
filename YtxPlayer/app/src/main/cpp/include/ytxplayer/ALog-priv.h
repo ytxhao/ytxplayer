@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+//该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #ifndef NATIVEHELPER_ALOGPRIV_H_
 #define NATIVEHELPER_ALOGPRIV_H_
 

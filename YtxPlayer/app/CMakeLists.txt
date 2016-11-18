@@ -8,6 +8,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
 add_library( # Sets the name of the library.
              native-lib
@@ -26,10 +27,11 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/decoder_video.cpp
              src/main/cpp/src/decoder_audio.cpp
              src/main/cpp/src/frame_queue.cpp
-             src/main/cpp/src/gl_code.cpp
+#             src/main/cpp/src/gl_code.cpp
 #             src/main/cpp/src/native-audio.cpp
              src/main/cpp/src/audio_engine.cpp
              src/main/cpp/src/gl_engine.cpp
+             src/main/cpp/src/lock.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

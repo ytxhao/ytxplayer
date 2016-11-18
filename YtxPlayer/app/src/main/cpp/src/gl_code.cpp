@@ -153,61 +153,7 @@ GLuint gCoordHandle;
 int yHandle = -1, uHandle = -1, vHandle = -1;
 
 bool setupGraphics() {
-    printGLString("Version", GL_VERSION);
-    printGLString("Vendor", GL_VENDOR);
-    printGLString("Renderer", GL_RENDERER);
-    printGLString("Extensions", GL_EXTENSIONS);
-
-    //ALOGI("setupGraphics(%d, %d)", w, h);
-    gProgram = createProgram(gVertexShader, gFragmentShader);
-    if (!gProgram) {
-        ALOGE("Could not create program.");
-        return false;
-    }
-    /*
-     * get handle for "vPosition" and "a_texCoord"
-     */
-    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
-    checkGlError("glGetAttribLocation");
-    ALOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-            gvPositionHandle);
-    if(gvPositionHandle == -1){
-        ALOGE("setupGraphics error gvPositionHandle =%d\n",gvPositionHandle);
-    }
-
-    gCoordHandle = glGetAttribLocation(gProgram, "a_texCoord");
-    checkGlError("glGetAttribLocation");
-
-    if(gCoordHandle == -1){
-        ALOGE("setupGraphics error gCoordHandle = %d\n", gCoordHandle);
-    }
-
-    /*
-     * get uniform location for y/u/v, we pass data through these uniforms
-     */
-
-    yHandle = glGetUniformLocation(gProgram, "tex_y");
-    ALOGI("GLProgram yHandle = %d\n",yHandle);
-    checkGlError("glGetUniformLocation tex_y");
-    if (yHandle == -1) {
-        ALOGE("Could not get uniform location for tex_y");
-    }
-    uHandle = glGetUniformLocation(gProgram, "tex_u");
-    ALOGI("GLProgram uHandle = %d\n",uHandle);
-    checkGlError("glGetUniformLocation tex_u");
-    if (uHandle == -1) {
-        ALOGE("Could not get uniform location for tex_u");
-    }
-    vHandle = glGetUniformLocation(gProgram, "tex_v");
-    ALOGI("GLProgram vHandle = %d\n",vHandle);
-    checkGlError("glGetUniformLocation tex_v");
-    if (vHandle == -1) {
-        ALOGE("Could not get uniform location for tex_v");
-    }
-
-   // glViewport(0, 0, w, h);
-   // checkGlError("glViewport");
-    return true;
+   // buildTextures();
 }
 
 const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f,

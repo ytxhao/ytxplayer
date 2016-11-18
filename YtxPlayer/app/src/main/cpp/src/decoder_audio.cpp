@@ -6,6 +6,7 @@
 #include "ytxplayer/decoder_audio.h"
 
 #define TAG "FFMpegAudioDecoder"
+#include "ALog-priv.h"
 
 DecoderAudio::DecoderAudio(InputStream* stream) : IDecoder(stream)
 {

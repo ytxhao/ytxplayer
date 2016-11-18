@@ -3,8 +3,8 @@
 //
 
 #define LOG_NDEBUG 0
-#define LOG_TAG "YTX-PLAYER-JNI"
-
+#define TAG "YTX-PLAYER-JNI"
+#include "ALog-priv.h"
 #include <string>
 #include "ytxplayer/ffinc.h"
 #include "ytxplayer/android_media_YtxMediaPlayer.h"
@@ -30,7 +30,7 @@ int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
     jclass exceptionClass = env->FindClass(className);
     if (exceptionClass == NULL) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Unable to find exception class %s",
                             className);
         return -1;
@@ -38,7 +38,7 @@ int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
 
     if (env->ThrowNew(exceptionClass, msg) != JNI_OK) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Failed throwing '%s' '%s'",
                             className, msg);
     }
@@ -51,7 +51,7 @@ JNIEnv* getJNIEnv() {
  //   ALOGE("ERROR12: sVm=%d\n",sVm);
     if (sVm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Failed to obtain JNIEnv");
         return NULL;
     }

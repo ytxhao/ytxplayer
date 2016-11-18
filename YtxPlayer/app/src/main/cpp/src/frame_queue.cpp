@@ -3,8 +3,8 @@
 //
 
 #include "ytxplayer/frame_queue.h"
-#include "ytxplayer/YtxMediaPlayer.h"
-
+#define TAG "YTX-FrameQueue-JNI"
+#include "ALog-priv.h"
 void FrameQueue::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间

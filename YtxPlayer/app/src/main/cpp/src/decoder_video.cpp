@@ -8,7 +8,7 @@
 #include "ytxplayer/decoder_video.h"
 
 #define TAG "FFMpegVideoDecoder"
-
+#include "ALog-priv.h"
 static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 
 DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)

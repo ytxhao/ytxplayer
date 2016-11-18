@@ -4,6 +4,7 @@
 #include "ytxplayer/Decoder.h"
 
 #define TAG "FFMpegIDecoder"
+#include "ALog-priv.h"
 
 IDecoder::IDecoder(InputStream* stream)
 {

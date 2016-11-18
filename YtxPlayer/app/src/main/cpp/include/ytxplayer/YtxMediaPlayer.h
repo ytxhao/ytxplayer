@@ -5,8 +5,6 @@
 #ifndef YTXPLAYER_YTXMEDIAPLAYER_H
 #define YTXPLAYER_YTXMEDIAPLAYER_H
 
-#define LOG_NDEBUG 0
-#define TAG "YTX-PLAYER-JNI"
 
 #include <stdint.h>
 #include <pthread.h>
