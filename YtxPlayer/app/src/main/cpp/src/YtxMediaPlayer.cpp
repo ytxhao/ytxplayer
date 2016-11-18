@@ -12,7 +12,7 @@
 #include "ALog-priv.h"
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
-//#include "ytxplayer/gl_engine.h"
+#include "ytxplayer/gl_engine.h"
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
 
@@ -262,10 +262,10 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
   //  printferr();
     //等待surface render初始化完成
 
-//    do{
-//        usleep(500);
-//    }while(true);
-
+    do{
+        usleep(500);
+    }while(GlEngine::glEngineInitComplete()==false);
+//    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     sPlayer->decodeMovie(ptr);
     return 0;
 }
@@ -301,6 +301,9 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     double time;
     double frame_timer=0.0;
 
+//    do{
+//        usleep(500);
+//    }while(GlEngine::glEngineInitComplete()==false);
     while (sPlayer->isFinish != 1) {
 
         if(sPlayer->mDecoderVideo != NULL){
@@ -350,7 +353,11 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
-
+                    GlEngine::getGlEngine()->notifyRendererFrame((char*)vp->frame->data[0],
+                                                                 (char*) vp->frame->data[1],
+                                                                 (char*)vp->frame->data[2],
+                                                      sPlayer->streamVideo.dec_ctx->width,
+                                                      sPlayer->streamVideo.dec_ctx->height);
              //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
 //                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
 //                              sPlayer->streamVideo.dec_ctx->width,

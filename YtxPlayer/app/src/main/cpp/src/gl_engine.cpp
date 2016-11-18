@@ -248,9 +248,14 @@ void GlEngine::drawFrame() {
     }
 
 }
+
+void GlEngine::notifyRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
+
+}
 //在此处初始化
 GlEngine* GlEngine::glEngine = NULL;
 Lock GlEngine::mLock;
+bool GlEngine::isInitComplete = false;
 GlEngine* GlEngine::getGlEngine() {
     if(glEngine == NULL){
         mLock.lock();
