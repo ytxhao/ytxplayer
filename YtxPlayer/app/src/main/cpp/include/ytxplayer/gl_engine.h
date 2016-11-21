@@ -77,12 +77,14 @@ private:
             1.0f, 1.0f,
     };
 
-    char *plane[3] = {0, 0, 0};
+    char *plane[3] = {NULL, NULL, NULL};
 
     GLuint yTextureId, uTextureId, vTextureId;
     int yHandle, uHandle, vHandle;
     int videoWidth;
     int videoHeight;
+    int mScreenWidth = 720;
+    int mScreenHeight= 1080;
 
     GLuint program;
     GLuint gProgram;
@@ -123,6 +125,8 @@ public:
     void drawFrame();
 
     void addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight);
+
+    void setAspectRatio();
 
     void renderFrameTest();
 
