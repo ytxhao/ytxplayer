@@ -360,7 +360,7 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
   //  mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
     mPlayer->updateYuv = android_media_player_updateYuv;
     //-----------------------------------------------------
-    mPlayer->notifyRendererCallback = android_media_player_notifyRenderFrame;
+  //  mPlayer->notifyRendererCallback = android_media_player_notifyRenderFrame;
 
     //jfieldID rendererFieldID = env->GetFieldID(glSurface_cls,"renderer","[I");
     ALOGI("android_media_player_setGlSurface OUT\n");

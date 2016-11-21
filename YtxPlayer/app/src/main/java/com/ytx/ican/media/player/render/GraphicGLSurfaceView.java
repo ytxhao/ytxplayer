@@ -188,23 +188,23 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-//            if (!prog.isProgramBuilt()) {
-//                prog.buildProgram();
-//                YtxLog.d("GLFrameRenderer","GLFrameRenderer :: buildProgram done");
-//            }
+            if (!prog.isProgramBuilt()) {
+                prog.buildProgram();
+                YtxLog.d("GLFrameRenderer","GLFrameRenderer :: buildProgram done");
+            }
 
-            GL2JNILib.native_init_opengl();
+          //  GL2JNILib.native_init_opengl();
         }
 
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
-            GL2JNILib.native_resize_opengl(width,height);
+           // GL2JNILib.native_resize_opengl(width,height);
         }
 
         @Override
         public void onDrawFrame(GL10 gl) {
-            GL2JNILib.native_step_opengl();
-                       //drawFrame2();
+          //  GL2JNILib.native_step_opengl();
+                       drawFrame2();
         }
 
         public void drawFrame2(){
@@ -215,7 +215,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
                     y.position(0);
                     u.position(0);
                     v.position(0);
-                    prog.buildTextures(y, u, v, 1280, 720);
+                    prog.buildTextures(y, u, v, 640, 272);
+                  //  prog.buildTextures(y, u, v, 1280, 720);
                     GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                     prog.drawFrame();
@@ -330,8 +331,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     }
 
     public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
-     //   renderer.updateYuv(ydata,udata,vdata);
-     //   requestRender();
+        renderer.updateYuv(ydata,udata,vdata);
+        requestRender();
     }
 
 

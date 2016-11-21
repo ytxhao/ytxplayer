@@ -262,9 +262,9 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
   //  printferr();
     //等待surface render初始化完成
 
-    do{
-        usleep(500);
-    }while(GlEngine::glEngineInitComplete()==false);
+//    do{
+//        usleep(500);
+//    }while(GlEngine::glEngineInitComplete()==false);
 //    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     sPlayer->decodeMovie(ptr);
     return 0;
@@ -353,16 +353,14 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
-                    GlEngine::getGlEngine()->addRendererFrame((char*)vp->frame->data[0],
-                                                                 (char*) vp->frame->data[1],
-                                                                 (char*)vp->frame->data[2],
-                                                      sPlayer->streamVideo.dec_ctx->width,
-                                                      sPlayer->streamVideo.dec_ctx->height);
-             //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
-//                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
-//                              sPlayer->streamVideo.dec_ctx->width,
-//                              sPlayer->streamVideo.dec_ctx->height);
-                    sPlayer->notifyRenderer();
+//                    GlEngine::getGlEngine()->addRendererFrame((char*)vp->frame->data[0],
+//                                                                 (char*) vp->frame->data[1],
+//                                                                 (char*)vp->frame->data[2],
+//                                                      sPlayer->streamVideo.dec_ctx->width,
+//                                                      sPlayer->streamVideo.dec_ctx->height);
+                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
+
+//                    sPlayer->notifyRenderer();
 
                 }
                 sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
