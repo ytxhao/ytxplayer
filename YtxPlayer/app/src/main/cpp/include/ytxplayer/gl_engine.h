@@ -122,7 +122,7 @@ public:
 
     void drawFrame();
 
-    void notifyRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight);
+    void addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight);
 
     void renderFrameTest();
 

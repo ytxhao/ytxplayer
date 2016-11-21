@@ -210,6 +210,8 @@ void GlEngine::buildTextures(char *y, char *u, char *v, int videoWidth, int vide
 void GlEngine::drawFrame() {
     if(plane[0]!=0 && plane[1]!=0 && plane[2]!=0) {
 
+         glViewport(0, 0, videoWidth, videoHeight);
+         checkGlError("glViewport");
         ALOGI("drawFrame videoWidth=%d videoHeight=%d\n",videoWidth,videoHeight);
         buildTextures(plane[0], plane[1], plane[2], videoWidth, videoHeight);
 
@@ -249,9 +251,15 @@ void GlEngine::drawFrame() {
 
 }
 
-void GlEngine::notifyRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
-
+void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
+    plane[0] = y;
+    plane[1] = u;
+    plane[2] = v;
+    this->videoWidth = videoWidth;
+    this->videoHeight = videoHeight;
 }
+
+
 //在此处初始化
 GlEngine* GlEngine::glEngine = NULL;
 Lock GlEngine::mLock;
@@ -288,6 +296,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1s
 {
     ALOGI("native_1step_1opengl IN");
    // renderFrameTest();
+    GlEngine::getGlEngine()->drawFrame();
     ALOGI("native_1step_1opengl OUT");
 
 }
@@ -297,7 +306,8 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
 {
 
     ALOGI("native_1init_1opengl IN");
-    GlEngine::getGlEngine();
+    GlEngine::getGlEngine()->setupGraphics();
+
     ALOGI("native_1init_1opengl OUT");
 
 }

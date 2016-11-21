@@ -333,12 +333,12 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
 
                 time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
-              //  ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
+                ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
 
                 if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
-                    goto display;
-                   // continue;
+                   // goto display;
+                    continue;
                 }
 
                 frame_timer += delay; //下一帧需要在这个时间显示
@@ -346,14 +346,14 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                     frame_timer = time;
                 }
 
-                sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
+
                 
                 display:
                 int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
                 Frame *vp;
                 vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
-                    GlEngine::getGlEngine()->notifyRendererFrame((char*)vp->frame->data[0],
+                    GlEngine::getGlEngine()->addRendererFrame((char*)vp->frame->data[0],
                                                                  (char*) vp->frame->data[1],
                                                                  (char*)vp->frame->data[2],
                                                       sPlayer->streamVideo.dec_ctx->width,
@@ -362,8 +362,10 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 //                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
 //                              sPlayer->streamVideo.dec_ctx->width,
 //                              sPlayer->streamVideo.dec_ctx->height);
+                    sPlayer->notifyRenderer();
 
                 }
+                sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
 
             }
 
@@ -373,6 +375,14 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     pthread_exit(NULL);
 }
 
+
+void YtxMediaPlayer::notifyRenderer() {
+    //调用回调通知渲染视频
+    if(notifyRendererCallback != NULL){
+        notifyRendererCallback();
+    }
+
+}
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {

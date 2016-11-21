@@ -23,6 +23,7 @@
 
 #include "audio_engine.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
+typedef void (*notifyRendererFrame) ();
 // ----------------------------------------------------------------------------
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
@@ -130,6 +131,8 @@ public:
 
     void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
 
+    void notifyRenderer();
+
     static void decodeAudio(AVFrame* frame, double pts);
     static void decodeVideo(AVFrame* frame, double pts);
     static void decodeAudioFirstFrameHandler();
@@ -139,6 +142,7 @@ public:
   //  static void updateYuv(uint8_t *y,uint8_t *u,uint8_t *v);
 
     updateYuvHandler updateYuv;
+    notifyRendererFrame notifyRendererCallback = NULL;
     InputStream streamVideo;
     InputStream streamAudio;
 
