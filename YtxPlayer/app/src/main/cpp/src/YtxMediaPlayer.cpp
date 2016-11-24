@@ -265,6 +265,9 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     do{
         usleep(500);
     }while(GlEngine::glEngineInitComplete()==false);
+    GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
+
+
 //    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     sPlayer->decodeMovie(ptr);
     return 0;
@@ -358,11 +361,9 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                                                                  (char*)vp->frame->data[2],
                                                       sPlayer->streamVideo.dec_ctx->width,
                                                       sPlayer->streamVideo.dec_ctx->height);
-             //       sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
-//                    updateYUV((char*)vp->frame->data[0],(char*) vp->frame->data[1], (char*)vp->frame->data[2],
-//                              sPlayer->streamVideo.dec_ctx->width,
-//                              sPlayer->streamVideo.dec_ctx->height);
                     sPlayer->notifyRenderer();
+
+                 //   sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
 
                 }
                 sPlayer->mDecoderVideo->frameQueue->frameQueueNext();

@@ -5,12 +5,14 @@
 
 GlEngine::GlEngine() {
 
-    yTextureId = -1;
-    uTextureId = -1;
-    vTextureId = -1;
+    yTextureId =  255;
+    uTextureId =  255;
+    vTextureId =  255;
     yHandle = -1;
     uHandle = -1;
     vHandle = -1;
+    isAddRendererFrameInit = false;
+    isSetupGraphics = false;
 
 
 }
@@ -110,10 +112,10 @@ bool GlEngine::setupGraphics() {
     /*
      * get handle for "vPosition" and "a_texCoord"
      */
+
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
     checkGlError("glGetAttribLocation");
-    ALOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-          gvPositionHandle);
+    ALOGI("glGetAttribLocation(\"vPosition\") = %d\n", gvPositionHandle);
     if (gvPositionHandle == -1) {
         ALOGE("setupGraphics error gvPositionHandle =%d\n", gvPositionHandle);
     }
@@ -130,76 +132,85 @@ bool GlEngine::setupGraphics() {
      */
 
     yHandle = glGetUniformLocation(gProgram, "tex_y");
-    ALOGI("GLProgram yHandle = %d\n", yHandle);
     checkGlError("glGetUniformLocation tex_y");
+    ALOGI("GLProgram yHandle = %d\n", yHandle);
+
     if (yHandle == -1) {
         ALOGE("Could not get uniform location for tex_y");
     }
     uHandle = glGetUniformLocation(gProgram, "tex_u");
-    ALOGI("GLProgram uHandle = %d\n", uHandle);
     checkGlError("glGetUniformLocation tex_u");
+    ALOGI("GLProgram uHandle = %d\n", uHandle);
+
     if (uHandle == -1) {
         ALOGE("Could not get uniform location for tex_u");
     }
     vHandle = glGetUniformLocation(gProgram, "tex_v");
-    ALOGI("GLProgram vHandle = %d\n", vHandle);
     checkGlError("glGetUniformLocation tex_v");
+    ALOGI("GLProgram vHandle = %d\n", vHandle);
     if (vHandle == -1) {
         ALOGE("Could not get uniform location for tex_v");
     }
 
+//    glUseProgram(program);
+//    checkGlError("glUseProgram");
     // glViewport(0, 0, w, h);
     // checkGlError("glViewport");
     return true;
 }
 
+void GlEngine::setVideoWidthAndHeight(int videoWidth, int videoHeight) {
+    this->videoWidth = videoWidth;
+    this->videoHeight = videoHeight;
+}
 
 void GlEngine::buildTextures(char *y, char *u, char *v, int videoWidth, int videoHeight) {
     // building texture for Y data
-    if (yTextureId < 0) {
+    if (yTextureId == 255) {
         glGenTextures(1, &yTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-        ALOGI("buildTextures yTextureId=%d\n", yTextureId);
         checkGlError("glGenTextures");
+        ALOGI("buildTextures yTextureId=%d\n", yTextureId);
     }
     glBindTexture(GL_TEXTURE_2D, yTextureId);
     checkGlError("glBindTexture");
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth, videoHeight, 0,
-                 GL_LUMINANCE, GL_UNSIGNED_BYTE, y);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth, videoHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y);
     checkGlError("glTexImage2D");
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  //  设置纹理参数,缩小过滤,邻近像素差值(临近像素插值。该方法质量较差)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //设置纹理参数,放大过滤,线性插值(线性插值。使用距离当前渲染像素中心最近的4个纹素加权平均值)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     // building texture for U data
-    if (uTextureId < 0) {
+    if (uTextureId == 255) {
         glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-        ALOGI("buildTextures uTextureId=%d\n", uTextureId);
         checkGlError("glGenTextures");
+        ALOGI("buildTextures uTextureId=%d\n", uTextureId);
     }
     glBindTexture(GL_TEXTURE_2D, uTextureId);
     checkGlError("glBindTexture");
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth / 2, videoHeight / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE, u);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth / 2, videoHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, u);
+    checkGlError("glTexImage2D");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    if (vTextureId < 0) {
+    if (vTextureId == 255) {
         glGenTextures(1, &vTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-        ALOGI("buildTextures vTextureId=%d\n", vTextureId);
         checkGlError("glGenTextures");
+        ALOGI("buildTextures vTextureId=%d\n", vTextureId);
     }
-
     glBindTexture(GL_TEXTURE_2D, vTextureId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth / 2, videoHeight / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE, v);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    checkGlError("glBindTexture");
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, videoWidth / 2, videoHeight / 2, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, v);
+    checkGlError("glTexImage2D");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
 
 }
 
@@ -209,27 +220,28 @@ void GlEngine::buildTextures(char *y, char *u, char *v, int videoWidth, int vide
  * the YUV data will be converted to RGB by shader.
  */
 void GlEngine::drawFrame() {
-    if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL) {
+    if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL && videoWidth != 0 && videoHeight != 0) {
 
      //   setAspectRatio();
 
 
-        glViewport(0, 0, videoWidth, videoHeight);
-        checkGlError("glViewport");
+       // glViewport(0, 0, videoWidth, videoHeight);
+       // checkGlError("glViewport");
+//        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//        glClear(GL_COLOR_BUFFER_BIT);
         ALOGI("drawFrame videoWidth=%d videoHeight=%d\n", videoWidth, videoHeight);
         buildTextures(plane[0], plane[1], plane[2], videoWidth, videoHeight);
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(program);
         checkGlError("glUseProgram");
-
-        glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, false, 8, vertice_buffer);
+        glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, false, 8, vertice_buffer );
         checkGlError("glVertexAttribPointer mPositionHandle");
         glEnableVertexAttribArray(gvPositionHandle);
 
-        glVertexAttribPointer(gCoordHandle, 2, GL_FLOAT, false, 8, coord_buffer);
+        glVertexAttribPointer(gCoordHandle, 2, GL_FLOAT, false, 8, coord_buffer );
         checkGlError("glVertexAttribPointer maTextureHandle");
         glEnableVertexAttribArray(gCoordHandle);
 
@@ -256,11 +268,28 @@ void GlEngine::drawFrame() {
 }
 
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
-    plane[0] = y;
-    plane[1] = u;
-    plane[2] = v;
-    this->videoWidth = videoWidth;
-    this->videoHeight = videoHeight;
+    addRendererFrameInit(videoWidth,videoHeight);
+    memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
+    memcpy(plane[1],u,(size_t) (videoWidth * videoHeight)/4);
+    memcpy(plane[2],v,(size_t) (videoWidth * videoHeight)/4);
+
+    //memset(plane[0],1,(size_t) (videoWidth * videoHeight));
+//    memset(plane[1],255,(size_t) (videoWidth * videoHeight)/4);
+//    memset(plane[2],255,(size_t) (videoWidth * videoHeight)/4);
+//    plane[0] = y;
+//    plane[1] = u;
+//    plane[2] = v;
+//    this->videoWidth = videoWidth;
+//    this->videoHeight = videoHeight;
+}
+
+void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
+    if(!isAddRendererFrameInit) {
+        isAddRendererFrameInit = true;
+        plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
+        plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+        plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+    }
 }
 
 void GlEngine::setAspectRatio(){
@@ -347,7 +376,11 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
         JNIEnv *env, jclass clazz) {
 
     ALOGI("native_1init_1opengl IN");
-    GlEngine::getGlEngine()->setupGraphics();
+    if(!GlEngine::getGlEngine()->isSetupGraphics){
+        GlEngine::getGlEngine()->isSetupGraphics = true;
+        GlEngine::getGlEngine()->setupGraphics();
+    }
+
 
     ALOGI("native_1init_1opengl OUT");
 
