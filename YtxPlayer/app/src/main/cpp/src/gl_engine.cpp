@@ -14,8 +14,25 @@ GlEngine::GlEngine() {
     isAddRendererFrameInit = false;
     isSetupGraphics = false;
     isDrawFrameInit = false;
+    isFrameRendererFinish = false;
 
 
+}
+
+GlEngine::~GlEngine() {
+
+    int i = 0;
+
+    for (i = 0; i < 3; i++) {
+        if (plane[i] != NULL) {
+            free(plane[i]);
+            plane[i] = NULL;
+        }
+    }
+
+    if (glEngine != NULL) {
+        delete glEngine;
+    }
 }
 
 void GlEngine::printGLString(const char *name, GLenum s) {
@@ -217,8 +234,8 @@ void GlEngine::buildTextures() {
 void GlEngine::drawFrameInit(int videoWidth, int videoHeight) {
     if (!isDrawFrameInit) {
         isDrawFrameInit = true;
-        glViewport(0, 0, videoWidth, videoHeight);
-        checkGlError("glViewport");
+//        glViewport(0, 0, videoWidth, videoHeight);
+//        checkGlError("glViewport");
         buildTextures();
     }
 }
@@ -232,7 +249,7 @@ void GlEngine::drawFrame() {
         videoHeight != 0) {
 
         drawFrameInit(videoWidth, videoHeight);
-        //   setAspectRatio();
+        setAspectRatio();
 
 
         ALOGI("drawFrame videoWidth=%d videoHeight=%d\n", videoWidth, videoHeight);
@@ -282,6 +299,23 @@ void GlEngine::drawFrame() {
 
 }
 
+void GlEngine::signalRendererFinish() {
+
+    mRendererLock.lock();
+    isFrameRendererFinish = true;
+    mRendererLock.condSignal();
+    mRendererLock.unlock();
+}
+
+void GlEngine::waitRendererFinish() {
+    mRendererLock.lock();
+    while (!isFrameRendererFinish) {
+        mRendererLock.condWait();
+    }
+    isFrameRendererFinish = false;
+    mRendererLock.unlock();
+}
+
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
     addRendererFrameInit(videoWidth, videoHeight);
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
@@ -292,6 +326,8 @@ void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int v
 void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
     if (!isAddRendererFrameInit) {
         isAddRendererFrameInit = true;
+        this->videoWidth = videoWidth;
+        this->videoHeight = videoHeight;
         plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
         plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
         plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
@@ -303,6 +339,8 @@ void GlEngine::setAspectRatio() {
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
     float heightScale = 0.0;
+    ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d\n", mScreenHeight,mScreenWidth);
+    ALOGI("setAspectRatio videoHeight=%d videoWidth=%d\n", videoHeight,videoWidth);
     if (f1 == f2) {
 
     } else if (f1 < f2) {
@@ -321,14 +359,14 @@ void GlEngine::setAspectRatio() {
     } else {
         heightScale = f2 / f1;
         ALOGI("setAspectRatio heightScale=%f\n", heightScale);
-        coord_buffer[0] = -1.0f;
-        coord_buffer[1] = -heightScale;
-        coord_buffer[2] = 1.0f;
-        coord_buffer[3] = -heightScale;
-        coord_buffer[4] = -1.0f;
-        coord_buffer[5] = heightScale;
-        coord_buffer[6] = 1.0f;
-        coord_buffer[7] = heightScale;
+        vertice_buffer[0] = -1.0f;
+        vertice_buffer[1] = -heightScale;
+        vertice_buffer[2] = 1.0f;
+        vertice_buffer[3] = -heightScale;
+        vertice_buffer[4] = -1.0f;
+        vertice_buffer[5] = heightScale;
+        vertice_buffer[6] = 1.0f;
+        vertice_buffer[7] = heightScale;
     }
 }
 
@@ -350,6 +388,22 @@ GlEngine *GlEngine::getGlEngine() {
     return GlEngine::glEngine;
 }
 
+
+void GlEngine::setScreenWidth(int mScreenWidth){
+    this->mScreenWidth = mScreenWidth;
+}
+
+void GlEngine::setScreenHeight(int mScreenHeight){
+    this->mScreenHeight = mScreenHeight;
+}
+
+int GlEngine::getScreenWidth(){
+    return  this->mScreenWidth ;
+}
+
+int GlEngine::getScreenHeight(){
+    return  this->mScreenHeight;
+}
 extern "C" {
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(
         JNIEnv *env, jclass clazz, jint width, jint height);
@@ -365,6 +419,8 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1r
         JNIEnv *env, jclass clazz, jint width, jint height) {
     ALOGI("native_1resize_1opengl IN");
 
+    GlEngine::getGlEngine()->setScreenHeight(height);
+    GlEngine::getGlEngine()->setScreenWidth(width);
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame
@@ -372,6 +428,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1s
         JNIEnv *env, jclass clazz) {
     ALOGI("native_1step_1opengl IN");
     GlEngine::getGlEngine()->drawFrame();
+  //  GlEngine::getGlEngine()->signalRendererFinish();
     ALOGI("native_1step_1opengl OUT");
 }
 

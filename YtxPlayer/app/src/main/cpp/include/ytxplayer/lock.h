@@ -6,16 +6,21 @@
 #define YTXPLAYER_LOCK_H
 
 
-class Lock{
+class Lock {
 private:
     pthread_mutex_t mLock;
     pthread_cond_t mCondition;
 public:
     Lock();
+
     ~Lock();
+
     void lock();
+
     void unlock();
+
     void condWait();
+
     void condSignal();
 
 };

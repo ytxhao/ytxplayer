@@ -2,11 +2,6 @@
 // Created by Administrator on 2016/9/2.
 //
 
-
-
-
-//#include <ytxplayer/gl_code.h>
-
 #define LOG_NDEBUG 0
 #define TAG "YTX-PLAYER-JNI"
 #include "ALog-priv.h"
@@ -264,8 +259,8 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 
     do{
         usleep(500);
-    }while(GlEngine::glEngineInitComplete()==false);
-    GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
+    }while(!GlEngine::glEngineInitComplete());
+  //  GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
 
 
 //    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
@@ -363,6 +358,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                                                       sPlayer->streamVideo.dec_ctx->height);
                     sPlayer->notifyRenderer();
 
+                  //  GlEngine::getGlEngine()->waitRendererFinish();
                  //   sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
 
                 }

@@ -104,6 +104,8 @@ private:
     GLuint gProgram;
     GLuint gvPositionHandle;
     GLuint gCoordHandle;
+    Lock   mRendererLock;
+    bool   isFrameRendererFinish;
 
     static Lock mLock;
     static GlEngine *glEngine;
@@ -112,11 +114,7 @@ private:
 protected:
     GlEngine();
 
-    ~GlEngine() {
-        if (glEngine != NULL) {
-            delete glEngine;
-        }
-    }
+    ~GlEngine();
 
 public:
     static GlEngine *getGlEngine();
@@ -162,6 +160,20 @@ public:
     void renderFrameTest();
 
     bool setupGraphicsTest(int w, int h);
+
+    void setScreenWidth(int mScreenWidth);
+
+    void setScreenHeight(int mScreenHeight);
+
+    int getScreenWidth();
+
+    int getScreenHeight();
+
+    void waitRendererFinish();
+
+    void signalRendererFinish();
+
+
 
 };
 

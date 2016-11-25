@@ -90,6 +90,19 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     }
 
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        YtxLog.d(TAG,"#### #### onLayout getHeight=" + getHeight() +" getWidth="+getWidth());
+
+    }
+
     private boolean supportsOpenGLES2(final Context context) {
         final ActivityManager activityManager = (ActivityManager)
                 context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -203,6 +216,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             GL2JNILib.native_resize_opengl(width,height);
+            YtxLog.d(TAG,"#### #### width="+width+" height="+height);
         }
 
         @Override
