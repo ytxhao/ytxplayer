@@ -32,22 +32,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GraphicGLSurfaceView extends GLSurfaceView {
 
-
     public static final String TAG = "GraphicGLSurfaceView";
     public final GraphicRenderer renderer;
-    public int mMaxTextureSize;
-    long mAnimaStartTime;
-    long mAnimaTime = 400;
-    float mScale = 1.0f;
-    boolean mIsFinger = false;
-    float mTargeScaleOffset = 0.0f;
-    float mStartScale;
-
-    float mOffsetX = 0;
-    float mOffsetY = 0;
-    int mMaxOffsetX;
-    int mMaxOffsetY;
-    float mMiniScale;
 
     int mWidth;
     int mHeight;
@@ -59,13 +45,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
     volatile boolean isInitial = false;
 
-
-    public static interface PictureSnapCallback {
-        void onSnap(Bitmap bitmap);
-    }
-
     public GraphicGLSurfaceView(Context context) {
-        //super(context);
         this(context,null);
     }
 
@@ -244,32 +224,6 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
             RendererUtils.releaseRenderContext(renderContext);
         }
 
-        public void snap(final PictureSnapCallback callback) {
-            if (callback == null)
-                return;
-            if (picture == null) {
-                if (callback != null) {
-                    callback.onSnap(null);
-                }
-                return;
-            }
-
-            queue(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bitmap = RendererUtils.saveTexture(picture.texture(), picture.width(),
-                            picture.height());
-                    if (callback != null) {
-                        callback.onSnap(bitmap);
-                    }
-                }
-            });
-
-//            Log.d(TAG, "request render");
-            requestRender();
-
-        }
-
 
 
         /**
@@ -332,19 +286,6 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
                     v.put(vdata, 0, vdata.length);
                 }
         }
-
-        private static final String VERTEX_SHADER = "attribute vec4 vPosition;\n" + "attribute vec2 a_texCoord;\n"
-                + "varying vec2 tc;\n" + "void main() {\n" + "gl_Position = vPosition;\n" + "tc = a_texCoord;\n" + "}\n";
-
-        private static final String FRAGMENT_SHADER = "precision mediump float;\n" + "uniform sampler2D tex_y;\n"
-                + "uniform sampler2D tex_u;\n" + "uniform sampler2D tex_v;\n" + "varying vec2 tc;\n" + "void main() {\n"
-                + "vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n"
-                + "vec4 U = vec4(texture2D(tex_u, tc).r - 128./255.);\n"
-                + "vec4 V = vec4(texture2D(tex_v, tc).r - 128./255.);\n" + "c += V * vec4(1.596, -0.813, 0, 0);\n"
-                + "c += U * vec4(0, -0.392, 2.017, 0);\n" + "c.a = 1.0;\n" + "gl_FragColor = c;\n" + "}\n";
-
-
-
     }
 
     public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){

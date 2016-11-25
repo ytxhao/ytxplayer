@@ -99,7 +99,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             break;
 
             case RENDER_SURFACE_VIEW: {
-
+                //使用surface进行render
             }
             break;
 
