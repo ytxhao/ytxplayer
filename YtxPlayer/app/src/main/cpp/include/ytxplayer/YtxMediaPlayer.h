@@ -5,8 +5,6 @@
 #ifndef YTXPLAYER_YTXMEDIAPLAYER_H
 #define YTXPLAYER_YTXMEDIAPLAYER_H
 
-#define LOG_NDEBUG 0
-#define TAG "YTX-PLAYER-JNI"
 
 #include <stdint.h>
 #include <pthread.h>
@@ -23,7 +21,9 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 
+#include "audio_engine.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
+typedef void (*notifyRendererFrame) ();
 // ----------------------------------------------------------------------------
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
@@ -131,19 +131,25 @@ public:
 
     void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
 
+    void notifyRenderer();
+
     static void decodeAudio(AVFrame* frame, double pts);
     static void decodeVideo(AVFrame* frame, double pts);
+    static void decodeAudioFirstFrameHandler();
 
     static void finish();
 
   //  static void updateYuv(uint8_t *y,uint8_t *u,uint8_t *v);
 
     updateYuvHandler updateYuv;
+    notifyRendererFrame notifyRendererCallback = NULL;
     InputStream streamVideo;
     InputStream streamAudio;
 
     int isFinish;
-private:
+    DecoderVideo*  mDecoderVideo;
+    DecoderAudio*  mDecoderAudio;
+//private:
 
     int streamComponentOpen(InputStream *is, int stream_index);
     void decodeMovie(void* ptr);
@@ -202,8 +208,7 @@ private:
     int mCurrentState;
     int st_index[AVMEDIA_TYPE_NB];
 
-    DecoderVideo*  mDecoderVideo;
-    DecoderAudio*  mDecoderAudio;
+
     FILE *fp_yuv;
     FILE *fp_pcm;
     int  got_picture;
@@ -226,6 +231,9 @@ private:
     int out_sample_rate = 44100;
     int out_channel_nb;
     int out_nb_samples;
+
+    AudioEngine *audioEngine;
+
 
 };
 

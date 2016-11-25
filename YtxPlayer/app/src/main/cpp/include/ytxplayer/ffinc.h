@@ -28,8 +28,6 @@ libLoader.loadLibrary("avfilter");
 */
 //#define __STDC_CONSTANT_MACROS
 
-#include "ALog-priv.h"
-
 #include "libavutil/avutil.h"
 #include "libavformat/avformat.h"
 #include "libavcodec/avcodec.h"
@@ -38,6 +36,7 @@ libLoader.loadLibrary("avfilter");
 #include "libswresample/swresample.h"
 #include <libavutil/opt.h>
 #include <libavutil/time.h>
+
 
 typedef struct InputStream {
     AVStream *st;

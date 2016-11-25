@@ -4,7 +4,7 @@
 
 #ifndef YTXPLAYER_DECODER_VIDEO_H
 #define YTXPLAYER_DECODER_VIDEO_H
-#include "decoder.h"
+#include "Decoder.h"
 #include "frame_queue.h"
 
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
@@ -18,10 +18,11 @@ public:
     VideoDecodingHandler		onDecode;
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
-    FrameQueue frameQueue;
+    FrameQueue *frameQueue;
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;
+    void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
 private:
     AVFrame*					mFrame;
     double						mVideoClock;

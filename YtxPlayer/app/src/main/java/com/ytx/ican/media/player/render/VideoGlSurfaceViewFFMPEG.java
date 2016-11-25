@@ -163,6 +163,10 @@ public class VideoGlSurfaceViewFFMPEG extends VideoGlSurfaceView {
 
     }
 
+    public void requestRender(){
+        super.requestRender();
+    }
+
     @Override
     public void onResume() {
         YtxLog.d(TAG,"onResume yuhaoo");

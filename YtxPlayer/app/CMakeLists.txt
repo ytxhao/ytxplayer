@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds it for you.
 # Gradle automatically packages shared libraries with your APK.
-
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
 add_library( # Sets the name of the library.
              native-lib
@@ -19,14 +19,19 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             src/main/cpp/android_media_YtxMediaPlayer.cpp
-             src/main/cpp/YtxMediaPlayer.cpp
-             src/main/cpp/Thread.cpp
-             src/main/cpp/PacketQueue.cpp
-             src/main/cpp/Decoder.cpp
-             src/main/cpp/decoder_video.cpp
-             src/main/cpp/decoder_audio.cpp
-             src/main/cpp/frame_queue.cpp
+             src/main/cpp/src/android_media_YtxMediaPlayer.cpp
+             src/main/cpp/src/YtxMediaPlayer.cpp
+             src/main/cpp/src/Thread.cpp
+             src/main/cpp/src/PacketQueue.cpp
+             src/main/cpp/src/Decoder.cpp
+             src/main/cpp/src/decoder_video.cpp
+             src/main/cpp/src/decoder_audio.cpp
+             src/main/cpp/src/frame_queue.cpp
+#             src/main/cpp/src/gl_code.cpp
+#             src/main/cpp/src/native-audio.cpp
+             src/main/cpp/src/audio_engine.cpp
+             src/main/cpp/src/gl_engine.cpp
+             src/main/cpp/src/lock.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -58,11 +63,12 @@ find_library( # Sets the name of the path variable.
 
 #----------------------------------------------------------------
 
-
-set(INC_DIR "${Project_SOURCE_DIR}/src/main/cpp/include")
 set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 
-include_directories(${INC_DIR})
+
+#message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
+include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
+
 
 
 
@@ -147,4 +153,6 @@ target_link_libraries( # Specifies the target library.
                        ${avcodec-lib}
                        ${avformat-lib}
                        ${avfilter-lib}
-                       )
+                       OpenSLES )
+
+

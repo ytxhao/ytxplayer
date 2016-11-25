@@ -82,7 +82,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
                     libLoader.loadLibrary("avformat");
                     libLoader.loadLibrary("avdevice");
                     libLoader.loadLibrary("avfilter");
-                    System.loadLibrary("native-lib");
+
                     mIsLibLoaded = true;
             }
         }
@@ -264,8 +264,6 @@ public class YtxMediaPlayer implements IMediaPlayer {
     private native void native_finalize();
 
     private native void native_message_loop(Object YtxMediaPlayer_this);
-
-
 
 
     private native void _setGlSurface(Object glSurface);

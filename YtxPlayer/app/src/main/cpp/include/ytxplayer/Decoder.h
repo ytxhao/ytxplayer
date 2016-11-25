@@ -11,7 +11,7 @@
 
 #include "ffinc.h"
 
-#include "thread.h"
+#include "Thread.h"
 #include "packetqueue.h"
 
 class IDecoder : public Thread

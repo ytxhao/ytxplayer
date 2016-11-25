@@ -2,9 +2,9 @@
 // Created by Administrator on 2016/10/13.
 //
 
-#include "frame_queue.h"
-#include "YtxMediaPlayer.h"
-
+#include "ytxplayer/frame_queue.h"
+#define TAG "YTX-FrameQueue-JNI"
+#include "ALog-priv.h"
 void FrameQueue::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间

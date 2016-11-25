@@ -1,6 +1,6 @@
 
 #include <string>
-#include "native-lib.h"
+#include "ytxplayer/native-lib.h"
 
 jstring
 Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(

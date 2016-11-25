@@ -3,12 +3,12 @@
 //
 
 #define LOG_NDEBUG 0
-#define LOG_TAG "YTX-PLAYER-JNI"
-
+#define TAG "YTX-PLAYER-JNI"
+#include "ALog-priv.h"
 #include <string>
-#include "ffinc.h"
-#include "android_media_YtxMediaPlayer.h"
-#include "YtxMediaPlayer.h"
+#include "ytxplayer/ffinc.h"
+#include "ytxplayer/android_media_YtxMediaPlayer.h"
+#include "ytxplayer/YtxMediaPlayer.h"
 // 获取数组的大小
 #ifndef NELEM
 # define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
@@ -30,7 +30,7 @@ int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
     jclass exceptionClass = env->FindClass(className);
     if (exceptionClass == NULL) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Unable to find exception class %s",
                             className);
         return -1;
@@ -38,7 +38,7 @@ int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
 
     if (env->ThrowNew(exceptionClass, msg) != JNI_OK) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Failed throwing '%s' '%s'",
                             className, msg);
     }
@@ -51,7 +51,7 @@ JNIEnv* getJNIEnv() {
  //   ALOGE("ERROR12: sVm=%d\n",sVm);
     if (sVm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         __android_log_print(ANDROID_LOG_ERROR,
-                            LOG_TAG,
+                            TAG,
                             "Failed to obtain JNIEnv");
         return NULL;
     }
@@ -243,20 +243,51 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 
 
-void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
+void android_media_player_notifyRenderFrame()
 {
-    ALOGI("android_media_player_updateYuv IN\n");
+    ALOGI("android_media_player_notifyRenderFrame IN\n");
 
-  //  ALOGI("android_media_player_updateYuv VideoGlSurfaceViewFFMPEG_obj=%d\n",VideoGlSurfaceViewFFMPEG_obj);
+  //  ALOGI("android_media_player_notifyRenderFrame VideoGlSurfaceViewFFMPEG_obj=%d\n",VideoGlSurfaceViewFFMPEG_obj);
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
-
 
 //----------------------------------------------
   //  jclass clazz_NativeTest = env->FindClass("com/ytx/ican/media/player/render/GraphicGLSurfaceView");
   //  jfieldID rendererID = env->GetFieldID(clazz_NativeTest,"renderer","Lcom/ytx/ican/media/player/render/GraphicGLSurfaceView$GraphicRenderer;"); //获得得Student类的属性id
 
-   // ALOGI("android_media_player_updateYuv rendererID=%d\n",rendererID);
+
+    // 得到jclass
+    jclass jclazz = env->GetObjectClass(VideoGlSurfaceViewFFMPEG_obj);
+     ALOGI("android_media_player_notifyRenderFrame jclazz=%d\n",jclazz);
+    // 得到方法ID
+    jmethodID jmtdId = env->GetMethodID(jclazz, "requestRender", "()V");
+     ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
+    // 调用方法
+    env->CallVoidMethod(VideoGlSurfaceViewFFMPEG_obj, jmtdId);
+   //  ALOGI("android_media_player_notifyRenderFrame jRandomNum=%d\n",jRandomNum);
+   // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
+   //        (unsigned)getpid());
+
+    sVm->DetachCurrentThread();
+    ALOGI("android_media_player_notifyRenderFrame OUT\n");
+
+}
+
+
+void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
+{
+    ALOGI("android_media_player_updateYuv IN\n");
+
+    //  ALOGI("android_media_player_updateYuv VideoGlSurfaceViewFFMPEG_obj=%d\n",VideoGlSurfaceViewFFMPEG_obj);
+    JNIEnv *env = NULL;
+    sVm->AttachCurrentThread(&env, NULL);
+
+
+//----------------------------------------------
+    //  jclass clazz_NativeTest = env->FindClass("com/ytx/ican/media/player/render/GraphicGLSurfaceView");
+    //  jfieldID rendererID = env->GetFieldID(clazz_NativeTest,"renderer","Lcom/ytx/ican/media/player/render/GraphicGLSurfaceView$GraphicRenderer;"); //获得得Student类的属性id
+
+    // ALOGI("android_media_player_updateYuv rendererID=%d\n",rendererID);
 
     jbyteArray byteY = env->NewByteArray(size);
     jbyteArray byteU = env->NewByteArray(size/4);
@@ -269,20 +300,21 @@ void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
 
     // 得到jclass
     jclass jclazz = env->GetObjectClass(VideoGlSurfaceViewFFMPEG_obj);
-  //   ALOGI("android_media_player_updateYuv jclazz=%d\n",jclazz);
+    //   ALOGI("android_media_player_updateYuv jclazz=%d\n",jclazz);
     // 得到方法ID
     jmethodID jmtdId = env->GetMethodID(jclazz, "updateYuv", "([B[B[B)V");
-   //  ALOGI("android_media_player_updateYuv jmtdId=%d\n",jmtdId);
+    //  ALOGI("android_media_player_updateYuv jmtdId=%d\n",jmtdId);
     // 调用方法
     env->CallVoidMethod(VideoGlSurfaceViewFFMPEG_obj, jmtdId, byteY,byteU,byteV);
-   //  ALOGI("android_media_player_updateYuv jRandomNum=%d\n",jRandomNum);
-   // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
-   //        (unsigned)getpid());
+    //  ALOGI("android_media_player_updateYuv jRandomNum=%d\n",jRandomNum);
+    // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
+    //        (unsigned)getpid());
 
     sVm->DetachCurrentThread();
     ALOGI("android_media_player_updateYuv OUT\n");
 
 }
+
 
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
@@ -328,7 +360,7 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
   //  mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
     mPlayer->updateYuv = android_media_player_updateYuv;
     //-----------------------------------------------------
-
+    mPlayer->notifyRendererCallback = android_media_player_notifyRenderFrame;
 
     //jfieldID rendererFieldID = env->GetFieldID(glSurface_cls,"renderer","[I");
     ALOGI("android_media_player_setGlSurface OUT\n");

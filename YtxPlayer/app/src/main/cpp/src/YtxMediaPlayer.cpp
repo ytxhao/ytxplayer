@@ -2,15 +2,16 @@
 // Created by Administrator on 2016/9/2.
 //
 
-
-
-
-#include "YtxMediaPlayer.h"
-
+#define LOG_NDEBUG 0
+#define TAG "YTX-PLAYER-JNI"
+#include "ALog-priv.h"
+//该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
+#include "ytxplayer/YtxMediaPlayer.h"
+#include "ytxplayer/gl_engine.h"
 #define MAX_AUDIO_FRME_SIZE 48000 * 4
 #define FPS_DEBUGGING true
 
-void printfferr(){
+void printferr(){
     ALOGI( "AVERROR_BSF_NOT_FOUND=%d\n",AVERROR_BSF_NOT_FOUND);
     ALOGI( "AVERROR_BUG=%d\n",AVERROR_BUG);
     ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d\n",AVERROR_BUFFER_TOO_SMALL);
@@ -51,7 +52,8 @@ void printfferr(){
 
 static YtxMediaPlayer* sPlayer;
 
-
+FrameQueue *frameQueueVideo;
+FrameQueue *frameQueueAudio;
 
 YtxMediaPlayer::YtxMediaPlayer(){
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
@@ -96,10 +98,60 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
     return 0;
 }
 
+int audioDecodeFrame(){
 
+    Frame *af;
+    // do{
+
+    if (!(af = sPlayer->mDecoderAudio->frameQueue->frameQueuePeekReadable())){
+        return -1;
+    }
+
+    sPlayer->mDecoderAudio->frameQueue->frameQueueNext();
+
+    // }while(af->serial != is->audioq.serial);
+
+    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), MAX_AUDIO_FRME_SIZE, (const uint8_t **) af->frame->data, af->frame->nb_samples);
+    //获取sample的size
+    int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
+                                                     af->frame->nb_samples, sPlayer->out_sample_fmt, 1);
+
+    (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
+  //  fwrite(sPlayer->out_buffer_audio,1,out_buffer_size,sPlayer->fp_pcm);
+
+    return 0;
+
+}
+
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
+{
+    assert(bq == sPlayer->audioEngine->bqPlayerBufferQueue);
+    assert(NULL == context);
+#if 0
+
+    // for streaming playback, replace this test by logic to find and fill the next buffer
+    if (--sPlayer->audioEngine->nextCount > 0 && NULL != sPlayer->audioEngine->nextBuffer && 0 != sPlayer->audioEngine->nextSize) {
+        SLresult result;
+        // enqueue another buffer
+        result = (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue,
+                                                                       sPlayer->audioEngine->nextBuffer,
+                                                                       sPlayer->audioEngine->nextSize);
+        // the most likely other result is SL_RESULT_BUFFER_INSUFFICIENT,
+        // which for this code example would indicate a programming error
+//        if (SL_RESULT_SUCCESS != result) {
+//            pthread_mutex_unlock(&audioEngineLock);
+//        }
+        (void)result;
+    }
+#else
+    audioDecodeFrame();
+#endif
+}
 
 
 int  YtxMediaPlayer::prepare() {
+
+
 
     av_register_all();
     avformat_network_init();
@@ -141,6 +193,11 @@ int  YtxMediaPlayer::prepare() {
     streamAudio.pFormatCtx = pFormatCtx;
     if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+        audioEngine = new AudioEngine();
+        audioEngine->createEngine();
+        audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
+      //  sleep(1);
+      //  audioEngine->selectClip(2,10);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
@@ -148,13 +205,14 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
+
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
-
-
-
 }
+
+
+
 
 int  YtxMediaPlayer::prepareAsync() {
 
@@ -170,6 +228,24 @@ int  YtxMediaPlayer::start() {
     ALOGI("start fp_yuv=%d\n",fp_yuv);
     ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
 
+    frameQueueVideo = new FrameQueue();
+    frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+
+    frameQueueAudio = new FrameQueue();
+    frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
+
+    mDecoderAudio = new DecoderAudio(&streamAudio);
+    mDecoderVideo = new DecoderVideo(&streamVideo);
+
+    mDecoderAudio->setFrameQueue(frameQueueAudio);
+    mDecoderVideo->setFrameQueue(frameQueueVideo);
+
+
+    mDecoderAudio->onDecode = decodeAudio;
+    mDecoderVideo->onDecode = decodeVideo;
+    mDecoderVideo->onDecodeFinish = finish;
+    mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+   // decodeAudioFirstFrameHandler
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
     pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     return 0;
@@ -178,7 +254,16 @@ int  YtxMediaPlayer::start() {
 void* YtxMediaPlayer::startPlayer(void* ptr)
 {
     ALOGI("starting main player thread\n");
-  //  printfferr();
+  //  printferr();
+    //等待surface render初始化完成
+
+    do{
+        usleep(500);
+    }while(!GlEngine::glEngineInitComplete());
+  //  GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
+
+
+//    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     sPlayer->decodeMovie(ptr);
     return 0;
 }
@@ -197,7 +282,9 @@ static double vp_duration(Frame *vp, Frame *nextvp) {
     }
 }
 
-
+void YtxMediaPlayer::decodeAudioFirstFrameHandler(){
+    audioDecodeFrame();
+}
 
 
 /* polls for possible required screen refresh at least this often, should be less than 1/fps */
@@ -205,16 +292,19 @@ static double vp_duration(Frame *vp, Frame *nextvp) {
 #define AV_SYNC_THRESHOLD_MAX 0.1
 void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
     ALOGI("starting main player startPlayerRefresh\n");
-    //  printfferr();
+    //  printferr();
     double last_duration, duration, delay;
     Frame *vp, *lastvp;
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;
 
+//    do{
+//        usleep(500);
+//    }while(GlEngine::glEngineInitComplete()==false);
     while (sPlayer->isFinish != 1) {
 
-        if(sPlayer->mDecoderVideo != NULL && sPlayer->mDecoderVideo->frameQueueInitFinsh == 1){
+        if(sPlayer->mDecoderVideo != NULL){
 
             if(remaining_time > 0.0){
             //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
@@ -224,7 +314,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
             remaining_time = REFRESH_RATE;
             //usleep(20000);
 
-            if(sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining() < 2 ){
+            if(sPlayer->mDecoderVideo->frameQueue->frameQueueNumRemaining() < 2 ){
                 // nothing to do, no picture to display in the queue
 
             }else{
@@ -232,8 +322,8 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
               //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
               //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
-                lastvp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
-                vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeek();
+                lastvp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
+                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeek();
 
 
                 last_duration = vp_duration(lastvp, vp);
@@ -241,7 +331,7 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 
 
                 time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
-              //  ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
+                ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
 
                 if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                     remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -254,15 +344,25 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
                     frame_timer = time;
                 }
 
-                sPlayer->mDecoderVideo->frameQueue.frameQueueNext();
+
                 
                 display:
                 int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
                 Frame *vp;
-                vp = sPlayer->mDecoderVideo->frameQueue.frameQueuePeekLast();
+                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
                 if(vp->frame != NULL){
-                    sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
+                    GlEngine::getGlEngine()->addRendererFrame((char*)vp->frame->data[0],
+                                                                 (char*) vp->frame->data[1],
+                                                                 (char*)vp->frame->data[2],
+                                                      sPlayer->streamVideo.dec_ctx->width,
+                                                      sPlayer->streamVideo.dec_ctx->height);
+                    sPlayer->notifyRenderer();
+
+                  //  GlEngine::getGlEngine()->waitRendererFinish();
+                 //   sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
+
                 }
+                sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
 
             }
 
@@ -273,18 +373,31 @@ void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
 }
 
 
+void YtxMediaPlayer::notifyRenderer() {
+    //调用回调通知渲染视频
+    if(notifyRendererCallback != NULL){
+        notifyRendererCallback();
+    }
+
+}
+
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
     AVPacket mPacket, *pPacket = &mPacket;
     int i=0, *pI = &i;
 
-    mDecoderAudio = new DecoderAudio(&streamAudio);
-    mDecoderAudio->onDecode = decodeAudio;
+//    mDecoderAudio = new DecoderAudio(&streamAudio);
+//    mDecoderVideo = new DecoderVideo(&streamVideo);
+//    mDecoderVideo->setFrameQueue(frameQueue);
+//
+//    mDecoderAudio->onDecode = decodeAudio;
+//    mDecoderVideo->onDecode = decodeVideo;
+//    mDecoderVideo->onDecodeFinish = finish;
     mDecoderAudio->startAsync();
 
-    mDecoderVideo = new DecoderVideo(&streamVideo);
-    mDecoderVideo->onDecode = decodeVideo;
-    mDecoderVideo->onDecodeFinish = finish;
+
+
+
     mDecoderVideo->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
@@ -579,21 +692,17 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //输入采样率
                 in_sample_rate = is->dec_ctx->sample_rate;
                 //输出采样率
-                out_sample_rate = 44100;
+                //out_sample_rate = 44100;
+                out_sample_rate = in_sample_rate;
                 //获取输入的声道布局
                 //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
                 //av_get_default_channel_layout(codecCtx->channels);
                 out_nb_samples=is->dec_ctx->frame_size;
-                ALOGI("out_nb_samples=%d\n",out_nb_samples);
+
                 uint64_t in_ch_layout = is->dec_ctx->channel_layout;
                 //输出的声道布局（立体声）
                 uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
 
-                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
-                ALOGI("### in_sample_rate=%d\n",in_sample_rate);
-                ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
-
-                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
                 swr_alloc_set_opts(swrCtx,
                                    out_ch_layout,out_sample_fmt,out_sample_rate,
                                    in_ch_layout,in_sample_fmt,in_sample_rate,
@@ -607,6 +716,16 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //重采样设置参数-------------end
                 //16bit 44100 PCM 数据
                 out_buffer_audio = (uint8_t *)av_malloc(MAX_AUDIO_FRME_SIZE);
+
+                ALOGI("### in_sample_rate=%d\n",in_sample_rate);
+                ALOGI("### in_sample_fmt=%d\n",in_sample_fmt);
+                ALOGI("### out_nb_samples=%d\n",out_nb_samples);
+                ALOGI("### out_sample_rate=%d\n",out_sample_rate);
+                ALOGI("### out_sample_fmt=%d\n",out_sample_fmt);
+                ALOGI("### out_channel_nb=%d\n",out_channel_nb);
+
+                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
+                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
             }
             break;
         case AVMEDIA_TYPE_VIDEO:

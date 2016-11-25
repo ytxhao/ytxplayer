@@ -5,10 +5,10 @@
 
 
 
-#include "decoder_video.h"
+#include "ytxplayer/decoder_video.h"
 
 #define TAG "FFMpegVideoDecoder"
-
+#include "ALog-priv.h"
 static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 
 DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
@@ -17,13 +17,13 @@ DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
   //  mStream->codec->
    // stream->dec_ctx->release_buffer = releaseBuffer;
   //  frameQueue = new FrameQueue();
-    frameQueueInitFinsh =  frameQueue.frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+   // frameQueueInitFinsh =  frameQueue->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
    // frameQueueInitFinsh =  frameQueue.frameQueueInit(6,1);
 }
 
 DecoderVideo::~DecoderVideo()
 {
-    frameQueue.frameQueueDestory();
+    frameQueue->frameQueueDestory();
 }
 
 bool DecoderVideo::prepare()
@@ -96,7 +96,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
 
         Frame *vp;
-        if(!(vp = frameQueue.frameQueuePeekWritable())){
+        if(!(vp = frameQueue->frameQueuePeekWritable())){
             return true;
         }
 
@@ -129,7 +129,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
 
         onDecode(mFrame, pts);
-        frameQueue.frameQueuePush();
+        frameQueue->frameQueuePush();
         av_frame_unref(mFrame);
         return true;
     }
