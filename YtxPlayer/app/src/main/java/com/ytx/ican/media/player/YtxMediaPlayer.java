@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import com.ytx.ican.media.player.render.VideoGlSurfaceViewFFMPEG;
+import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     public static final String TAG = "YtxMediaPlayer";
 
-    VideoGlSurfaceViewFFMPEG glSurface;
+    VideoGlSurfaceView glSurface;
     private EventHandler mEventHandler;
 
     private int mNativeContext; // accessed by native methods
@@ -100,7 +100,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
     }
 
 
-    public void setSurfaceView(VideoGlSurfaceViewFFMPEG glSurface){
+    public void setSurfaceView(VideoGlSurfaceView glSurface){
 
         //glsurface.toTexture();
         this.glSurface = glSurface;

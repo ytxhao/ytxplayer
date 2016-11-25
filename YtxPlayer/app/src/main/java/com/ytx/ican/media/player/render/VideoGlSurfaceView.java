@@ -3,6 +3,7 @@ package com.ytx.ican.media.player.render;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,5 +128,14 @@ public class VideoGlSurfaceView extends GraphicGLSurfaceView {
             frameCount++;
         }
 
+    }
+
+    public void requestRender(){
+        super.requestRender();
+    }
+
+
+    public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
+        super.updateYuv(ydata,udata,vdata);
     }
 }

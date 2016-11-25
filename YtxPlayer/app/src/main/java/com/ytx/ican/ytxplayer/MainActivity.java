@@ -13,9 +13,8 @@ import android.widget.TextView;
 
 import com.ytx.ican.media.player.YtxLog;
 import com.ytx.ican.media.player.YtxMediaPlayer;
-import com.ytx.ican.media.player.render.VideoGlSurfaceViewFFMPEG;
-import com.ytx.ican.media.player.test.GLFrameRenderer;
-import com.ytx.ican.media.player.test.GLFrameSurface;
+import com.ytx.ican.media.player.render.VideoGlSurfaceView;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +24,7 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
 
 
-    VideoGlSurfaceViewFFMPEG mGLSurface;
+    VideoGlSurfaceView mGLSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
         //----------------------------------------
-        mGLSurface = (VideoGlSurfaceViewFFMPEG) findViewById(R.id.surface);
+        mGLSurface = (VideoGlSurfaceView) findViewById(R.id.surface);
         mPlayer.setSurfaceView(mGLSurface);
         //----------------------------------------
         try {
