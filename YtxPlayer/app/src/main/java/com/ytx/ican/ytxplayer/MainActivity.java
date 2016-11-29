@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.ytx.ican.media.player.YtxLog;
 import com.ytx.ican.media.player.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
+import com.ytx.ican.media.player.view.YtxVideoView;
 
 
 import java.io.File;
@@ -22,42 +23,26 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
+    static {
+        System.loadLibrary("native-lib");
+    }
 
-
-    VideoGlSurfaceView mGLSurface;
+    YtxVideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
 
-       // isGrantExternalRW(this);
-       // tv.setText(stringFromJNI());
-
-        YtxMediaPlayer mPlayer = new YtxMediaPlayer();
-
-        String filePath = android.os.Environment.getExternalStorageDirectory()
+        String filePath = Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
-               // .getAbsolutePath() + "/" ;
+        // .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
-        //----------------------------------------
-        mGLSurface = (VideoGlSurfaceView) findViewById(R.id.surface);
-        mPlayer.setSurfaceView(mGLSurface);
-        //----------------------------------------
-        try {
-            //rtmp://live.hkstv.hk.lxdns.com/live/hks
-           // mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
-            mPlayer.setDataSource(filePath+"titanic.mkv");
-           // mPlayer.setDataSource(filePath+"video2.mp4");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mPlayer.prepare();
-        YtxLog.d("MainActivity","getVideoHeight="+mPlayer.getVideoHeight()+" getVideoWidth="+mPlayer.getVideoWidth());
-        mPlayer.start();
+
+        videoView = (YtxVideoView) findViewById(R.id.videoView);
+        videoView.setVideoPath(filePath+"titanic.mkv");
+        videoView.start();
 
 
     }
@@ -99,44 +84,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static boolean isGrantExternalRW(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity.checkSelfPermission(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            activity.requestPermissions(new String[]{
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, 1);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            for (int i = 0; i < permissions.length; i++) {
-                String permission = permissions[i];
-                int grantResult = grantResults[i];
-
-                if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                        //授权成功后的逻辑
-                      //  ...
-                    } else {
-                      //  requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_CODE);
-                    }
-                }
-            }
-        }
-    }
-    static {
-        System.loadLibrary("native-lib");
     }
 
 }

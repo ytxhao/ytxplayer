@@ -16,10 +16,10 @@
         android:layout_height="wrap_content"
         android:text="Hello World!" />
 
-    <com.ytx.ican.media.player.render.VideoGlSurfaceView
-        android:id="@+id/surface"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.ytx.ican.media.player.view.YtxVideoView
+        android:id="@+id/videoView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         />
 
 

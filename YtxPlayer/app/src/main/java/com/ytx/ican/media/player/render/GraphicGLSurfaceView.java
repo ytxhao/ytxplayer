@@ -3,13 +3,13 @@ package com.ytx.ican.media.player.render;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.renderscript.Matrix4f;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
@@ -33,7 +33,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class GraphicGLSurfaceView extends GLSurfaceView {
 
     public static final String TAG = "GraphicGLSurfaceView";
-    public final GraphicRenderer renderer;
+    public GraphicRenderer renderer;
 
     int mWidth;
     int mHeight;
@@ -44,6 +44,17 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     volatile boolean mIsResume = false;
 
     volatile boolean isInitial = false;
+    private ISurfaceCallback mSurfaceCallback;
+
+    public ISurfaceCallback getSurfaceCallback() {
+        return mSurfaceCallback;
+    }
+
+    public void setSurfaceCallback(ISurfaceCallback mSurfaceCallback) {
+        this.mSurfaceCallback = mSurfaceCallback;
+    }
+
+
 
     public GraphicGLSurfaceView(Context context) {
         this(context,null);
@@ -51,24 +62,22 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
     public GraphicGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initView(context);
+    }
+
+    private void initView(Context context){
         if(!supportsOpenGLES2(context)){
             throw new RuntimeException("not support gles 2.0");
         }
         renderer = new GraphicRenderer();
-        YtxLog.d(TAG,"GraphicGLSurfaceView 1");
         setEGLContextClientVersion(2);
-        YtxLog.d(TAG,"GraphicGLSurfaceView 2");
         setEGLConfigChooser(new CustomChooseConfig2.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
-       // setEGLConfigChooser(new ConfigChooser(5, 6, 5, 0, 0, 0));
-        YtxLog.d(TAG,"GraphicGLSurfaceView 3");
+        // setEGLConfigChooser(new ConfigChooser(5, 6, 5, 0, 0, 0));
         getHolder().setFormat(PixelFormat.RGBA_8888);
-        YtxLog.d(TAG,"GraphicGLSurfaceView 4");
+        getHolder().addCallback(this);
         setRenderer(renderer);
-        YtxLog.d(TAG,"GraphicGLSurfaceView 5");
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-        YtxLog.d(TAG,"GraphicGLSurfaceView 6");
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -165,7 +174,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         private ByteBuffer y;
         private ByteBuffer u;
         private ByteBuffer v;
-        private int mScreenWidth=720, mScreenHeight=1080;
+        private int mSurfaceWidth , mSurfaceHeight ;
         private int mVideoWidth, mVideoHeight;
 
         private static final int FLOAT_SIZE_BYTES = 4;
@@ -195,6 +204,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
         @Override
         public void onSurfaceChanged(GL10 gl, int width, int height) {
+            mSurfaceWidth = width;
+            mSurfaceHeight = height;
             GL2JNILib.native_resize_opengl(width,height);
             YtxLog.d(TAG,"#### #### width="+width+" height="+height);
         }
@@ -236,8 +247,8 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
                 // 调整比例
                // prog.createBuffers(GLProgram.squareVertices);
 
-                if (mScreenWidth > 0 && mScreenHeight > 0) {
-                    float f1 = 1f * mScreenHeight / mScreenWidth;
+                if (mSurfaceWidth > 0 && mSurfaceHeight > 0) {
+                    float f1 = 1f * mSurfaceHeight / mSurfaceWidth;
                     float f2 = 1f * h / w;
                     if (f1 == f2) {
                         prog.createBuffers(GLProgram.squareVertices);
@@ -488,4 +499,85 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         private int[] mValue = new int[1];
     }
 
+
+//    private static final class SurfaceCallback implements SurfaceHolder.Callback {
+//        private SurfaceHolder mSurfaceHolder;
+//        private boolean mIsFormatChanged;
+//        private int mFormat;
+//        private int mWidth;
+//        private int mHeight;
+//
+//
+//        @Override
+//        public void surfaceCreated(SurfaceHolder holder) {
+//            mSurfaceHolder = holder;
+//            mIsFormatChanged = false;
+//            mFormat = 0;
+//            mWidth = 0;
+//            mHeight = 0;
+//        }
+//
+//        @Override
+//        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+//            mSurfaceHolder = holder;
+//            mIsFormatChanged = true;
+//            mFormat = format;
+//            mWidth = width;
+//            mHeight = height;
+//        }
+//
+//        @Override
+//        public void surfaceDestroyed(SurfaceHolder holder) {
+//            mSurfaceHolder = null;
+//            mIsFormatChanged = false;
+//            mFormat = 0;
+//            mWidth = 0;
+//            mHeight = 0;
+//        }
+//    }
+
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        super.surfaceCreated(holder);
+        if(mSurfaceCallback != null){
+            mSurfaceCallback.onSurfaceCreated(holder);
+        }
+    }
+
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        super.surfaceChanged(holder, format, w, h);
+        if(mSurfaceCallback != null){
+            mSurfaceCallback.onSurfaceChanged(holder,  format,  w,  h);
+        }
+    }
+
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        super.surfaceDestroyed(holder);
+        if(mSurfaceCallback != null){
+            mSurfaceCallback.onSurfaceDestroyed(holder);
+        }
+    }
+
+    public interface ISurfaceCallback {
+        /**
+         * @param holder
+
+         */
+        void onSurfaceCreated(@NonNull SurfaceHolder holder);
+
+        /**
+         * @param holder
+         * @param format could be 0
+         * @param width
+         * @param height
+         */
+        void onSurfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height);
+
+        void onSurfaceDestroyed(@NonNull SurfaceHolder holder);
+    }
 }
