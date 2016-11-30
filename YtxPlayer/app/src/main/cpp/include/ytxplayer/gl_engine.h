@@ -173,6 +173,8 @@ public:
 
     void signalRendererFinish();
 
+    void setViewPort(int mSurfaceWidth,int mSurfaceHeight);
+
 
 
 };

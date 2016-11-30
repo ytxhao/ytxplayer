@@ -339,8 +339,10 @@ void GlEngine::setAspectRatio() {
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
     float heightScale = 0.0;
-    ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d\n", mScreenHeight,mScreenWidth);
-    ALOGI("setAspectRatio videoHeight=%d videoWidth=%d\n", videoHeight,videoWidth);
+    ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d f1=%f\n", mScreenHeight,mScreenWidth,f1);
+    ALOGI("setAspectRatio videoHeight=%d videoWidth=%d f2=%f\n", videoHeight,videoWidth,f2);
+
+
     if (f1 == f2) {
 
     } else if (f1 < f2) {
@@ -354,9 +356,8 @@ void GlEngine::setAspectRatio() {
         vertice_buffer[5] = 1.0f;
         vertice_buffer[6] = widthScale;
         vertice_buffer[7] = 1.0f;
-
-
-    } else {
+        
+    } else if(f1 > f2){
         heightScale = f2 / f1;
         ALOGI("setAspectRatio heightScale=%f\n", heightScale);
         vertice_buffer[0] = -1.0f;
@@ -368,6 +369,7 @@ void GlEngine::setAspectRatio() {
         vertice_buffer[6] = 1.0f;
         vertice_buffer[7] = heightScale;
     }
+
 }
 
 //在此处初始化
@@ -404,6 +406,11 @@ int GlEngine::getScreenWidth(){
 int GlEngine::getScreenHeight(){
     return  this->mScreenHeight;
 }
+
+void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
+    glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
+    checkGlError("glViewport");
+}
 extern "C" {
 JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(
         JNIEnv *env, jclass clazz, jint width, jint height);
@@ -421,6 +428,8 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1r
 
     GlEngine::getGlEngine()->setScreenHeight(height);
     GlEngine::getGlEngine()->setScreenWidth(width);
+    GlEngine::getGlEngine()->setViewPort(width,height);
+
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame

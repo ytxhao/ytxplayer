@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         videoView = (YtxVideoView) findViewById(R.id.videoView);
         videoView.setVideoPath(filePath+"titanic.mkv");
         videoView.start();
+        YtxLog.d("MainActivity","#### #### onCreate");
 
 
     }
@@ -51,7 +53,40 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        YtxLog.d("MainActivity","#### #### onResume");
+
         //mGLSurface.onResume();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        YtxLog.d("MainActivity","#### #### onPause");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        YtxLog.d("MainActivity","#### #### onStart");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        YtxLog.d("MainActivity","#### #### onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        YtxLog.d("MainActivity","#### #### onDestroy");
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        YtxLog.d("MainActivity","#### #### onConfigurationChanged");
     }
 
     /**

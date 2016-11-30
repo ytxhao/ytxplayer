@@ -82,6 +82,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        YtxLog.d(TAG,"#### #### onMeasure getHeight=" + getHeight() +" getWidth="+getWidth());
     }
 
 
@@ -198,7 +199,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 //                prog.buildProgram();
 //                YtxLog.d("GLFrameRenderer","GLFrameRenderer :: buildProgram done");
 //            }
-
+            YtxLog.d(TAG,"#### #### onSurfaceCreated=");
             GL2JNILib.native_init_opengl();
         }
 
@@ -207,11 +208,12 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
             mSurfaceWidth = width;
             mSurfaceHeight = height;
             GL2JNILib.native_resize_opengl(width,height);
-            YtxLog.d(TAG,"#### #### width="+width+" height="+height);
+            YtxLog.d(TAG,"#### #### onSurfaceChanged="+width+" height="+height);
         }
 
         @Override
         public void onDrawFrame(GL10 gl) {
+          //  YtxLog.d(TAG,"#### #### onDrawFrame=");
             GL2JNILib.native_step_opengl();
               //         drawFrame2();
         }
@@ -540,6 +542,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         super.surfaceCreated(holder);
+        YtxLog.d(TAG,"#### #### surfaceCreated getHeight=" + getHeight() +" getWidth="+getWidth());
         if(mSurfaceCallback != null){
             mSurfaceCallback.onSurfaceCreated(holder);
         }
@@ -549,6 +552,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         super.surfaceChanged(holder, format, w, h);
+        YtxLog.d(TAG,"#### #### surfaceChanged getHeight=" + getHeight() +" getWidth="+getWidth());
         if(mSurfaceCallback != null){
             mSurfaceCallback.onSurfaceChanged(holder,  format,  w,  h);
         }
@@ -558,6 +562,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         super.surfaceDestroyed(holder);
+        YtxLog.d(TAG,"#### #### surfaceDestroyed getHeight=" + getHeight() +" getWidth="+getWidth());
         if(mSurfaceCallback != null){
             mSurfaceCallback.onSurfaceDestroyed(holder);
         }

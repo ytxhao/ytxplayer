@@ -61,7 +61,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private VideoView mVideoView;
     YtxMediaPlayer mPlayer;
 
-    private VideoGlSurfaceView mGlSurface = null;
+    public VideoGlSurfaceView mGlSurface = null;
     private int mCurrentState = STATE_IDLE;
     private int mTargetState  = STATE_IDLE;
 
@@ -70,7 +70,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private Uri         mUri;
     private Map<String, String> mHeaders;
     private int         mSeekWhenPrepared;  // recording the seek position while preparing
-
+    Context mContext;
     public YtxVideoView(Context context) {
         super(context);
         initVideoView(context);
@@ -294,7 +294,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             e.printStackTrace();
         }
         mPlayer.prepare();
-    }
 
+    }
 
 }
