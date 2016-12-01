@@ -391,6 +391,14 @@ GlEngine *GlEngine::getGlEngine() {
 }
 
 
+void GlEngine::notifyRenderer() {
+    //调用回调通知渲染视频
+    if(notifyRendererCallback!=NULL){
+        notifyRendererCallback();
+    }
+
+}
+
 void GlEngine::setScreenWidth(int mScreenWidth){
     this->mScreenWidth = mScreenWidth;
 }

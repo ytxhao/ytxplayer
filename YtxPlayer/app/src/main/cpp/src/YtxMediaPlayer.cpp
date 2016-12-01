@@ -4,6 +4,8 @@
 
 #define LOG_NDEBUG 0
 #define TAG "YTX-PLAYER-JNI"
+
+#include <ytxplayer/VideoRefreshController.h>
 #include "ALog-priv.h"
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
@@ -69,6 +71,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mCurrentState = MEDIA_PLAYER_IDLE;
     mPrepareSync = false;
     mPrepareStatus = 0;
+    abortRequest = 0;
     mLoop = false;
     pthread_mutex_init(&mLock, NULL);
     mLeftVolume = mRightVolume = 1.0;
@@ -173,7 +176,7 @@ int  YtxMediaPlayer::prepare() {
     for(int i=0; i<pFormatCtx->nb_streams; i++) {
         AVStream *st = pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
-       // st->discard = AVDISCARD_ALL;
+
         if (type >= 0 && wanted_stream_spec[type] && st_index[type] == -1) {
             if (avformat_match_stream_specifier(pFormatCtx, st, wanted_stream_spec[type]) > 0) {
                 st_index[type] = i;
@@ -196,8 +199,6 @@ int  YtxMediaPlayer::prepare() {
         audioEngine = new AudioEngine();
         audioEngine->createEngine();
         audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
-      //  sleep(1);
-      //  audioEngine->selectClip(2,10);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
@@ -245,9 +246,11 @@ int  YtxMediaPlayer::start() {
     mDecoderVideo->onDecode = decodeVideo;
     mDecoderVideo->onDecodeFinish = finish;
     mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
-   // decodeAudioFirstFrameHandler
+
+    mVideoRefreshController = new VideoRefreshController(mDecoderVideo);
+
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
-    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
+
     return 0;
 }
 
@@ -258,118 +261,16 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     //等待surface render初始化完成
 
     do{
-        usleep(500);
+        usleep(200);
     }while(!GlEngine::glEngineInitComplete());
   //  GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
 
-
-//    pthread_create(&mPlayerRefreshThread, NULL, startPlayerRefresh, NULL);
     sPlayer->decodeMovie(ptr);
     return 0;
 }
 
-
-
-static double vp_duration(Frame *vp, Frame *nextvp) {
-    if (vp->serial == nextvp->serial) {
-        double duration = nextvp->pts - vp->pts;
-        if (isnan(duration) || duration <= 0)
-            return vp->duration;
-        else
-            return duration;
-    } else {
-        return 0.0;
-    }
-}
-
 void YtxMediaPlayer::decodeAudioFirstFrameHandler(){
     audioDecodeFrame();
-}
-
-
-/* polls for possible required screen refresh at least this often, should be less than 1/fps */
-#define REFRESH_RATE 0.01
-#define AV_SYNC_THRESHOLD_MAX 0.1
-void* YtxMediaPlayer::startPlayerRefresh(void* ptr) {
-    ALOGI("starting main player startPlayerRefresh\n");
-    //  printferr();
-    double last_duration, duration, delay;
-    Frame *vp, *lastvp;
-    double remaining_time = 0.0;
-    double time;
-    double frame_timer=0.0;
-
-//    do{
-//        usleep(500);
-//    }while(GlEngine::glEngineInitComplete()==false);
-    while (sPlayer->isFinish != 1) {
-
-        if(sPlayer->mDecoderVideo != NULL){
-
-            if(remaining_time > 0.0){
-            //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
-                av_usleep((int64_t)(remaining_time * 1000000.0));
-
-            }
-            remaining_time = REFRESH_RATE;
-            //usleep(20000);
-
-            if(sPlayer->mDecoderVideo->frameQueue->frameQueueNumRemaining() < 2 ){
-                // nothing to do, no picture to display in the queue
-
-            }else{
-
-
-              //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
-              //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
-                lastvp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
-                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeek();
-
-
-                last_duration = vp_duration(lastvp, vp);
-                delay = last_duration;
-
-
-                time = av_gettime_relative()/1000000.0; //获取ff系统时间,单位为秒
-                ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",last_duration,time,frame_timer,frame_timer + delay);
-
-                if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
-                    remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
-                    //goto display;
-                    continue;
-                }
-
-                frame_timer += delay; //下一帧需要在这个时间显示
-                if (delay > 0 && time - frame_timer > AV_SYNC_THRESHOLD_MAX){
-                    frame_timer = time;
-                }
-
-
-                
-                display:
-                int y_size = sPlayer->streamVideo.dec_ctx->width * sPlayer->streamVideo.dec_ctx->height;
-                Frame *vp;
-                vp = sPlayer->mDecoderVideo->frameQueue->frameQueuePeekLast();
-                if(vp->frame != NULL){
-                    GlEngine::getGlEngine()->addRendererFrame((char*)vp->frame->data[0],
-                                                                 (char*) vp->frame->data[1],
-                                                                 (char*)vp->frame->data[2],
-                                                      sPlayer->streamVideo.dec_ctx->width,
-                                                      sPlayer->streamVideo.dec_ctx->height);
-                    sPlayer->notifyRenderer();
-
-                  //  GlEngine::getGlEngine()->waitRendererFinish();
-                 //   sPlayer->updateYuv(vp->frame->data[0], vp->frame->data[1], vp->frame->data[2], y_size);
-
-                }
-                sPlayer->mDecoderVideo->frameQueue->frameQueueNext();
-
-            }
-
-        }
-
-    }
-    pthread_exit(NULL);
 }
 
 
@@ -386,13 +287,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     AVPacket mPacket, *pPacket = &mPacket;
     int i=0, *pI = &i;
 
-//    mDecoderAudio = new DecoderAudio(&streamAudio);
-//    mDecoderVideo = new DecoderVideo(&streamVideo);
-//    mDecoderVideo->setFrameQueue(frameQueue);
-//
-//    mDecoderAudio->onDecode = decodeAudio;
-//    mDecoderVideo->onDecode = decodeVideo;
-//    mDecoderVideo->onDecodeFinish = finish;
+    mVideoRefreshController->startAsync();
+
     mDecoderAudio->startAsync();
 
 
@@ -480,6 +376,8 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 
 int  YtxMediaPlayer::stop() {
 
+    mCurrentState = MEDIA_PLAYER_STOPPED;
+    //等待读取线程结束
     return 0;
 }
 
@@ -612,40 +510,6 @@ void YtxMediaPlayer::setTexture(int textureY,int textureU,int textureV)
     this->textureU = textureU;
     this->textureV = textureV;
 }
-
-void YtxMediaPlayer::bindTexture(uint8_t *y,uint8_t *u,uint8_t *v) {
-
-
-    // building texture for Y data
-
-    glBindTexture(GL_TEXTURE_2D,textureY);
-
-    glTexImage2D(GL_TEXTURE_2D,0,GL_LUMINANCE,mVideoWidth,mVideoHeight,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,y);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glBindTexture(GL_TEXTURE_2D,textureU);
-
-    glTexImage2D(GL_TEXTURE_2D,0,GL_LUMINANCE,mVideoWidth/2,mVideoHeight/2,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,u);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-
-    glBindTexture(GL_TEXTURE_2D,textureV);
-
-    glTexImage2D(GL_TEXTURE_2D,0,GL_LUMINANCE,mVideoWidth/2,mVideoHeight/2,0,GL_LUMINANCE,GL_UNSIGNED_BYTE,v);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-}
-
-
 
 int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 {

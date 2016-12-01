@@ -6,6 +6,7 @@
 #define TAG "YTX-PLAYER-JNI"
 #include "ALog-priv.h"
 #include <string>
+#include <ytxplayer/gl_engine.h>
 #include "ytxplayer/ffinc.h"
 #include "ytxplayer/android_media_YtxMediaPlayer.h"
 #include "ytxplayer/YtxMediaPlayer.h"
@@ -341,8 +342,8 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
   //  mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
     mPlayer->updateYuv = android_media_player_updateYuv;
     //-----------------------------------------------------
-    mPlayer->notifyRendererCallback = android_media_player_notifyRenderFrame;
 
+    GlEngine::getGlEngine()->notifyRendererCallback = android_media_player_notifyRenderFrame;
     //jfieldID rendererFieldID = env->GetFieldID(glSurface_cls,"renderer","[I");
     ALOGI("android_media_player_setGlSurface OUT\n");
 }
@@ -447,6 +448,9 @@ JNIEXPORT jint JNICALL android_media_player_start
 JNIEXPORT jint JNICALL android_media_player_stop
         (JNIEnv *env, jobject obj)
 {
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+
+    mPlayer->stop();
 
     return 0;
 }

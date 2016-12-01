@@ -18,7 +18,7 @@
 #include <pthread.h>
 #include "lock.h"
 
-
+typedef void (*notifyRendererFrame) ();
 class GlEngine {
 
 private:
@@ -127,6 +127,8 @@ public:
         GlEngine::isInitComplete = isComplete;
     }
 
+    notifyRendererFrame notifyRendererCallback = NULL;
+    void notifyRenderer();
     void printGLString(const char *name, GLenum s);
 
     void checkGlError(const char *op);

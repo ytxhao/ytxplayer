@@ -23,11 +23,11 @@ public:
     void						stop();
     void						enqueue(AVPacket* packet,int *i);
     int							packets();
-
+    InputStream*                mStream;
 protected:
     PacketQueue*                mQueue;
   //  AVStream*             		mStream;
-    InputStream*                mStream;
+
     virtual bool                prepare();
     virtual bool                decode(void* ptr);
     virtual bool                process(AVPacket *packet);

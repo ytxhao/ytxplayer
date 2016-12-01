@@ -20,7 +20,7 @@
 #include <fstream>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
-
+#include <ytxplayer/VideoRefreshController.h>
 #include "audio_engine.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 typedef void (*notifyRendererFrame) ();
@@ -72,9 +72,10 @@ public:
 
     int start();
 
+    VideoRefreshController *mVideoRefreshController;
     static void* startPlayer(void* ptr);
 
-    static void* startPlayerRefresh(void* ptr);
+   // static void* startPlayerRefresh(void* ptr);
 
     int stop();
 
@@ -129,8 +130,6 @@ public:
 
     void setTexture(int textureY,int textureU,int textureV);
 
-    void bindTexture(uint8_t *y,uint8_t *u,uint8_t *v);
-
     void notifyRenderer();
 
     static void decodeAudio(AVFrame* frame, double pts);
@@ -139,7 +138,6 @@ public:
 
     static void finish();
 
-  //  static void updateYuv(uint8_t *y,uint8_t *u,uint8_t *v);
 
     updateYuvHandler updateYuv;
     notifyRendererFrame notifyRendererCallback = NULL;
@@ -194,6 +192,7 @@ public:
     int  mDuration;
     struct SwsContext*	mConvertCtx;
     SwrContext *swrCtx;
+    int abortRequest;
 
 
 
