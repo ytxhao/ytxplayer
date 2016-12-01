@@ -14,14 +14,15 @@ typedef void (*AudioDecodeFirstFrameHandler) ();
 class DecoderAudio : public IDecoder
 {
 public:
-    DecoderAudio(InputStream* stream);
+    DecoderAudio(VideoStateInfo *mVideoStateInfo);
 
     ~DecoderAudio();
 
     AudioDecodingHandler		onDecode;
     AudioDecodeFirstFrameHandler  firstFrameHandler;
-    FrameQueue *frameQueue;
-    void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
+   // FrameQueue *frameQueue;
+    VideoStateInfo *mVideoStateInfo;
+   // void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;

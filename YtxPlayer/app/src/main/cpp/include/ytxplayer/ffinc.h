@@ -37,12 +37,12 @@ libLoader.loadLibrary("avfilter");
 #include <libavutil/opt.h>
 #include <libavutil/time.h>
 
-
-typedef struct InputStream {
-    AVStream *st;
-    AVCodecContext *dec_ctx;
-    AVFormatContext *pFormatCtx;
-} InputStream;
+//
+//typedef struct InputStream {
+//    AVStream *st;
+//    AVCodecContext *dec_ctx;
+//    AVFormatContext *pFormatCtx;
+//} InputStream;
 
 #ifdef __cplusplus
 }

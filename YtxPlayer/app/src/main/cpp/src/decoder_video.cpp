@@ -5,14 +5,16 @@
 
 
 
+
 #include "ytxplayer/decoder_video.h"
 
 #define TAG "FFMpegVideoDecoder"
 #include "ALog-priv.h"
 static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 
-DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
+DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo)
 {
+    this->mVideoStateInfo = mVideoStateInfo;
    // stream->dec_ctx->get_buffer2 = getBuffer;
   //  mStream->codec->
    // stream->dec_ctx->release_buffer = releaseBuffer;
@@ -23,23 +25,25 @@ DecoderVideo::DecoderVideo(InputStream* stream) : IDecoder(stream)
 
 DecoderVideo::~DecoderVideo()
 {
-    frameQueue->frameQueueDestory();
+    mVideoStateInfo->frameQueueVideo->frameQueueDestory();
 }
 
 bool DecoderVideo::prepare()
 {
     ALOGI("ytxhao DecoderVideo::prepare\n");
-    mConvertCtx = sws_getContext(mStream->dec_ctx->width,
-                                 mStream->dec_ctx->height,
-                                 mStream->dec_ctx->pix_fmt,
-                                 mStream->dec_ctx->width,
-                                 mStream->dec_ctx->height,
+    mConvertCtx = sws_getContext(mVideoStateInfo->streamVideo->dec_ctx->width,
+                                 mVideoStateInfo->streamVideo->dec_ctx->height,
+                                 mVideoStateInfo->streamVideo->dec_ctx->pix_fmt,
+                                 mVideoStateInfo->streamVideo->dec_ctx->width,
+                                 mVideoStateInfo->streamVideo->dec_ctx->height,
                                  AV_PIX_FMT_YUV420P,
                                  SWS_BICUBIC,
                                  NULL,
                                  NULL,
                                  NULL);
-    out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
+    out_buffer_video=(unsigned char *)av_malloc((size_t) av_image_get_buffer_size(AV_PIX_FMT_YUV420P,
+                                                                                  mVideoStateInfo->streamVideo->dec_ctx->width,
+                                                                                  mVideoStateInfo->streamVideo->dec_ctx->height, 1));
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -59,7 +63,7 @@ double DecoderVideo::synchronize(AVFrame *src_frame, double pts) {
         pts = mVideoClock;
     }
     /* update the video clock */
-    frame_delay = av_q2d(mStream->dec_ctx->time_base);
+    frame_delay = av_q2d( mVideoStateInfo->streamVideo->dec_ctx->time_base);
     /* if we are repeating a frame, adjust clock accordingly */
     frame_delay += src_frame->repeat_pict * (frame_delay * 0.5);
     mVideoClock += frame_delay;
@@ -79,7 +83,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
         return false;
     }
 
-    ret = avcodec_decode_video2(mStream->dec_ctx,
+    ret = avcodec_decode_video2( mVideoStateInfo->streamVideo->dec_ctx,
                          mFrame,
                          &completed,
                          packet);
@@ -96,7 +100,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
 
         Frame *vp;
-        if(!(vp = frameQueue->frameQueuePeekWritable())){
+        if(!(vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekWritable())){
             return true;
         }
 
@@ -116,20 +120,21 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
    //     out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
         av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
-                             AV_PIX_FMT_YUV420P,mStream->dec_ctx->width, mStream->dec_ctx->height,1);
+                             AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
+                             mVideoStateInfo->streamVideo->dec_ctx->height,1);
 
         sws_scale(mConvertCtx,
           (const unsigned char *const *) mFrame->data,
                   mFrame->linesize,
                   0,
-                  mStream->dec_ctx->height,
+                  mVideoStateInfo->streamVideo->dec_ctx->height,
                   vp->frame->data,
                   vp->frame->linesize);
 
 
 
         onDecode(mFrame, pts);
-        frameQueue->frameQueuePush();
+        mVideoStateInfo->frameQueueVideo->frameQueuePush();
         av_frame_unref(mFrame);
         return true;
     }
@@ -146,8 +151,8 @@ bool DecoderVideo::decode(void* ptr)
     int i;
     ALOGI( "decoding video\n");
   //  AVFrame *frame = av_frame_alloc();
-     timeBase = mStream->st->time_base;//is->video_st->time_base;
-     frameRate = av_guess_frame_rate(mStream->pFormatCtx, mStream->st, NULL);
+     timeBase =  mVideoStateInfo->streamVideo->st->time_base;//is->video_st->time_base;
+     frameRate = av_guess_frame_rate(mVideoStateInfo->pFormatCtx, mVideoStateInfo->streamVideo->st, NULL);
 
 
 

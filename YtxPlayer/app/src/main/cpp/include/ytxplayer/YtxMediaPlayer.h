@@ -22,6 +22,7 @@
 #include <GLES2/gl2ext.h>
 #include <ytxplayer/VideoRefreshController.h>
 #include "audio_engine.h"
+#include "VideoStateInfo.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 typedef void (*notifyRendererFrame) ();
 // ----------------------------------------------------------------------------
@@ -128,7 +129,6 @@ public:
     int updateProxyConfig(
             const char *host, int32_t port, const char *exclusionList);
 
-    void setTexture(int textureY,int textureU,int textureV);
 
     void notifyRenderer();
 
@@ -141,12 +141,13 @@ public:
 
     updateYuvHandler updateYuv;
     notifyRendererFrame notifyRendererCallback = NULL;
-    InputStream streamVideo;
-    InputStream streamAudio;
+//    InputStream streamVideo;
+//    InputStream streamAudio;
 
     int isFinish;
-    DecoderVideo*  mDecoderVideo;
-    DecoderAudio*  mDecoderAudio;
+    DecoderVideo  *mDecoderVideo;
+    DecoderAudio  *mDecoderAudio;
+    VideoStateInfo *mVideoStateInfo;
 //private:
 
     int streamComponentOpen(InputStream *is, int stream_index);
@@ -213,9 +214,6 @@ public:
     int  got_picture;
     unsigned char *out_buffer_video;
     unsigned char *out_buffer_audio;
-    int textureY;
-    int textureU;
-    int textureV;
 
     //视频帧率
     AVRational frame_rate_video;

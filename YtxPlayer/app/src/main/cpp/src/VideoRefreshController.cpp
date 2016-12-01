@@ -3,13 +3,15 @@
 //
 
 #include <ytxplayer/gl_engine.h>
+#include <ytxplayer/VideoStateInfo.h>
 #include "VideoRefreshController.h"
 #define LOG_NDEBUG 0
 #define TAG "YTX-VideoRefreshThread-JNI"
 #include "ALog-priv.h"
 
-VideoRefreshController::VideoRefreshController(DecoderVideo* mDecoderVideo){
-    this->mDecoderVideo = mDecoderVideo;
+VideoRefreshController::VideoRefreshController(VideoStateInfo* mVideoStateInfo)
+{
+    this->mVideoStateInfo = mVideoStateInfo;
 }
 
 void VideoRefreshController::handleRun(void* ptr){
@@ -29,7 +31,7 @@ bool VideoRefreshController::prepare() {
 #define AV_SYNC_THRESHOLD_MAX 0.1
 void VideoRefreshController::process() {
 
-    if(mDecoderVideo != NULL) {
+    if(mVideoStateInfo != NULL) {
 
         if (remaining_time > 0.0) {
             //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
@@ -39,7 +41,7 @@ void VideoRefreshController::process() {
         remaining_time = REFRESH_RATE;
         //usleep(20000);
 
-        if (mDecoderVideo->frameQueue->frameQueueNumRemaining() < 2) {
+        if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2) {
             // nothing to do, no picture to display in the queue
 
         } else {
@@ -47,8 +49,8 @@ void VideoRefreshController::process() {
 
             //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
             //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
-            lastvp = mDecoderVideo->frameQueue->frameQueuePeekLast();
-            vp = mDecoderVideo->frameQueue->frameQueuePeek();
+            lastvp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
+            vp = mVideoStateInfo->frameQueueVideo->frameQueuePeek();
 
 
             last_duration = vp_duration(lastvp, vp);
@@ -73,11 +75,11 @@ void VideoRefreshController::process() {
 
 
             display:
-            int decodeWidth = mDecoderVideo->mStream->dec_ctx->width;
-            int decodeHeight = mDecoderVideo->mStream->dec_ctx->height;
+            int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
+            int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
           //  int y_size = mDecoderVideo->mStream->dec_ctx->width * mDecoderVideo->mStream->dec_ctx->height;
             Frame *vp;
-            vp = mDecoderVideo->frameQueue->frameQueuePeekLast();
+            vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             if (vp->frame != NULL) {
                 GlEngine::getGlEngine()->addRendererFrame((char *) vp->frame->data[0],
                                                           (char *) vp->frame->data[1],
@@ -90,7 +92,7 @@ void VideoRefreshController::process() {
 
 
             }
-            mDecoderVideo->frameQueue->frameQueueNext();
+            mVideoStateInfo->frameQueueVideo->frameQueueNext();
 
         }
     }

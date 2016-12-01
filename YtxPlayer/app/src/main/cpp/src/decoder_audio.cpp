@@ -3,18 +3,21 @@
 //
 
 #include <android/log.h>
+#include <ytxplayer/VideoStateInfo.h>
 #include "ytxplayer/decoder_audio.h"
-
+#include "ffinc.h"
 #define TAG "FFMpegAudioDecoder"
 #include "ALog-priv.h"
 
-DecoderAudio::DecoderAudio(InputStream* stream) : IDecoder(stream)
+DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo)
 {
     isFirstFrame = true;
+    this->mVideoStateInfo = mVideoStateInfo;
 }
 
 DecoderAudio::~DecoderAudio()
 {
+    avcodec_close(mVideoStateInfo->streamAudio->dec_ctx);
 }
 
 bool DecoderAudio::prepare()
@@ -42,7 +45,7 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
         return false;
     }
     //int len = avcodec_decode_audio3(mStream->codec, mSamples, &size, packet);
-    int ret = avcodec_decode_audio4(mStream->dec_ctx,mFrame,&completed,packet);
+    int ret = avcodec_decode_audio4(mVideoStateInfo->streamAudio->dec_ctx,mFrame,&completed,packet);
     ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
     //call handler for posting buffer to os audio driver
 
@@ -55,10 +58,10 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
 
         if (mFrame->pts != AV_NOPTS_VALUE){
             ALOGI("DecoderAudio::process mFrame->pts != AV_NOPTS_VALUE");
-            mFrame->pts = av_rescale_q(mFrame->pts, mStream->dec_ctx->time_base, tb);
+            mFrame->pts = av_rescale_q(mFrame->pts, mVideoStateInfo->streamAudio->dec_ctx->time_base, tb);
         } else if (mFrame->pkt_pts != AV_NOPTS_VALUE){
             ALOGI("DecoderAudio::process mFrame->pkt_pts != AV_NOPTS_VALUE");
-            mFrame->pts = av_rescale_q(mFrame->pkt_pts, av_codec_get_pkt_timebase(mStream->dec_ctx), tb);
+            mFrame->pts = av_rescale_q(mFrame->pkt_pts, av_codec_get_pkt_timebase(mVideoStateInfo->streamAudio->dec_ctx), tb);
         } else if (next_pts != AV_NOPTS_VALUE){
             ALOGI("DecoderAudio::process next_pts != AV_NOPTS_VALUE");
             mFrame->pts = av_rescale_q(next_pts, next_pts_tb, tb);
@@ -71,7 +74,7 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
 
         ALOGI("DecoderAudio::process 1 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
 //////////////////////////////////////////////////////////////////////
-        if(!(af = frameQueue->frameQueuePeekWritable())){
+        if(!(af = mVideoStateInfo->frameQueueAudio->frameQueuePeekWritable())){
             return true;
         }
 
@@ -82,7 +85,7 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
         af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
         ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
         av_frame_move_ref(af->frame, mFrame);
-        frameQueue->frameQueuePush();
+        mVideoStateInfo->frameQueueAudio->frameQueuePush();
 
         if(isFirstFrame){
             isFirstFrame = false;

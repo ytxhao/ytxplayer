@@ -31,6 +31,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/gl_engine.cpp
              src/main/cpp/src/lock.cpp
              src/main/cpp/src/VideoRefreshController.cpp
+             src/main/cpp/src/VideoStateInfo.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

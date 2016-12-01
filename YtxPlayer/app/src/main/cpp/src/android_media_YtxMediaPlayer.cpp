@@ -339,7 +339,6 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
         ALOGI("GetObjectClass failed \n") ;
     }
 
-  //  mPlayer->setTexture(mYUVTextures[0],mYUVTextures[1],mYUVTextures[2]);
     mPlayer->updateYuv = android_media_player_updateYuv;
     //-----------------------------------------------------
 

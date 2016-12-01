@@ -54,8 +54,8 @@ void printferr(){
 
 static YtxMediaPlayer* sPlayer;
 
-FrameQueue *frameQueueVideo;
-FrameQueue *frameQueueAudio;
+//FrameQueue *frameQueueVideo;
+//FrameQueue *frameQueueAudio;
 
 YtxMediaPlayer::YtxMediaPlayer(){
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
@@ -77,6 +77,8 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mLeftVolume = mRightVolume = 1.0;
     mVideoWidth = mVideoHeight = 0;
     memset(st_index, -1, sizeof(st_index));
+    mVideoStateInfo = new VideoStateInfo();
+
     sPlayer = this;
 }
 
@@ -106,11 +108,11 @@ int audioDecodeFrame(){
     Frame *af;
     // do{
 
-    if (!(af = sPlayer->mDecoderAudio->frameQueue->frameQueuePeekReadable())){
+    if (!(af = sPlayer->mVideoStateInfo->frameQueueAudio->frameQueuePeekReadable())){
         return -1;
     }
 
-    sPlayer->mDecoderAudio->frameQueue->frameQueueNext();
+    sPlayer->mVideoStateInfo->frameQueueAudio->frameQueueNext();
 
     // }while(af->serial != is->audioq.serial);
 
@@ -192,17 +194,17 @@ int  YtxMediaPlayer::prepare() {
         }
     }
 
-    streamVideo.pFormatCtx = pFormatCtx;
-    streamAudio.pFormatCtx = pFormatCtx;
+
+    mVideoStateInfo->pFormatCtx = pFormatCtx;
     if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-        streamComponentOpen(&streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+        streamComponentOpen(mVideoStateInfo->streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
         audioEngine = new AudioEngine();
         audioEngine->createEngine();
-        audioEngine->createBufferQueueAudioPlayer(streamAudio.dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
+        audioEngine->createBufferQueueAudioPlayer(mVideoStateInfo->streamAudio->dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
     }
 
     if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-        streamComponentOpen(&streamVideo,st_index[AVMEDIA_TYPE_VIDEO]);
+        streamComponentOpen(mVideoStateInfo->streamVideo,st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
 
@@ -227,19 +229,19 @@ int  YtxMediaPlayer::start() {
     char datam[1024]="ytxh ytxhaooooolkaslfasl;'kf'as ";
    // fwrite(datam,1,1024,fp_yuv);
     ALOGI("start fp_yuv=%d\n",fp_yuv);
-    ALOGI("&streamVideo=%d ; streamVideo.dec_ctx=%d\n",&streamVideo,streamVideo.dec_ctx);
 
-    frameQueueVideo = new FrameQueue();
-    frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
 
-    frameQueueAudio = new FrameQueue();
-    frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
+    //frameQueueVideo = new FrameQueue();
+    mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
 
-    mDecoderAudio = new DecoderAudio(&streamAudio);
-    mDecoderVideo = new DecoderVideo(&streamVideo);
+   // frameQueueAudio = new FrameQueue();
+    mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
 
-    mDecoderAudio->setFrameQueue(frameQueueAudio);
-    mDecoderVideo->setFrameQueue(frameQueueVideo);
+    mDecoderAudio = new DecoderAudio(mVideoStateInfo);
+    mDecoderVideo = new DecoderVideo(mVideoStateInfo);
+
+//    mDecoderAudio->setFrameQueue(frameQueueAudio);
+//    mDecoderVideo->setFrameQueue(frameQueueVideo);
 
 
     mDecoderAudio->onDecode = decodeAudio;
@@ -247,7 +249,7 @@ int  YtxMediaPlayer::start() {
     mDecoderVideo->onDecodeFinish = finish;
     mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
 
-    mVideoRefreshController = new VideoRefreshController(mDecoderVideo);
+    mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
 
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
 
@@ -343,6 +345,12 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     if((ret = mDecoderAudio->wait()) != 0) {
         ALOGI( "Couldn't cancel audio thread: %i", ret);
     }
+
+    ALOGI("waiting on VideoRefreshController thread");
+    if((ret = mVideoRefreshController->wait()) != 0) {
+        ALOGI( "Couldn't cancel VideoRefreshController thread: %i", ret);
+    }
+
 
     if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
         ALOGI( "playing err\n");
@@ -504,12 +512,6 @@ void  YtxMediaPlayer::finish() {
     sPlayer->isFinish = 1;
 }
 
-void YtxMediaPlayer::setTexture(int textureY,int textureU,int textureV)
-{
-    this->textureY = textureY;
-    this->textureU = textureU;
-    this->textureV = textureV;
-}
 
 int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 {

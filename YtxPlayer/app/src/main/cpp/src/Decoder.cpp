@@ -1,16 +1,15 @@
 //
 // Created by Administrator on 2016/9/7.
 //
+#include <ytxplayer/InputStream.h>
 #include "ytxplayer/Decoder.h"
 
 #define TAG "FFMpegIDecoder"
 #include "ALog-priv.h"
 
-IDecoder::IDecoder(InputStream* stream)
+IDecoder::IDecoder()
 {
     mQueue = new PacketQueue();
-    mStream = stream;
-   // this->stream = stream;
 }
 
 IDecoder::~IDecoder()
@@ -20,7 +19,7 @@ IDecoder::~IDecoder()
         stop();
     }
     free(mQueue);
-    avcodec_close(mStream->dec_ctx);
+
 }
 
 void IDecoder::enqueue(AVPacket* packet,int *i)

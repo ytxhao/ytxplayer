@@ -7,6 +7,7 @@
 #include <ytxplayer/decoder_video.h>
 #include "frame_queue.h"
 #include "Thread.h"
+#include "VideoStateInfo.h"
 class VideoRefreshController : public Thread
 {
 public:
@@ -15,8 +16,8 @@ public:
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;
-    DecoderVideo*  mDecoderVideo;
-    VideoRefreshController(DecoderVideo* mDecoderVideo);
+    VideoStateInfo* mVideoStateInfo;
+    VideoRefreshController(VideoStateInfo* mVideoStateInfo);
     ~VideoRefreshController(){};
 
     void				handleRun(void* ptr);

@@ -17,16 +17,14 @@
 class IDecoder : public Thread
 {
 public:
-    IDecoder(InputStream* stream);
+    IDecoder();
     ~IDecoder();
 
     void						stop();
     void						enqueue(AVPacket* packet,int *i);
     int							packets();
-    InputStream*                mStream;
 protected:
     PacketQueue*                mQueue;
-  //  AVStream*             		mStream;
 
     virtual bool                prepare();
     virtual bool                decode(void* ptr);

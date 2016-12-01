@@ -6,23 +6,24 @@
 #define YTXPLAYER_DECODER_VIDEO_H
 #include "Decoder.h"
 #include "frame_queue.h"
-
+#include <ytxplayer/VideoStateInfo.h>
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
 typedef void (*VideoDecodeFinishHandler) ();
 class DecoderVideo : public IDecoder
 {
 public:
-    DecoderVideo(InputStream* stream);
+    DecoderVideo(VideoStateInfo *mVideoStateInfo);
     ~DecoderVideo();
 
     VideoDecodingHandler		onDecode;
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
-    FrameQueue *frameQueue;
+   // FrameQueue *frameQueue;
+    VideoStateInfo *mVideoStateInfo;
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;
-    void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
+  //  void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
 private:
     AVFrame*					mFrame;
     double						mVideoClock;
