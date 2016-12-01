@@ -18,12 +18,12 @@ public:
     VideoDecodingHandler		onDecode;
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
-   // FrameQueue *frameQueue;
+
     VideoStateInfo *mVideoStateInfo;
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;
-  //  void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
+
 private:
     AVFrame*					mFrame;
     double						mVideoClock;
@@ -35,7 +35,7 @@ private:
     bool                        prepare();
     double 						synchronize(AVFrame *src_frame, double pts);
     bool                        decode(void* ptr);
-    bool                        process(AVPacket *packet,int *i);
+    bool                        process(MAVPacket *mPacket);
     static int					getBuffer(struct AVCodecContext *c, AVFrame *pic,int flags);
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
 

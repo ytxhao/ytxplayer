@@ -22,7 +22,7 @@ public:
     virtual void				stop();
 
 protected:
-    bool						mRunning;
+    volatile  bool				mRunning;
 
     virtual void                handleRun(void* ptr);
 

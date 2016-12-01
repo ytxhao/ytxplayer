@@ -15,12 +15,6 @@ static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo)
 {
     this->mVideoStateInfo = mVideoStateInfo;
-   // stream->dec_ctx->get_buffer2 = getBuffer;
-  //  mStream->codec->
-   // stream->dec_ctx->release_buffer = releaseBuffer;
-  //  frameQueue = new FrameQueue();
-   // frameQueueInitFinsh =  frameQueue->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-   // frameQueueInitFinsh =  frameQueue.frameQueueInit(6,1);
 }
 
 DecoderVideo::~DecoderVideo()
@@ -70,7 +64,7 @@ double DecoderVideo::synchronize(AVFrame *src_frame, double pts) {
     return pts;
 }
 
-bool DecoderVideo::process(AVPacket *packet, int *i)
+bool DecoderVideo::process(MAVPacket *mPacket)
 {
     int	completed;
     double pts = 0;
@@ -78,7 +72,8 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
     // Decode video frame
 
 //
-    if(*i == 1 && mQueue->size()==0){
+    ALOGI("DecoderVideo::process mPacket->isEnd=%d",mPacket->isEnd);
+    if(mPacket->isEnd){
         onDecodeFinish();
         return false;
     }
@@ -86,7 +81,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
     ret = avcodec_decode_video2( mVideoStateInfo->streamVideo->dec_ctx,
                          mFrame,
                          &completed,
-                         packet);
+                                 &mPacket->pkt);
 
     if (completed) {
 
@@ -146,7 +141,7 @@ bool DecoderVideo::process(AVPacket *packet, int *i)
 
 bool DecoderVideo::decode(void* ptr)
 {
-    AVPacket        pPacket;
+    MAVPacket        pPacket;
 
     int i;
     ALOGI( "decoding video\n");
@@ -158,19 +153,19 @@ bool DecoderVideo::decode(void* ptr)
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true, &i) < 0)
+        if(mQueue->get(&pPacket, true) < 0)
         {
             mRunning = false;
            // return false;
         }else{
 
-            if(!process(&pPacket,&i))
+            if(!process(&pPacket))
             {
                 mRunning = false;
                 return false;
             }
             // Free the packet that was allocated by av_read_frame
-            av_free_packet(&pPacket);
+            av_free_packet(&pPacket.pkt);
         }
         ALOGI( "DecoderVideo::decode mQueue->size()=%d\n",mQueue->size());
     }

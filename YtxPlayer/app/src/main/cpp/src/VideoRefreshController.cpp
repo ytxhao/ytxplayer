@@ -99,6 +99,10 @@ void VideoRefreshController::process() {
 
 }
 
+void VideoRefreshController::finish() {
+    mRunning = false;
+}
+
 void VideoRefreshController::refresh() {
 
     while(mRunning){

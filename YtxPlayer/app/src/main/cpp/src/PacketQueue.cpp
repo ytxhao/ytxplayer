@@ -39,7 +39,7 @@ void PacketQueue::flush()
     pthread_mutex_lock(&mLock);
 
     for(pkt = mFirst; pkt != NULL; pkt = pkt1) {
-        av_free_packet(&pkt->pkt);
+        av_free_packet(&pkt->mPkt.pkt);
         av_freep(&pkt);
         pkt1 = pkt->next;
     }
@@ -51,19 +51,18 @@ void PacketQueue::flush()
     pthread_mutex_unlock(&mLock);
 }
 
-int PacketQueue::put(AVPacket* pkt,int *i)
+int PacketQueue::put(MAVPacket* mPkt)
 {
     MAVPacketList *pkt1;
 
     /* duplicate the packet */
-    if (av_dup_packet(pkt) < 0)
+    if (av_dup_packet(&mPkt->pkt) < 0)
         return -1;
 
     pkt1 = (MAVPacketList *) av_malloc(sizeof(MAVPacketList));
     if (!pkt1)
         return -1;
-    pkt1->i = *i;
-    pkt1->pkt = *pkt;
+    pkt1->mPkt = *mPkt;
     pkt1->next = NULL;
 
     pthread_mutex_lock(&mLock);
@@ -76,7 +75,7 @@ int PacketQueue::put(AVPacket* pkt,int *i)
 
     mLast = pkt1;
     mNbPackets++;
-    mSize += pkt1->pkt.size + sizeof(*pkt1);
+    mSize += pkt1->mPkt.pkt.size + sizeof(*pkt1);
 
     pthread_cond_signal(&mCondition);
     pthread_mutex_unlock(&mLock);
@@ -86,7 +85,7 @@ int PacketQueue::put(AVPacket* pkt,int *i)
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-int PacketQueue::get(AVPacket *pkt, bool block,int *i)
+int PacketQueue::get(MAVPacket *mPkt, bool block)
 {
     MAVPacketList *pkt1;
     int ret;
@@ -105,9 +104,8 @@ int PacketQueue::get(AVPacket *pkt, bool block,int *i)
             if (!mFirst)
                 mLast = NULL;
             mNbPackets--;
-            mSize -= pkt1->pkt.size + sizeof(*pkt1);
-            *pkt = pkt1->pkt;
-            *i = pkt1->i;
+            mSize -= pkt1->mPkt.pkt.size + sizeof(*pkt1);
+            *mPkt = pkt1->mPkt;
             av_free(pkt1);
             ret = 1;
             break;

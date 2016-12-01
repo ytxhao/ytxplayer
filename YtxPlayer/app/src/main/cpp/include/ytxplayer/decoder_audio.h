@@ -20,16 +20,17 @@ public:
 
     AudioDecodingHandler		onDecode;
     AudioDecodeFirstFrameHandler  firstFrameHandler;
-   // FrameQueue *frameQueue;
+
     VideoStateInfo *mVideoStateInfo;
-   // void setFrameQueue(FrameQueue *frameQueue){this->frameQueue = frameQueue;}
+
+
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;
     AVFrame*					mFrame;
     bool                        prepare();
     bool                        decode(void* ptr);
-    bool                        process(AVPacket *packet,int *i);
+    bool                        process(MAVPacket *mPacket);
     AVRational tb;
     Frame *af;
 

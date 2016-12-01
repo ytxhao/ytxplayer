@@ -286,8 +286,9 @@ void YtxMediaPlayer::notifyRenderer() {
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
-    AVPacket mPacket, *pPacket = &mPacket;
-    int i=0, *pI = &i;
+   // AVPacket mPacket, *pPacket = &mPacket;
+
+    MAVPacket mPacket, *pPacket = &mPacket;
 
     mVideoRefreshController->startAsync();
 
@@ -311,26 +312,26 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             continue;
         }
 
-        int ret = av_read_frame(pFormatCtx, pPacket);
+        int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
         ALOGI("decodeMovie ret=%d",ret);
         if(ret < 0) {
             mCurrentState = MEDIA_PLAYER_DECODED;
-            *pI = 1;
-            mDecoderVideo->enqueue(pPacket,pI);
-            mDecoderAudio->enqueue(pPacket,pI);
-          //  mDecoderVideo->stop();
-          //  mDecoderVideo->isFinish = 1;
+
+            pPacket->isEnd = true;
+            mDecoderVideo->enqueue(pPacket);
+            mDecoderAudio->enqueue(pPacket);
+
             continue;
         }
-        ALOGI("pPacket->stream_index =%d st_index[AVMEDIA_TYPE_VIDEO]=%d st_index[AVMEDIA_TYPE_AUDIO]=%d\n",pPacket->stream_index ,st_index[AVMEDIA_TYPE_VIDEO],st_index[AVMEDIA_TYPE_AUDIO]);
-        if (pPacket->stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
+
+        if (pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
            // ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
-            mDecoderVideo->enqueue(pPacket,pI);
-           // mDecoderVideo->isFinish = 0;
-        }else if(pPacket->stream_index == st_index[AVMEDIA_TYPE_AUDIO]){
-            mDecoderAudio->enqueue(pPacket,pI);
+            mDecoderVideo->enqueue(pPacket);
+
+        }else if(pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_AUDIO]){
+            mDecoderAudio->enqueue(pPacket);
         } else {
-            av_packet_unref(pPacket);
+            av_packet_unref(&pPacket->pkt);
         }
     }
 
@@ -385,7 +386,6 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 int  YtxMediaPlayer::stop() {
 
     mCurrentState = MEDIA_PLAYER_STOPPED;
-    //等待读取线程结束
     return 0;
 }
 
@@ -509,6 +509,7 @@ int  YtxMediaPlayer::setListener(const MediaPlayerListener* listener) {
 void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish");
+    sPlayer->mVideoRefreshController->finish();
     sPlayer->isFinish = 1;
 }
 

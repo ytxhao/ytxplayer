@@ -16,9 +16,15 @@ extern "C" {
 
 } // end of extern C
 
-typedef struct MAVPacketList {
-    int i;
+typedef struct MAVPacket {
     AVPacket pkt;
+    bool isEnd = false;
+} MAVPacket;
+
+
+
+typedef struct MAVPacketList {
+    MAVPacket mPkt;
     struct MAVPacketList *next;
 } MAVPacketList;
 
@@ -29,10 +35,10 @@ public:
     ~PacketQueue();
 
     void flush();
-    int put(AVPacket* pkt,int *i);
+    int put(MAVPacket* pkt);
 
     /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-    int get(AVPacket *pkt, bool block,int *i);
+    int get(MAVPacket *pkt, bool block);
 
     int size();
 

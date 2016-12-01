@@ -22,11 +22,7 @@ DecoderAudio::~DecoderAudio()
 
 bool DecoderAudio::prepare()
 {
-    //mSamplesSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-//    mSamples = (int16_t *) av_malloc(mSamplesSize);
-//    if(mSamples == NULL) {
-//        return false;
-//    }
+
     ALOGI("ytxhao DecoderAudio::prepare\n");
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
@@ -35,17 +31,17 @@ bool DecoderAudio::prepare()
     return true;
 }
 
-bool DecoderAudio::process(AVPacket *packet,int *i)
+bool DecoderAudio::process(MAVPacket *mPacket)
 {
     int pts = 0;
     int size = mSamplesSize;
     int	completed;
-
-    if(*i == 1 && mQueue->size()==0){
+    ALOGI("DecoderAudio::process mPacket->isEnd=%d",mPacket->isEnd);
+    if(mPacket->isEnd){
         return false;
     }
     //int len = avcodec_decode_audio3(mStream->codec, mSamples, &size, packet);
-    int ret = avcodec_decode_audio4(mVideoStateInfo->streamAudio->dec_ctx,mFrame,&completed,packet);
+    int ret = avcodec_decode_audio4(mVideoStateInfo->streamAudio->dec_ctx,mFrame,&completed,&mPacket->pkt);
     ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
     //call handler for posting buffer to os audio driver
 
@@ -99,24 +95,24 @@ bool DecoderAudio::process(AVPacket *packet,int *i)
 bool DecoderAudio::decode(void* ptr)
 {
     int i;
-    AVPacket        pPacket;
+    MAVPacket        pPacket;
 
     ALOGI( TAG, "decoding audio");
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true,&i) < 0)
+        if(mQueue->get(&pPacket, true) < 0)
         {
             mRunning = false;
             return false;
         }
-        if(!process(&pPacket,&i))
+        if(!process(&pPacket))
         {
             mRunning = false;
             return false;
         }
         // Free the packet that was allocated by av_read_frame
-        av_free_packet(&pPacket);
+        av_free_packet(&pPacket.pkt);
     }
 
     ALOGI( TAG, "decoding audio ended");

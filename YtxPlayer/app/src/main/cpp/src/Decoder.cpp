@@ -22,9 +22,9 @@ IDecoder::~IDecoder()
 
 }
 
-void IDecoder::enqueue(AVPacket* packet,int *i)
+void IDecoder::enqueue(MAVPacket* mPacket)
 {
-    mQueue->put(packet,i);
+    mQueue->put(mPacket);
 }
 
 int IDecoder::packets()

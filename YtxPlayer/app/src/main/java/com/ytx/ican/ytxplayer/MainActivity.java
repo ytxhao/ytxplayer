@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         CopyAssets(this,"video",filePath);
 
         videoView = (YtxVideoView) findViewById(R.id.videoView);
-       // videoView.setVideoPath(filePath+"titanic.mkv");
-        videoView.setVideoPath(filePath+"video2.mp4");
+        videoView.setVideoPath(filePath+"titanic.mkv");
+       // videoView.setVideoPath(filePath+"video2.mp4");
       //  videoView.setVideoPath("rtmp://live.hkstv.hk.lxdns.com/live/hks"); //mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
 
         videoView.start();
