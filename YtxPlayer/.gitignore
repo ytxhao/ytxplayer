@@ -5,6 +5,7 @@
 /.idea/libraries
 /.idea/gradle.xml
 /.idea/misc.xml
+/.idea/vcs.xml
 .DS_Store
 /build
 /captures
