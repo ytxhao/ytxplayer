@@ -5,7 +5,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.DisplayMetrics;
 
-import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.render.GLProgram;
 
 import java.nio.ByteBuffer;

@@ -1,4 +1,4 @@
-package com.ytx.ican.media.player;
+package com.ytx.ican.media.player.pragma;
 
 /**
  * Created by Administrator on 2016/9/2.

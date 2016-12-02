@@ -6,7 +6,7 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.renderscript.Matrix4f;
 
-import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

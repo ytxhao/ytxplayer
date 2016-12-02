@@ -3,13 +3,11 @@ package com.ytx.ican.media.player.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.media.MediaFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -19,7 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.ytx.ican.media.player.YtxMediaPlayer;
+import com.ytx.ican.media.player.pragma.IMediaPlayer;
+import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.GraphicGLSurfaceView;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
@@ -59,11 +58,18 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private int mScreenWidth;
     private int mScreenHeight;
     private VideoView mVideoView;
-    YtxMediaPlayer mPlayer;
 
+    private IMediaController mMediaController;
+    private IMediaPlayer mMediaPlayer = null;
     public VideoGlSurfaceView mGlSurface = null;
     private int mCurrentState = STATE_IDLE;
     private int mTargetState  = STATE_IDLE;
+
+    private IMediaPlayer.OnCompletionListener mOnCompletionListener;
+    private IMediaPlayer.OnPreparedListener mOnPreparedListener;
+
+    private IMediaPlayer.OnErrorListener mOnErrorListener;
+    private IMediaPlayer.OnInfoListener mOnInfoListener;
 
 
     // settable by the client
@@ -94,8 +100,6 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     public void initVideoView(Context context){
-//        mSurfaceView = new VideoGlSurfaceViewFFMPEG(context);
-//        mPlayer = new YtxMediaPlayer();
         mAppContext = context.getApplicationContext();
         mVideoWidth = 0;
         mVideoHeight = 0;
@@ -196,7 +200,11 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public void start() {
-        mPlayer.start();
+        if (isInPlaybackState()) {
+            mMediaPlayer.start();
+            mCurrentState = STATE_PLAYING;
+        }
+        mTargetState = STATE_PLAYING;
     }
 
     @Override
@@ -264,7 +272,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private GraphicGLSurfaceView.ISurfaceCallback mSurfaceCallback = new GraphicGLSurfaceView.ISurfaceCallback() {
         @Override
         public void onSurfaceCreated(@NonNull SurfaceHolder holder) {
-               if(mPlayer == null){
+               if(mMediaPlayer == null){
                    openVideo();
                }
 
@@ -286,15 +294,190 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         if(mUri == null){
             return;
         }
-        mPlayer = new YtxMediaPlayer();
-        mPlayer.setSurfaceView(mGlSurface);
+
+        // we shouldn't clear the target state, because somebody might have
+        // called start() previously
+        release(false);
+
+//        AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
+//        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        mMediaPlayer = new YtxMediaPlayer();
+
+        // TODO: create SubtitleController in MediaPlayer, but we need
+        // a context for the subtitle renderers
+        final Context context = getContext();
+
+        //set player listener
+
+
+        mMediaPlayer.setSurfaceView(mGlSurface);
+
+        mMediaPlayer.setOnPreparedListener(mPreparedListener);
+        mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
+        mMediaPlayer.setOnCompletionListener(mCompletionListener);
+        mMediaPlayer.setOnErrorListener(mErrorListener);
+        mMediaPlayer.setOnInfoListener(mInfoListener);
+        mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
+      //  mCurrentBufferPercentage = 0;
+
         try {
-            mPlayer.setDataSource(mUri.toString());
+            mMediaPlayer.setDataSource(mUri.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mPlayer.prepare();
+        mMediaPlayer.prepare();
+        // we don't set the target state here either, but preserve the
+        // target state that was there before.
+        mCurrentState = STATE_PREPARED;
+        attachMediaController();
 
+    }
+
+    /*
+ * release the media player in any state
+ */
+    private void release(boolean clearTargetState) {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.reset();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            // REMOVED: mPendingSubtitleTracks.clear();
+            mCurrentState = STATE_IDLE;
+            if (clearTargetState) {
+                mTargetState = STATE_IDLE;
+            }
+//            AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
+//            am.abandonAudioFocus(null);
+        }
+    }
+
+    public void setMediaController(IMediaController controller){
+            if(mMediaController != null){
+               mMediaController.hide();
+            }
+        mMediaController = controller;
+        attachMediaController();
+    }
+
+
+    private void attachMediaController() {
+        if (mMediaPlayer != null && mMediaController != null) {
+            mMediaController.setMediaPlayer(this);
+            View anchorView = this.getParent() instanceof View ?
+                    (View) this.getParent() : this;
+            mMediaController.setAnchorView(anchorView);
+            mMediaController.setEnabled(isInPlaybackState());
+        }
+    }
+
+    private boolean isInPlaybackState() {
+        return (mMediaPlayer != null &&
+                mCurrentState != STATE_ERROR &&
+                mCurrentState != STATE_IDLE &&
+                mCurrentState != STATE_PREPARING);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (isInPlaybackState() && mMediaController != null) {
+            toggleMediaControlsVisiblity();
+        }
+        return false;
+    }
+
+    private void toggleMediaControlsVisiblity() {
+        if (mMediaController.isShowing()) {
+            mMediaController.hide();
+        } else {
+            mMediaController.show();
+        }
+    }
+
+
+    IMediaPlayer.OnVideoSizeChangedListener mSizeChangedListener = new IMediaPlayer.OnVideoSizeChangedListener() {
+        @Override
+        public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
+
+        }
+    };
+
+    private IMediaPlayer.OnPreparedListener mPreparedListener = new IMediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(IMediaPlayer mp) {
+
+        }
+    };
+
+    private IMediaPlayer.OnCompletionListener mCompletionListener = new IMediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(IMediaPlayer mp) {
+
+        }
+    };
+
+    private IMediaPlayer.OnInfoListener mInfoListener = new IMediaPlayer.OnInfoListener() {
+        @Override
+        public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+            return false;
+        }
+    };
+
+    private IMediaPlayer.OnErrorListener mErrorListener = new IMediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(IMediaPlayer mp, int what, int extra) {
+            return false;
+        }
+    };
+
+    private IMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
+        @Override
+        public void onBufferingUpdate(IMediaPlayer mp, int percent) {
+
+        }
+    };
+
+
+    /**
+     * Register a callback to be invoked when the media file
+     * is loaded and ready to go.
+     *
+     * @param l The callback that will be run
+     */
+    public void setOnPreparedListener(IMediaPlayer.OnPreparedListener l) {
+        mOnPreparedListener = l;
+    }
+
+    /**
+     * Register a callback to be invoked when the end of a media file
+     * has been reached during playback.
+     *
+     * @param l The callback that will be run
+     */
+    public void setOnCompletionListener(IMediaPlayer.OnCompletionListener l) {
+        mOnCompletionListener = l;
+    }
+
+    /**
+     * Register a callback to be invoked when an error occurs
+     * during playback or setup.  If no listener is specified,
+     * or if the listener returned false, VideoView will inform
+     * the user of any errors.
+     *
+     * @param l The callback that will be run
+     */
+    public void setOnErrorListener(IMediaPlayer.OnErrorListener l) {
+        mOnErrorListener = l;
+    }
+
+    /**
+     * Register a callback to be invoked when an informational event
+     * occurs during playback or setup.
+     *
+     * @param l The callback that will be run
+     */
+    public void setOnInfoListener(IMediaPlayer.OnInfoListener l) {
+        mOnInfoListener = l;
     }
 
 }

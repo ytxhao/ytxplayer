@@ -18,7 +18,7 @@
 // 指定要注册的类，对应完整的java类名
 //#define JNIREG_CLASS "com/example/aecm/MobileAEC"
 
-#define JNIREG_CLASS "com/ytx/ican/media/player/YtxMediaPlayer"
+#define JNIREG_CLASS "com/ytx/ican/media/player/pragma/YtxMediaPlayer"
 
 jobject VideoGlSurfaceViewObj;
 // ----------------------------------------------------------------------------

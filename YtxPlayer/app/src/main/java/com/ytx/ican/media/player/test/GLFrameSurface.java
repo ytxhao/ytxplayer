@@ -4,7 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxLog;
 
 /**
  * Created by Administrator on 2016/9/12.

@@ -6,7 +6,7 @@ import java.nio.ByteOrder;
 
 import android.opengl.GLES20;
 
-import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxLog;
 
 
 /**

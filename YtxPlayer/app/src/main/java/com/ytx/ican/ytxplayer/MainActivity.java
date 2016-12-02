@@ -1,26 +1,20 @@
 package com.ytx.ican.ytxplayer;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
-import com.ytx.ican.media.player.YtxLog;
-import com.ytx.ican.media.player.YtxMediaPlayer;
-import com.ytx.ican.media.player.render.VideoGlSurfaceView;
+import com.ytx.ican.media.player.pragma.YtxLog;
+import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,26 +22,52 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    YtxVideoView videoView;
+    YtxVideoView ytxVideoView;
+    YtxMediaController ytxMediaController;
+    VideoView mVideoView;
+    MediaController mMediaController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        YtxLog.d("MainActivity","#### #### onCreate");
         setContentView(R.layout.activity_main);
-
         String filePath = Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
         // .getAbsolutePath() + "/" ;
         YtxLog.d("MainActivity","filePath="+filePath);
         CopyAssets(this,"video",filePath);
 
-        videoView = (YtxVideoView) findViewById(R.id.videoView);
-        videoView.setVideoPath(filePath+"titanic.mkv");
-       // videoView.setVideoPath(filePath+"video2.mp4");
+        ytxMediaController = new YtxMediaController(this);
+        ytxVideoView = (YtxVideoView) findViewById(R.id.ytxVideoView);
+
+
+        ytxVideoView.setMediaController(ytxMediaController);
+
+
+        ytxVideoView.requestFocus();
+       // videoView.setMediaController();
+       // videoView.setVideoPath(filePath+"titanic.mkv");
+        ytxVideoView.setVideoPath(filePath+"video2.mp4");
+
       //  videoView.setVideoPath("rtmp://live.hkstv.hk.lxdns.com/live/hks"); //mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
 
-        videoView.start();
-        YtxLog.d("MainActivity","#### #### onCreate");
+        ytxVideoView.start();
+
+        //########################################
+
+        mVideoView = (VideoView) findViewById(R.id.mVideoView);
+        mMediaController = new MediaController(this);
+        mVideoView.setVideoPath(filePath+"titanic.mkv");
+
+        mVideoView.setMediaController(mMediaController);
+
+
+        //让VideiView获取焦点
+        mVideoView.requestFocus();
+
+
+
 
 
     }

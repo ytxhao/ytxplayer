@@ -6,18 +6,13 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
 
-import com.ytx.ican.media.player.YtxLog;
-import com.ytx.ican.media.player.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class MainActivity2 extends AppCompatActivity {

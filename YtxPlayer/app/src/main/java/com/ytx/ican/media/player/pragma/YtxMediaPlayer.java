@@ -1,19 +1,27 @@
-package com.ytx.ican.media.player;
+package com.ytx.ican.media.player.pragma;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.Surface;
+import android.view.SurfaceHolder;
 
+import com.ytx.ican.media.player.misc.IMediaDataSource;
+import com.ytx.ican.media.player.misc.ITrackInfo;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
+import java.io.FileDescriptor;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2016/9/2.
  */
 
-public class YtxMediaPlayer implements IMediaPlayer {
+public class YtxMediaPlayer extends AbstractMediaPlayer {
 
 
     public static final String TAG = "YtxMediaPlayer";
@@ -99,7 +107,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
         }
     }
 
-
+    @Override
     public void setSurfaceView(VideoGlSurfaceView glSurface){
 
         //glsurface.toTexture();
@@ -107,6 +115,26 @@ public class YtxMediaPlayer implements IMediaPlayer {
         _setGlSurface(this.glSurface);
     }
 
+
+    @Override
+    public void setDisplay(SurfaceHolder sh) {
+
+    }
+
+    @Override
+    public void setDataSource(Context context, Uri uri) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+
+    }
+
+    @Override
+    public void setDataSource(Context context, Uri uri, Map<String, String> headers) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+
+    }
+
+    @Override
+    public void setDataSource(FileDescriptor fd) throws IOException, IllegalArgumentException, IllegalStateException {
+
+    }
 
     @Override
     public void setDataSource(String path) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
@@ -120,7 +148,7 @@ public class YtxMediaPlayer implements IMediaPlayer {
 
     @Override
     public void prepareAsync() throws IllegalStateException {
-
+        _prepareAsync();
     }
 
     @Override
@@ -196,6 +224,71 @@ public class YtxMediaPlayer implements IMediaPlayer {
     @Override
     public int getAudioSessionId() {
         return 0;
+    }
+
+    @Override
+    public MediaInfo getMediaInfo() {
+        return null;
+    }
+
+    @Override
+    public void setLogEnabled(boolean enable) {
+
+    }
+
+    @Override
+    public boolean isPlayable() {
+        return false;
+    }
+
+    @Override
+    public void setAudioStreamType(int streamtype) {
+
+    }
+
+    @Override
+    public void setKeepInBackground(boolean keepInBackground) {
+
+    }
+
+    @Override
+    public int getVideoSarNum() {
+        return 0;
+    }
+
+    @Override
+    public int getVideoSarDen() {
+        return 0;
+    }
+
+    @Override
+    public void setWakeMode(Context context, int mode) {
+
+    }
+
+    @Override
+    public void setLooping(boolean looping) {
+
+    }
+
+    @Override
+    public boolean isLooping() {
+        return false;
+    }
+
+    @Override
+    public ITrackInfo[] getTrackInfo() {
+        return new ITrackInfo[0];
+    }
+
+    @Override
+    public void setSurface(Surface surface) {
+
+    }
+
+    @Override
+    public void setDataSource(IMediaDataSource mediaDataSource) {
+
     }
 
 

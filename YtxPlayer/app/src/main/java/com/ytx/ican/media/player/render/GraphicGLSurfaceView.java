@@ -13,7 +13,7 @@ import android.view.SurfaceHolder;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
-import com.ytx.ican.media.player.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.gl2jni.GL2JNILib;
 
 import java.nio.ByteBuffer;

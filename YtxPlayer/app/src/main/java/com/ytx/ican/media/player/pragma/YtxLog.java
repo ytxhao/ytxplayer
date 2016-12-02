@@ -1,4 +1,4 @@
-package com.ytx.ican.media.player;
+package com.ytx.ican.media.player.pragma;
 
 import android.util.Log;
 
