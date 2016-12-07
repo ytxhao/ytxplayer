@@ -32,6 +32,9 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/lock.cpp
              src/main/cpp/src/VideoRefreshController.cpp
              src/main/cpp/src/VideoStateInfo.cpp
+             src/main/cpp/src/playerPrepareAsync.cpp
+             src/main/cpp/src/MessageQueue.cpp
+             src/main/cpp/src/MessageLoop.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a

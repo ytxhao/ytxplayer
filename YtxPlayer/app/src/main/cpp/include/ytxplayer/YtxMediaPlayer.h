@@ -23,6 +23,9 @@
 #include <ytxplayer/VideoRefreshController.h>
 #include "audio_engine.h"
 #include "VideoStateInfo.h"
+#include "PlayerPrepareAsync.h"
+#include "MessageLoop.h"
+#include "MediaPlayerListener.h"
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 typedef void (*notifyRendererFrame) ();
 // ----------------------------------------------------------------------------
@@ -38,12 +41,7 @@ enum media_player_states {
     MEDIA_PLAYER_STOPPED            = 1 << 7,
     MEDIA_PLAYER_PLAYBACK_COMPLETE  = 1 << 8
 };
-// ref-counted object for callbacks
-class MediaPlayerListener
-{
-public:
-    virtual void notify(int msg, int ext1, int ext2) = 0;
-};
+
 
 class YtxMediaPlayer {
 
@@ -53,7 +51,7 @@ public:
 
     YtxMediaPlayer();
 
-    ~YtxMediaPlayer(){};
+    ~YtxMediaPlayer();
 
     void died();
 
@@ -66,15 +64,17 @@ public:
     //  int        setDataSource(const sp<IStreamSource> &source);
 //    int        setVideoSurfaceTexture(
 //            const sp<IGraphicBufferProducer>& bufferProducer);
-    int setListener(const MediaPlayerListener* listener);
+    int setListener(MediaPlayerListener* listener);
     int prepare();
 
     int prepareAsync();
+    PlayerPrepareAsync *mPlayerPrepareAsync;
 
     int start();
 
     VideoRefreshController *mVideoRefreshController;
     static void* startPlayer(void* ptr);
+    static void* prepareAsyncPlayer(void* ptr);
 
    // static void* startPlayerRefresh(void* ptr);
 
@@ -147,6 +147,7 @@ public:
     int isFinish;
     DecoderVideo  *mDecoderVideo;
     DecoderAudio  *mDecoderAudio;
+    MessageLoop   *mMessageLoop;
     VideoStateInfo *mVideoStateInfo;
 //private:
 
@@ -202,7 +203,7 @@ public:
     AVFrame*					mYuvFrame;
     pthread_mutex_t             mLock;
     pthread_t					mPlayerThread;
-    pthread_t					mPlayerRefreshThread;
+    pthread_t					mPlayerPrepareAsyncThread;
 
     int mStreamType;
     int mCurrentState;

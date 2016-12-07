@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -67,7 +68,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     private IMediaPlayer.OnCompletionListener mOnCompletionListener;
     private IMediaPlayer.OnPreparedListener mOnPreparedListener;
-
+    private int mCurrentBufferPercentage;
     private IMediaPlayer.OnErrorListener mOnErrorListener;
     private IMediaPlayer.OnInfoListener mOnInfoListener;
 
@@ -319,17 +320,17 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mMediaPlayer.setOnErrorListener(mErrorListener);
         mMediaPlayer.setOnInfoListener(mInfoListener);
         mMediaPlayer.setOnBufferingUpdateListener(mBufferingUpdateListener);
-      //  mCurrentBufferPercentage = 0;
+        mCurrentBufferPercentage = 0;
 
         try {
             mMediaPlayer.setDataSource(mUri.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mMediaPlayer.prepare();
+        mMediaPlayer.prepareAsync();
         // we don't set the target state here either, but preserve the
         // target state that was there before.
-        mCurrentState = STATE_PREPARED;
+        mCurrentState = STATE_PREPARING;
         attachMediaController();
 
     }
@@ -356,8 +357,8 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             if(mMediaController != null){
                mMediaController.hide();
             }
-        mMediaController = controller;
-        attachMediaController();
+            mMediaController = controller;
+            attachMediaController();
     }
 
 
@@ -381,12 +382,12 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (isInPlaybackState() && mMediaController != null) {
-            toggleMediaControlsVisiblity();
+            toggleMediaControlsVisibility();
         }
         return false;
     }
 
-    private void toggleMediaControlsVisiblity() {
+    private void toggleMediaControlsVisibility() {
         if (mMediaController.isShowing()) {
             mMediaController.hide();
         } else {
@@ -405,6 +406,44 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private IMediaPlayer.OnPreparedListener mPreparedListener = new IMediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(IMediaPlayer mp) {
+            mCurrentState = STATE_PREPARED;
+
+            if (mOnPreparedListener != null) {
+                mOnPreparedListener.onPrepared(mMediaPlayer);
+            }
+            if (mMediaController != null) {
+                mMediaController.setEnabled(true);
+            }
+
+            mVideoWidth = mp.getVideoWidth();
+            mVideoHeight = mp.getVideoHeight();
+
+            int seekToPosition = mSeekWhenPrepared;  // mSeekWhenPrepared may be changed after seekTo() call
+            if (seekToPosition != 0) {
+                seekTo(seekToPosition);
+            }
+
+            if (mVideoWidth != 0 && mVideoHeight != 0) {
+
+                if(mTargetState == STATE_PLAYING){
+                    start();
+                    if (mMediaController != null) {
+                      //  mMediaController.show();
+                    }
+                }else if(!isPlaying() && (seekToPosition != 0 || getCurrentPosition() > 0)){
+                    if (mMediaController != null) {
+                        // Show the media controls when we're paused into a video and make 'em stick.
+                        mMediaController.show(0);
+                    }
+                }
+            }else {
+                // We don't know the video size yet, but should start anyway.
+                // The video size might be reported to us later.
+                if (mTargetState == STATE_PLAYING) {
+                    start();
+                }
+
+            }
 
         }
     };
@@ -412,7 +451,8 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private IMediaPlayer.OnCompletionListener mCompletionListener = new IMediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(IMediaPlayer mp) {
-
+            mCurrentState = STATE_PLAYBACK_COMPLETED;
+            mTargetState = STATE_PLAYBACK_COMPLETED;
         }
     };
 
@@ -425,7 +465,11 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     private IMediaPlayer.OnErrorListener mErrorListener = new IMediaPlayer.OnErrorListener() {
         @Override
-        public boolean onError(IMediaPlayer mp, int what, int extra) {
+        public boolean onError(IMediaPlayer mp, int framework_err, int impl_err) {
+            Log.d(TAG, "Error: " + framework_err + "," + impl_err);
+            mCurrentState = STATE_ERROR;
+            mTargetState = STATE_ERROR;
+
             return false;
         }
     };
@@ -433,7 +477,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private IMediaPlayer.OnBufferingUpdateListener mBufferingUpdateListener = new IMediaPlayer.OnBufferingUpdateListener() {
         @Override
         public void onBufferingUpdate(IMediaPlayer mp, int percent) {
-
+            mCurrentBufferPercentage = percent;
         }
     };
 

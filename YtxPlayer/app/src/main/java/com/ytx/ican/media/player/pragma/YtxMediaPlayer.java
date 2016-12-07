@@ -26,12 +26,24 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     public static final String TAG = "YtxMediaPlayer";
 
+    private static final int MEDIA_NOP = 0; // interface test message
+    private static final int MEDIA_PREPARED = 1;
+    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    private static final int MEDIA_BUFFERING_UPDATE = 3;
+    private static final int MEDIA_SEEK_COMPLETE = 4;
+    private static final int MEDIA_SET_VIDEO_SIZE = 5;
+    private static final int MEDIA_TIMED_TEXT = 99;
+    private static final int MEDIA_ERROR = 100;
+    private static final int MEDIA_INFO = 200;
+
+
     VideoGlSurfaceView glSurface;
     private EventHandler mEventHandler;
 
     private int mNativeContext; // accessed by native methods
     private int mNativeSurfaceTexture;  // accessed by native methods
     private int mListenerContext; // accessed by native methods
+    private long mNativeMediaPlayer; // accessed by native methods
 
     public YtxMediaPlayer(){
         this(sLocalLibLoader);
@@ -302,16 +314,31 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
         @Override
         public void handleMessage(Message msg) {
-//            IjkMediaPlayer player = mWeakPlayer.get();
-//            if (player == null || player.mNativeMediaPlayer == 0) {
-//                YtxLog.w(TAG,
-//                        "IjkMediaPlayer went away with unhandled events");
-//                return;
-//            }
+            YtxLog.d(TAG,"handleMessage");
+            YtxMediaPlayer player = mWeakPlayer.get();
+            if(player == null || player.mNativeContext == 0){
+                return;
+            }
 
             switch (msg.what) {
-
-
+                case MEDIA_PREPARED:
+                    YtxLog.d(TAG,"handleMessage MEDIA_PREPARED");
+                    player.notifyOnPrepared();
+                    break;
+                case MEDIA_PLAYBACK_COMPLETE:
+                    player.notifyOnCompletion();
+                    break;
+                case MEDIA_BUFFERING_UPDATE:
+                    break;
+                case MEDIA_SEEK_COMPLETE:
+                    player.notifyOnSeekComplete();
+                    break;
+                case MEDIA_SET_VIDEO_SIZE:
+                    break;
+                case MEDIA_ERROR:
+                    break;
+                case MEDIA_INFO:
+                    break;
                 default:
                     YtxLog.e(TAG, "Unknown message type " + msg.what);
             }
@@ -327,7 +354,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
  * it. (This is the cookie passed to native_setup().)
  */
 
-    private static void postEventFromNative(Object weakThiz, int what,
+    public static void postEventFromNative(Object weakThiz, int what,
                                             int arg1, int arg2, Object obj) {
         if (weakThiz == null)
             return;

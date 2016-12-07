@@ -99,8 +99,13 @@ void VideoRefreshController::process() {
 
 }
 
-void VideoRefreshController::finish() {
+void VideoRefreshController::stop() {
     mRunning = false;
+    int ret = -1;
+    if((ret = wait()) != 0) {
+        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+        return;
+    }
 }
 
 void VideoRefreshController::refresh() {

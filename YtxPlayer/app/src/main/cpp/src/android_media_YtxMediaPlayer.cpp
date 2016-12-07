@@ -66,6 +66,8 @@ struct fields_t {
     jfieldID    context;
     jfieldID    surface_texture;
 
+    jfieldID    native_player;
+
     jmethodID   post_event;
 
     jmethodID   proxyConfigGetHost;
@@ -96,6 +98,7 @@ JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobjec
 
     // Hold onto the MediaPlayer class for use in calling the static method
     // that posts events to the application thread.
+    ALOGE("JNIMediaPlayerListener IN");
     jclass clazz = env->GetObjectClass(thiz);
     if (clazz == NULL) {
         ALOGE("Can't find android/media/MediaPlayer");
@@ -107,6 +110,7 @@ JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobjec
     // We use a weak reference so the MediaPlayer object can be garbage collected.
     // The reference is only used as a proxy for callbacks.
     mObject  = env->NewGlobalRef(weak_thiz);
+    ALOGE("JNIMediaPlayerListener OUT mClass=%x mObject=%x clazz=%x\n",mClass,mObject,clazz);
 }
 
 JNIMediaPlayerListener::~JNIMediaPlayerListener()
@@ -119,31 +123,27 @@ JNIMediaPlayerListener::~JNIMediaPlayerListener()
 
 void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2)
 {
-//    JNIEnv *env = AndroidRuntime::getJNIEnv();
-//    if (obj && obj->dataSize() > 0) {
-//        jobject jParcel = createJavaParcelObject(env);
-//        if (jParcel != NULL) {
-//            Parcel* nativeParcel = parcelForJavaObject(env, jParcel);
-//            nativeParcel->setData(obj->data(), obj->dataSize());
-//            env->CallStaticVoidMethod(mClass, fields.post_event, mObject,
-//                                      msg, ext1, ext2, jParcel);
-//        }
-//    } else {
-//        env->CallStaticVoidMethod(mClass, fields.post_event, mObject,
-//                                  msg, ext1, ext2, NULL);
-//    }
-//    if (env->ExceptionCheck()) {
-//        ALOGW("An exception occurred while notifying an event.");
-//        LOGW_EX(env);
-//        env->ExceptionClear();
-//    }
+
+    ALOGI("JNIMediaPlayerListener::notify IN\n");
+    JNIEnv *env = NULL;
+    sVm->AttachCurrentThread(&env, NULL);
+
+    ALOGI("JNIMediaPlayerListener::notify fields.post_event=%d mClass=%x\n",fields.post_event,mClass);
+    env->CallStaticVoidMethod(mClass,fields.post_event,mObject,msg, ext1, ext2, NULL);
+
+    if (env->ExceptionCheck()) {
+        ALOGW("An exception occurred while notifying an event.");
+        env->ExceptionClear();
+    }
+    sVm->DetachCurrentThread();
+    ALOGI("JNIMediaPlayerListener::notify OUT\n");
 }
 
 // ----------------------------------------------------------------------------
 
 //YtxMediaPlayer* mPlayer;
 
-JNIMediaPlayerListener *listener;
+//JNIMediaPlayerListener *listener;
 
 
 
@@ -190,6 +190,7 @@ JNIEXPORT void JNICALL android_media_player_native_init
 
     fields.post_event = env->GetStaticMethodID(clazz, "postEventFromNative",
                                                "(Ljava/lang/Object;IIILjava/lang/Object;)V");
+    ALOGI("android_media_player_native_init fields.post_event=%d",fields.post_event);
     if (fields.post_event == NULL) {
         return;
     }
@@ -198,20 +199,6 @@ JNIEXPORT void JNICALL android_media_player_native_init
     if (fields.surface_texture == NULL) {
         return;
     }
-//
-//    clazz = env->FindClass("android/net/ProxyProperties");
-//    if (clazz == NULL) {
-//        return;
-//    }
-//
-//    fields.proxyConfigGetHost =
-//            env->GetMethodID(clazz, "getHost", "()Ljava/lang/String;");
-//
-//    fields.proxyConfigGetPort =
-//            env->GetMethodID(clazz, "getPort", "()I");
-//
-//    fields.proxyConfigGetExclusionList =
-//            env->GetMethodID(clazz, "getExclusionList", "()Ljava/lang/String;");
 
     ALOGI("avcodec_version=%d;avcodec_configuration=%s", avcodec_version(),avcodec_configuration());
 }
@@ -223,11 +210,13 @@ JNIEXPORT void JNICALL android_media_player_native_setup
 
     YtxMediaPlayer* mPlayer = new YtxMediaPlayer();
     ALOGI("native_setup mPlayer add = 0x%#x",(int)mPlayer);
-    ALOGI("native_setup2 mPlayer add = 0x%#x",(int)mPlayer);
+
     // create new listener and give it to MediaPlayer
-    listener = new JNIMediaPlayerListener(env, obj, ytxMediaPlayer_weak_this);
+    JNIMediaPlayerListener* listener = new JNIMediaPlayerListener(env, obj, ytxMediaPlayer_weak_this);
     mPlayer->setListener(listener);
     setMediaPlayer(env,obj,mPlayer);
+
+
 }
 
 JNIEXPORT void JNICALL android_media_player_native_finalize
@@ -242,7 +231,15 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 }
 
-
+//void android_media_player_post_event(){
+//    ALOGI("android_media_player_post_event IN\n");
+//
+//    JNIEnv *env = NULL;
+//    sVm->AttachCurrentThread(&env, NULL);
+//
+//
+//    ALOGI("android_media_player_post_event OUT\n");
+//}
 
 void android_media_player_notifyRenderFrame()
 {
@@ -420,8 +417,8 @@ JNIEXPORT jint JNICALL android_media_player_prepare
 JNIEXPORT jint JNICALL android_media_player_prepareAsync
         (JNIEnv *env, jobject obj)
 {
-
-
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    mPlayer->prepareAsync();
     return 0;
 }
 

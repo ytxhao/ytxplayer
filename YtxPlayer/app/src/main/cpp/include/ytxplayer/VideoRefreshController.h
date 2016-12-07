@@ -24,7 +24,7 @@ public:
     bool                prepare();
     void                refresh();
     void                process();
-    void                finish();
+    void                stop();
     double              vp_duration(Frame *vp, Frame *next_vp);
 
 };
