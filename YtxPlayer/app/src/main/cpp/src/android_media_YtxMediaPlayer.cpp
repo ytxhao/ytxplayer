@@ -89,6 +89,7 @@ public:
     virtual void notify(int msg, int ext1, int ext2);
 private:
     JNIMediaPlayerListener();
+    pthread_mutex_t     		mLock;
     jclass      mClass;     // Reference to MediaPlayer class
     jobject     mObject;    // Weak ref to MediaPlayer Java object to call on
 };
@@ -99,6 +100,7 @@ JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobjec
     // Hold onto the MediaPlayer class for use in calling the static method
     // that posts events to the application thread.
     ALOGE("JNIMediaPlayerListener IN");
+    pthread_mutex_init(&mLock, NULL);
     jclass clazz = env->GetObjectClass(thiz);
     if (clazz == NULL) {
         ALOGE("Can't find android/media/MediaPlayer");
@@ -119,14 +121,22 @@ JNIMediaPlayerListener::~JNIMediaPlayerListener()
     JNIEnv *env = getJNIEnv();
     env->DeleteGlobalRef(mObject);
     env->DeleteGlobalRef(mClass);
+    pthread_mutex_destroy(&mLock);
 }
 
 void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2)
 {
 
     ALOGI("JNIMediaPlayerListener::notify IN\n");
+    pthread_mutex_lock(&mLock);
     JNIEnv *env = NULL;
-    sVm->AttachCurrentThread(&env, NULL);
+    if(getpid() != gettid()){
+        sVm->AttachCurrentThread(&env, NULL);
+    }else{
+        env = getJNIEnv();
+    }
+
+    ALOGI("notify pthread_self:%lu,getpid:%lu,gettid:%lu\n", (long)pthread_self(), (long)getpid(),(long)gettid());
 
     ALOGI("JNIMediaPlayerListener::notify fields.post_event=%d mClass=%x\n",fields.post_event,mClass);
     env->CallStaticVoidMethod(mClass,fields.post_event,mObject,msg, ext1, ext2, NULL);
@@ -135,7 +145,11 @@ void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2)
         ALOGW("An exception occurred while notifying an event.");
         env->ExceptionClear();
     }
-    sVm->DetachCurrentThread();
+
+    if(getpid() != gettid()){
+        sVm->DetachCurrentThread();
+    }
+    pthread_mutex_unlock(&mLock);
     ALOGI("JNIMediaPlayerListener::notify OUT\n");
 }
 
@@ -199,7 +213,7 @@ JNIEXPORT void JNICALL android_media_player_native_init
     if (fields.surface_texture == NULL) {
         return;
     }
-
+    ALOGI("native_init pthread_self:%lu,getpid:%lu,gettid:%lu\n", pthread_self(), getpid(),gettid());
     ALOGI("avcodec_version=%d;avcodec_configuration=%s", avcodec_version(),avcodec_configuration());
 }
 
@@ -215,7 +229,7 @@ JNIEXPORT void JNICALL android_media_player_native_setup
     JNIMediaPlayerListener* listener = new JNIMediaPlayerListener(env, obj, ytxMediaPlayer_weak_this);
     mPlayer->setListener(listener);
     setMediaPlayer(env,obj,mPlayer);
-
+    listener->notify(-1,-1,-1);
 
 }
 
@@ -231,15 +245,7 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 }
 
-//void android_media_player_post_event(){
-//    ALOGI("android_media_player_post_event IN\n");
-//
-//    JNIEnv *env = NULL;
-//    sVm->AttachCurrentThread(&env, NULL);
-//
-//
-//    ALOGI("android_media_player_post_event OUT\n");
-//}
+
 
 void android_media_player_notifyRenderFrame()
 {
