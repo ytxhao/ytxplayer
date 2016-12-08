@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.ytx.ican.media.player.pragma.IMediaPlayer;
+import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.GraphicGLSurfaceView;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
@@ -72,7 +74,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private IMediaPlayer.OnErrorListener mOnErrorListener;
     private IMediaPlayer.OnInfoListener mOnInfoListener;
 
-
+    private boolean     mCanPause = true;
+    private boolean     mCanSeekBack = true;
+    private boolean     mCanSeekForward = true;
     // settable by the client
     private Uri         mUri;
     private Map<String, String> mHeaders;
@@ -201,6 +205,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public void start() {
+        YtxLog.d(TAG,"start isInPlaybackState()="+isInPlaybackState());
         if (isInPlaybackState()) {
             mMediaPlayer.start();
             mCurrentState = STATE_PLAYING;
@@ -210,7 +215,14 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public void pause() {
-
+        YtxLog.d(TAG,"pause isInPlaybackState()="+isInPlaybackState());
+        if (isInPlaybackState()) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.pause();
+                mCurrentState = STATE_PAUSED;
+            }
+        }
+        mTargetState = STATE_PAUSED;
     }
 
     @Override
@@ -230,7 +242,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public boolean isPlaying() {
-        return false;
+        return mMediaPlayer.isPlaying();
     }
 
     @Override
@@ -240,17 +252,17 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public boolean canPause() {
-        return false;
+        return mCanPause;
     }
 
     @Override
     public boolean canSeekBackward() {
-        return false;
+        return mCanSeekBack;
     }
 
     @Override
     public boolean canSeekForward() {
-        return false;
+        return mCanSeekForward;
     }
 
     @Override
@@ -354,6 +366,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     public void setMediaController(IMediaController controller){
+        YtxLog.d(TAG,"setMediaController mMediaController="+mMediaController);
             if(mMediaController != null){
                mMediaController.hide();
             }
@@ -363,6 +376,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
 
     private void attachMediaController() {
+        YtxLog.d(TAG,"attachMediaController mMediaPlayer="+mMediaPlayer+" mMediaController="+mMediaController);
         if (mMediaPlayer != null && mMediaController != null) {
             mMediaController.setMediaPlayer(this);
             View anchorView = this.getParent() instanceof View ?
@@ -522,6 +536,49 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
      */
     public void setOnInfoListener(IMediaPlayer.OnInfoListener l) {
         mOnInfoListener = l;
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        boolean isKeyCodeSupported = keyCode != KeyEvent.KEYCODE_BACK &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_UP &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_DOWN &&
+                keyCode != KeyEvent.KEYCODE_VOLUME_MUTE &&
+                keyCode != KeyEvent.KEYCODE_MENU &&
+                keyCode != KeyEvent.KEYCODE_CALL &&
+                keyCode != KeyEvent.KEYCODE_ENDCALL;
+        if (isInPlaybackState() && isKeyCodeSupported && mMediaController != null) {
+            if (keyCode == KeyEvent.KEYCODE_HEADSETHOOK ||
+                    keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
+                if (mMediaPlayer.isPlaying()) {
+                    pause();
+                    mMediaController.show();
+                } else {
+                    start();
+                    mMediaController.hide();
+                }
+                return true;
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_PLAY) {
+                if (!mMediaPlayer.isPlaying()) {
+                    start();
+                    mMediaController.hide();
+                }
+                return true;
+            } else if (keyCode == KeyEvent.KEYCODE_MEDIA_STOP
+                    || keyCode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
+                if (mMediaPlayer.isPlaying()) {
+                    pause();
+                    mMediaController.show();
+                }
+                return true;
+            } else {
+                toggleMediaControlsVisibility();
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
 }

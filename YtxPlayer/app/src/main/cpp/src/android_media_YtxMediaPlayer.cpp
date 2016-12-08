@@ -229,7 +229,6 @@ JNIEXPORT void JNICALL android_media_player_native_setup
     JNIMediaPlayerListener* listener = new JNIMediaPlayerListener(env, obj, ytxMediaPlayer_weak_this);
     mPlayer->setListener(listener);
     setMediaPlayer(env,obj,mPlayer);
-    listener->notify(-1,-1,-1);
 
 }
 
@@ -465,7 +464,9 @@ JNIEXPORT jint JNICALL android_media_player_stop
 JNIEXPORT jint JNICALL android_media_player_pause
         (JNIEnv *env, jobject obj)
 {
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
 
+    mPlayer->pause();
     return 0;
 }
 
@@ -478,7 +479,11 @@ JNIEXPORT jint JNICALL android_media_player_isPlaying
         (JNIEnv *env, jobject obj)
 {
 
-    return 0;
+
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+
+    //mPlayer->isPlaying();
+    return mPlayer->isPlaying();
 }
 
 /*

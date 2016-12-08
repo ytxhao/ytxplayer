@@ -41,7 +41,7 @@ void VideoRefreshController::process() {
         remaining_time = REFRESH_RATE;
         //usleep(20000);
 
-        if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2) {
+        if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2 || *mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
             // nothing to do, no picture to display in the queue
 
         } else {

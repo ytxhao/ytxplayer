@@ -37,6 +37,17 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private static final int MEDIA_INFO = 200;
 
 
+    private static final int MEDIA_PLAYER_STATE_ERROR        = 0;
+    private static final int MEDIA_PLAYER_IDLE               = 1 << 0;
+    private static final int MEDIA_PLAYER_INITIALIZED        = 1 << 1;
+    private static final int MEDIA_PLAYER_PREPARING          = 1 << 2;
+    private static final int MEDIA_PLAYER_PREPARED           = 1 << 3;
+    private static final int MEDIA_PLAYER_DECODED            = 1 << 4;
+    private static final int MEDIA_PLAYER_STARTED            = 1 << 5;
+    private static final int MEDIA_PLAYER_PAUSED             = 1 << 6;
+    private static final int MEDIA_PLAYER_STOPPED            = 1 << 7;
+    private static final int MEDIA_PLAYER_PLAYBACK_COMPLETE  = 1 << 8;
+
     VideoGlSurfaceView glSurface;
     private EventHandler mEventHandler;
 
@@ -170,6 +181,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void start() throws IllegalStateException {
+        YtxLog.d(TAG,"start");
         _start();
     }
 
@@ -180,7 +192,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void pause() throws IllegalStateException {
-
+        YtxLog.d(TAG,"pause");
+            _pause();
     }
 
     @Override
@@ -200,7 +213,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public boolean isPlaying() {
-        return false;
+        YtxLog.d(TAG,"isPlaying ="+_isPlaying());
+        return _isPlaying()!=0;
     }
 
     @Override

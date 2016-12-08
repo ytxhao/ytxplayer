@@ -29,18 +29,7 @@
 typedef void (*updateYuvHandler) (uint8_t *,uint8_t *,uint8_t *,int);
 typedef void (*notifyRendererFrame) ();
 // ----------------------------------------------------------------------------
-enum media_player_states {
-    MEDIA_PLAYER_STATE_ERROR        = 0,
-    MEDIA_PLAYER_IDLE               = 1 << 0,
-    MEDIA_PLAYER_INITIALIZED        = 1 << 1,
-    MEDIA_PLAYER_PREPARING          = 1 << 2,
-    MEDIA_PLAYER_PREPARED           = 1 << 3,
-    MEDIA_PLAYER_DECODED            = 1 << 4,
-    MEDIA_PLAYER_STARTED            = 1 << 5,
-    MEDIA_PLAYER_PAUSED             = 1 << 6,
-    MEDIA_PLAYER_STOPPED            = 1 << 7,
-    MEDIA_PLAYER_PLAYBACK_COMPLETE  = 1 << 8
-};
+
 
 
 class YtxMediaPlayer {
@@ -82,6 +71,7 @@ public:
 
     int pause();
 
+    int resume();
     bool isPlaying();
 
     int getVideoWidth();
@@ -231,8 +221,7 @@ public:
     int out_nb_samples;
 
     AudioEngine *audioEngine;
-
-
+    bool playing = false;
 };
 
 

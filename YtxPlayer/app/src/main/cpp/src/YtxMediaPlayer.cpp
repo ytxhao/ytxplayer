@@ -79,6 +79,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mVideoWidth = mVideoHeight = 0;
     memset(st_index, -1, sizeof(st_index));
     mVideoStateInfo = new VideoStateInfo();
+    mVideoStateInfo->mCurrentState = &mCurrentState;
     mPlayerPrepareAsync = new PlayerPrepareAsync();
     mMessageLoop = new MessageLoop();
     sPlayer = this;
@@ -128,6 +129,7 @@ int  YtxMediaPlayer::setDataSource(const char *url) {
 
     this->filePath = url;
     ALOGI("YtxMediaPlayer setDataSource filePath=%s\n",filePath);
+    mCurrentState = MEDIA_PLAYER_INITIALIZED;
     return 0;
 }
 
@@ -189,7 +191,7 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 
 int  YtxMediaPlayer::prepare() {
 
-
+    mCurrentState = MEDIA_PLAYER_PREPARING;
 
     av_register_all();
     avformat_network_init();
@@ -241,7 +243,7 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
-
+    mCurrentState = MEDIA_PLAYER_PREPARED;
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
@@ -253,7 +255,7 @@ int  YtxMediaPlayer::prepare() {
 int  YtxMediaPlayer::prepareAsync() {
 
     //mPlayerPrepareAsync->startAsync();
-
+    mCurrentState = MEDIA_PLAYER_PREPARING;
     pthread_create(&mPlayerPrepareAsyncThread, NULL, prepareAsyncPlayer, NULL);
     return 0;
 }
@@ -313,10 +315,26 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     msg.what = FFP_MSG_PREPARED;
    // sPlayer->mListener->notify(FFP_MSG_PREPARED,0,0);
     sPlayer->mMessageLoop->enqueue(&msg);
+    sPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
     pthread_exit(NULL);
 }
 
+int YtxMediaPlayer::resume() {
+    mCurrentState = MEDIA_PLAYER_STARTED;
+    return 0;
+}
+
 int  YtxMediaPlayer::start() {
+
+
+    if(mCurrentState == MEDIA_PLAYER_PAUSED){
+        return  resume();
+
+    }
+
+    if(mCurrentState != MEDIA_PLAYER_PREPARED){
+        return -4;
+    }
 
     fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
     fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
@@ -324,7 +342,7 @@ int  YtxMediaPlayer::start() {
    // fwrite(datam,1,1024,fp_yuv);
     ALOGI("start fp_yuv=%d\n",fp_yuv);
 
-
+ //   playing = true;
     //frameQueueVideo = new FrameQueue();
     mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
 
@@ -485,17 +503,19 @@ void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
 int  YtxMediaPlayer::stop() {
 
     mCurrentState = MEDIA_PLAYER_STOPPED;
+   // playing = false;
     return 0;
 }
 
 int  YtxMediaPlayer::pause() {
-
+    ALOGI("YtxMediaPlayer::pause()");
+    mCurrentState = MEDIA_PLAYER_PAUSED;
     return 0;
 }
 
 bool YtxMediaPlayer::isPlaying() {
 
-    return 0;
+    return mCurrentState == MEDIA_PLAYER_STARTED || mCurrentState == MEDIA_PLAYER_DECODED;
 }
 
 int  YtxMediaPlayer::getVideoWidth() {
