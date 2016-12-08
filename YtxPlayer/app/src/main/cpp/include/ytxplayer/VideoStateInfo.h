@@ -26,6 +26,12 @@ class VideoStateInfo{
 public:
     VideoStateInfo();
     ~VideoStateInfo();
+
+    void notify();
+    void notifyAll();
+    void waitOnNotify(int mCurrentState);
+
+
     AVFormatContext *pFormatCtx;
 
     InputStream *streamVideo;
@@ -34,6 +40,9 @@ public:
     FrameQueue *frameQueueVideo;
     FrameQueue *frameQueueAudio;
     int *mCurrentState;
+
+    pthread_mutex_t     		mLock;
+    pthread_cond_t				mCondition;
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

@@ -142,7 +142,6 @@ int audioDecodeFrame(){
 
     Frame *af;
     // do{
-
     if (!(af = sPlayer->mVideoStateInfo->frameQueueAudio->frameQueuePeekReadable())){
         return -1;
     }
@@ -185,6 +184,11 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
     }
 #else
     audioDecodeFrame();
+    if(*sPlayer->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
+        sPlayer->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
+
+    }
+
 #endif
 }
 
@@ -321,6 +325,7 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
 int YtxMediaPlayer::resume() {
     mCurrentState = MEDIA_PLAYER_STARTED;
+    mVideoStateInfo->notifyAll();
     return 0;
 }
 

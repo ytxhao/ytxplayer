@@ -33,6 +33,10 @@ void VideoRefreshController::process() {
 
     if(mVideoStateInfo != NULL) {
 
+        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
+            mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
+
+        }
         if (remaining_time > 0.0) {
             //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
             av_usleep((int64_t) (remaining_time * 1000000.0));
@@ -41,7 +45,7 @@ void VideoRefreshController::process() {
         remaining_time = REFRESH_RATE;
         //usleep(20000);
 
-        if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2 || *mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
+        if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2) {
             // nothing to do, no picture to display in the queue
 
         } else {
