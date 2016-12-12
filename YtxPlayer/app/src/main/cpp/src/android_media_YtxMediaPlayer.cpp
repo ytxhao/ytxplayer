@@ -514,11 +514,16 @@ JNIEXPORT jint JNICALL android_media_player_getVideoHeight
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayer
  * Method:    seekTo
- * Signature: (I)I
+ * Signature: (J)I
  */
 JNIEXPORT jint JNICALL android_media_player_seekTo
         (JNIEnv *env, jobject obj, jint msec)
 {
+
+    // jlong <==> long long 使用%lld输出
+    ALOGI("android_media_player_seekTo msec=%d\n",msec);
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    mPlayer->seekTo(msec);
     return 0;
 }
 

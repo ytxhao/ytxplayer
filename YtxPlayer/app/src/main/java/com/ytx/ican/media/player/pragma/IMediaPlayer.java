@@ -82,7 +82,7 @@ public interface IMediaPlayer {
 
     boolean isPlaying();
 
-    void seekTo(long msec) throws IllegalStateException;
+    void seekTo(int msec) throws IllegalStateException;
 
     long getCurrentPosition();
 

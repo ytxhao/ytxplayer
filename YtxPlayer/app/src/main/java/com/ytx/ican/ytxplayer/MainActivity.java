@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         ytxVideoView.requestFocus();
        // videoView.setMediaController();
        // videoView.setVideoPath(filePath+"titanic.mkv");
-        ytxVideoView.setVideoPath(filePath+"video2.mp4");
+        ytxVideoView.setVideoPath(filePath+"titanic.mkv");
 
       //  videoView.setVideoPath("rtmp://live.hkstv.hk.lxdns.com/live/hks"); //mPlayer.setDataSource("rtmp://live.hkstv.hk.lxdns.com/live/hks");
 
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         mVideoView = (VideoView) findViewById(R.id.mVideoView);
         mMediaController = new MediaController(this);
-        mVideoView.setVideoPath(filePath+"titanic.mkv");
+        mVideoView.setVideoPath(filePath+"video2.mp4");
 
         mVideoView.setMediaController(mMediaController);
 

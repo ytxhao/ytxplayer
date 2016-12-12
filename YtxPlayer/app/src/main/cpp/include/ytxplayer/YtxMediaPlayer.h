@@ -78,6 +78,7 @@ public:
 
     int getVideoHeight();
 
+    void checkSeekRequest();
     int seekTo(int msec);
 
     int getCurrentPosition(int *msec);
@@ -221,7 +222,6 @@ public:
     int out_nb_samples;
 
     AudioEngine *audioEngine;
-    bool playing = false;
 };
 
 

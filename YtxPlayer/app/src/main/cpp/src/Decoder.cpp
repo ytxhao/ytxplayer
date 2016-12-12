@@ -27,6 +27,11 @@ void IDecoder::enqueue(MAVPacket* mPacket)
     mQueue->put(mPacket);
 }
 
+
+void IDecoder::flush() {
+    mQueue->flush();
+}
+
 int IDecoder::packets()
 {
     return mQueue->size();

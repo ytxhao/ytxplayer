@@ -19,10 +19,11 @@ class IDecoder : public Thread
 public:
     IDecoder();
     ~IDecoder();
-
     void						stop();
     void						enqueue(MAVPacket* mPacket);
     int							packets();
+    void                        flush();
+
 protected:
     PacketQueue*                mQueue;
 

@@ -236,8 +236,14 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     @Override
-    public void seekTo(int pos) {
-
+    public void seekTo(int msec) {
+        YtxLog.d(TAG,"seekTo isInPlaybackState()="+isInPlaybackState());
+        if (isInPlaybackState()) {
+            mMediaPlayer.seekTo(msec);
+            mSeekWhenPrepared = 0;
+        } else {
+            mSeekWhenPrepared = msec;
+        }
     }
 
     @Override
@@ -467,6 +473,12 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         public void onCompletion(IMediaPlayer mp) {
             mCurrentState = STATE_PLAYBACK_COMPLETED;
             mTargetState = STATE_PLAYBACK_COMPLETED;
+            if (mMediaController != null) {
+                mMediaController.hide();
+            }
+            if (mOnCompletionListener != null) {
+                mOnCompletionListener.onCompletion(mMediaPlayer);
+            }
         }
     };
 

@@ -218,8 +218,9 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     }
 
     @Override
-    public void seekTo(long msec) throws IllegalStateException {
-
+    public void seekTo(int msec) throws IllegalStateException {
+        YtxLog.d(TAG,"seekTo ="+msec);
+        _seekTo(msec);
     }
 
     @Override

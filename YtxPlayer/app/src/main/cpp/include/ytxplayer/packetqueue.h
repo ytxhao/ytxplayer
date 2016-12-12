@@ -16,17 +16,8 @@ extern "C" {
 
 } // end of extern C
 
-typedef struct MAVPacket {
-    AVPacket pkt;
-    bool isEnd = false;
-} MAVPacket;
-
-
-
-typedef struct MAVPacketList {
-    MAVPacket mPkt;
-    struct MAVPacketList *next;
-} MAVPacketList;
+#include "avPacketList.h"
+#include "VideoStateInfo.h"
 
 class PacketQueue
 {
@@ -43,7 +34,7 @@ public:
     int size();
 
     void abort();
-
+    int serial;
 private:
     MAVPacketList*		mFirst;
     MAVPacketList*		mLast;

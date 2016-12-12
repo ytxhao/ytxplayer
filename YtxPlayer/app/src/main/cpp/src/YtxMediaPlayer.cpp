@@ -247,6 +247,28 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
+    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
+    ALOGI("start fp_yuv=%d\n",fp_yuv);
+
+
+    mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+
+
+    mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
+
+    mDecoderAudio = new DecoderAudio(mVideoStateInfo);
+    mDecoderVideo = new DecoderVideo(mVideoStateInfo);
+
+
+    mDecoderAudio->onDecode = decodeAudio;
+    mDecoderVideo->onDecode = decodeVideo;
+    mDecoderVideo->onDecodeFinish = finish;
+    mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+
+    mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
+
+
     mCurrentState = MEDIA_PLAYER_PREPARED;
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
@@ -315,9 +337,31 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     if(sPlayer->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
         sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamVideo,sPlayer->st_index[AVMEDIA_TYPE_VIDEO]);
     }
+
+    sPlayer->fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+    sPlayer->fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
+    ALOGI("start fp_yuv=%d\n",sPlayer->fp_yuv);
+
+
+    sPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
+
+
+    sPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
+
+    sPlayer->mDecoderAudio = new DecoderAudio(sPlayer->mVideoStateInfo);
+    sPlayer->mDecoderVideo = new DecoderVideo(sPlayer->mVideoStateInfo);
+
+
+    sPlayer->mDecoderAudio->onDecode = decodeAudio;
+    sPlayer->mDecoderVideo->onDecode = decodeVideo;
+    sPlayer->mDecoderVideo->onDecodeFinish = finish;
+    sPlayer->mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+
+    sPlayer->mVideoRefreshController = new VideoRefreshController(sPlayer->mVideoStateInfo);
+
+
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
-   // sPlayer->mListener->notify(FFP_MSG_PREPARED,0,0);
     sPlayer->mMessageLoop->enqueue(&msg);
     sPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
     pthread_exit(NULL);
@@ -330,45 +374,21 @@ int YtxMediaPlayer::resume() {
 }
 
 int  YtxMediaPlayer::start() {
-
+    ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n",mCurrentState);
 
     if(mCurrentState == MEDIA_PLAYER_PAUSED){
         return  resume();
 
     }
 
-    if(mCurrentState != MEDIA_PLAYER_PREPARED){
-        return -4;
-    }
-
-    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
-    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
-    char datam[1024]="ytxh ytxhaooooolkaslfasl;'kf'as ";
-   // fwrite(datam,1,1024,fp_yuv);
-    ALOGI("start fp_yuv=%d\n",fp_yuv);
-
- //   playing = true;
-    //frameQueueVideo = new FrameQueue();
-    mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-
-   // frameQueueAudio = new FrameQueue();
-    mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
-
-    mDecoderAudio = new DecoderAudio(mVideoStateInfo);
-    mDecoderVideo = new DecoderVideo(mVideoStateInfo);
-
-
-//    mDecoderAudio->setFrameQueue(frameQueueAudio);
-//    mDecoderVideo->setFrameQueue(frameQueueVideo);
-
-
-    mDecoderAudio->onDecode = decodeAudio;
-    mDecoderVideo->onDecode = decodeVideo;
-    mDecoderVideo->onDecodeFinish = finish;
-    mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
-
-    mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
-
+//    if(mCurrentState == MEDIA_PLAYBACK_COMPLETE){
+//        goto START_PLAYER;
+//    }
+//
+//    if(mCurrentState != MEDIA_PLAYER_PREPARED){
+//        return -4;
+//    }
+//    START_PLAYER:
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
 
     return 0;
@@ -402,6 +422,43 @@ void YtxMediaPlayer::notifyRenderer() {
 
 }
 
+void YtxMediaPlayer::checkSeekRequest() {
+
+    int ret;
+    if(mVideoStateInfo != NULL){
+        if(mVideoStateInfo->seekReq){
+            int64_t seek_target = mVideoStateInfo->seekPos;
+            int64_t seek_min    = mVideoStateInfo->seekRel > 0 ? seek_target - mVideoStateInfo->seekRel + 2: INT64_MIN;
+            int64_t seek_max    = mVideoStateInfo->seekRel < 0 ? seek_target - mVideoStateInfo->seekRel - 2: INT64_MAX;
+            ret = avformat_seek_file(mVideoStateInfo->pFormatCtx, -1, seek_min, seek_target, seek_max, mVideoStateInfo->seekFlags);
+
+            if(ret<0){
+                ALOGI("%s: error while seeking\n",filePath);
+            }else {
+                if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+                    mDecoderAudio->flush();
+                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
+                }
+
+                if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+                    mDecoderVideo->flush();
+                    mDecoderVideo->enqueue(mVideoStateInfo->flushPkt);
+                }
+                if (mVideoStateInfo->seekFlags & AVSEEK_FLAG_BYTE) {
+                   // set_clock(&is->extclk, NAN, 0);
+                } else {
+                   // set_clock(&is->extclk, seek_target / (double)AV_TIME_BASE, 0);
+                }
+            }
+
+            mVideoStateInfo->seekReq = false;
+        }
+    }
+
+
+}
+
+
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
    // AVPacket mPacket, *pPacket = &mPacket;
@@ -424,9 +481,11 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 
+      //  checkSeekRequest();
+
         if (mDecoderVideo->packets() > MAX_VIDEOQ_SIZE ||
             mDecoderAudio->packets() > MAX_AUDIOQ_SIZE) {
-            usleep(100);
+            usleep(10);
             continue;
         }
 
@@ -465,15 +524,6 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         ALOGI( "Couldn't cancel audio thread: %i", ret);
     }
 
-//    ALOGI("waiting on VideoRefreshController thread");
-//    if((ret = mVideoRefreshController->wait()) != 0) {
-//        ALOGI( "Couldn't cancel VideoRefreshController thread: %i", ret);
-//    }
-
-//    ALOGI("waiting on mMessageLoop thread");
-//    if((ret = mMessageLoop->wait()) != 0) {
-//        ALOGI( "Couldn't cancel mMessageLoop thread: %i", ret);
-//    }
 
     if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
         ALOGI( "playing err\n");
@@ -535,6 +585,22 @@ int  YtxMediaPlayer::getVideoHeight() {
 
 int  YtxMediaPlayer::seekTo(int msec) {
 
+//    if (!is->seek_req) {
+//        is->seek_pos = pos;
+//        is->seek_rel = rel;
+//        is->seek_flags &= ~AVSEEK_FLAG_BYTE;
+//        if (seek_by_bytes)
+//            is->seek_flags |= AVSEEK_FLAG_BYTE;
+//        is->seek_req = 1;
+//        SDL_CondSignal(is->continue_read_thread);
+//    }
+
+    if(!mVideoStateInfo->seekReq){
+
+
+
+        mVideoStateInfo->seekReq = true;
+    }
     return 0;
 }
 
