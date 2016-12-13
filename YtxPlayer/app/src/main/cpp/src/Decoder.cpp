@@ -7,9 +7,11 @@
 #define TAG "FFMpegIDecoder"
 #include "ALog-priv.h"
 
-IDecoder::IDecoder()
+IDecoder::IDecoder(VideoStateInfo *mVideoStateInfo)
 {
-    mQueue = new PacketQueue();
+    this->mVideoStateInfo = mVideoStateInfo;
+    mQueue = new PacketQueue(mVideoStateInfo);
+    pkt_serial = 0;
 }
 
 IDecoder::~IDecoder()
@@ -24,9 +26,13 @@ IDecoder::~IDecoder()
 
 void IDecoder::enqueue(MAVPacket* mPacket)
 {
+    ALOGI("IDecoder mVideoStateInfo->flushPkt->pkt.data=%#x mPacket->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPacket->pkt.data);
     mQueue->put(mPacket);
 }
 
+void IDecoder::enqueueNullPacket(int stream_index) {
+    mQueue->putNullPacket(stream_index);
+}
 
 void IDecoder::flush() {
     mQueue->flush();

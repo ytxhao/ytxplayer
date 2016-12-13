@@ -70,5 +70,10 @@ public:
     pthread_mutex_t     		mLock;
     pthread_cond_t				mCondition;
 
+    pthread_mutex_t wait_mutex;
+    pthread_cond_t continue_read_thread;
+
+    int eof;
+
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

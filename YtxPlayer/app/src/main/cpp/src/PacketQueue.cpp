@@ -4,9 +4,10 @@
 
 #define TAG "FFMpegPacketQueue"
 
+#include "ALog-priv.h"
 #include "ytxplayer/packetqueue.h"
 
-PacketQueue::PacketQueue()
+PacketQueue::PacketQueue(VideoStateInfo *mVideoStateInfo)
 {
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
@@ -15,6 +16,8 @@ PacketQueue::PacketQueue()
     mNbPackets = 0;;
     mSize = 0;
     mAbortRequest = false;
+    this->mVideoStateInfo = mVideoStateInfo;
+    this->serial = 0;
 }
 
 PacketQueue::~PacketQueue()
@@ -39,9 +42,9 @@ void PacketQueue::flush()
     pthread_mutex_lock(&mLock);
 
     for(pkt = mFirst; pkt != NULL; pkt = pkt1) {
-        av_free_packet(&pkt->mPkt.pkt);
-        av_freep(&pkt);
         pkt1 = pkt->next;
+        av_packet_unref(&pkt->mPkt.pkt);
+        av_freep(&pkt);
     }
     mLast = NULL;
     mFirst = NULL;
@@ -51,13 +54,27 @@ void PacketQueue::flush()
     pthread_mutex_unlock(&mLock);
 }
 
+int PacketQueue::putNullPacket(int stream_index) {
+    MAVPacket pkt1, *pkt = &pkt1;
+    av_init_packet(&pkt->pkt);
+    pkt->pkt.data = NULL;
+    pkt->pkt.size = 0;
+    pkt->pkt.stream_index = stream_index;
+    return put(pkt);
+}
+
 int PacketQueue::put(MAVPacket* mPkt)
 {
-    MAVPacketList *pkt1;
 
-    /* duplicate the packet */
-    if (av_dup_packet(&mPkt->pkt) < 0)
-        return -1;
+    MAVPacketList *pkt1;
+    pthread_mutex_lock(&mLock);
+    if(mPkt == mVideoStateInfo->flushPkt){
+        ALOGI("PacketQueue0 mVideoStateInfo->flushPkt->pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPkt->pkt.data);
+
+    }
+//    /* duplicate the packet */
+//    if (av_dup_packet(&mPkt->pkt) < 0)
+//        return -1;
 
     pkt1 = (MAVPacketList *) av_malloc(sizeof(MAVPacketList));
     if (!pkt1)
@@ -65,7 +82,13 @@ int PacketQueue::put(MAVPacket* mPkt)
     pkt1->mPkt = *mPkt;
     pkt1->next = NULL;
 
-    pthread_mutex_lock(&mLock);
+    if(mPkt == mVideoStateInfo->flushPkt){
+        ALOGI("PacketQueue1 mVideoStateInfo->flushPkt->pkt.data=%#x pkt1->mPkt.pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,pkt1->mPkt.pkt.data,mPkt->pkt.data);
+        this->serial++;  //如果当前加入的是flush包,则包队列的序列号加一
+    }
+    pkt1->serial = this->serial;//将入队列的包序列号赋值为该包队列的序列号
+
+
 
     if (!mLast) {
         mFirst = pkt1;
@@ -85,7 +108,7 @@ int PacketQueue::put(MAVPacket* mPkt)
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-int PacketQueue::get(MAVPacket *mPkt, bool block)
+int PacketQueue::get(MAVPacket *mPkt, bool block,int *serial)
 {
     MAVPacketList *pkt1;
     int ret;
@@ -106,6 +129,9 @@ int PacketQueue::get(MAVPacket *mPkt, bool block)
             mNbPackets--;
             mSize -= pkt1->mPkt.pkt.size + sizeof(*pkt1);
             *mPkt = pkt1->mPkt;
+            if (serial) {
+                *serial = pkt1->serial;
+            }
             av_free(pkt1);
             ret = 1;
             break;
@@ -113,11 +139,13 @@ int PacketQueue::get(MAVPacket *mPkt, bool block)
             ret = 0;
             break;
         } else {
+            ALOGI("DecoderVideo::process completed PacketQueue::get wait");
             pthread_cond_wait(&mCondition, &mLock);
         }
 
     }
     pthread_mutex_unlock(&mLock);
+    ALOGI("DecoderVideo::process completed PacketQueue::get");
     return ret;
 
 }

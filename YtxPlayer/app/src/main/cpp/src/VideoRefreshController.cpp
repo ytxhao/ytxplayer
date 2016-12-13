@@ -77,8 +77,8 @@ void VideoRefreshController::process() {
                 frame_timer = time;
             }
 
-//            if (!isnan(vp->pts))
-//                mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
+            if (!isnan(vp->pts))
+                mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
 
             display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;

@@ -52,7 +52,7 @@ void printferr(){
 //#define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MAX_AUDIOQ_SIZE (5 * 16 * 1024)
 #define MAX_VIDEOQ_SIZE (5 * 256 * 1024)
-
+#define FFMPEG_PLAYER_MAX_QUEUE_SIZE 3
 static YtxMediaPlayer* sPlayer;
 
 //FrameQueue *frameQueueVideo;
@@ -397,7 +397,7 @@ int  YtxMediaPlayer::start() {
 void* YtxMediaPlayer::startPlayer(void* ptr)
 {
     ALOGI("starting main player thread\n");
-  //  printferr();
+    printferr();
     //等待surface render初始化完成
 
     do{
@@ -430,28 +430,32 @@ void YtxMediaPlayer::checkSeekRequest() {
             int64_t seek_target = mVideoStateInfo->seekPos;
             int64_t seek_min    = mVideoStateInfo->seekRel > 0 ? seek_target - mVideoStateInfo->seekRel + 2: INT64_MIN;
             int64_t seek_max    = mVideoStateInfo->seekRel < 0 ? seek_target - mVideoStateInfo->seekRel - 2: INT64_MAX;
+            ALOGI("checkSeekRequest seek_target=%lld seek_min=%lld seek_max=%lld mVideoStateInfo->seekFlags=%d\n",seek_target,seek_min,seek_max,mVideoStateInfo->seekFlags);
             ret = avformat_seek_file(mVideoStateInfo->pFormatCtx, -1, seek_min, seek_target, seek_max, mVideoStateInfo->seekFlags);
-
+            ALOGI("while seeking ret = %d\n",ret);
             if(ret<0){
                 ALOGI("%s: error while seeking\n",filePath);
             }else {
-                if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-                    mDecoderAudio->flush();
-                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
-                }
+//                if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+//                    mDecoderAudio->flush();
+//                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
+//                }
 
                 if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
                     mDecoderVideo->flush();
+                    ALOGI("12mVideoStateInfo->flushPkt->pkt.data = %#x \n",mVideoStateInfo->flushPkt->pkt.data);
                     mDecoderVideo->enqueue(mVideoStateInfo->flushPkt);
                 }
                 if (mVideoStateInfo->seekFlags & AVSEEK_FLAG_BYTE) {
                    // set_clock(&is->extclk, NAN, 0);
                 } else {
                    // set_clock(&is->extclk, seek_target / (double)AV_TIME_BASE, 0);
+                    mVideoStateInfo->setClock(mVideoStateInfo->extClk,seek_target / (double)AV_TIME_BASE,0);
                 }
             }
 
             mVideoStateInfo->seekReq = false;
+            mVideoStateInfo->eof = 0;
         }
     }
 
@@ -481,31 +485,64 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 
-      //  checkSeekRequest();
-
-        if (mDecoderVideo->packets() > MAX_VIDEOQ_SIZE ||
-            mDecoderAudio->packets() > MAX_AUDIOQ_SIZE) {
-            usleep(10);
+        if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
+            mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
+            ALOGI("decodeMovie ret usleep(20) in\n");
+            usleep(25);
+            ALOGI("decodeMovie ret usleep(20) out\n");
             continue;
         }
 
-        int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
-        ALOGI("decodeMovie ret=%d",ret);
-        if(ret < 0) {
-            mCurrentState = MEDIA_PLAYER_DECODED;
+        ALOGI("decodeMovie ret checkSeekRequest int\n");
+        checkSeekRequest();
 
-            pPacket->isEnd = true;
-            mDecoderVideo->enqueue(pPacket);
-            mDecoderAudio->enqueue(pPacket);
+        ALOGI("decodeMovie ret checkSeekRequest out\n");
+        ALOGI("decodeMovie ret in\n");
+        int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
+        ALOGI("decodeMovie ret out=%d\n",ret);
+
+        if(ret < 0) {
+
+            if(ret == AVERROR_EOF || avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof){
+
+                if(st_index[AVMEDIA_TYPE_VIDEO]>=0){
+                   // packet_queue_put_nullpacket(&is->videoq, is->video_stream);
+                  //  mDecoderVideo->enqueueNullPacket(st_index[AVMEDIA_TYPE_VIDEO]);
+                }
+                mVideoStateInfo->eof = 1;
+
+            }
+
+
+//            if (mVideoStateInfo->pFormatCtx->pb && mVideoStateInfo->pFormatCtx->pb->error)
+//                break;
+
+//            struct timeval now;
+//            struct timespec outTime;
+//            gettimeofday(&now, NULL);
+//            pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
+//
+//            outTime.tv_nsec =
+//            pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread,&mVideoStateInfo->wait_mutex,&outTime);
+//            pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
+
+
+//            mCurrentState = MEDIA_PLAYER_DECODED;
+//
+//            pPacket->isEnd = false;
+//            mDecoderVideo->enqueue(pPacket);
+//            mDecoderAudio->enqueue(pPacket);
 
             continue;
+        }else{
+            mVideoStateInfo->eof = 0;
         }
 
         if (pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
-           // ALOGI("mDecoderVideo->enqueue(pPacket)=%d  *pI=%d",pPacket,*pI);
+            ALOGI("decodeMovie ret mDecoderVideo->enqueue(pPacket)=%d ",pPacket);
             mDecoderVideo->enqueue(pPacket);
 
-        }else if(pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_AUDIO]){
+        }else if(pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_AUDIO] && false){
             mDecoderAudio->enqueue(pPacket);
         } else {
             av_packet_unref(&pPacket->pkt);
@@ -595,9 +632,29 @@ int  YtxMediaPlayer::seekTo(int msec) {
 //        SDL_CondSignal(is->continue_read_thread);
 //    }
 
+    double incr, pos;
+    if(msec>0){
+        incr = 9;
+    }else{
+        incr = -9;
+    }
+
+    ALOGI("seekTo incr=%lf\n",incr);
     if(!mVideoStateInfo->seekReq){
 
+        pos = mVideoStateInfo->getClock(mVideoStateInfo->vidClk);
+        if (isnan(pos)) {
+            pos = (double) mVideoStateInfo->seekPos / AV_TIME_BASE;
+        }
+        pos += incr;
 
+        if (mVideoStateInfo->pFormatCtx->start_time != AV_NOPTS_VALUE && pos < mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE){
+            pos = mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE;
+        }
+
+        ALOGI("seekTo pos=%lf\n",pos);
+        mVideoStateInfo->seekPos = (int64_t)(pos * AV_TIME_BASE);
+        mVideoStateInfo->seekRel = (int64_t)(incr * AV_TIME_BASE);
 
         mVideoStateInfo->seekReq = true;
     }

@@ -21,7 +21,7 @@ public:
     AudioDecodingHandler		onDecode;
     AudioDecodeFirstFrameHandler  firstFrameHandler;
 
-    VideoStateInfo *mVideoStateInfo;
+    //VideoStateInfo *mVideoStateInfo;
 
 
 private:

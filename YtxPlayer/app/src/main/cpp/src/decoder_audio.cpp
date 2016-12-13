@@ -9,10 +9,10 @@
 #define TAG "FFMpegAudioDecoder"
 #include "ALog-priv.h"
 
-DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo)
+DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
     isFirstFrame = true;
-    this->mVideoStateInfo = mVideoStateInfo;
+   // this->mVideoStateInfo = mVideoStateInfo;
 }
 
 DecoderAudio::~DecoderAudio()
@@ -40,7 +40,12 @@ bool DecoderAudio::process(MAVPacket *mPacket)
     if(mPacket->isEnd){
         return false;
     }
-    //int len = avcodec_decode_audio3(mStream->codec, mSamples, &size, packet);
+
+    if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
+        avcodec_flush_buffers(mVideoStateInfo->streamAudio->dec_ctx);
+        return true;
+    }
+
     int ret = avcodec_decode_audio4(mVideoStateInfo->streamAudio->dec_ctx,mFrame,&completed,&mPacket->pkt);
     ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
     //call handler for posting buffer to os audio driver
@@ -77,7 +82,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         tb = (AVRational){1, mFrame->sample_rate};
         af->pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(tb);
         af->pos = av_frame_get_pkt_pos(mFrame);
-      //  af->serial = is->auddec.pkt_serial;
+
         af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
         ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
         av_frame_move_ref(af->frame, mFrame);
@@ -101,7 +106,7 @@ bool DecoderAudio::decode(void* ptr)
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true) < 0)
+        if(mQueue->get(&pPacket, true,&pkt_serial) < 0)
         {
             mRunning = false;
             return false;
@@ -112,7 +117,7 @@ bool DecoderAudio::decode(void* ptr)
             return false;
         }
         // Free the packet that was allocated by av_read_frame
-        av_free_packet(&pPacket.pkt);
+        av_packet_unref(&pPacket.pkt);
     }
 
     ALOGI( TAG, "decoding audio ended");

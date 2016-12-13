@@ -22,19 +22,22 @@ extern "C" {
 class PacketQueue
 {
 public:
-    PacketQueue();
+    PacketQueue(VideoStateInfo *mVideoStateInfo);
     ~PacketQueue();
 
     void flush();
     int put(MAVPacket* pkt);
+    int putNullPacket(int stream_index);
 
     /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-    int get(MAVPacket *pkt, bool block);
+    int get(MAVPacket *pkt, bool block,int *serial);
 
     int size();
 
     void abort();
     int serial;
+
+    VideoStateInfo *mVideoStateInfo;
 private:
     MAVPacketList*		mFirst;
     MAVPacketList*		mLast;

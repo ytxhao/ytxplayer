@@ -19,7 +19,7 @@ public:
     VideoDecodeFinishHandler    onDecodeFinish;
     int isFinish;
 
-    VideoStateInfo *mVideoStateInfo;
+    //VideoStateInfo *mVideoStateInfo;
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;

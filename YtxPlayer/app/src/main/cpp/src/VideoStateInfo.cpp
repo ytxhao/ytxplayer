@@ -1,8 +1,10 @@
 //
 // Created by Administrator on 2016/12/1.
 //
+#define NDEBUG 0
+#define TAG "VideoStateInfo-jni"
 #include "VideoStateInfo.h"
-
+#include "ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
     frameQueueVideo = new FrameQueue();
     frameQueueAudio = new FrameQueue();
@@ -10,12 +12,20 @@ VideoStateInfo::VideoStateInfo(){
     streamAudio = new InputStream();
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
+    pthread_mutex_init(&wait_mutex,NULL);
+    pthread_cond_init(&continue_read_thread,NULL);
     seekReq = false;
     flushPkt = (MAVPacket *)malloc(sizeof(MAVPacket));
     av_init_packet(&flushPkt->pkt);
     flushPkt->pkt.data = (uint8_t *)&flushPkt->pkt;
+    ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
     vidClk = (Clock *)malloc(sizeof(Clock));
     extClk = (Clock *)malloc(sizeof(Clock));
+    seekPos = 0;
+    seekRel = 0;
+    seekFlags = 0;
+    eof =0;
+
 
 }
 VideoStateInfo::~VideoStateInfo() {
@@ -28,6 +38,8 @@ VideoStateInfo::~VideoStateInfo() {
     free(extClk);
     pthread_mutex_destroy(&mLock);
     pthread_cond_destroy(&mCondition);
+    pthread_mutex_destroy(&wait_mutex);
+    pthread_cond_destroy(&continue_read_thread);
 }
 
 void VideoStateInfo::notify() {

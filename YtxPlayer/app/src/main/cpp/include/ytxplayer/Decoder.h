@@ -17,13 +17,15 @@
 class IDecoder : public Thread
 {
 public:
-    IDecoder();
+    IDecoder(VideoStateInfo *mVideoStateInfo);
     ~IDecoder();
     void						stop();
     void						enqueue(MAVPacket* mPacket);
+    void						enqueueNullPacket(int stream_index);
     int							packets();
     void                        flush();
-
+    VideoStateInfo *mVideoStateInfo;
+    int pkt_serial;
 protected:
     PacketQueue*                mQueue;
 
