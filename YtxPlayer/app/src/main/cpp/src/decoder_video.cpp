@@ -81,9 +81,11 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         onDecodeFinish();
         return false;
     }
-    ALOGI("DecoderVideo::process1 mPacket->pkt.data=%#x mVideoStateInfo->flushPkt->pkt.data=%#x\n",mPacket->pkt.data,mVideoStateInfo->flushPkt->pkt.data);
+    ALOGI("DecoderVideo::process1 mPacket->pkt.data=%#x mVideoStateInfo->flushPkt->pkt.data=%#x  pkt_serial=%d mQueue->serial=%d \n",
+          mPacket->pkt.data,mVideoStateInfo->flushPkt->pkt.data,pkt_serial,mQueue->serial);
+
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
-        avcodec_flush_buffers(mVideoStateInfo->streamAudio->dec_ctx);
+        avcodec_flush_buffers(mVideoStateInfo->streamVideo->dec_ctx);
         return true;
     }
 

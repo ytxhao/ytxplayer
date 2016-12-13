@@ -52,7 +52,7 @@ void printferr(){
 //#define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MAX_AUDIOQ_SIZE (5 * 16 * 1024)
 #define MAX_VIDEOQ_SIZE (5 * 256 * 1024)
-#define FFMPEG_PLAYER_MAX_QUEUE_SIZE 3
+#define FFMPEG_PLAYER_MAX_QUEUE_SIZE 25
 static YtxMediaPlayer* sPlayer;
 
 //FrameQueue *frameQueueVideo;
@@ -487,16 +487,16 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
         if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
             mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
-            ALOGI("decodeMovie ret usleep(20) in\n");
+           // ALOGI("decodeMovie ret usleep(20) in\n");
             usleep(25);
-            ALOGI("decodeMovie ret usleep(20) out\n");
+          //  ALOGI("decodeMovie ret usleep(20) out\n");
             continue;
         }
 
         ALOGI("decodeMovie ret checkSeekRequest int\n");
         checkSeekRequest();
 
-        ALOGI("decodeMovie ret checkSeekRequest out\n");
+      //  ALOGI("decodeMovie ret checkSeekRequest out\n");
         ALOGI("decodeMovie ret in\n");
         int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
         ALOGI("decodeMovie ret out=%d\n",ret);
