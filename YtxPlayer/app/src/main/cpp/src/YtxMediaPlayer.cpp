@@ -77,7 +77,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
     pthread_mutex_init(&mLock, NULL);
     mLeftVolume = mRightVolume = 1.0;
     mVideoWidth = mVideoHeight = 0;
-    memset(st_index, -1, sizeof(st_index));
+   // memset(st_index, -1, sizeof(st_index));
     mVideoStateInfo = new VideoStateInfo();
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mPlayerPrepareAsync = new PlayerPrepareAsync();
@@ -218,32 +218,32 @@ int  YtxMediaPlayer::prepare() {
         AVStream *st = pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
 
-        if (type >= 0 && wanted_stream_spec[type] && st_index[type] == -1) {
+        if (type >= 0 && wanted_stream_spec[type] && mVideoStateInfo->st_index[type] == -1) {
             if (avformat_match_stream_specifier(pFormatCtx, st, wanted_stream_spec[type]) > 0) {
-                st_index[type] = i;
+                mVideoStateInfo->st_index[type] = i;
             }
         }
 
     }
 
     for (int i = 0; i < AVMEDIA_TYPE_NB; i++) {
-        if (wanted_stream_spec[i] && st_index[i] == -1) {
+        if (wanted_stream_spec[i] && mVideoStateInfo->st_index[i] == -1) {
             ALOGI("Stream specifier %s does not match any %s stream\n", wanted_stream_spec[(AVMediaType)i], av_get_media_type_string((AVMediaType)i));
-            st_index[i] = INT_MAX;
+            mVideoStateInfo->st_index[i] = INT_MAX;
         }
     }
 
 
     mVideoStateInfo->pFormatCtx = pFormatCtx;
-    if(st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-        streamComponentOpen(mVideoStateInfo->streamAudio,st_index[AVMEDIA_TYPE_AUDIO]);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        streamComponentOpen(mVideoStateInfo->streamAudio,mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
         audioEngine = new AudioEngine();
         audioEngine->createEngine();
         audioEngine->createBufferQueueAudioPlayer(mVideoStateInfo->streamAudio->dec_ctx->sample_rate,960,out_channel_nb,bqPlayerCallback);
     }
 
-    if(st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-        streamComponentOpen(mVideoStateInfo->streamVideo,st_index[AVMEDIA_TYPE_VIDEO]);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        streamComponentOpen(mVideoStateInfo->streamVideo,mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
 
@@ -310,32 +310,32 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         AVStream *st = sPlayer->pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
 
-        if (type >= 0 && sPlayer->wanted_stream_spec[type] && sPlayer->st_index[type] == -1) {
+        if (type >= 0 && sPlayer->wanted_stream_spec[type] && sPlayer->mVideoStateInfo->st_index[type] == -1) {
             if (avformat_match_stream_specifier(sPlayer->pFormatCtx, st, sPlayer->wanted_stream_spec[type]) > 0) {
-                sPlayer->st_index[type] = i;
+                sPlayer->mVideoStateInfo->st_index[type] = i;
             }
         }
 
     }
 
     for (int i = 0; i < AVMEDIA_TYPE_NB; i++) {
-        if (sPlayer->wanted_stream_spec[i] && sPlayer->st_index[i] == -1) {
+        if (sPlayer->wanted_stream_spec[i] && sPlayer->mVideoStateInfo->st_index[i] == -1) {
             ALOGI("Stream specifier %s does not match any %s stream\n", sPlayer->wanted_stream_spec[(AVMediaType)i], av_get_media_type_string((AVMediaType)i));
-            sPlayer->st_index[i] = INT_MAX;
+            sPlayer->mVideoStateInfo->st_index[i] = INT_MAX;
         }
     }
 
 
     sPlayer->mVideoStateInfo->pFormatCtx = sPlayer->pFormatCtx;
-    if(sPlayer->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-        sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamAudio,sPlayer->st_index[AVMEDIA_TYPE_AUDIO]);
+    if(sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamAudio,sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
         sPlayer->audioEngine = new AudioEngine();
         sPlayer->audioEngine->createEngine();
         sPlayer->audioEngine->createBufferQueueAudioPlayer(sPlayer->mVideoStateInfo->streamAudio->dec_ctx->sample_rate,960,sPlayer->out_channel_nb,bqPlayerCallback);
     }
 
-    if(sPlayer->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-        sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamVideo,sPlayer->st_index[AVMEDIA_TYPE_VIDEO]);
+    if(sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamVideo,sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
     sPlayer->fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
@@ -441,7 +441,7 @@ void YtxMediaPlayer::checkSeekRequest() {
 //                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
 //                }
 
-                if (st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+                if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
                     mDecoderVideo->flush();
                     ALOGI("12mVideoStateInfo->flushPkt->pkt.data = %#x \n",mVideoStateInfo->flushPkt->pkt.data);
                     mDecoderVideo->enqueue(mVideoStateInfo->flushPkt);
@@ -505,7 +505,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
             if(ret == AVERROR_EOF || avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof){
 
-                if(st_index[AVMEDIA_TYPE_VIDEO]>=0){
+                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]>=0){
                    // packet_queue_put_nullpacket(&is->videoq, is->video_stream);
                   //  mDecoderVideo->enqueueNullPacket(st_index[AVMEDIA_TYPE_VIDEO]);
                 }
@@ -538,11 +538,11 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             mVideoStateInfo->eof = 0;
         }
 
-        if (pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_VIDEO]) {
+        if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]) {
             ALOGI("decodeMovie ret mDecoderVideo->enqueue(pPacket)=%d ",pPacket);
             mDecoderVideo->enqueue(pPacket);
 
-        }else if(pPacket->pkt.stream_index == st_index[AVMEDIA_TYPE_AUDIO] && false){
+        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] && false){
             mDecoderAudio->enqueue(pPacket);
         } else {
             av_packet_unref(&pPacket->pkt);
@@ -639,7 +639,7 @@ int  YtxMediaPlayer::seekTo(int msec) {
         incr = -9;
     }
 
-    ALOGI("seekTo incr=%lf\n",incr);
+    ALOGI("seekTo incr=%lf msec=%d\n",incr,msec);
     if(!mVideoStateInfo->seekReq){
 
         pos = mVideoStateInfo->getClock(mVideoStateInfo->vidClk);
@@ -653,22 +653,59 @@ int  YtxMediaPlayer::seekTo(int msec) {
         }
 
         ALOGI("seekTo pos=%lf\n",pos);
-        mVideoStateInfo->seekPos = (int64_t)(pos * AV_TIME_BASE);
-        mVideoStateInfo->seekRel = (int64_t)(incr * AV_TIME_BASE);
+      //  mVideoStateInfo->seekPos = (int64_t)(pos * AV_TIME_BASE);
+     //   mVideoStateInfo->seekRel = (int64_t)(incr * AV_TIME_BASE);
 
+
+        mVideoStateInfo->seekPos = (int64_t) (((double)msec / getDuration()) * mVideoStateInfo->pFormatCtx->duration);
+        mVideoStateInfo->seekRel = 0;
         mVideoStateInfo->seekReq = true;
+        ALOGI("seekTo seekPos=%lld seekRel=%lld msec=%d\n",mVideoStateInfo->seekPos,mVideoStateInfo->seekRel,msec);
     }
     return 0;
 }
 
-int  YtxMediaPlayer::getCurrentPosition(int *msec) {
-
-    return 0;
+int  YtxMediaPlayer::getCurrentPosition() {
+    int64_t ts;
+    int ns, hh, mm, ss;
+    int tns, thh, tmm, tss,tms;
+    ts = mVideoStateInfo->pFormatCtx->duration;
+    tns  =  ts / 1000000LL;
+    thh  = tns / 3600;
+    tmm  = (tns % 3600) / 60;
+    tss  = (tns % 60);
+    tms = ts / 1000LL; //总共有多少毫秒
+//    frac = x / cur_stream->width;
+//    ns   = frac * tns;
+//    hh   = ns / 3600;
+//    mm   = (ns % 3600) / 60;
+//    ss   = (ns % 60);
+   // int ret = (int) (mVideoStateInfo->currentTime * 1000);
+//    ALOGI("tms=%d ret=%d\n",tms,ret);
+//    if(tms < ret){
+//        ret = tms;
+//    }
+    return mVideoStateInfo->currentTime;
 }
 
-int  YtxMediaPlayer::getDuration(int *msec) {
+int  YtxMediaPlayer::getDuration() {
+    int64_t ts;
+    int ns, hh, mm, ss;
+    int tns, thh, tmm, tss,tms;
+    ts = mVideoStateInfo->pFormatCtx->duration;
+    tns  = ts / 1000000LL; //总共有多少秒
+    thh  = tns / 3600;
+    tmm  = (tns % 3600) / 60;
+    tss  = (tns % 60);
 
-    return 0;
+    tms = ts / 1000LL; //总共有多少毫秒
+//    frac = x / cur_stream->width;
+//    ns   = frac * tns;
+//    hh   = ns / 3600;
+//    mm   = (ns % 3600) / 60;
+//    ss   = (ns % 60);
+
+    return tms;
 }
 
 int  YtxMediaPlayer::reset() {

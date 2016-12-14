@@ -225,12 +225,12 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public long getCurrentPosition() {
-        return 0;
+        return _getCurrentPosition();
     }
 
     @Override
     public long getDuration() {
-        return 0;
+        return _getDuration();
     }
 
     @Override

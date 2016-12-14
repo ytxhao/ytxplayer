@@ -21,10 +21,14 @@ VideoStateInfo::VideoStateInfo(){
     ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
     vidClk = (Clock *)malloc(sizeof(Clock));
     extClk = (Clock *)malloc(sizeof(Clock));
+
+    memset(st_index, -1, sizeof(st_index));
+
     seekPos = 0;
     seekRel = 0;
     seekFlags = 0;
     eof =0;
+    currentTime =0;
 
 
 }

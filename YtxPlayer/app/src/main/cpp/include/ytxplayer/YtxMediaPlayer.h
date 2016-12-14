@@ -81,9 +81,9 @@ public:
     void checkSeekRequest();
     int seekTo(int msec);
 
-    int getCurrentPosition(int *msec);
+    int getCurrentPosition();
 
-    int getDuration(int *msec);
+    int getDuration();
 
     int reset();
 
@@ -198,7 +198,7 @@ public:
 
     int mStreamType;
     int mCurrentState;
-    int st_index[AVMEDIA_TYPE_NB];
+   // int st_index[AVMEDIA_TYPE_NB];
 
 
     FILE *fp_yuv;

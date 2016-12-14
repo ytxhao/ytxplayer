@@ -227,11 +227,18 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public int getDuration() {
-        return 0;
+        if (isInPlaybackState()) {
+            return (int) mMediaPlayer.getDuration();
+        }
+
+        return -1;
     }
 
     @Override
     public int getCurrentPosition() {
+        if (isInPlaybackState()) {
+            return (int) mMediaPlayer.getCurrentPosition();
+        }
         return 0;
     }
 

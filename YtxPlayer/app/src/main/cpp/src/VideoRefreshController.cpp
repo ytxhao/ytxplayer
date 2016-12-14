@@ -62,8 +62,8 @@ void VideoRefreshController::process() {
 
 
             time = av_gettime_relative() / 1000000.0; //获取ff系统时间,单位为秒
-            ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf\n",
-                  last_duration, time, frame_timer, frame_timer + delay);
+            ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf,pFormatCtx->start_time=%lf,pFormatCtx->streams video start_time=%lf vp->pts=%lf\n",
+                  last_duration, time, frame_timer, frame_timer + delay,mVideoStateInfo->pFormatCtx->start_time,mVideoStateInfo->pFormatCtx->streams[mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]]->start_time,vp->pts);
 
             if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                 remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -71,7 +71,7 @@ void VideoRefreshController::process() {
                // continue;
                 return;
             }
-
+            mVideoStateInfo->currentTime = (int) (vp->pts * 1000);
             frame_timer += delay; //下一帧需要在这个时间显示
             if (delay > 0 && time - frame_timer > AV_SYNC_THRESHOLD_MAX) {
                 frame_timer = time;

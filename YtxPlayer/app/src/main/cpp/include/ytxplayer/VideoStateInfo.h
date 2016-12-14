@@ -75,5 +75,9 @@ public:
 
     int eof;
 
+    int st_index[AVMEDIA_TYPE_NB];
+
+    int currentTime;
+
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

@@ -535,8 +535,12 @@ JNIEXPORT jint JNICALL android_media_player_seekTo
 JNIEXPORT jint JNICALL android_media_player_getCurrentPosition
         (JNIEnv *env, jobject obj)
 {
-
-    return 0;
+    jint ret = 0;
+    ALOGI("android_media_player_getCurrentPosition IN\n");
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    ret = mPlayer->getCurrentPosition();
+    ALOGI("android_media_player_getCurrentPosition OUT ret=%d\n",ret);
+    return ret;
 }
 
 /*
@@ -548,6 +552,12 @@ JNIEXPORT jint JNICALL android_media_player_getDuration
         (JNIEnv *env, jobject obj)
 {
 
+    jint ret = 0;
+    ALOGI("android_media_player_getDuration IN\n");
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    ret = mPlayer->getDuration();
+    ALOGI("android_media_player_getDuration OUT ret=%d\n",ret);
+    return ret;
     return 0;
 }
 
