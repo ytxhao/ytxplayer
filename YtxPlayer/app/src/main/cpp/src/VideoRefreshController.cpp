@@ -71,14 +71,16 @@ void VideoRefreshController::process() {
                // continue;
                 return;
             }
-            mVideoStateInfo->currentTime = (int) (vp->pts * 1000);
+
             frame_timer += delay; //下一帧需要在这个时间显示
             if (delay > 0 && time - frame_timer > AV_SYNC_THRESHOLD_MAX) {
                 frame_timer = time;
             }
 
-            if (!isnan(vp->pts))
+            if (!isnan(vp->pts)) {
+                mVideoStateInfo->currentTime = (int) (vp->pts * 1000);
                 mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
+            }
 
             display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;

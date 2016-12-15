@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         mVideoView = (VideoView) findViewById(R.id.mVideoView);
         mMediaController = new MediaController(this);
-        mVideoView.setVideoPath(filePath+"video2.mp4");
+        mVideoView.setVideoPath(filePath+"titanic.mkv");
 
         mVideoView.setMediaController(mMediaController);
 

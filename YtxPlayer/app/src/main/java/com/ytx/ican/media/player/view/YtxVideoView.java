@@ -255,7 +255,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public boolean isPlaying() {
-        return mMediaPlayer.isPlaying();
+        return isInPlaybackState() && mMediaPlayer.isPlaying();
     }
 
     @Override

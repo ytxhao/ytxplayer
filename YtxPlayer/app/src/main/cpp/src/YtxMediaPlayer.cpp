@@ -488,7 +488,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
             mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
            // ALOGI("decodeMovie ret usleep(20) in\n");
-            usleep(25);
+            usleep(10);
           //  ALOGI("decodeMovie ret usleep(20) out\n");
             continue;
         }
@@ -632,27 +632,27 @@ int  YtxMediaPlayer::seekTo(int msec) {
 //        SDL_CondSignal(is->continue_read_thread);
 //    }
 
-    double incr, pos;
-    if(msec>0){
-        incr = 9;
-    }else{
-        incr = -9;
-    }
+//    double incr, pos;
+//    if(msec>0){
+//        incr = 9;
+//    }else{
+//        incr = -9;
+//    }
+//
+//    ALOGI("seekTo incr=%lf msec=%d\n",incr,msec);
+//    if(!mVideoStateInfo->seekReq){
+//
+//        pos = mVideoStateInfo->getClock(mVideoStateInfo->vidClk);
+//        if (isnan(pos)) {
+//            pos = (double) mVideoStateInfo->seekPos / AV_TIME_BASE;
+//        }
+//        pos += incr;
+//
+//        if (mVideoStateInfo->pFormatCtx->start_time != AV_NOPTS_VALUE && pos < mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE){
+//            pos = mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE;
+//        }
 
-    ALOGI("seekTo incr=%lf msec=%d\n",incr,msec);
-    if(!mVideoStateInfo->seekReq){
-
-        pos = mVideoStateInfo->getClock(mVideoStateInfo->vidClk);
-        if (isnan(pos)) {
-            pos = (double) mVideoStateInfo->seekPos / AV_TIME_BASE;
-        }
-        pos += incr;
-
-        if (mVideoStateInfo->pFormatCtx->start_time != AV_NOPTS_VALUE && pos < mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE){
-            pos = mVideoStateInfo->pFormatCtx->start_time / (double)AV_TIME_BASE;
-        }
-
-        ALOGI("seekTo pos=%lf\n",pos);
+    //    ALOGI("seekTo pos=%lf\n",pos);
       //  mVideoStateInfo->seekPos = (int64_t)(pos * AV_TIME_BASE);
      //   mVideoStateInfo->seekRel = (int64_t)(incr * AV_TIME_BASE);
 
@@ -661,30 +661,11 @@ int  YtxMediaPlayer::seekTo(int msec) {
         mVideoStateInfo->seekRel = 0;
         mVideoStateInfo->seekReq = true;
         ALOGI("seekTo seekPos=%lld seekRel=%lld msec=%d\n",mVideoStateInfo->seekPos,mVideoStateInfo->seekRel,msec);
-    }
+    //}
     return 0;
 }
 
 int  YtxMediaPlayer::getCurrentPosition() {
-    int64_t ts;
-    int ns, hh, mm, ss;
-    int tns, thh, tmm, tss,tms;
-    ts = mVideoStateInfo->pFormatCtx->duration;
-    tns  =  ts / 1000000LL;
-    thh  = tns / 3600;
-    tmm  = (tns % 3600) / 60;
-    tss  = (tns % 60);
-    tms = ts / 1000LL; //总共有多少毫秒
-//    frac = x / cur_stream->width;
-//    ns   = frac * tns;
-//    hh   = ns / 3600;
-//    mm   = (ns % 3600) / 60;
-//    ss   = (ns % 60);
-   // int ret = (int) (mVideoStateInfo->currentTime * 1000);
-//    ALOGI("tms=%d ret=%d\n",tms,ret);
-//    if(tms < ret){
-//        ret = tms;
-//    }
     return mVideoStateInfo->currentTime;
 }
 
