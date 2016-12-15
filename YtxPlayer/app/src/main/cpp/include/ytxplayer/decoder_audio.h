@@ -10,6 +10,7 @@
 #include "frame_queue.h"
 typedef void (*AudioDecodingHandler) (AVFrame*,double);
 typedef void (*AudioDecodeFirstFrameHandler) ();
+typedef void (*AudioDecodeFlushFrameHandler) ();
 
 class DecoderAudio : public IDecoder
 {
@@ -20,7 +21,7 @@ public:
 
     AudioDecodingHandler		onDecode;
     AudioDecodeFirstFrameHandler  firstFrameHandler;
-
+    AudioDecodeFlushFrameHandler  flushFrameHandler;
     //VideoStateInfo *mVideoStateInfo;
 
 

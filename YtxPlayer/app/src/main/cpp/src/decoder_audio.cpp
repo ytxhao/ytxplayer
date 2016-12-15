@@ -43,6 +43,13 @@ bool DecoderAudio::process(MAVPacket *mPacket)
 
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
         avcodec_flush_buffers(mVideoStateInfo->streamAudio->dec_ctx);
+        flushFrameHandler();
+        mVideoStateInfo->frameQueueAudio->frameQueueNext();
+        isFirstFrame = true;
+        return true;
+    }
+
+    if(pkt_serial != mQueue->serial){
         return true;
     }
 
@@ -54,7 +61,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         //   pts = synchronize(mFrame, pts);
 
        // onDecode(mFrame, pts);
-        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
+        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lld",mFrame->sample_rate,mFrame->pts);
         tb = (AVRational){1, mFrame->sample_rate};
 
         if (mFrame->pts != AV_NOPTS_VALUE){
@@ -82,7 +89,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         tb = (AVRational){1, mFrame->sample_rate};
         af->pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(tb);
         af->pos = av_frame_get_pkt_pos(mFrame);
-
+        af->serial = pkt_serial;
         af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
         ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
         av_frame_move_ref(af->frame, mFrame);

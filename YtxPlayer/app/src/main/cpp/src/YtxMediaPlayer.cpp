@@ -138,29 +138,48 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
     return 0;
 }
 
-int audioDecodeFrame(){
+Frame *audioDecodeFrame() {
 
     Frame *af;
-    // do{
-    if (!(af = sPlayer->mVideoStateInfo->frameQueueAudio->frameQueuePeekReadable())){
-        return -1;
-    }
+    do {
 
-    sPlayer->mVideoStateInfo->frameQueueAudio->frameQueueNext();
+        do {
+            af = sPlayer->mVideoStateInfo->frameQueueAudio->frameQueuePeekReadable();
+            sPlayer->mVideoStateInfo->frameQueueAudio->frameQueueNext();
+        } while (af == NULL);
 
-    // }while(af->serial != is->audioq.serial);
+    } while (af->serial != sPlayer->mDecoderAudio->pkt_serial);
 
-    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), MAX_AUDIO_FRME_SIZE, (const uint8_t **) af->frame->data, af->frame->nb_samples);
-    //获取sample的size
-    int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
-                                                     af->frame->nb_samples, sPlayer->out_sample_fmt, 1);
-
-    (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue, sPlayer->out_buffer_audio, out_buffer_size);
-  //  fwrite(sPlayer->out_buffer_audio,1,out_buffer_size,sPlayer->fp_pcm);
-
-    return 0;
+    return af;
 
 }
+
+
+int audioFrameProcess() {
+    int ret = 0;
+    Frame *af;
+
+    af = audioDecodeFrame();
+
+    swr_convert(sPlayer->swrCtx, &(sPlayer->out_buffer_audio), MAX_AUDIO_FRME_SIZE,
+                (const uint8_t **) af->frame->data, af->frame->nb_samples);
+    //获取sample的size
+    int out_buffer_size = av_samples_get_buffer_size(NULL, sPlayer->out_channel_nb,
+                                                     af->frame->nb_samples, sPlayer->out_sample_fmt,
+                                                     1);
+
+    (*sPlayer->audioEngine->bqPlayerBufferQueue)->Enqueue(sPlayer->audioEngine->bqPlayerBufferQueue,
+                                                          sPlayer->out_buffer_audio,
+                                                          out_buffer_size);
+
+
+    return ret;
+}
+
+void flushSlBufferQueue(){
+    (*sPlayer->audioEngine->bqPlayerBufferQueue)->Clear(sPlayer->audioEngine->bqPlayerBufferQueue);
+}
+
 
 void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
@@ -183,7 +202,8 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
         (void)result;
     }
 #else
-    audioDecodeFrame();
+   // audioDecodeFrame();
+    audioFrameProcess();
     if(*sPlayer->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
         sPlayer->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
 
@@ -265,6 +285,7 @@ int  YtxMediaPlayer::prepare() {
     mDecoderVideo->onDecode = decodeVideo;
     mDecoderVideo->onDecodeFinish = finish;
     mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+    mDecoderAudio->flushFrameHandler =  flushSlBufferQueue;
 
     mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
 
@@ -356,6 +377,7 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     sPlayer->mDecoderVideo->onDecode = decodeVideo;
     sPlayer->mDecoderVideo->onDecodeFinish = finish;
     sPlayer->mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
+    sPlayer->mDecoderAudio->flushFrameHandler =  flushSlBufferQueue;
 
     sPlayer->mVideoRefreshController = new VideoRefreshController(sPlayer->mVideoStateInfo);
 
@@ -410,7 +432,8 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 }
 
 void YtxMediaPlayer::decodeAudioFirstFrameHandler(){
-    audioDecodeFrame();
+   // audioDecodeFrame();
+    audioFrameProcess();
 }
 
 
@@ -436,10 +459,10 @@ void YtxMediaPlayer::checkSeekRequest() {
             if(ret<0){
                 ALOGI("%s: error while seeking\n",filePath);
             }else {
-//                if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-//                    mDecoderAudio->flush();
-//                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
-//                }
+                if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+                    mDecoderAudio->flush();
+                    mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
+                }
 
                 if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
                     mDecoderVideo->flush();
@@ -542,7 +565,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             ALOGI("decodeMovie ret mDecoderVideo->enqueue(pPacket)=%d ",pPacket);
             mDecoderVideo->enqueue(pPacket);
 
-        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] && false){
+        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]){
             mDecoderAudio->enqueue(pPacket);
         } else {
             av_packet_unref(&pPacket->pkt);
