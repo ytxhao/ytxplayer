@@ -449,9 +449,26 @@ JNIEXPORT jint JNICALL android_media_player_start
 JNIEXPORT jint JNICALL android_media_player_stop
         (JNIEnv *env, jobject obj)
 {
+    ALOGI("android_media_player_stop");
     YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
 
     mPlayer->stop();
+
+    return 0;
+}
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayer
+ * Method:    release
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL android_media_player_release
+        (JNIEnv *env, jobject obj)
+{
+    ALOGI("android_media_player_release");
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+
+    mPlayer->release();
 
     return 0;
 }
@@ -759,6 +776,7 @@ static JNINativeMethod gMethods[] = {
         {"_prepareAsync", "()I",         (void *)android_media_player_prepareAsync},
         {"_start", "()I",         (void *)android_media_player_start},
         {"_stop", "()I",         (void *)android_media_player_stop},
+        {"_release", "()I",         (void *)android_media_player_release},
         {"_pause", "()I",         (void *)android_media_player_pause},
         {"_isPlaying", "()I",         (void *)android_media_player_isPlaying},
         {"_getVideoWidth", "()I",         (void *)android_media_player_getVideoWidth},

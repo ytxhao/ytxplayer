@@ -16,6 +16,65 @@ static const char android[] =
 #include "android_clip.h"
 ;
 
+
+AudioEngine::AudioEngine() {
+
+}
+
+AudioEngine::~AudioEngine() {
+    //释放资源
+    // destroy buffer queue audio player object, and invalidate all associated interfaces
+    if (bqPlayerObject != NULL) {
+        (*bqPlayerObject)->Destroy(bqPlayerObject);
+        bqPlayerObject = NULL;
+        bqPlayerPlay = NULL;
+        bqPlayerBufferQueue = NULL;
+        bqPlayerEffectSend = NULL;
+        bqPlayerMuteSolo = NULL;
+        bqPlayerVolume = NULL;
+    }
+
+    // destroy output mix object, and invalidate all associated interfaces
+    if (outputMixObject != NULL) {
+        (*outputMixObject)->Destroy(outputMixObject);
+        outputMixObject = NULL;
+        outputMixEnvironmentalReverb = NULL;
+    }
+
+    // destroy engine object, and invalidate all associated interfaces
+    if (engineObject != NULL) {
+        (*engineObject)->Destroy(engineObject);
+        engineObject = NULL;
+        engineEngine = NULL;
+    }
+
+}
+
+Lock AudioEngine::mLock;
+AudioEngine *AudioEngine::mAudioEngine = NULL;
+
+AudioEngine* AudioEngine::getAudioEngine() {
+    if(mAudioEngine == NULL){
+        mLock.lock();
+        if(mAudioEngine == NULL){
+            mAudioEngine = new AudioEngine();
+        }
+        mLock.unlock();
+    }
+
+    return mAudioEngine;
+}
+
+void AudioEngine::releaseAudioEngine() {
+    if(mAudioEngine != NULL){
+        mLock.lock();
+        if(mAudioEngine != NULL){
+            delete mAudioEngine;
+        }
+        mLock.unlock();
+    }
+}
+
 void AudioEngine::createEngine() {
 
     SLresult result;

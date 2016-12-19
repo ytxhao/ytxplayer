@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -69,14 +70,17 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         if(!supportsOpenGLES2(context)){
             throw new RuntimeException("not support gles 2.0");
         }
-        renderer = new GraphicRenderer();
+
         setEGLContextClientVersion(2);
+        setEGLContextFactory(new ContextFactory());
         setEGLConfigChooser(new CustomChooseConfig2.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
-        // setEGLConfigChooser(new ConfigChooser(5, 6, 5, 0, 0, 0));
         getHolder().setFormat(PixelFormat.RGBA_8888);
         getHolder().addCallback(this);
+        renderer = new GraphicRenderer();
         setRenderer(renderer);
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
+
     }
 
     @Override
@@ -584,5 +588,28 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         void onSurfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height);
 
         void onSurfaceDestroyed(@NonNull SurfaceHolder holder);
+    }
+
+    private static void checkEglError(String prompt, EGL10 egl) {
+        int error;
+        while ((error = egl.eglGetError()) != EGL10.EGL_SUCCESS) {
+            Log.e(TAG, String.format("%s: EGL error: 0x%x", prompt, error));
+        }
+    }
+
+    private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
+        private static int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
+        public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
+            Log.w(TAG, "creating OpenGL ES 2.0 context");
+            checkEglError("Before eglCreateContext", egl);
+            int[] attrib_list = {EGL_CONTEXT_CLIENT_VERSION, 2, EGL10.EGL_NONE };
+            EGLContext context = egl.eglCreateContext(display, eglConfig, EGL10.EGL_NO_CONTEXT, attrib_list);
+            checkEglError("After eglCreateContext", egl);
+            return context;
+        }
+
+        public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
+            egl.eglDestroyContext(display, context);
+        }
     }
 }

@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         YtxLog.d("MainActivity","#### #### onResume");
-
+        ytxVideoView.onResume();
         //mGLSurface.onResume();
     }
 
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         YtxLog.d("MainActivity","#### #### onPause");
+        ytxVideoView.onPause();
     }
 
     @Override
@@ -104,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         YtxLog.d("MainActivity","#### #### onDestroy");
+        ytxVideoView.onDestroy();
+       // mVideoView.stopPlayback();
     }
 
     @Override

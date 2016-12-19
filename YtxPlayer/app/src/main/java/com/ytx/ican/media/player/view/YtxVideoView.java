@@ -3,6 +3,7 @@ package com.ytx.ican.media.player.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -311,10 +312,16 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
         @Override
         public void onSurfaceDestroyed(@NonNull SurfaceHolder holder) {
-
+            YtxLog.d(TAG,"onSurfaceDestroyed");
+            //releaseWithoutStop();
         }
     };
 
+    public void releaseWithoutStop() {
+        YtxLog.d(TAG,"releaseWithoutStop");
+            release(true);
+
+    }
     private void openVideo() {
 
         if(mUri == null){
@@ -358,6 +365,17 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mCurrentState = STATE_PREPARING;
         attachMediaController();
 
+    }
+
+
+    public void stopPlayback() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+            mCurrentState = STATE_IDLE;
+            mTargetState  = STATE_IDLE;
+        }
     }
 
     /*
@@ -598,6 +616,25 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    public void onResume(){
+        start();
+        if(mGlSurface != null){
+            mGlSurface.onResume();
+        }
+    }
+
+    public void onPause(){
+        pause();
+        if(mGlSurface != null){
+            mGlSurface.onPause();
+        }
+    }
+
+    public void onDestroy(){
+        stopPlayback();
+
     }
 
 }

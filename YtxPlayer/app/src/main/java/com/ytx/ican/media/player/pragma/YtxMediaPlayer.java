@@ -187,7 +187,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void stop() throws IllegalStateException {
-
+        YtxLog.d(TAG,"stop");
+        _stop();
     }
 
     @Override
@@ -235,12 +236,13 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void release() {
-
+        YtxLog.d(TAG,"release");
+        _release();
     }
 
     @Override
     public void reset() {
-
+        YtxLog.d(TAG,"reset");
     }
 
     @Override
@@ -418,6 +420,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private native int  _start() ;
 
     private native int  _stop() ;
+
+    private native int  _release() ;
 
     private native int  _pause() ;
 

@@ -97,6 +97,14 @@ JNIEXPORT jint JNICALL android_media_player_stop
 
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    release
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL android_media_player_release
+        (JNIEnv *, jobject);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
  * Method:    pause
  * Signature: ()I
  */

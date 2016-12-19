@@ -118,6 +118,7 @@ protected:
 
 public:
     static GlEngine *getGlEngine();
+    static void releaseGlEngine();
 
     static bool glEngineInitComplete() {
         return GlEngine::isInitComplete;

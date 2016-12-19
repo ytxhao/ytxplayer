@@ -33,9 +33,13 @@ void VideoRefreshController::process() {
 
     if(mVideoStateInfo != NULL) {
 
-        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
+        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED){
             mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
 
+        }
+
+        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_STOPPED){
+            return;
         }
         if (remaining_time > 0.0) {
             //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
@@ -88,7 +92,7 @@ void VideoRefreshController::process() {
           //  int y_size = mDecoderVideo->mStream->dec_ctx->width * mDecoderVideo->mStream->dec_ctx->height;
             Frame *vp;
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
-            if (vp->frame != NULL) {
+            if (vp->frame != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
                 GlEngine::getGlEngine()->addRendererFrame((char *) vp->frame->data[0],
                                                           (char *) vp->frame->data[1],
                                                           (char *) vp->frame->data[2],

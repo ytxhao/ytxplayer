@@ -8,6 +8,7 @@
 #include <jni.h>
 #include <string.h>
 #include <pthread.h>
+#include "lock.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -101,6 +102,18 @@ public:
     short* createResampledBuf(uint32_t idx, uint32_t srcRate, unsigned *size);
     // this callback handler is called every time a buffer finishes playing
     void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
+
+protected:
+    AudioEngine();
+    ~AudioEngine();
+
+public:
+    static Lock mLock;
+    static AudioEngine *getAudioEngine();
+    static void releaseAudioEngine();
+
+private:
+    static AudioEngine *mAudioEngine;
 
 };
 

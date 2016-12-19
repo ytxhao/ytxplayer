@@ -69,6 +69,9 @@ public:
 
     int stop();
 
+    bool isRelease;
+    int release();
+
     int pause();
 
     int resume();
@@ -221,7 +224,7 @@ public:
     int out_channel_nb;
     int out_nb_samples;
 
-    AudioEngine *audioEngine;
+  //  AudioEngine *audioEngine;
 };
 
 
