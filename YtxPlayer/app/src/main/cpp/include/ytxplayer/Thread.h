@@ -20,9 +20,9 @@ public:
     void 						waitOnNotify();
     void						notify();
     virtual void				stop();
-
-protected:
     volatile  bool				mRunning;
+protected:
+
 
     virtual void                handleRun(void* ptr);
 

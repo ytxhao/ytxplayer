@@ -100,7 +100,9 @@ private:
     int mScreenWidth = 720;
     int mScreenHeight = 1080;
 
-    GLuint program;
+    GLuint vertexShader;
+    GLuint pixelShader;
+
     GLuint gProgram;
     GLuint gvPositionHandle;
     GLuint gCoordHandle;

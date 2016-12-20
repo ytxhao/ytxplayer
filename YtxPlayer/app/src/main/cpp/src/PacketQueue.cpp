@@ -139,13 +139,12 @@ int PacketQueue::get(MAVPacket *mPkt, bool block,int *serial)
             ret = 0;
             break;
         } else {
-            ALOGI("DecoderVideo::process completed PacketQueue::get wait");
             pthread_cond_wait(&mCondition, &mLock);
         }
 
     }
     pthread_mutex_unlock(&mLock);
-    ALOGI("DecoderVideo::process completed PacketQueue::get");
+
     return ret;
 
 }

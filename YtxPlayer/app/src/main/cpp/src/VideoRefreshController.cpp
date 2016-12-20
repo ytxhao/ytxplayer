@@ -38,7 +38,7 @@ void VideoRefreshController::process() {
 
         }
 
-        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_STOPPED){
+        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_STOPPED || *mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PLAYBACK_COMPLETE){
             return;
         }
         if (remaining_time > 0.0) {

@@ -80,7 +80,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
    // memset(st_index, -1, sizeof(st_index));
     mVideoStateInfo = new VideoStateInfo();
     mVideoStateInfo->mCurrentState = &mCurrentState;
-    mPlayerPrepareAsync = new PlayerPrepareAsync();
+   // mPlayerPrepareAsync = new PlayerPrepareAsync();
     mMessageLoop = new MessageLoop();
     isRelease = false;
     sPlayer = this;
@@ -89,27 +89,28 @@ YtxMediaPlayer::YtxMediaPlayer(){
 YtxMediaPlayer::~YtxMediaPlayer() {
 
 
-    if(!mDecoderVideo){
+    AudioEngine::releaseAudioEngine();
+    GlEngine::releaseGlEngine();
+
+    if(mDecoderVideo){
         delete mDecoderVideo;
     }
 
-    if(!mDecoderAudio){
+    if(mDecoderAudio){
         delete mDecoderAudio;
     }
 
 
     delete mVideoStateInfo;
-    delete mPlayerPrepareAsync;
+  //  delete mPlayerPrepareAsync;
 
-    if(!mVideoRefreshController){
+    if(mVideoRefreshController){
         delete mVideoRefreshController;
     }
 //
 //    if(!audioEngine){
 //        delete audioEngine;
 //    }
-    AudioEngine::releaseAudioEngine();
-    GlEngine::releaseGlEngine();
 
     if(!mMessageLoop){
         delete mMessageLoop;
@@ -435,6 +436,11 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
   //  GlEngine::getGlEngine()->setVideoWidthAndHeight(sPlayer->streamVideo.dec_ctx->width,sPlayer->streamVideo.dec_ctx->height);
 
     sPlayer->decodeMovie(ptr);
+
+    if(sPlayer != NULL){
+        delete sPlayer;
+
+    }
     return 0;
 }
 
@@ -493,12 +499,12 @@ void YtxMediaPlayer::checkSeekRequest() {
 }
 
 static void playbackComplete() {
-    ALOGI("playbackComplete IN");
-    if(sPlayer != NULL){
-        delete sPlayer;
-
-    }
-    ALOGI("playbackComplete OUT");
+//    ALOGI("playbackComplete IN");
+//    if(sPlayer != NULL){
+//        delete sPlayer;
+//
+//    }
+//    ALOGI("playbackComplete OUT");
 }
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
@@ -511,9 +517,6 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     mDecoderAudio->startAsync();
 
-
-
-
     mDecoderVideo->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
@@ -525,17 +528,12 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
         if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
             mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
-           // ALOGI("decodeMovie ret usleep(20) in\n");
             usleep(10);
-          //  ALOGI("decodeMovie ret usleep(20) out\n");
             continue;
         }
 
-        ALOGI("decodeMovie ret checkSeekRequest int\n");
         checkSeekRequest();
 
-      //  ALOGI("decodeMovie ret checkSeekRequest out\n");
-        ALOGI("decodeMovie ret in\n");
         int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
         ALOGI("decodeMovie ret out=%d\n",ret);
 
@@ -605,6 +603,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     pkt_audio_p->isEnd = true;
     mDecoderVideo->enqueue(pkt_video_p);
     mDecoderAudio->enqueue(pkt_audio_p);
+    mDecoderVideo->mRunning = false;
     mVideoStateInfo->notifyAll();
     //waits on end of video thread
     ALOGI("waiting on video thread\n");
@@ -624,7 +623,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     }
     mCurrentState = MEDIA_PLAYER_PLAYBACK_COMPLETE;
 
-   // finish();
+    finish();
     playbackComplete();
 
     ALOGI( "end of playing\n");

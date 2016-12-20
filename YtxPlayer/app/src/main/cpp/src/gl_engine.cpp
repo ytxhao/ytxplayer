@@ -4,7 +4,7 @@
 #include "gl_engine.h"
 
 GlEngine::GlEngine() {
-
+    ALOGI("GlEngine");
 //    yTextureId = 255;
 //    uTextureId = 255;
 //    vTextureId = 255;
@@ -21,7 +21,23 @@ GlEngine::GlEngine() {
 
 GlEngine::~GlEngine() {
 
+    ALOGI("~GlEngine gProgram=%d pixelShader=%d vertexShader=%d\n",gProgram,pixelShader,vertexShader);
     int i = 0;
+    isAddRendererFrameInit = false;
+
+
+    if(vertexShader){
+        glDeleteShader(vertexShader);
+    }
+
+    if(pixelShader){
+        glDeleteShader(pixelShader);
+    }
+
+    if(gProgram){
+        glDeleteProgram(gProgram);
+    }
+
 
     for (i = 0; i < 3; i++) {
         if (plane[i] != NULL) {
@@ -76,12 +92,13 @@ GLuint GlEngine::loadShader(GLenum shaderType, const char *pSource) {
 }
 
 GLuint GlEngine::createProgram(const char *pVertexSource, const char *pFragmentSource) {
-    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
+    GLuint program;
+    vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
     }
 
-    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
+    pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
     if (!pixelShader) {
         return 0;
     }
@@ -172,7 +189,7 @@ bool GlEngine::setupGraphics() {
         ALOGE("Could not get uniform location for tex_v");
     }
 
-    glUseProgram(program);
+    glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
     isSetupGraphics = true;
@@ -396,6 +413,7 @@ void GlEngine::releaseGlEngine() {
         if (glEngine != NULL) {
             GlEngine::glSetEngineInitComplete(false);
             delete glEngine;
+            glEngine = NULL;
         }
         mLock.unlock();
     }

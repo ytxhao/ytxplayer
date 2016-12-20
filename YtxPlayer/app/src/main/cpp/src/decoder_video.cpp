@@ -74,7 +74,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     double pts = 0;
     int ret=0;
     // Decode video frame
-    ALOGI("DecoderVideo::process completed un 0.0");
+//    ALOGI("DecoderVideo::process completed un 0.0");
 //
     ALOGI("DecoderVideo::process mPacket->isEnd=%d",mPacket->isEnd);
     if(mPacket->isEnd){
@@ -92,12 +92,12 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     if(pkt_serial != mQueue->serial){
         return true;
     }
-    ALOGI("DecoderVideo::process completed un 0");
+//    ALOGI("DecoderVideo::process completed un 0");
     ret = avcodec_decode_video2( mVideoStateInfo->streamVideo->dec_ctx,
                          mFrame,
                          &completed,
                                  &mPacket->pkt);
-    ALOGI("DecoderVideo::process completed un 1");
+//    ALOGI("DecoderVideo::process completed un 1");
     if (completed) {
 
         double duration;
@@ -105,7 +105,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
         pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
 
-        ALOGI("DecoderVideo::process completed");
+//        ALOGI("DecoderVideo::process completed");
         ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
 
 

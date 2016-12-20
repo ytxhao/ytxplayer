@@ -70,6 +70,7 @@ void AudioEngine::releaseAudioEngine() {
         mLock.lock();
         if(mAudioEngine != NULL){
             delete mAudioEngine;
+            mAudioEngine = NULL;
         }
         mLock.unlock();
     }
