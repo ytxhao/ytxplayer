@@ -601,9 +601,11 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     pkt_video_p->isEnd = true;
     pkt_audio_p->isEnd = true;
-    mDecoderVideo->enqueue(pkt_video_p);
-    mDecoderAudio->enqueue(pkt_audio_p);
-    mDecoderVideo->mRunning = false;
+//    mDecoderVideo->enqueue(pkt_video_p);
+//    mDecoderAudio->enqueue(pkt_audio_p);
+    mDecoderVideo->stop();
+    mDecoderAudio->stop();
+   // mDecoderVideo->mRunning = false;
     mVideoStateInfo->notifyAll();
     //waits on end of video thread
     ALOGI("waiting on video thread\n");

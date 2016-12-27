@@ -15,15 +15,30 @@ static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
    // this->mVideoStateInfo = mVideoStateInfo;
+    ALOGI("ytxhao DecoderVideo::DecoderVideo\n");
     mVideoStateInfo->initClock(mVideoStateInfo->vidClk,&mQueue->serial);
     mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->extClk,1);
+    mFrame = NULL;
+    out_buffer_video = NULL;
+    mFrame = av_frame_alloc();
+    if (mFrame == NULL) {
+        ALOGE("mFrame == NULL");
+    }
+
+
 }
 
 DecoderVideo::~DecoderVideo()
 {
+    ALOGI("ytxhao DecoderVideo::~DecoderVideo\n");
     mVideoStateInfo->frameQueueVideo->frameQueueDestory();
+
+    if(mFrame != NULL){
+        av_frame_free(&mFrame);
+        mFrame = NULL;
+    }
 }
 
 bool DecoderVideo::prepare()
@@ -42,10 +57,7 @@ bool DecoderVideo::prepare()
     out_buffer_video=(unsigned char *)av_malloc((size_t) av_image_get_buffer_size(AV_PIX_FMT_YUV420P,
                                                                                   mVideoStateInfo->streamVideo->dec_ctx->width,
                                                                                   mVideoStateInfo->streamVideo->dec_ctx->height, 1));
-    mFrame = av_frame_alloc();
-    if (mFrame == NULL) {
-        return false;
-    }
+
     return true;
 }
 
@@ -99,7 +111,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
                                  &mPacket->pkt);
 //    ALOGI("DecoderVideo::process completed un 1");
     if (completed) {
-
+        ALOGI("####T 0 mFrame=%#x \n",mFrame);
         double duration;
         mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
         duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
@@ -108,7 +120,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 //        ALOGI("DecoderVideo::process completed");
         ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
 
-
+        ALOGI("####T 1 mFrame=%#x \n",mFrame);
 
         Frame *vp;
         if(!(vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekWritable())){
@@ -121,6 +133,8 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
             vp->allocated  = 0;
             vp->reallocate = 0;
+            ALOGI("fef0=%#x mFrame=%#x \n",vp,mFrame);
+            ALOGI("####T vp->width=%d mFrame->width=%d \n",vp->width,mFrame->width);
             vp->width = mFrame->width;
             vp->height = mFrame->height;
         }
@@ -190,7 +204,10 @@ bool DecoderVideo::decode(void* ptr)
 
     ALOGI("decoding video ended\n");
     // Free the RGB image
-    av_free(mFrame);
+    if(!mFrame){
+        av_frame_free(&mFrame);
+        mFrame = NULL;
+    }
 
     return true;
 }
