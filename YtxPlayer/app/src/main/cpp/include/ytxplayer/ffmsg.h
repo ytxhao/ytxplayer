@@ -27,6 +27,8 @@
 #define FFP_MSG_CANCEL                      10002
 
 
+#define FFP_MSG_AUDIO_FIRST_FRAME           20001
+
 
 enum media_event_type {
     MEDIA_NOP               = 0,        // interface test message

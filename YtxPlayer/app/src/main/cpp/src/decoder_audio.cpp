@@ -4,6 +4,8 @@
 
 #include <android/log.h>
 #include <ytxplayer/VideoStateInfo.h>
+#include <ytxplayer/audio_engine.h>
+#include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_audio.h"
 #include "ffinc.h"
 #define TAG "FFMpegAudioDecoder"
@@ -11,8 +13,9 @@
 
 DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
-    isFirstFrame = true;
+   // isFirstFrame = true;
    // this->mVideoStateInfo = mVideoStateInfo;
+
 }
 
 DecoderAudio::~DecoderAudio()
@@ -43,13 +46,16 @@ bool DecoderAudio::process(MAVPacket *mPacket)
 
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
         avcodec_flush_buffers(mVideoStateInfo->streamAudio->dec_ctx);
-        flushFrameHandler();
-        mVideoStateInfo->frameQueueAudio->frameQueueNext();
-        isFirstFrame = true;
+        mVideoStateInfo->isFirstAudioFrame = true;
         return true;
     }
 
     if(pkt_serial != mQueue->serial){
+        return true;
+    }
+
+
+    if(mPacket->pkt.size == 0 && mPacket->pkt.data == NULL){
         return true;
     }
 
@@ -95,9 +101,11 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         av_frame_move_ref(af->frame, mFrame);
         mVideoStateInfo->frameQueueAudio->frameQueuePush();
 
-        if(isFirstFrame){
-            isFirstFrame = false;
-            firstFrameHandler();
+        if(mVideoStateInfo->isFirstAudioFrame ){
+            mVideoStateInfo->isFirstAudioFrame  = false;
+            msg.what = FFP_MSG_AUDIO_FIRST_FRAME;
+            mVideoStateInfo->messageQueueAudio->put(&msg);
+          //  mAudioEngine->mLock.condSignal();
         }
     }
 
@@ -135,3 +143,14 @@ bool DecoderAudio::decode(void* ptr)
     return true;
 }
 
+void DecoderAudio::stop() {
+    mRunning = false;
+    mQueue->abort();
+    mVideoStateInfo->frameQueueAudio->frameQueueReset();
+    ALOGI("waiting on end of decoder thread\n");
+    int ret = -1;
+    if((ret = wait()) != 0) {
+        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+        return;
+    }
+}

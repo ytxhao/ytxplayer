@@ -9,6 +9,7 @@
 #include "ffinc.h"
 #include "frame_queue.h"
 #include "avPacketList.h"
+#include <ytxplayer/MessageQueue.h>
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
     MEDIA_PLAYER_IDLE               = 1 << 0,
@@ -78,6 +79,33 @@ public:
     int st_index[AVMEDIA_TYPE_NB];
 
     int currentTime;
+
+
+
+    unsigned char *out_buffer_video;
+    unsigned char *out_buffer_audio;
+
+    //视频帧率
+    AVRational frame_rate_video;
+
+
+    enum AVSampleFormat in_sample_fmt ;
+    //输出采样格式16bit PCM
+    enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
+    //输入采样率
+    int in_sample_rate ;
+    //输出采样率
+    int out_sample_rate = 44100;
+    int out_channel_nb;
+    int out_nb_samples;
+
+    struct SwsContext*	mConvertCtx;
+    SwrContext *swrCtx;
+
+    volatile bool   isFirstAudioFrame = true;
+
+    MessageQueue *messageQueueAudio;
+    MessageQueue *messageQueueVideo;
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

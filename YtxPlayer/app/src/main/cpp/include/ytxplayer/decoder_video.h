@@ -23,7 +23,7 @@ public:
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;
-
+    void stop();
 private:
     AVFrame*					mFrame;
     double						mVideoClock;

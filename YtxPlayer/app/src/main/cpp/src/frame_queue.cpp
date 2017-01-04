@@ -18,6 +18,15 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 
 }
 
+void FrameQueue::frameQueueReset(){
+    pthread_mutex_lock(&mutex);
+    rindex = 0;
+    windex = 0;
+    rindex_shown = 1;
+    size = 0;
+    pthread_cond_signal(&cond);
+    pthread_mutex_unlock(&mutex);
+}
 
 int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     int i=0;

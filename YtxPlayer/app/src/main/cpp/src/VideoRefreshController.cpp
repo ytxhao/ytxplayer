@@ -33,7 +33,7 @@ void VideoRefreshController::process() {
 
     if(mVideoStateInfo != NULL) {
 
-        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED){
+        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
             mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
 
         }

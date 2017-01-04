@@ -45,13 +45,13 @@ int IDecoder::packets()
 
 void IDecoder::stop()
 {
-    mQueue->abort();
-    ALOGI("waiting on end of decoder thread\n");
-    int ret = -1;
-    if((ret = wait()) != 0) {
-        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
-        return;
-    }
+//    mQueue->abort();
+//    ALOGI("waiting on end of decoder thread\n");
+//    int ret = -1;
+//    if((ret = wait()) != 0) {
+//        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+//        return;
+//    }
 }
 
 void IDecoder::handleRun(void* ptr)

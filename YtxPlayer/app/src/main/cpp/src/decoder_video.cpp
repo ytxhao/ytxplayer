@@ -14,7 +14,6 @@ static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 
 DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
-   // this->mVideoStateInfo = mVideoStateInfo;
     ALOGI("ytxhao DecoderVideo::DecoderVideo\n");
     mVideoStateInfo->initClock(mVideoStateInfo->vidClk,&mQueue->serial);
     mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
@@ -86,15 +85,14 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     double pts = 0;
     int ret=0;
     // Decode video frame
-//    ALOGI("DecoderVideo::process completed un 0.0");
-//
     ALOGI("DecoderVideo::process mPacket->isEnd=%d",mPacket->isEnd);
     if(mPacket->isEnd){
-        onDecodeFinish();
+      //  onDecodeFinish();
         return false;
     }
     ALOGI("DecoderVideo::process1 mPacket->pkt.data=%#x mVideoStateInfo->flushPkt->pkt.data=%#x  pkt_serial=%d mQueue->serial=%d \n",
           mPacket->pkt.data,mVideoStateInfo->flushPkt->pkt.data,pkt_serial,mQueue->serial);
+
 
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
         avcodec_flush_buffers(mVideoStateInfo->streamVideo->dec_ctx);
@@ -104,12 +102,17 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     if(pkt_serial != mQueue->serial){
         return true;
     }
-//    ALOGI("DecoderVideo::process completed un 0");
+
+    if(mPacket->pkt.size == 0 && mPacket->pkt.data == NULL){
+        return true;
+    }
+
+
     ret = avcodec_decode_video2( mVideoStateInfo->streamVideo->dec_ctx,
                          mFrame,
                          &completed,
                                  &mPacket->pkt);
-//    ALOGI("DecoderVideo::process completed un 1");
+
     if (completed) {
         ALOGI("####T 0 mFrame=%#x \n",mFrame);
         double duration;
@@ -229,3 +232,16 @@ void DecoderVideo::releaseBuffer(struct AVCodecContext *c, AVFrame *pic) {
    // avcodec_default_release_buffer(c, pic);
 }
 
+
+
+void DecoderVideo::stop() {
+    mRunning = false;
+    mQueue->abort();
+    mVideoStateInfo->frameQueueVideo->frameQueueReset();
+    ALOGI("waiting on end of decoder thread\n");
+    int ret = -1;
+    if((ret = wait()) != 0) {
+        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+        return;
+    }
+}

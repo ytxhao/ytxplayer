@@ -21,10 +21,10 @@ public:
 
     AudioDecodingHandler		onDecode;
     AudioDecodeFirstFrameHandler  firstFrameHandler;
-    AudioDecodeFlushFrameHandler  flushFrameHandler;
+   // AudioDecodeFlushFrameHandler  flushFrameHandler;
     //VideoStateInfo *mVideoStateInfo;
 
-
+    void stop();
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;
@@ -37,8 +37,9 @@ private:
 
     int64_t next_pts;
     AVRational next_pts_tb;
+    AVMessage msg;
 
-    bool                        isFirstFrame;
+ //   bool                        isFirstAudioFrame;
 };
 
 #endif //YTXPLAYER_DECODER_AUDIO_H

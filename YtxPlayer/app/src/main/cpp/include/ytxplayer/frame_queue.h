@@ -46,6 +46,7 @@ public:
     Frame* frameQueuePeekReadable();
     void frameQueuePush();
     void frameQueueNext();
+    void frameQueueReset();
     /**
      * return the number of undisplayed frames in the queue
      */
