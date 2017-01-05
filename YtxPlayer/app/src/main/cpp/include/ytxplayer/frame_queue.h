@@ -11,7 +11,7 @@
 
 
 #define VIDEO_PICTURE_QUEUE_SIZE 3
-#define SUBPICTURE_QUEUE_SIZE 16
+#define SUBPICTURE_QUEUE_SIZE 5
 #define SAMPLE_QUEUE_SIZE 2
 #define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, FFMAX(VIDEO_PICTURE_QUEUE_SIZE, SUBPICTURE_QUEUE_SIZE))
 
@@ -61,8 +61,8 @@ public:
 
     Frame queue[FRAME_QUEUE_SIZE];
     //必须手动初始化否则是随机数据
-    int rindex=0;
-    int windex=0;
+    int rindex=0;  //read index
+    int windex=0;   //write index
 
     int max_size=0;
     int keep_last =0 ;
