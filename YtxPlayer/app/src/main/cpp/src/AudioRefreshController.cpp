@@ -23,7 +23,6 @@ AudioRefreshController::~AudioRefreshController(){
     {
         stop();
     }
-   // free(mQueue);
 }
 
 void AudioRefreshController::handleRun(void* ptr){
@@ -126,14 +125,14 @@ int AudioRefreshController::audioFrameProcess() {
 Frame *AudioRefreshController::audioDecodeFrame() {
 
     Frame *af;
-//    do {
+    do {
 
         do {
             af = mVideoStateInfo->frameQueueAudio->frameQueuePeekReadable();
             mVideoStateInfo->frameQueueAudio->frameQueueNext();
         } while (af == NULL);
 
-//    } while (af->serial != mVideoStateInfo->mDecoderAudio->pkt_serial);
+    } while (af->serial != mVideoStateInfo->pkt_serial_audio);
 
     return af;
 

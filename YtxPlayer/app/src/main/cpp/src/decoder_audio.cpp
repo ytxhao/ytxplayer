@@ -50,7 +50,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         return true;
     }
 
-    if(pkt_serial != mQueue->serial){
+    if(mVideoStateInfo->pkt_serial_audio != mQueue->serial){
         return true;
     }
 
@@ -95,7 +95,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         tb = (AVRational){1, mFrame->sample_rate};
         af->pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(tb);
         af->pos = av_frame_get_pkt_pos(mFrame);
-        af->serial = pkt_serial;
+        af->serial = mVideoStateInfo->pkt_serial_audio;
         af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
         ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
         av_frame_move_ref(af->frame, mFrame);
@@ -121,7 +121,7 @@ bool DecoderAudio::decode(void* ptr)
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true,&pkt_serial) < 0)
+        if(mQueue->get(&pPacket, true,&mVideoStateInfo->pkt_serial_audio) < 0)
         {
             mRunning = false;
             return false;
@@ -138,7 +138,6 @@ bool DecoderAudio::decode(void* ptr)
     ALOGI( TAG, "decoding audio ended");
 
     // Free audio samples buffer
-    //av_free(mSamples);
     av_frame_free(&mFrame);
     return true;
 }

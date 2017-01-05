@@ -204,13 +204,6 @@ int  YtxMediaPlayer::prepare() {
     mDecoderAudio = new DecoderAudio(mVideoStateInfo);
     mDecoderVideo = new DecoderVideo(mVideoStateInfo);
 
-
- //   mDecoderAudio->onDecode = decodeAudio;
-    mDecoderVideo->onDecode = decodeVideo;
-//    mDecoderVideo->onDecodeFinish = finish;
-//    mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
-  //  mDecoderAudio->flushFrameHandler =  flushSlBufferQueue;
-
     mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
 
     mAudioRefreshController = new AudioRefreshController(mVideoStateInfo);
@@ -293,13 +286,6 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
     sPlayer->mDecoderAudio = new DecoderAudio(sPlayer->mVideoStateInfo);
     sPlayer->mDecoderVideo = new DecoderVideo(sPlayer->mVideoStateInfo);
-
-
-//    sPlayer->mDecoderAudio->onDecode = decodeAudio;
-    sPlayer->mDecoderVideo->onDecode = decodeVideo;
-    sPlayer->mDecoderVideo->onDecodeFinish = finish;
-//    sPlayer->mDecoderAudio->firstFrameHandler = decodeAudioFirstFrameHandler;
-//    sPlayer->mDecoderAudio->flushFrameHandler =  flushSlBufferQueue;
 
     sPlayer->mVideoRefreshController = new VideoRefreshController(sPlayer->mVideoStateInfo);
 
@@ -406,14 +392,6 @@ void YtxMediaPlayer::checkSeekRequest() {
 
 }
 
-static void playbackComplete() {
-//    ALOGI("playbackComplete IN");
-//    if(sPlayer != NULL){
-//        delete sPlayer;
-//
-//    }
-//    ALOGI("playbackComplete OUT");
-}
 
 void YtxMediaPlayer::decodeMovie(void* ptr)
 {
@@ -457,26 +435,6 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
                 mVideoStateInfo->eof = 1;
 
             }
-
-
-//            if (mVideoStateInfo->pFormatCtx->pb && mVideoStateInfo->pFormatCtx->pb->error)
-//                break;
-
-//            struct timeval now;
-//            struct timespec outTime;
-//            gettimeofday(&now, NULL);
-//            pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
-//
-//            outTime.tv_nsec =
-//            pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread,&mVideoStateInfo->wait_mutex,&outTime);
-//            pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
-
-
-//            mCurrentState = MEDIA_PLAYER_DECODED;
-//
-//            pPacket->isEnd = true;
-//            mDecoderVideo->enqueue(pPacket);
-//            mDecoderAudio->enqueue(pPacket);
 
             continue;
         }else{
@@ -522,19 +480,10 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     mCurrentState = MEDIA_PLAYER_PLAYBACK_COMPLETE;
 
     finish();
-    playbackComplete();
 
     ALOGI( "end of playing\n");
     fclose(fp_yuv);
     fclose(fp_pcm);
-}
-
-
-void YtxMediaPlayer::decodeVideo(AVFrame* frame, double pts)
-{
-    if(FPS_DEBUGGING) {
-
-    }
 }
 
 int  YtxMediaPlayer::release() {

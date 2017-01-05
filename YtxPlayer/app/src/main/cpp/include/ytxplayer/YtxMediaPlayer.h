@@ -128,11 +128,11 @@ public:
 
     void notifyRenderer();
 
-    static void decodeAudio(AVFrame* frame, double pts);
-    static void decodeVideo(AVFrame* frame, double pts);
-    static void decodeAudioFirstFrameHandler();
+  //  static void decodeAudio(AVFrame* frame, double pts);
+ //   static void decodeVideo(AVFrame* frame, double pts);
+ //   static void decodeAudioFirstFrameHandler();
 
-    static void finish();
+    void finish();
 
 
     updateYuvHandler updateYuv;

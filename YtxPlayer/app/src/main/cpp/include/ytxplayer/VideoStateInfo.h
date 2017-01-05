@@ -107,5 +107,8 @@ public:
     MessageQueue *messageQueueAudio;
     MessageQueue *messageQueueVideo;
 
+    int pkt_serial_audio = 0;
+    int pkt_serial_video = 0;
+
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

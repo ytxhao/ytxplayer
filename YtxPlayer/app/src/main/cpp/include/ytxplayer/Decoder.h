@@ -25,7 +25,7 @@ public:
     int							packets();
     void                        flush();
     VideoStateInfo *mVideoStateInfo;
-    int pkt_serial;
+    //int pkt_serial;
 protected:
     PacketQueue*                mQueue;
 

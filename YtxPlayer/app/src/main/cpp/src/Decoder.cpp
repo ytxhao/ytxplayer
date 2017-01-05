@@ -11,7 +11,6 @@ IDecoder::IDecoder(VideoStateInfo *mVideoStateInfo)
 {
     this->mVideoStateInfo = mVideoStateInfo;
     mQueue = new PacketQueue(mVideoStateInfo);
-    pkt_serial = 0;
 }
 
 IDecoder::~IDecoder()

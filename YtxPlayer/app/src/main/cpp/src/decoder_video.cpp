@@ -90,8 +90,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
       //  onDecodeFinish();
         return false;
     }
-    ALOGI("DecoderVideo::process1 mPacket->pkt.data=%#x mVideoStateInfo->flushPkt->pkt.data=%#x  pkt_serial=%d mQueue->serial=%d \n",
-          mPacket->pkt.data,mVideoStateInfo->flushPkt->pkt.data,pkt_serial,mQueue->serial);
+
 
 
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
@@ -99,7 +98,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         return true;
     }
 
-    if(pkt_serial != mQueue->serial){
+    if(mVideoStateInfo->pkt_serial_video != mQueue->serial){
         return true;
     }
 
@@ -144,7 +143,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
         vp->pts = pts;
         vp->duration = duration;
-        vp->serial = pkt_serial;
+        vp->serial = mVideoStateInfo->pkt_serial_video;
         vp->pos = av_frame_get_pkt_pos(mFrame);
 
 
@@ -162,8 +161,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
                   vp->frame->data,
                   vp->frame->linesize);
 
-
-        onDecode(mFrame, pts);
         mVideoStateInfo->frameQueueVideo->frameQueuePush();
         av_frame_unref(mFrame);
         return true;
@@ -188,7 +185,7 @@ bool DecoderVideo::decode(void* ptr)
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true,&pkt_serial) < 0)
+        if(mQueue->get(&pPacket, true,&mVideoStateInfo->pkt_serial_video) < 0)
         {
             mRunning = false;
            // return false;
