@@ -32,7 +32,7 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 DecoderVideo::~DecoderVideo()
 {
     ALOGI("ytxhao DecoderVideo::~DecoderVideo\n");
-    mVideoStateInfo->frameQueueVideo->frameQueueDestory();
+    mVideoStateInfo->frameQueueVideo->frameQueueDestroy();
 
     if(mFrame != NULL){
         av_frame_free(&mFrame);

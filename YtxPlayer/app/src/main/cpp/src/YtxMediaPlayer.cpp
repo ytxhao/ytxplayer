@@ -49,7 +49,7 @@ void printferr(){
     ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d\n",AVERROR_HTTP_SERVER_ERROR);
 }
 
-#define FFMPEG_PLAYER_MAX_QUEUE_SIZE 25
+#define FFMPEG_PLAYER_MAX_QUEUE_SIZE 20
 static YtxMediaPlayer* sPlayer = NULL;
 
 YtxMediaPlayer::YtxMediaPlayer(){
@@ -191,9 +191,9 @@ int  YtxMediaPlayer::prepare() {
     }
 
 
-    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
-    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
-    ALOGI("start fp_yuv=%d\n",fp_yuv);
+//    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+//    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
+//    ALOGI("start fp_yuv=%d\n",fp_yuv);
 
 
     mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
@@ -274,8 +274,8 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamVideo,sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
-    sPlayer->fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
-    sPlayer->fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
+//    sPlayer->fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
+//    sPlayer->fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
     ALOGI("start fp_yuv=%d\n",sPlayer->fp_yuv);
 
 
@@ -414,7 +414,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
         if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
             mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
-            usleep(10);
+            usleep(20);
             continue;
         }
 
@@ -442,9 +442,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         }
 
         if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]) {
-            ALOGI("decodeMovie ret mDecoderVideo->enqueue(pPacket)=%d ",pPacket);
             mDecoderVideo->enqueue(pPacket);
-
         }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]){
             mDecoderAudio->enqueue(pPacket);
         } else {
@@ -482,8 +480,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     finish();
 
     ALOGI( "end of playing\n");
-    fclose(fp_yuv);
-    fclose(fp_pcm);
+//    fclose(fp_yuv);
+//    fclose(fp_pcm);
 }
 
 int  YtxMediaPlayer::release() {

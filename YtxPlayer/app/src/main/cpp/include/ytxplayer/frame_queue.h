@@ -12,7 +12,7 @@
 
 #define VIDEO_PICTURE_QUEUE_SIZE 3
 #define SUBPICTURE_QUEUE_SIZE 16
-#define SAMPLE_QUEUE_SIZE 9
+#define SAMPLE_QUEUE_SIZE 2
 #define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, FFMAX(VIDEO_PICTURE_QUEUE_SIZE, SUBPICTURE_QUEUE_SIZE))
 
 typedef struct Frame {
@@ -37,7 +37,7 @@ public:
 
     void frameQueueUnrefItem(Frame *vp);
     int frameQueueInit(int max_size,int keep_last);
-    void frameQueueDestory();
+    void frameQueueDestroy();
     void frameQueueSignal();
     Frame* frameQueuePeek();
     Frame* frameQueuePeekNext();

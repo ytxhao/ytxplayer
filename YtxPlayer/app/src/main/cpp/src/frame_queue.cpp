@@ -43,7 +43,7 @@ int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     return 1;
 }
 
-void FrameQueue::frameQueueDestory() {
+void FrameQueue::frameQueueDestroy() {
     int i;
     for(i=0;i<this->max_size;i++){
         Frame *vp = &this->queue[i];
