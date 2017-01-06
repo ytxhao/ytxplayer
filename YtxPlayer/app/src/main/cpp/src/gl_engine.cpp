@@ -6,9 +6,10 @@
 
 GlEngine::GlEngine() {
     ALOGI("GlEngine");
-//    yTextureId = 255;
-//    uTextureId = 255;
-//    vTextureId = 255;
+    yTextureId = 1025;
+    uTextureId = 1025;
+    vTextureId = 1025;
+    gProgram = 0;
     yHandle = -1;
     uHandle = -1;
     vHandle = -1;
@@ -136,7 +137,10 @@ bool GlEngine::setupGraphics() {
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
 
-    //ALOGI("setupGraphics(%d, %d)", w, h);
+    if(gProgram){
+        glDeleteProgram(gProgram);
+    }
+
     gProgram = createProgram(gVertexShader, gFragmentShader);
     if (!gProgram) {
         ALOGE("Could not create program.");
@@ -201,9 +205,18 @@ void GlEngine::setVideoWidthAndHeight(int videoWidth, int videoHeight) {
 void GlEngine::buildTextures() {
     // building texture for Y data
 
-    glGenTextures(1, &yTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-    checkGlError("glGenTextures");
-    ALOGI("buildTextures yTextureId=%d\n", yTextureId);
+
+    if(yTextureId == 1025){
+        glGenTextures(1, &yTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures yTextureId=%d\n", yTextureId);
+
+    }else{
+        glDeleteTextures(1,&yTextureId);
+        checkGlError("glDeleteTextures");
+        glGenTextures(1, &yTextureId);
+        checkGlError("glGenTextures");
+    }
 
     glBindTexture(GL_TEXTURE_2D, yTextureId);
     checkGlError("glBindTexture");
@@ -215,11 +228,21 @@ void GlEngine::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+
     // building texture for U data
 
-    glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-    checkGlError("glGenTextures");
-    ALOGI("buildTextures uTextureId=%d\n", uTextureId);
+    if(uTextureId == 1025){
+        glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures uTextureId=%d\n", uTextureId);
+    }else{
+        glDeleteTextures(1,&uTextureId);
+        checkGlError("glDeleteTextures");
+        glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures uTextureId=%d\n", uTextureId);
+    }
+
 
     glBindTexture(GL_TEXTURE_2D, uTextureId);
     checkGlError("glBindTexture");
@@ -230,9 +253,20 @@ void GlEngine::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
-    glGenTextures(1, &vTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
-    checkGlError("glGenTextures");
-    ALOGI("buildTextures vTextureId=%d\n", vTextureId);
+
+    if(vTextureId == 1025){
+        glGenTextures(1, &vTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures vTextureId=%d\n", vTextureId);
+    }else{
+        glDeleteTextures(1,&vTextureId);
+        checkGlError("glDeleteTextures");
+
+        glGenTextures(1, &vTextureId);
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures vTextureId=%d\n", vTextureId);
+    }
+
 
     glBindTexture(GL_TEXTURE_2D, vTextureId);
     checkGlError("glBindTexture");
@@ -260,7 +294,7 @@ void GlEngine::drawFrame() {
     if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL && videoWidth != 0 &&
         videoHeight != 0) {
 
-        drawFrameInit(videoWidth, videoHeight);
+     //   drawFrameInit(videoWidth, videoHeight);
         setAspectRatio();
 
 
@@ -460,12 +494,13 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1r
     ALOGI("native_1resize_1opengl IN");
 
 
-    GlEngine::getGlEngine()->setupGraphics();
+    //GlEngine::getGlEngine()->setupGraphics();
 
     GlEngine::getGlEngine()->setScreenHeight(height);
     GlEngine::getGlEngine()->setScreenWidth(width);
     GlEngine::getGlEngine()->setViewPort(width,height);
 
+    GlEngine::getGlEngine()->buildTextures();
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame
@@ -481,9 +516,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1i
         JNIEnv *env, jclass clazz) {
 
     ALOGI("native_1init_1opengl IN");
-  //  if (!GlEngine::getGlEngine()->isSetupGraphics) {
- //       GlEngine::getGlEngine()->setupGraphics();
-  //  }
+    GlEngine::getGlEngine()->setupGraphics();
     ALOGI("native_1init_1opengl OUT");
 
 }
