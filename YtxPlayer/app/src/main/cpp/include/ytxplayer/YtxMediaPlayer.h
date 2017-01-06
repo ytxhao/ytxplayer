@@ -203,30 +203,12 @@ public:
 
     int mStreamType;
     int mCurrentState;
-   // int st_index[AVMEDIA_TYPE_NB];
 
 
-    FILE *fp_yuv;
-    FILE *fp_pcm;
+//    FILE *fp_yuv;
+//    FILE *fp_pcm;
     int  got_picture;
-//    unsigned char *out_buffer_video;
-//    unsigned char *out_buffer_audio;
 
-//    //视频帧率
-//    AVRational frame_rate_video;
-//
-//
-//    enum AVSampleFormat in_sample_fmt ;
-//    //输出采样格式16bit PCM
-//    enum AVSampleFormat out_sample_fmt = AV_SAMPLE_FMT_S16;
-//    //输入采样率
-//    int in_sample_rate ;
-//    //输出采样率
-//    int out_sample_rate = 44100;
-//    int out_channel_nb;
-//    int out_nb_samples;
-
-  //  AudioEngine *audioEngine;
 };
 
 

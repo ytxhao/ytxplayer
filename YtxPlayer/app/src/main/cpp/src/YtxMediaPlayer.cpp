@@ -71,12 +71,10 @@ YtxMediaPlayer::YtxMediaPlayer(){
     pthread_mutex_init(&mLock, NULL);
     mLeftVolume = mRightVolume = 1.0;
     mVideoWidth = mVideoHeight = 0;
-   // memset(st_index, -1, sizeof(st_index));
     mVideoStateInfo = new VideoStateInfo();
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mVideoRefreshController = NULL;
     mAudioRefreshController = NULL;
-   // mPlayerPrepareAsync = new PlayerPrepareAsync();
     mMessageLoop = new MessageLoop();
     isRelease = false;
     sPlayer = this;
@@ -146,7 +144,7 @@ int  YtxMediaPlayer::prepare() {
     pFormatCtx = avformat_alloc_context();
 
     ALOGI("prepare this->filePath=%s\n",this->filePath);
- //   ALOGI("Couldn't open input stream.\n");
+
     if(avformat_open_input(&pFormatCtx,this->filePath,NULL,NULL)!=0){
         ALOGI("Couldn't open input stream.\n");
         return -1;
@@ -181,20 +179,11 @@ int  YtxMediaPlayer::prepare() {
     mVideoStateInfo->pFormatCtx = pFormatCtx;
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(mVideoStateInfo->streamAudio,mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
-      //  audioEngine = new AudioEngine();
-//        AudioEngine::getAudioEngine()->createEngine();
-//        AudioEngine::getAudioEngine()->createBufferQueueAudioPlayer(mVideoStateInfo->streamAudio->dec_ctx->sample_rate,960,mVideoStateInfo->out_channel_nb,bqPlayerCallback);
     }
 
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
         streamComponentOpen(mVideoStateInfo->streamVideo,mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
-
-
-//    fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
-//    fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
-//    ALOGI("start fp_yuv=%d\n",fp_yuv);
-
 
     mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
 
@@ -219,7 +208,6 @@ int  YtxMediaPlayer::prepare() {
 
 int  YtxMediaPlayer::prepareAsync() {
 
-    //mPlayerPrepareAsync->startAsync();
     mCurrentState = MEDIA_PLAYER_PREPARING;
     pthread_create(&mPlayerPrepareAsyncThread, NULL, prepareAsyncPlayer, NULL);
     return 0;
@@ -273,10 +261,6 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     if(sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
         sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamVideo,sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
-
-//    sPlayer->fp_yuv = fopen("/storage/emulated/0/output.yuv","wb+");
-//    sPlayer->fp_pcm = fopen("/storage/emulated/0/output.pcm","wb+");
-    ALOGI("start fp_yuv=%d\n",sPlayer->fp_yuv);
 
 
     sPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
@@ -429,7 +413,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
                 if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]>=0){
                     mDecoderVideo->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
-                }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]>=0){
+                }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]>=0){
                     mDecoderAudio->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
                 }
                 mVideoStateInfo->eof = 1;
@@ -480,8 +464,6 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     finish();
 
     ALOGI( "end of playing\n");
-//    fclose(fp_yuv);
-//    fclose(fp_pcm);
 }
 
 int  YtxMediaPlayer::release() {

@@ -1,5 +1,6 @@
 #define  TAG  "gl2jni"
 
+
 #include "ALog-priv.h"
 #include "gl_engine.h"
 
@@ -45,10 +46,6 @@ GlEngine::~GlEngine() {
             plane[i] = NULL;
         }
     }
-
-//    if (glEngine != NULL) {
-//        delete glEngine;
-//    }
 }
 
 void GlEngine::printGLString(const char *name, GLenum s) {
@@ -249,12 +246,10 @@ void GlEngine::buildTextures() {
 }
 
 void GlEngine::drawFrameInit(int videoWidth, int videoHeight) {
-//    if (!isDrawFrameInit) {
-//        isDrawFrameInit = true;
-//        glViewport(0, 0, videoWidth, videoHeight);
-//        checkGlError("glViewport");
+    if (!isDrawFrameInit) {
+        isDrawFrameInit = true;
         buildTextures();
-  //  }
+    }
 }
 
 /**
@@ -312,6 +307,7 @@ void GlEngine::drawFrame() {
 
         glDisableVertexAttribArray(gvPositionHandle);
         glDisableVertexAttribArray(gCoordHandle);
+
     }
 
 }
@@ -345,6 +341,7 @@ void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
         isAddRendererFrameInit = true;
         this->videoWidth = videoWidth;
         this->videoHeight = videoHeight;
+        ALOGI("addRendererFrameInit isAddRendererFrameInit");
         plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
         plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
         plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);

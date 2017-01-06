@@ -89,7 +89,6 @@ void VideoRefreshController::process() {
             display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
-          //  int y_size = mDecoderVideo->mStream->dec_ctx->width * mDecoderVideo->mStream->dec_ctx->height;
             Frame *vp;
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             if (vp->frame != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
@@ -99,13 +98,10 @@ void VideoRefreshController::process() {
                                                           decodeWidth,
                                                           decodeHeight);
 
-
                   GlEngine::getGlEngine()->notifyRenderer();
-
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();
-
         }
     }
 
