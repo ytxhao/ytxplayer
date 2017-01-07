@@ -42,12 +42,10 @@ void VideoRefreshController::process() {
             return;
         }
         if (remaining_time > 0.0) {
-            //    ALOGI("startPlayerRefresh remaining_time=%lf\n",remaining_time);
-            av_usleep((int64_t) (remaining_time * 1000000.0));
-
+            ALOGI("startPlayerRefresh remaining_time=%lf  remaining_time*1000000=%lf\n",remaining_time,remaining_time * 1000000.0);
+            av_usleep((unsigned int) (remaining_time * 1000000.0));
         }
         remaining_time = REFRESH_RATE;
-        //usleep(20000);
 
         if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2) {
             // nothing to do, no picture to display in the queue
@@ -61,8 +59,9 @@ void VideoRefreshController::process() {
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeek();
 
 
-            last_duration = vp_duration(lastvp, vp);
-            delay = last_duration;
+            last_duration = vpDuration(lastvp, vp);
+           // delay = last_duration;
+            delay = computeTargetDelay(last_duration);
 
 
             time = av_gettime_relative() / 1000000.0; //获取ff系统时间,单位为秒
@@ -71,8 +70,6 @@ void VideoRefreshController::process() {
 
             if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                 remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
-                //goto display;
-               // continue;
                 return;
             }
 
@@ -124,14 +121,60 @@ void VideoRefreshController::refresh() {
 }
 
 
- double VideoRefreshController::vp_duration(Frame *vp, Frame *next_vp) {
+ double VideoRefreshController::vpDuration(Frame *vp, Frame *next_vp) {
     if (vp->serial == next_vp->serial) {
         double duration = next_vp->pts - vp->pts;
-        if (isnan(duration) || duration <= 0)
+        if (isnan(duration) || duration <= 0 || duration > mVideoStateInfo->max_frame_duration)
             return vp->duration;
         else
             return duration;
     } else {
         return 0.0;
     }
+}
+
+
+double  VideoRefreshController::computeTargetDelay(double delay){
+        double sync_threshold, diff = 0;
+
+        /* update delay to follow master synchronisation source */
+
+            diff = mVideoStateInfo->getClock(mVideoStateInfo->vidClk) - mVideoStateInfo->getClock(mVideoStateInfo->audClk);
+
+            /* skip or repeat frame. We take into account the
+               delay to compute the threshold. I still don't know
+               if it is the best guess */
+            sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
+            ALOGI("video: 000 delay=%0.3lf V-A=%lf sync_threshold=%lf max_frame_duration=%lf\n", delay, diff,sync_threshold,mVideoStateInfo->max_frame_duration);
+            if (!isnan(diff) && fabs(diff) < mVideoStateInfo->max_frame_duration) {
+
+                if (diff <= -sync_threshold) {
+                    //如果音频播放比视频快
+                    ALOGI("video: 000 001");
+                    delay = FFMAX(0, delay + diff);
+                } else if (diff >= sync_threshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD){
+                    //如果视频比音频快
+                    ALOGI("video: 000 002");
+                    delay = delay + diff;
+                } else if (diff >= sync_threshold){
+                    ALOGI("video: 000 003");
+                    delay = 2 * delay;
+                }
+
+//                if (diff <= -sync_threshold) {
+//                    //如果音频播放比视频快
+//                    ALOGI("video: 000 001");
+//                    delay = FFMAX(0, delay + diff);
+//                } else if (diff >= sync_threshold){
+//                    //如果视频比音频快
+//                    ALOGI("video: 000 002");
+//                    delay =  diff;
+//                }
+
+            }
+
+        ALOGI("video: 001 delay=%0.3lf V-A=%lf \n", delay, diff);
+
+        return delay;
+
 }

@@ -15,6 +15,8 @@ DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 {
    // isFirstFrame = true;
    // this->mVideoStateInfo = mVideoStateInfo;
+    mVideoStateInfo->initClock(mVideoStateInfo->audClk,&mQueue->serial);
+    mVideoStateInfo->setClockSpeed(mVideoStateInfo->audClk,1);
 
 }
 
@@ -44,6 +46,10 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         return false;
     }
 
+    if(mQueue->size() == 0){
+        pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
+    }
+
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
         avcodec_flush_buffers(mVideoStateInfo->streamAudio->dec_ctx);
         mVideoStateInfo->isFirstAudioFrame = true;
@@ -67,7 +73,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         //   pts = synchronize(mFrame, pts);
 
        // onDecode(mFrame, pts);
-        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lld",mFrame->sample_rate,mFrame->pts);
+        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
         tb = (AVRational){1, mFrame->sample_rate};
 
         if (mFrame->pts != AV_NOPTS_VALUE){
@@ -152,4 +158,14 @@ void DecoderAudio::stop() {
         ALOGI("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
+}
+
+int DecoderAudio::streamHasEnoughPackets(){
+    int ret = 0;
+    ret = mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] < 0 ||
+          mQueue->mAbortRequest ||
+          (mVideoStateInfo->streamAudio->st->disposition & AV_DISPOSITION_ATTACHED_PIC) ||
+          mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamAudio->st->time_base) * mQueue->duration > 1.0);
+
+    return ret;
 }

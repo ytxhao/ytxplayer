@@ -90,7 +90,7 @@ void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, 
 {
     assert(bq == AudioEngine::getAudioEngine()->bqPlayerBufferQueue);
     assert(NULL == context);
-    sAudioRefreshController->audio_callback_time = av_gettime_relative();
+
     sAudioRefreshController->audioFrameProcess();
     if(*sAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
         sAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
@@ -102,8 +102,16 @@ void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, 
 int AudioRefreshController::audioFrameProcess() {
     int ret = 0;
     Frame *af;
+    double audio_clock;
     mAudioEngine->mLock.lock();
+    int64_t audio_callback_time = av_gettime_relative();
     af = audioDecodeFrame();
+
+//    /* update the audio clock with the pts */
+//    if (!isnan(af->pts))
+//        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;
+//    else
+//        audio_clock = NAN;
 
     swr_convert(mVideoStateInfo->swrCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
                 (const uint8_t **) af->frame->data, af->frame->nb_samples);
@@ -116,6 +124,12 @@ int AudioRefreshController::audioFrameProcess() {
                                                   mVideoStateInfo->out_buffer_audio,
                                                   out_buffer_size);
     mAudioEngine->mLock.unlock();
+
+    if (!isnan(audio_clock)) {
+
+        mVideoStateInfo->setClockAt(mVideoStateInfo->audClk, af->pts, af->serial,audio_callback_time/1000000.0);
+        mVideoStateInfo->syncClock2Slave(mVideoStateInfo->extClk, mVideoStateInfo->audClk);
+    }
 
 
     return ret;

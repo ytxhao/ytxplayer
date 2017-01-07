@@ -79,6 +79,13 @@ libLoader.loadLibrary("avfilter");
 
 #define CURSOR_HIDE_DELAY 1000000
 
+#define MIN_FRAMES 25
+
+
+#define VIDEO_PICTURE_QUEUE_SIZE 3
+#define SUBPICTURE_QUEUE_SIZE 16
+#define SAMPLE_QUEUE_SIZE 2
+
 static unsigned sws_flags = SWS_BICUBIC;
 
 #ifdef __cplusplus

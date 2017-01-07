@@ -24,6 +24,7 @@ public:
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;
     void stop();
+    int                         streamHasEnoughPackets();
 private:
     AVFrame*					mFrame;
     double						mVideoClock;

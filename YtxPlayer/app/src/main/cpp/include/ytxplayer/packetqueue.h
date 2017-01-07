@@ -36,14 +36,14 @@ public:
 
     void abort();
     int serial;
-
+    int64_t duration;
     VideoStateInfo *mVideoStateInfo;
+    bool				mAbortRequest;
 private:
     MAVPacketList*		mFirst;
     MAVPacketList*		mLast;
     int					mNbPackets;
     int					mSize;
-    bool				mAbortRequest;
     pthread_mutex_t     mLock;
     pthread_cond_t		mCondition;
 };

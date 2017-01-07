@@ -92,6 +92,9 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     }
 
 
+    if(mQueue->size() == 0){
+        pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
+    }
 
     if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
         avcodec_flush_buffers(mVideoStateInfo->streamVideo->dec_ctx);
@@ -241,4 +244,15 @@ void DecoderVideo::stop() {
         ALOGI("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
+}
+
+
+int DecoderVideo::streamHasEnoughPackets(){
+    int ret = 0;
+    ret = mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0 ||
+            mQueue->mAbortRequest ||
+            (mVideoStateInfo->streamVideo->st->disposition & AV_DISPOSITION_ATTACHED_PIC) ||
+            mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamVideo->st->time_base) * mQueue->duration > 1.0);
+
+    return ret;
 }

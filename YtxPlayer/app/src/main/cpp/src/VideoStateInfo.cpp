@@ -25,9 +25,10 @@ VideoStateInfo::VideoStateInfo(){
     ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
     vidClk = (Clock *)malloc(sizeof(Clock));
     extClk = (Clock *)malloc(sizeof(Clock));
-
+    audClk = (Clock *)malloc(sizeof(Clock));
     memset(st_index, -1, sizeof(st_index));
 
+    max_frame_duration = 0.0;
     seekPos = 0;
     seekRel = 0;
     seekFlags = 0;
@@ -46,6 +47,7 @@ VideoStateInfo::~VideoStateInfo() {
     free(flushPkt);
     free(vidClk);
     free(extClk);
+    free(audClk);
     pthread_mutex_destroy(&mLock);
     pthread_cond_destroy(&mCondition);
     pthread_mutex_destroy(&wait_mutex);

@@ -65,6 +65,7 @@ public:
     int64_t seekPos;
     int64_t seekRel;
     MAVPacket *flushPkt;
+    Clock *audClk;
     Clock *vidClk;
     Clock *extClk;
 
@@ -109,6 +110,7 @@ public:
 
     int pkt_serial_audio = 0;
     int pkt_serial_video = 0;
+    double max_frame_duration;
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

@@ -177,6 +177,10 @@ int  YtxMediaPlayer::prepare() {
 
 
     mVideoStateInfo->pFormatCtx = pFormatCtx;
+
+    mVideoStateInfo->max_frame_duration = (mVideoStateInfo->pFormatCtx->iformat->flags & AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
+
+    ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",mVideoStateInfo->max_frame_duration);
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         streamComponentOpen(mVideoStateInfo->streamAudio,mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
     }
@@ -254,6 +258,9 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
 
     sPlayer->mVideoStateInfo->pFormatCtx = sPlayer->pFormatCtx;
+    sPlayer->mVideoStateInfo->max_frame_duration = (sPlayer->mVideoStateInfo->pFormatCtx->iformat->flags & AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
+
+    ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",sPlayer->mVideoStateInfo->max_frame_duration);
     if(sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         sPlayer->streamComponentOpen(sPlayer->mVideoStateInfo->streamAudio,sPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
     }
@@ -396,9 +403,21 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
 
-        if (mDecoderVideo->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE ||
-            mDecoderAudio->packets() > FFMPEG_PLAYER_MAX_QUEUE_SIZE) {
-            usleep(20);
+        if(mDecoderVideo->packets() + mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
+                mDecoderVideo->streamHasEnoughPackets() ||
+                mDecoderAudio->streamHasEnoughPackets() ){
+            /* wait 10 ms */
+            struct timeval now;
+            struct timespec outTime;
+            int timeout_ms = 10;
+            int nsec = 0;
+            pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
+            gettimeofday(&now, NULL);
+            nsec = now.tv_usec * 1000 + (timeout_ms % 1000) * 1000000;
+            outTime.tv_sec = now.tv_sec + nsec / 1000000000 + timeout_ms / 1000; //now.tv_sec + 5;
+            outTime.tv_nsec = nsec % 1000000000; //now.tv_usec * 1000;
+            pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex, &outTime);
+            pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
             continue;
         }
 
@@ -419,6 +438,14 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
                 mVideoStateInfo->eof = 1;
 
             }
+
+            if (mVideoStateInfo->pFormatCtx->pb && mVideoStateInfo->pFormatCtx->pb->error){
+                break;
+            }
+
+            pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
+            pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
+            pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
 
             continue;
         }else{
@@ -505,6 +532,7 @@ int  YtxMediaPlayer::seekTo(int msec) {
         mVideoStateInfo->seekPos = (int64_t) (((double)msec / getDuration()) * mVideoStateInfo->pFormatCtx->duration);
         mVideoStateInfo->seekRel = 0;
         mVideoStateInfo->seekReq = true;
+        pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
         ALOGI("seekTo seekPos=%lld seekRel=%lld msec=%d\n",mVideoStateInfo->seekPos,mVideoStateInfo->seekRel,msec);
     //}
     return 0;

@@ -25,6 +25,7 @@ public:
     //VideoStateInfo *mVideoStateInfo;
 
     void stop();
+    int streamHasEnoughPackets();
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;

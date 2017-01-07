@@ -25,8 +25,8 @@ public:
     void                refresh();
     void                process();
     void                stop();
-    double              vp_duration(Frame *vp, Frame *next_vp);
-
+    double              vpDuration(Frame *vp, Frame *next_vp);
+    double              computeTargetDelay(double delay);
 };
 
 

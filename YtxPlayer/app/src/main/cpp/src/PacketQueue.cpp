@@ -99,7 +99,7 @@ int PacketQueue::put(MAVPacket* mPkt)
     mLast = pkt1;
     mNbPackets++;
     mSize += pkt1->mPkt.pkt.size + sizeof(*pkt1);
-
+    duration += pkt1->mPkt.pkt.duration;
     pthread_cond_signal(&mCondition);
     pthread_mutex_unlock(&mLock);
 
@@ -128,6 +128,7 @@ int PacketQueue::get(MAVPacket *mPkt, bool block,int *serial)
                 mLast = NULL;
             mNbPackets--;
             mSize -= pkt1->mPkt.pkt.size + sizeof(*pkt1);
+            duration -= pkt1->mPkt.pkt.duration;
             *mPkt = pkt1->mPkt;
             if (serial) {
                 *serial = pkt1->serial;
