@@ -84,7 +84,7 @@ YtxMediaPlayer::~YtxMediaPlayer() {
 
 
     AudioEngine::releaseAudioEngine();
-    GlEngine::releaseGlEngine();
+  //  GlEngine::releaseGlEngine();
 
     if(mDecoderVideo){
         delete mDecoderVideo;
@@ -106,6 +106,7 @@ YtxMediaPlayer::~YtxMediaPlayer() {
         delete mMessageLoop;
     }
 
+    ALOGI("~YtxMediaPlayer mVideoStateInfo = %#x",mVideoStateInfo);
     delete mVideoStateInfo;
 
 
@@ -201,6 +202,7 @@ int  YtxMediaPlayer::prepare() {
 
     mAudioRefreshController = new AudioRefreshController(mVideoStateInfo);
 
+    mDecoderVideo->onDecodeVideoComplete = onDecodeVideoComplete;
     mCurrentState = MEDIA_PLAYER_PREPARED;
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
@@ -281,11 +283,20 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     sPlayer->mVideoRefreshController = new VideoRefreshController(sPlayer->mVideoStateInfo);
 
     sPlayer->mAudioRefreshController = new AudioRefreshController(sPlayer->mVideoStateInfo);
+
+
+    sPlayer->mDecoderVideo->onDecodeVideoComplete = onDecodeVideoComplete;
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
     sPlayer->mMessageLoop->enqueue(&msg);
     sPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
     pthread_exit(NULL);
+}
+
+ void YtxMediaPlayer::onDecodeVideoComplete(){
+    AVMessage msg;
+    msg.what = FFP_MSG_COMPLETED;
+    sPlayer->mMessageLoop->enqueue(&msg);
 }
 
 int YtxMediaPlayer::resume() {
@@ -312,6 +323,8 @@ int  YtxMediaPlayer::start() {
 //    START_PLAYER:
     pthread_create(&mPlayerThread, NULL, startPlayer, NULL);
 
+
+
     return 0;
 }
 
@@ -331,6 +344,7 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
         delete sPlayer;
 
     }
+
     return 0;
 }
 
@@ -463,6 +477,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     mVideoStateInfo->notifyAll();
     mVideoRefreshController->stop();
+    mAudioRefreshController->stop();
 
     mDecoderVideo->stop();
     ALOGI("waiting on mDecoderVideo thread\n");
@@ -486,7 +501,6 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
         ALOGI( "playing err\n");
     }
-    mCurrentState = MEDIA_PLAYER_PLAYBACK_COMPLETE;
 
     finish();
 
@@ -502,6 +516,7 @@ int  YtxMediaPlayer::release() {
 int  YtxMediaPlayer::stop() {
     ALOGI("YtxMediaPlayer::stop()");
     mCurrentState = MEDIA_PLAYER_STOPPED;
+    pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
    // playing = false;
     return 0;
 }
@@ -650,8 +665,8 @@ int  YtxMediaPlayer::setListener(MediaPlayerListener* listener) {
 void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
-    sPlayer->mVideoRefreshController->stop();
-    sPlayer->mAudioRefreshController->stop();
+//    sPlayer->mVideoRefreshController->stop();
+//    sPlayer->mAudioRefreshController->stop();
     sPlayer->mMessageLoop->stop();
     sPlayer->isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");

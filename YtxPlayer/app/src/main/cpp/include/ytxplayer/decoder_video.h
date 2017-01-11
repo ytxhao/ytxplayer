@@ -8,7 +8,7 @@
 #include "frame_queue.h"
 #include <ytxplayer/VideoStateInfo.h>
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
-typedef void (*VideoDecodeFinishHandler) ();
+typedef void (*VideoDecodeCompleteHandler) ();
 class DecoderVideo : public IDecoder
 {
 public:
@@ -16,7 +16,7 @@ public:
     ~DecoderVideo();
 
     VideoDecodingHandler		onDecode;
-    VideoDecodeFinishHandler    onDecodeFinish;
+    VideoDecodeCompleteHandler  onDecodeVideoComplete;
     int isFinish;
 
     //VideoStateInfo *mVideoStateInfo;
@@ -39,6 +39,8 @@ private:
     bool                        process(MAVPacket *mPacket);
     static int					getBuffer(struct AVCodecContext *c, AVFrame *pic,int flags);
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
+    bool lastStats;
+    bool curStats;
 
 
 

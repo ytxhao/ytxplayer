@@ -82,7 +82,7 @@ bool MessageLoop::process(AVMessage *msg) {
     }
     switch (msg->what){
         case FFP_MSG_FLUSH:
-            listener->notify(MEDIA_PREPARED, 0, 0);
+           // listener->notify(MEDIA_PREPARED, 0, 0);
             break;
         case FFP_MSG_ERROR:
             //post_event();
@@ -93,6 +93,8 @@ bool MessageLoop::process(AVMessage *msg) {
             listener->notify(MEDIA_PREPARED, 0, 0);
             break;
         case FFP_MSG_COMPLETED:
+            ALOGI("MessageLoop::process FFP_MSG_COMPLETED");
+            listener->notify(MEDIA_PLAYBACK_COMPLETE, 0, 0);
             //post_event();
             break;
         case FFP_MSG_VIDEO_SIZE_CHANGED:

@@ -85,12 +85,19 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     double pts = 0;
     int ret=0;
     // Decode video frame
-    ALOGI("DecoderVideo::process mPacket->isEnd=%d",mPacket->isEnd);
-    if(mPacket->isEnd){
-      //  onDecodeFinish();
-        return false;
-    }
 
+    curStats = mPacket->isEnd;
+    ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
+//    if(mPacket->isEnd){
+//        onDecodeVideoComplete();
+//        return false;
+//    }
+
+    if(curStats != lastStats && curStats && mPacket->pkt.data){
+        onDecodeVideoComplete();
+        return true;
+    }
+    lastStats = curStats;
 
     if(mQueue->size() == 0){
         pthread_cond_signal(&mVideoStateInfo->continue_read_thread);

@@ -47,6 +47,8 @@ void VideoRefreshController::process() {
         }
         remaining_time = REFRESH_RATE;
 
+        ALOGI("startPlayerRefresh mVideoStateInfo=%#x",mVideoStateInfo);
+        ALOGI("startPlayerRefresh frameQueueVideo=%#x",mVideoStateInfo->frameQueueVideo);
         if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 2) {
             // nothing to do, no picture to display in the queue
 
@@ -83,12 +85,13 @@ void VideoRefreshController::process() {
                 mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
             }
 
-            display:
+          //  display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
             Frame *vp;
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             if (vp->frame != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
+                ALOGI("to getGlEngine()->addRendererFrame");
                 GlEngine::getGlEngine()->addRendererFrame((char *) vp->frame->data[0],
                                                           (char *) vp->frame->data[1],
                                                           (char *) vp->frame->data[2],
@@ -119,7 +122,6 @@ void VideoRefreshController::refresh() {
         process();
     }
 }
-
 
  double VideoRefreshController::vpDuration(Frame *vp, Frame *next_vp) {
     if (vp->serial == next_vp->serial) {

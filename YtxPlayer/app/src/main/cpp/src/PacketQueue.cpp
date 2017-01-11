@@ -57,6 +57,7 @@ void PacketQueue::flush()
 int PacketQueue::putNullPacket(int stream_index) {
     MAVPacket pkt1, *pkt = &pkt1;
     av_init_packet(&pkt->pkt);
+    pkt->isEnd = true;
     pkt->pkt.data = NULL;
     pkt->pkt.size = 0;
     pkt->pkt.stream_index = stream_index;

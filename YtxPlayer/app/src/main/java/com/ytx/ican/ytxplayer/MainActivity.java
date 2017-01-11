@@ -3,6 +3,7 @@ package com.ytx.ican.ytxplayer;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +20,7 @@ import android.widget.VideoView;
 import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
+import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
 
 
 import java.io.File;
@@ -27,40 +29,50 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
     static {
         System.loadLibrary("native-lib");
     }
 
-    YtxVideoView ytxVideoView;
-    YtxMediaController ytxMediaController;
-    VideoView mVideoView;
-    MediaController mMediaController;
-    AutoCompleteTextView actvFileName;
-    Button bt ;
-    ImageView ivDrag;
-    ArrayAdapter<String> adapter;
-    ArrayList<String> contacts = new ArrayList<>();
-    String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
-    String filePath;
+    private static final String TAG = "MainActivity";
+    private static final String FILE_NAME = "file_name";
+
+    private YtxVideoView ytxVideoView;
+    private YtxMediaController ytxMediaController;
+    private VideoView mVideoView;
+    private MediaController mMediaController;
+    private AutoCompleteTextView actvFileName;
+    private Button bt ;
+    private ImageView ivDrag;
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> contacts = new ArrayList<>();
+    private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String filePath;
+    private String fileName;
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        YtxLog.d("MainActivity","#### #### onCreate");
+        YtxLog.d(TAG,"#### #### onCreate");
         setContentView(R.layout.activity_main);
-
-        initView();
+        PreferenceUtil.initInstance(getApplicationContext(), PreferenceUtil.MODE_ENCRYPT_ALL);
 
         filePath = Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
+        fileName = PreferenceUtil.getInstance().getString(FILE_NAME);
 
         CopyAssets(this,"video",filePath);
 
-        mMediaController = new MediaController(this);
-    //    mVideoView.setVideoPath(filePath+"xszr.mp4");
-    //    mVideoView.setVideoPath(filePath+"titanic.mkv");
-        mVideoView.setVideoPath(filePath+"video2.mp4");
-        mVideoView.setMediaController(mMediaController);
-        mVideoView.requestFocus();
+        initView();
+
+       // playVideo();
+        if(TextUtils.isEmpty(fileName)){
+            ytxVideoView.setVideoPath(filePath+files[0]);
+        }else{
+            ytxVideoView.setVideoPath(filePath+fileName);
+        }
+
+        ytxVideoView.start();
     }
 
     private void initView() {
@@ -76,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         actvFileName.addTextChangedListener(textWatcher);
         actvFileName.setHorizontallyScrolling(true);
         actvFileName.setOnClickListener(this);
-
+        actvFileName.setText(fileName);
         for(int i=0;i<files.length;i++){
             contacts.add(files[i]);
         }
@@ -88,13 +100,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ytxMediaController = new YtxMediaController(this);
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
+
+
+        mMediaController = new MediaController(this);
+        if(TextUtils.isEmpty(fileName)){
+            mVideoView.setVideoPath(filePath+files[0]);
+        }else{
+            mVideoView.setVideoPath(filePath+fileName);
+        }
+        mVideoView.setMediaController(mMediaController);
+        mVideoView.requestFocus();
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        YtxLog.d("MainActivity","#### #### onResume");
+        YtxLog.d(TAG,"#### #### onResume");
         ytxVideoView.onResume();
 
     }
@@ -110,26 +132,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        YtxLog.d("MainActivity","#### #### onStart");
+        YtxLog.d(TAG,"#### #### onStart");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        YtxLog.d("MainActivity","#### #### onStop");
+        YtxLog.d(TAG,"#### #### onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        YtxLog.d("MainActivity","#### #### onDestroy");
+        YtxLog.d(TAG,"#### #### onDestroy");
         ytxVideoView.onDestroy();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        YtxLog.d("MainActivity","#### #### onConfigurationChanged");
+        YtxLog.d(TAG,"#### #### onConfigurationChanged");
     }
 
     /**
@@ -190,8 +212,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void playVideo() {
 
-        ytxVideoView.setVideoPath(filePath+actvFileName.getText().toString().trim());
-        ytxVideoView.start();
+
+        if(ytxVideoView.getDuration() - ytxVideoView.getCurrentPosition() !=0 ||
+                ytxVideoView.isPlaying()){
+            ytxVideoView.onDestroy();
+        }
+//
+//        try {
+//            Thread.sleep(4);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(TextUtils.isEmpty(fileName)){
+                    ytxVideoView.setVideoPath(filePath+files[0]);
+                }else{
+                    ytxVideoView.setVideoPath(filePath+fileName);
+                }
+                ytxVideoView.start();
+            }
+        }, 3000);
+
+
+//
+//        ytxVideoView.start();
     }
 
     @Override
@@ -201,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (id){
             case R.id.bt:
+                PreferenceUtil.getInstance().putString(FILE_NAME,actvFileName.getText().toString().trim());
+                fileName = actvFileName.getText().toString().trim();
                 playVideo();
                 break;
             case R.id.ivDrag:

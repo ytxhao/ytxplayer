@@ -364,7 +364,16 @@ void GlEngine::waitRendererFinish() {
 }
 
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
-    addRendererFrameInit(videoWidth, videoHeight);
+  //  addRendererFrameInit(videoWidth, videoHeight);
+
+    plane[0] = y;
+    plane[1] = u;
+    plane[2] = v;
+    if(this->videoWidth !=videoWidth || this->videoHeight != videoHeight){
+        this->videoWidth = videoWidth;
+        this->videoHeight = videoHeight;
+    }
+
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
     memcpy(plane[1], u, (size_t) (videoWidth * videoHeight) / 4);
     memcpy(plane[2], v, (size_t) (videoWidth * videoHeight) / 4);

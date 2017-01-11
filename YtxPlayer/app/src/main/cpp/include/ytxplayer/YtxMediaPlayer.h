@@ -131,7 +131,7 @@ public:
   //  static void decodeAudio(AVFrame* frame, double pts);
  //   static void decodeVideo(AVFrame* frame, double pts);
  //   static void decodeAudioFirstFrameHandler();
-
+  static void onDecodeVideoComplete();
     void finish();
 
 
