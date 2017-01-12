@@ -110,6 +110,9 @@ YtxMediaPlayer::~YtxMediaPlayer() {
     delete mVideoStateInfo;
 
 
+    if(mListener != NULL){
+        mListener->notify(MEDIA_STOPPED,0,0);
+    }
 
 }
 
@@ -230,12 +233,12 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     //   ALOGI("Couldn't open input stream.\n");
     if(avformat_open_input(&sPlayer->pFormatCtx,sPlayer->filePath,NULL,NULL)!=0){
         ALOGI("Couldn't open input stream.\n");
-        //return -1;
+        return 0;
     }
 
     if(avformat_find_stream_info(sPlayer->pFormatCtx,NULL)<0){
         ALOGI("Couldn't find stream information.\n");
-       // return -1;
+        return 0;
     }
 
 

@@ -44,6 +44,7 @@ VideoStateInfo::~VideoStateInfo() {
     delete streamAudio;
     delete messageQueueAudio;
     delete messageQueueVideo;
+
     free(flushPkt);
     free(vidClk);
     free(extClk);

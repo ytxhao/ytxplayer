@@ -22,6 +22,10 @@ DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 
 DecoderAudio::~DecoderAudio()
 {
+    // Free audio samples buffer
+    if(mFrame != NULL){
+        av_frame_free(&mFrame);
+    }
     avcodec_close(mVideoStateInfo->streamAudio->dec_ctx);
 }
 
@@ -143,8 +147,6 @@ bool DecoderAudio::decode(void* ptr)
 
     ALOGI( TAG, "decoding audio ended");
 
-    // Free audio samples buffer
-    av_frame_free(&mFrame);
     return true;
 }
 

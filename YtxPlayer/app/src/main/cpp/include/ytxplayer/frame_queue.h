@@ -33,6 +33,7 @@ typedef struct Frame {
 class FrameQueue{
 public:
 
+    ~FrameQueue();
     void frameQueueUnrefItem(Frame *vp);
     int frameQueueInit(int max_size,int keep_last);
     void frameQueueDestroy();

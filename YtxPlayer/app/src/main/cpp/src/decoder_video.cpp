@@ -32,9 +32,10 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 DecoderVideo::~DecoderVideo()
 {
     ALOGI("ytxhao DecoderVideo::~DecoderVideo\n");
-    mVideoStateInfo->frameQueueVideo->frameQueueDestroy();
+    //mVideoStateInfo->frameQueueVideo->frameQueueDestroy();
 
-    if(mFrame != NULL){
+    // Free the RGB image
+    if(!mFrame){
         av_frame_free(&mFrame);
         mFrame = NULL;
     }
@@ -213,11 +214,7 @@ bool DecoderVideo::decode(void* ptr)
     }
 
     ALOGI("decoding video ended\n");
-    // Free the RGB image
-    if(!mFrame){
-        av_frame_free(&mFrame);
-        mFrame = NULL;
-    }
+
 
     return true;
 }

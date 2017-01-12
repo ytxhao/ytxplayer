@@ -19,10 +19,10 @@ AudioRefreshController::AudioRefreshController(VideoStateInfo* mVideoStateInfo)
 
 
 AudioRefreshController::~AudioRefreshController(){
-    if(mRunning)
-    {
-        stop();
-    }
+//    if(mRunning)
+//    {
+//        stop();
+//    }
 }
 
 void AudioRefreshController::handleRun(void* ptr){

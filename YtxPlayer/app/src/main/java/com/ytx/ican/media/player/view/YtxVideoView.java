@@ -510,6 +510,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private IMediaPlayer.OnInfoListener mInfoListener = new IMediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+            if(mOnInfoListener != null){
+                mOnInfoListener.onInfo(mp,what,extra);
+            }
             return false;
         }
     };

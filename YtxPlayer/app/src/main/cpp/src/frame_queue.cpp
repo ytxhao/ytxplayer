@@ -5,6 +5,12 @@
 #include "ytxplayer/frame_queue.h"
 #define TAG "YTX-FrameQueue-JNI"
 #include "ALog-priv.h"
+
+
+
+FrameQueue::~FrameQueue(){
+    frameQueueDestroy();
+}
 void FrameQueue::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间

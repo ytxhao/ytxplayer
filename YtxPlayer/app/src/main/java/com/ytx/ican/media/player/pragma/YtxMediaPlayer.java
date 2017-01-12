@@ -35,6 +35,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private static final int MEDIA_TIMED_TEXT = 99;
     private static final int MEDIA_ERROR = 100;
     private static final int MEDIA_INFO = 200;
+    private static final int MEDIA_STOPPED  = 201;
 
 
     private static final int MEDIA_PLAYER_STATE_ERROR        = 0;
@@ -355,6 +356,9 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                 case MEDIA_ERROR:
                     break;
                 case MEDIA_INFO:
+                    break;
+                case MEDIA_STOPPED:
+                    player.notifyOnInfo(MEDIA_STOPPED,0);
                     break;
                 default:
                     YtxLog.e(TAG, "Unknown message type " + msg.what);

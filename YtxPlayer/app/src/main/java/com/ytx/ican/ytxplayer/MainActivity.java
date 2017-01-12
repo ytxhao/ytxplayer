@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.ytx.ican.media.player.pragma.IMediaPlayer;
 import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
-    Handler handler = new Handler();
+   // Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ytxVideoView.setVideoPath(filePath+files[0]);
         }else{
             ytxVideoView.setVideoPath(filePath+fileName);
+        }
+
+        if(!TextUtils.isEmpty(fileName)){
+            if(!fileName.equals(files[3])){
+                ytxVideoView.setVideoPath(filePath+fileName);
+            }else{
+                ytxVideoView.setVideoPath(fileName);
+            }
+        }else{
+            ytxVideoView.setVideoPath(filePath+files[0]);
         }
 
         ytxVideoView.start();
@@ -103,10 +114,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         mMediaController = new MediaController(this);
-        if(TextUtils.isEmpty(fileName)){
-            mVideoView.setVideoPath(filePath+files[0]);
-        }else{
+
+        if(!TextUtils.isEmpty(fileName) && !fileName.equals(files[3])){
             mVideoView.setVideoPath(filePath+fileName);
+        }else{
+            mVideoView.setVideoPath(filePath+files[0]);
         }
         mVideoView.setMediaController(mMediaController);
         mVideoView.requestFocus();
@@ -213,6 +225,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void playVideo() {
 
 
+
+        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+
+                if(!TextUtils.isEmpty(fileName)){
+                    if(!fileName.equals(files[3])){
+                        ytxVideoView.setVideoPath(filePath+fileName);
+                    }else{
+                        ytxVideoView.setVideoPath(fileName);
+                    }
+                }else{
+                    ytxVideoView.setVideoPath(filePath+files[0]);
+                }
+                ytxVideoView.start();
+                return false;
+            }
+        });
+
+
         if(ytxVideoView.getDuration() - ytxVideoView.getCurrentPosition() !=0 ||
                 ytxVideoView.isPlaying()){
             ytxVideoView.onDestroy();
@@ -224,17 +256,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            e.printStackTrace();
 //        }
 //
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(TextUtils.isEmpty(fileName)){
-                    ytxVideoView.setVideoPath(filePath+files[0]);
-                }else{
-                    ytxVideoView.setVideoPath(filePath+fileName);
-                }
-                ytxVideoView.start();
-            }
-        }, 3000);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if(TextUtils.isEmpty(fileName)){
+//                    ytxVideoView.setVideoPath(filePath+files[0]);
+//                }else{
+//                    ytxVideoView.setVideoPath(filePath+fileName);
+//                }
+//                ytxVideoView.start();
+//            }
+//        }, 3000);
 
 
 //
