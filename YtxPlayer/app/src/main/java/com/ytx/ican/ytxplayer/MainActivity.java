@@ -40,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private YtxVideoView ytxVideoView;
     private YtxMediaController ytxMediaController;
+
+    private YtxVideoView ytxVideoView2;
+    private YtxMediaController ytxMediaController2;
+
     private VideoView mVideoView;
     private MediaController mMediaController;
     private AutoCompleteTextView actvFileName;
@@ -84,10 +88,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         ytxVideoView.start();
+
+
+
+
+
     }
 
     private void initView() {
         ytxVideoView = (YtxVideoView) findViewById(R.id.ytxVideoView);
+        ytxVideoView2 = (YtxVideoView) findViewById(R.id.ytxVideoView2);
         mVideoView = (VideoView) findViewById(R.id.mVideoView);
         actvFileName = (AutoCompleteTextView) findViewById(R.id.actvFileName);
         bt = (Button) findViewById(R.id.bt);
@@ -111,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ytxMediaController = new YtxMediaController(this);
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
+
+        ytxMediaController2 = new YtxMediaController(this);
+        ytxVideoView2.setMediaController(ytxMediaController2);
 
 
         mMediaController = new MediaController(this);
