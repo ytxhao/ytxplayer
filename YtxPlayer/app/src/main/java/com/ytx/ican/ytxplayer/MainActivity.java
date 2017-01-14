@@ -67,11 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
 
        // playVideo();
-        if(TextUtils.isEmpty(fileName)){
-            ytxVideoView.setVideoPath(filePath+files[0]);
-        }else{
-            ytxVideoView.setVideoPath(filePath+fileName);
-        }
 
         if(!TextUtils.isEmpty(fileName)){
             if(!fileName.equals(files[3])){
