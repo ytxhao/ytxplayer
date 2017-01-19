@@ -669,7 +669,7 @@ void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
 //    sPlayer->mVideoRefreshController->stop();
-//    sPlayer->mAudioRefreshController->stop();
+    sPlayer->mAudioRefreshController->stop();
     sPlayer->mMessageLoop->stop();
     sPlayer->isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");

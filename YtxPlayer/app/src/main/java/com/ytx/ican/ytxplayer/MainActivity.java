@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,6 +20,7 @@ import android.widget.VideoView;
 
 import com.ytx.ican.media.player.pragma.IMediaPlayer;
 import com.ytx.ican.media.player.pragma.YtxLog;
+import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
@@ -50,7 +52,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
-   // Handler handler = new Handler();
+    private boolean playNext = false;
+    Handler handler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case YtxMediaPlayer.MEDIA_STOPPED:
+                    if(playNext){
+                        playNext = false;
+                        if(!TextUtils.isEmpty(fileName)){
+                            if(!fileName.equals(files[3])){
+                                ytxVideoView.setVideoPath(filePath+fileName);
+                            }else{
+                                ytxVideoView.setVideoPath(fileName);
+                            }
+                        }else{
+                            ytxVideoView.setVideoPath(filePath+files[0]);
+                        }
+                        ytxVideoView.start();
+                    }
+
+                    break;
+                default:
+                    return;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +146,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mVideoView.setMediaController(mMediaController);
         mVideoView.requestFocus();
+
+
+
+        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+                handler.sendEmptyMessage(what);
+                return false;
+            }
+        });
     }
 
 
@@ -216,58 +255,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-
-    private void playVideo() {
-
-
-
-        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-
-                if(!TextUtils.isEmpty(fileName)){
-                    if(!fileName.equals(files[3])){
-                        ytxVideoView.setVideoPath(filePath+fileName);
-                    }else{
-                        ytxVideoView.setVideoPath(fileName);
-                    }
-                }else{
-                    ytxVideoView.setVideoPath(filePath+files[0]);
-                }
-                ytxVideoView.start();
-                return false;
-            }
-        });
-
-
-        if(ytxVideoView.getDuration() - ytxVideoView.getCurrentPosition() !=0 ||
-                ytxVideoView.isPlaying()){
-            ytxVideoView.onDestroy();
-        }
-//
-//        try {
-//            Thread.sleep(4);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if(TextUtils.isEmpty(fileName)){
-//                    ytxVideoView.setVideoPath(filePath+files[0]);
-//                }else{
-//                    ytxVideoView.setVideoPath(filePath+fileName);
-//                }
-//                ytxVideoView.start();
-//            }
-//        }, 3000);
-
-
-//
-//        ytxVideoView.start();
-    }
-
     @Override
     public void onClick(View v) {
 
@@ -277,7 +264,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bt:
                 PreferenceUtil.getInstance().putString(FILE_NAME,actvFileName.getText().toString().trim());
                 fileName = actvFileName.getText().toString().trim();
-                playVideo();
+                playNext = true;
+                ytxVideoView.onDestroy();
+
                 break;
             case R.id.ivDrag:
                 actvFileName.showDropDown();

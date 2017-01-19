@@ -18,13 +18,15 @@ static const char android[] =
 
 
 AudioEngine::AudioEngine() {
-
+    ALOGI("AudioEngine()");
 }
 
 AudioEngine::~AudioEngine() {
     //释放资源
     // destroy buffer queue audio player object, and invalidate all associated interfaces
+    ALOGI("~AudioEngine()");
     if (bqPlayerObject != NULL) {
+        ALOGI("~AudioEngine bqPlayerObject");
         (*bqPlayerObject)->Destroy(bqPlayerObject);
         bqPlayerObject = NULL;
         bqPlayerPlay = NULL;
