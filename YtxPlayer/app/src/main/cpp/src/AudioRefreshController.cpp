@@ -11,7 +11,7 @@
 static AudioRefreshController* sAudioRefreshController = NULL;
 AudioRefreshController::AudioRefreshController(VideoStateInfo* mVideoStateInfo)
 {
-
+    ALOGI("AudioRefreshController\n");
     this->mVideoStateInfo = mVideoStateInfo;
     mAudioEngine = AudioEngine::getAudioEngine();
     sAudioRefreshController = this;
@@ -19,6 +19,7 @@ AudioRefreshController::AudioRefreshController(VideoStateInfo* mVideoStateInfo)
 
 
 AudioRefreshController::~AudioRefreshController(){
+    ALOGI("~AudioRefreshController\n");
 //    if(mRunning)
 //    {
 //        stop();
@@ -77,6 +78,7 @@ void AudioRefreshController::refresh() {
 void AudioRefreshController::stop() {
 
     int ret = -1;
+    (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
     mVideoStateInfo->messageQueueAudio->abort();
     mRunning = false;
     if((ret = wait()) != 0) {

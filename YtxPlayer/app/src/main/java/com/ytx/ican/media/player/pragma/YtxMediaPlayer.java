@@ -26,16 +26,16 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     public static final String TAG = "YtxMediaPlayer";
 
-    private static final int MEDIA_NOP = 0; // interface test message
-    private static final int MEDIA_PREPARED = 1;
-    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
-    private static final int MEDIA_BUFFERING_UPDATE = 3;
-    private static final int MEDIA_SEEK_COMPLETE = 4;
-    private static final int MEDIA_SET_VIDEO_SIZE = 5;
-    private static final int MEDIA_TIMED_TEXT = 99;
-    private static final int MEDIA_ERROR = 100;
-    private static final int MEDIA_INFO = 200;
-    private static final int MEDIA_STOPPED  = 201;
+    public static final int MEDIA_NOP = 0; // interface test message
+    public static final int MEDIA_PREPARED = 1;
+    public static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    public static final int MEDIA_BUFFERING_UPDATE = 3;
+    public static final int MEDIA_SEEK_COMPLETE = 4;
+    public static final int MEDIA_SET_VIDEO_SIZE = 5;
+    public static final int MEDIA_TIMED_TEXT = 99;
+    public static final int MEDIA_ERROR = 100;
+    public static final int MEDIA_INFO = 200;
+    public static final int MEDIA_STOPPED  = 201;
 
 
     private static final int MEDIA_PLAYER_STATE_ERROR        = 0;
