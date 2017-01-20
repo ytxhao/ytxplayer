@@ -9,7 +9,9 @@
 #include "ffinc.h"
 #include "frame_queue.h"
 #include "avPacketList.h"
-#include <ytxplayer/MessageQueue.h>
+#include "MessageQueue.h"
+#include <ytxplayer/MessageLoop.h>
+
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
     MEDIA_PLAYER_IDLE               = 1 << 0,
@@ -58,6 +60,7 @@ public:
 
     FrameQueue *frameQueueVideo;
     FrameQueue *frameQueueAudio;
+    MessageLoop   *mMessageLoop;
     int *mCurrentState;
 
     volatile bool seekReq;

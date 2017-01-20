@@ -8,7 +8,7 @@
 #include "frame_queue.h"
 #include <ytxplayer/VideoStateInfo.h>
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
-typedef void (*VideoDecodeCompleteHandler) ();
+
 class DecoderVideo : public IDecoder
 {
 public:
@@ -16,10 +16,9 @@ public:
     ~DecoderVideo();
 
     VideoDecodingHandler		onDecode;
-    VideoDecodeCompleteHandler  onDecodeVideoComplete;
+
     int isFinish;
 
-    //VideoStateInfo *mVideoStateInfo;
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx;
     unsigned char *out_buffer_video;

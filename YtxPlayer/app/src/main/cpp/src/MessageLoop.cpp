@@ -20,10 +20,7 @@ void MessageLoop::setMsgListener(MediaPlayerListener *listener) {
 }
 
 MessageLoop::~MessageLoop() {
-//    if(mRunning)
-//    {
-//        stop();
-//    }
+
     free(mQueue);
 }
 

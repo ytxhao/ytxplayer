@@ -5,6 +5,7 @@
 #define TAG "VideoStateInfo-jni"
 
 
+
 #include "VideoStateInfo.h"
 #include "ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
@@ -14,6 +15,7 @@ VideoStateInfo::VideoStateInfo(){
     streamAudio = new InputStream();
     messageQueueAudio = new MessageQueue();
     messageQueueVideo = new MessageQueue();
+    mMessageLoop = new MessageLoop();
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
     pthread_mutex_init(&wait_mutex,NULL);
@@ -44,7 +46,7 @@ VideoStateInfo::~VideoStateInfo() {
     delete streamAudio;
     delete messageQueueAudio;
     delete messageQueueVideo;
-
+    delete mMessageLoop;
     free(flushPkt);
     free(vidClk);
     free(extClk);

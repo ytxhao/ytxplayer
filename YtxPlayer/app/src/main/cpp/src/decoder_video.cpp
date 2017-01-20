@@ -2,10 +2,7 @@
 // Created by Administrator on 2016/9/7.
 //
 
-
-
-
-
+#include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_video.h"
 
 #define TAG "FFMpegVideoDecoder"
@@ -89,13 +86,11 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
     curStats = mPacket->isEnd;
     ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
-//    if(mPacket->isEnd){
-//        onDecodeVideoComplete();
-//        return false;
-//    }
 
     if(curStats != lastStats && curStats && mPacket->pkt.data){
-        onDecodeVideoComplete();
+        AVMessage msg;
+        msg.what = FFP_MSG_COMPLETED;
+        mVideoStateInfo->mMessageLoop->enqueue(&msg);
         return true;
     }
     lastStats = curStats;

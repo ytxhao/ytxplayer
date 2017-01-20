@@ -22,7 +22,7 @@
 
 jobject VideoGlSurfaceViewObj;
 // ----------------------------------------------------------------------------
-const char *file_path;
+
 static JavaVM *sVm;
 /*
  * Throw an exception with the specified class and an optional message.
@@ -255,9 +255,6 @@ void android_media_player_notifyRenderFrame()
     sVm->AttachCurrentThread(&env, NULL);
 
 //----------------------------------------------
-  //  jclass clazz_NativeTest = env->FindClass("com/ytx/ican/media/player/render/GraphicGLSurfaceView");
-  //  jfieldID rendererID = env->GetFieldID(clazz_NativeTest,"renderer","Lcom/ytx/ican/media/player/render/GraphicGLSurfaceView$GraphicRenderer;"); //获得得Student类的属性id
-
 
     // 得到jclass
     jclass jclazz = env->GetObjectClass(VideoGlSurfaceViewObj);
@@ -267,54 +264,9 @@ void android_media_player_notifyRenderFrame()
      ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
     // 调用方法
     env->CallVoidMethod(VideoGlSurfaceViewObj, jmtdId);
-   //  ALOGI("android_media_player_notifyRenderFrame jRandomNum=%d\n",jRandomNum);
-   // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
-   //        (unsigned)getpid());
 
     sVm->DetachCurrentThread();
     ALOGI("android_media_player_notifyRenderFrame OUT\n");
-
-}
-
-
-void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
-{
-    ALOGI("android_media_player_updateYuv IN\n");
-
-    //  ALOGI("android_media_player_updateYuv VideoGlSurfaceViewObj=%d\n",VideoGlSurfaceViewObj);
-    JNIEnv *env = NULL;
-    sVm->AttachCurrentThread(&env, NULL);
-
-
-//----------------------------------------------
-    //  jclass clazz_NativeTest = env->FindClass("com/ytx/ican/media/player/render/GraphicGLSurfaceView");
-    //  jfieldID rendererID = env->GetFieldID(clazz_NativeTest,"renderer","Lcom/ytx/ican/media/player/render/GraphicGLSurfaceView$GraphicRenderer;"); //获得得Student类的属性id
-
-    // ALOGI("android_media_player_updateYuv rendererID=%d\n",rendererID);
-
-    jbyteArray byteY = env->NewByteArray(size);
-    jbyteArray byteU = env->NewByteArray(size/4);
-    jbyteArray byteV = env->NewByteArray(size/4);
-
-
-    env->SetByteArrayRegion(byteY,0,size,(const jbyte*)y);
-    env->SetByteArrayRegion(byteU,0,size/4,(const jbyte*)u);
-    env->SetByteArrayRegion(byteV,0,size/4,(const jbyte*)v);
-
-    // 得到jclass
-    jclass jclazz = env->GetObjectClass(VideoGlSurfaceViewObj);
-    //   ALOGI("android_media_player_updateYuv jclazz=%d\n",jclazz);
-    // 得到方法ID
-    jmethodID jmtdId = env->GetMethodID(jclazz, "updateYuv", "([B[B[B)V");
-    //  ALOGI("android_media_player_updateYuv jmtdId=%d\n",jmtdId);
-    // 调用方法
-    env->CallVoidMethod(VideoGlSurfaceViewObj, jmtdId, byteY,byteU,byteV);
-    //  ALOGI("android_media_player_updateYuv jRandomNum=%d\n",jRandomNum);
-    // ALOGI("main12 tid:%u,pid:%u\n", (unsigned)pthread_self(),
-    //        (unsigned)getpid());
-
-    sVm->DetachCurrentThread();
-    ALOGI("android_media_player_updateYuv OUT\n");
 
 }
 
@@ -327,25 +279,9 @@ void android_media_player_updateYuv(uint8_t *y,uint8_t *u,uint8_t *v,int size)
 JNIEXPORT void JNICALL android_media_player_setGlSurface
         (JNIEnv *env, jobject obj, jobject mVideoGlSurfaceView)
 {
-
     ALOGI("android_media_player_setGlSurface IN\n");
-   // jclass clazz_NativeTest = env->FindClass("com/ytx/ican/media/player/render/GraphicGLSurfaceView");
-
     VideoGlSurfaceViewObj  = env->NewGlobalRef(mVideoGlSurfaceView);
-
-    YtxMediaPlayer* mPlayer = getMediaPlayer(env,obj);;
-
-    jclass glSurface_cls = env->GetObjectClass(mVideoGlSurfaceView);
-    if(glSurface_cls == NULL)
-    {
-        ALOGI("GetObjectClass failed \n") ;
-    }
-
-    mPlayer->updateYuv = android_media_player_updateYuv;
-    //-----------------------------------------------------
-
     GlEngine::getGlEngine()->notifyRendererCallback = android_media_player_notifyRenderFrame;
-    //jfieldID rendererFieldID = env->GetFieldID(glSurface_cls,"renderer","[I");
     ALOGI("android_media_player_setGlSurface OUT\n");
 }
 
@@ -383,13 +319,11 @@ JNIEXPORT jint JNICALL android_media_player_setDataSource
         (JNIEnv *env, jobject obj, jstring url)
 {
 
-    file_path = env->GetStringUTFChars(url,NULL);
+    const char *file_path = env->GetStringUTFChars(url,NULL);
     ALOGI("file_path=%s",file_path);
     YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
     ALOGI("setDataSource mPlayer add 0x=%#x",(int)mPlayer);
-    ALOGI("setDataSource mPlayer2 add 0x=%#x",(int)mPlayer);
     mPlayer->setDataSource(file_path);
-  //  env->ReleaseStringUTFChars(url, file_path);
     return 0;
 }
 
