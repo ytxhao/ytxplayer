@@ -79,7 +79,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
 YtxMediaPlayer::~YtxMediaPlayer() {
 
 
-    AudioEngine::releaseAudioEngine();
+  //  AudioEngine::releaseAudioEngine();
   //  GlEngine::releaseGlEngine();
 
     if(mDecoderVideo){
@@ -325,14 +325,13 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     //等待surface render初始化完成
 
     do{
-        usleep(200);
-    }while(!GlEngine::glEngineInitComplete());
+        usleep(50);
+    }while(rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
 
     mPlayer->decodeMovie(ptr);
 
     if(mPlayer != NULL){
         delete mPlayer;
-
     }
 
     return 0;
@@ -647,7 +646,7 @@ void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
 //    sPlayer->mVideoRefreshController->stop();
-    mAudioRefreshController->stop();
+//    mAudioRefreshController->stop();
     mVideoStateInfo->mMessageLoop->stop();
     isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");

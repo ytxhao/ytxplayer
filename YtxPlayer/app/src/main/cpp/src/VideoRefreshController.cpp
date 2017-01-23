@@ -4,6 +4,7 @@
 
 #include <ytxplayer/gl_engine.h>
 #include <ytxplayer/VideoStateInfo.h>
+#include <ytxplayer/android_media_YtxMediaPlayer.h>
 #include "VideoRefreshController.h"
 #define LOG_NDEBUG 0
 #define TAG "YTX-VideoRefreshThread-JNI"
@@ -88,17 +89,26 @@ void VideoRefreshController::process() {
           //  display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
+            int y_size = decodeWidth*decodeHeight;
             Frame *vp;
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             if (vp->frame != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
-                ALOGI("to getGlEngine()->addRendererFrame");
-                GlEngine::getGlEngine()->addRendererFrame((char *) vp->frame->data[0],
-                                                          (char *) vp->frame->data[1],
-                                                          (char *) vp->frame->data[2],
-                                                          decodeWidth,
-                                                          decodeHeight);
+                ALOGI("to getGlEngine()->addRendererFrame %lu decodeWidth=%d decodeHeight=%d",pthread_self(),decodeWidth,decodeHeight);
+//                fwrite(vp->frame->data[0],1,y_size,mVideoStateInfo->fp_yuv);    //Y
+//                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
+//                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
 
-                  GlEngine::getGlEngine()->notifyRenderer();
+
+
+                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
+                                 (char *) vp->frame->data[0],
+                                 (char *) vp->frame->data[1],
+                                 (char *) vp->frame->data[2],
+                                 decodeWidth,
+                                 decodeHeight);
+
+                //  GlEngine::getGlEngine()->notifyRenderer();
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();

@@ -33,8 +33,6 @@ public:
     static void         bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
     int                 audioFrameProcess();
     Frame *audioDecodeFrame();
-
-    //MessageQueue *mQueue;
     void                enqueue(AVMessage *msg);
 };
 

@@ -48,12 +48,7 @@ public:
      SLmilliHertz bqPlayerSampleRate = 0;
      jint   bqPlayerBufSize = 0;
      short *resampleBuf = NULL;
-// a mutext to guard against re-entrance to record & playback
-// as well as make recording and playing back to be mutually exclusive
-// this is to avoid crash at situations like:
-//    recording is in session [not finished]
-//    user presses record button and another recording coming in
-// The action: when recording/playing back is not finished, ignore the new request
+
      pthread_mutex_t  audioEngineLock = PTHREAD_MUTEX_INITIALIZER;
 
 // aux effect on the output mix, used by the buffer queue player
@@ -96,24 +91,16 @@ public:
 
 public:
     void createEngine();
-    void createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel,slAndroidSimpleBufferQueueCallback callback);
+    void createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel);
+    // this callback handler is called every time a buffer finishes playing
+    void RegisterCallback(slAndroidSimpleBufferQueueCallback callback);
     void releaseResampleBuf(void);
     void selectClip(int which, int count);
     short* createResampledBuf(uint32_t idx, uint32_t srcRate, unsigned *size);
-    // this callback handler is called every time a buffer finishes playing
-    void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
-
-protected:
     AudioEngine();
     ~AudioEngine();
 
-public:
-    static Lock mLock;
-    static AudioEngine *getAudioEngine();
-    static void releaseAudioEngine();
-
-private:
-    static AudioEngine *mAudioEngine;
+     Lock mLock;
 
 };
 

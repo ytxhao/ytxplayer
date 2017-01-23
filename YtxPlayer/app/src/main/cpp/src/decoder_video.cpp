@@ -16,6 +16,10 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->extClk,1);
+
+    sprintf(file,"/storage/emulated/0/%lu.yuv",pthread_self());
+    ALOGI("ytxhao DecoderVideo file = %s",file);
+   // mVideoStateInfo->fp_yuv = fopen(file,"wb+");
     mFrame = NULL;
     out_buffer_video = NULL;
     mFrame = av_frame_alloc();
@@ -91,6 +95,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         AVMessage msg;
         msg.what = FFP_MSG_COMPLETED;
         mVideoStateInfo->mMessageLoop->enqueue(&msg);
+      //  fclose(mVideoStateInfo->fp_yuv);
         return true;
     }
     lastStats = curStats;

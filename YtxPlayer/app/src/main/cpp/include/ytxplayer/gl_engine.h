@@ -18,6 +18,17 @@
 #include <pthread.h>
 #include "lock.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight);
+int  rendererStarted(jobject obj);
+
+#ifdef __cplusplus
+}
+#endif
+
 typedef void (*notifyRendererFrame) ();
 class GlEngine {
 
@@ -109,24 +120,23 @@ private:
     Lock   mRendererLock;
     bool   isFrameRendererFinish;
 
-    static Lock mLock;
-    static GlEngine *glEngine;
-    static bool isInitComplete;
+    Lock mLock;
+    GlEngine *glEngine;
+    bool isInitComplete;
 
-protected:
+public:
     GlEngine();
 
     ~GlEngine();
 
 public:
-    static GlEngine *getGlEngine();
-    static void releaseGlEngine();
+     void releaseGlEngine();
 
-    static bool glEngineInitComplete() {
+     bool glEngineInitComplete() {
         return GlEngine::isInitComplete;
     }
 
-    static void glSetEngineInitComplete(bool isComplete) {
+    void glSetEngineInitComplete(bool isComplete) {
         GlEngine::isInitComplete = isComplete;
     }
 
@@ -142,7 +152,7 @@ public:
 
     bool setupGraphics();
 
-    bool isSetupGraphics;
+    int isSetupGraphics;
 
     void buildTextures();
 

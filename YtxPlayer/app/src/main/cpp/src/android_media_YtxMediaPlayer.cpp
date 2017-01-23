@@ -20,10 +20,8 @@
 
 #define JNIREG_CLASS "com/ytx/ican/media/player/pragma/YtxMediaPlayer"
 
-jobject VideoGlSurfaceViewObj;
+JavaVM *sVm;
 // ----------------------------------------------------------------------------
-
-static JavaVM *sVm;
 /*
  * Throw an exception with the specified class and an optional message.
  */
@@ -187,7 +185,7 @@ static YtxMediaPlayer* setMediaPlayer(JNIEnv* env, jobject thiz, const YtxMediaP
 
 
 JNIEXPORT void JNICALL android_media_player_native_init
-        (JNIEnv *env, jclass obj)
+        (JNIEnv *env, jclass mClazz)
 {
 
     jclass clazz;
@@ -246,7 +244,7 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 
 
-void android_media_player_notifyRenderFrame()
+void android_media_player_notifyRenderFrame(jobject obj)
 {
     ALOGI("android_media_player_notifyRenderFrame IN\n");
 
@@ -257,13 +255,13 @@ void android_media_player_notifyRenderFrame()
 //----------------------------------------------
 
     // 得到jclass
-    jclass jclazz = env->GetObjectClass(VideoGlSurfaceViewObj);
+    jclass jclazz = env->GetObjectClass(obj);
      ALOGI("android_media_player_notifyRenderFrame jclazz=%d\n",jclazz);
     // 得到方法ID
     jmethodID jmtdId = env->GetMethodID(jclazz, "requestRender", "()V");
      ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
     // 调用方法
-    env->CallVoidMethod(VideoGlSurfaceViewObj, jmtdId);
+    env->CallVoidMethod(obj, jmtdId);
 
     sVm->DetachCurrentThread();
     ALOGI("android_media_player_notifyRenderFrame OUT\n");
@@ -280,8 +278,20 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
         (JNIEnv *env, jobject obj, jobject mVideoGlSurfaceView)
 {
     ALOGI("android_media_player_setGlSurface IN\n");
-    VideoGlSurfaceViewObj  = env->NewGlobalRef(mVideoGlSurfaceView);
-    GlEngine::getGlEngine()->notifyRendererCallback = android_media_player_notifyRenderFrame;
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    mPlayer->mVideoStateInfo->VideoGlSurfaceViewObj  = env->NewGlobalRef(mVideoGlSurfaceView);
+
+    // 得到jclass
+    jclass jclazz = env->GetObjectClass(mVideoGlSurfaceView);
+    ALOGI("android_media_player_setGlSurface jclazz=%d\n",jclazz);
+    // 得到方法ID
+    jmethodID jmtdId = env->GetMethodID(jclazz, "getRenderer", "()Lcom/ytx/ican/media/player/render/GraphicRenderer;");
+    ALOGI("android_media_player_setGlSurface jmtdId=%d\n",jmtdId);
+    // 调用方法
+    jobject GraphicRendererObj = env->CallObjectMethod(mVideoGlSurfaceView, jmtdId);
+
+    ALOGI("android_media_player_setGlSurface jmtdId=%d GraphicRendererObj=%#x\n",jmtdId,GraphicRendererObj);
+    mPlayer->mVideoStateInfo->GraphicRendererObj = env->NewGlobalRef(GraphicRendererObj);
     ALOGI("android_media_player_setGlSurface OUT\n");
 }
 

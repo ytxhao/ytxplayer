@@ -36,10 +36,13 @@ private:
     double 						synchronize(AVFrame *src_frame, double pts);
     bool                        decode(void* ptr);
     bool                        process(MAVPacket *mPacket);
+    char*                       join3(char *s1, char *s2);
+    char file[100];
     static int					getBuffer(struct AVCodecContext *c, AVFrame *pic,int flags);
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
     bool lastStats;
     bool curStats;
+
 
 
 

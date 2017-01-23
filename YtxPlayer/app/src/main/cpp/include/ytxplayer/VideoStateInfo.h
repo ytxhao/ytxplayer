@@ -11,7 +11,7 @@
 #include "avPacketList.h"
 #include "MessageQueue.h"
 #include <ytxplayer/MessageLoop.h>
-
+#include "jni.h"
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
     MEDIA_PLAYER_IDLE               = 1 << 0,
@@ -114,6 +114,10 @@ public:
     int pkt_serial_audio = 0;
     int pkt_serial_video = 0;
     double max_frame_duration;
+    FILE *fp_yuv;
+    jobject VideoGlSurfaceViewObj;
+    jobject GraphicRendererObj;
+
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

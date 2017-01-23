@@ -101,19 +101,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
        // playVideo();
 
-        if(!TextUtils.isEmpty(fileName)){
-            if(!fileName.equals(files[3])){
-                ytxVideoView.setVideoPath(filePath+fileName);
-            }else{
-                ytxVideoView.setVideoPath(fileName);
-            }
-        }else{
+//        if(!TextUtils.isEmpty(fileName)){
+//            if(!fileName.equals(files[3])){
+//                ytxVideoView.setVideoPath(filePath+fileName);
+//            }else{
+//                ytxVideoView.setVideoPath(fileName);
+//            }
+//        }else{
             ytxVideoView.setVideoPath(filePath+files[0]);
-        }
+    //    }
 
         ytxVideoView.start();
 
 
+
+//        if(!TextUtils.isEmpty(fileName)){
+//            if(!fileName.equals(files[3])){
+//                ytxVideoView2.setVideoPath(filePath+fileName);
+//            }else{
+//                ytxVideoView2.setVideoPath(fileName);
+//            }
+//        }else{
+            ytxVideoView2.setVideoPath(filePath+files[1]);
+       // }
+
+        ytxVideoView2.start();
 
 
 

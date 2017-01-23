@@ -14,7 +14,7 @@ GlEngine::GlEngine() {
     uHandle = -1;
     vHandle = -1;
     isAddRendererFrameInit = false;
-    isSetupGraphics = false;
+    isSetupGraphics = 0;
     isDrawFrameInit = false;
     isFrameRendererFinish = false;
 
@@ -193,7 +193,7 @@ bool GlEngine::setupGraphics() {
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
-    isSetupGraphics = true;
+    isSetupGraphics = 1;
     return true;
 }
 
@@ -429,23 +429,6 @@ void GlEngine::setAspectRatio() {
 
 }
 
-//在此处初始化
-GlEngine *GlEngine::glEngine = NULL;
-Lock GlEngine::mLock;
-bool GlEngine::isInitComplete = false;
-
-GlEngine *GlEngine::getGlEngine() {
-    if (glEngine == NULL) {
-        mLock.lock();
-        if (glEngine == NULL) {
-            glEngine = new GlEngine();
-            GlEngine::glSetEngineInitComplete(true);
-        }
-        mLock.unlock();
-    }
-
-    return GlEngine::glEngine;
-}
 
 void GlEngine::releaseGlEngine() {
     if (glEngine != NULL) {
@@ -457,14 +440,6 @@ void GlEngine::releaseGlEngine() {
         }
         mLock.unlock();
     }
-}
-
-void GlEngine::notifyRenderer() {
-    //调用回调通知渲染视频
-    if(notifyRendererCallback!=NULL){
-        notifyRendererCallback();
-    }
-
 }
 
 void GlEngine::setScreenWidth(int mScreenWidth){
@@ -488,44 +463,119 @@ void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
     checkGlError("glViewport");
 }
 extern "C" {
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(
-        JNIEnv *env, jclass clazz, jint width, jint height);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1step_1opengl(
-        JNIEnv *env, jclass clazz);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1init_1opengl(
-        JNIEnv *env, jclass clazz);
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1init_1opengl
+        (JNIEnv *env, jclass clazz);
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1resize_1opengl
+        (JNIEnv *env, jobject obj, jint width, jint height);
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1step_1opengl
+        (JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1create_1opengl
+        (JNIEnv *env, jobject obj);
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1constructor_1opengl
+        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj);
+}
 
-};
+
+
+static jfieldID context;
+
+static GlEngine* getGlEngine(JNIEnv* env, jobject thiz)
+{
+    //   Mutex::Autolock l(sLock);
+    GlEngine* const p = (GlEngine*)env->GetIntField(thiz, context);
+    return (p);
+}
+
+static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine)
+{
+    //Mutex::Autolock l(sLock);
+    GlEngine* old = (GlEngine*)env->GetIntField(thiz, context);
+    env->SetIntField(thiz, context, (int)glEngine);
+    return old;
+}
+
+
+
+void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight)
+{
+    ALOGI("addRendererFrame IN\n");
+
+    JNIEnv *env = NULL;
+    extern JavaVM *sVm;
+    sVm->AttachCurrentThread(&env, NULL);
+
+    getGlEngine(env,obj)->addRendererFrame(y,u,v,videoWidth,videoHeight);
+
+    sVm->DetachCurrentThread();
+    ALOGI("addRendererFrame OUT\n");
+
+}
+
+
+int  rendererStarted(jobject obj){
+    ALOGI("rendererCanStart IN\n");
+
+    int ret = -1;
+    JNIEnv *env = NULL;
+    extern JavaVM *sVm;
+    sVm->AttachCurrentThread(&env, NULL);
+
+    ret = getGlEngine(env,obj)->isSetupGraphics;
+
+    sVm->DetachCurrentThread();
+    ALOGI("rendererCanStart OUT ret=%d\n",ret);
+    return ret;
+}
+
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1init_1opengl
+        (JNIEnv *env, jclass clazz){
+    ALOGI("native_1init_1opengl IN");
+    context = env->GetFieldID(clazz, "mNativeRenderContext", "I");
+    if (context == NULL) {
+        return;
+    }
+    ALOGI("native_1init_1opengl OUT");
+}
+
+
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1constructor_1opengl
+        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj){
+    ALOGI("native_1constructor_1opengl IN");
+
+    GlEngine* mGlEngine = new GlEngine();
+    setGlEngine(env,obj,mGlEngine);
+
+    ALOGI("native_1constructor_1opengl OUT");
+
+}
+
 
 // onSurfaceChanged
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1resize_1opengl(
-        JNIEnv *env, jclass clazz, jint width, jint height) {
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1resize_1opengl
+        (JNIEnv *env, jobject obj, jint width, jint height){
     ALOGI("native_1resize_1opengl IN");
 
+    getGlEngine(env,obj)->setScreenHeight(height);
+    getGlEngine(env,obj)->setScreenWidth(width);
+    getGlEngine(env,obj)->setViewPort(width,height);
 
-    //GlEngine::getGlEngine()->setupGraphics();
-
-    GlEngine::getGlEngine()->setScreenHeight(height);
-    GlEngine::getGlEngine()->setScreenWidth(width);
-    GlEngine::getGlEngine()->setViewPort(width,height);
-
-    GlEngine::getGlEngine()->buildTextures();
+    getGlEngine(env,obj)->buildTextures();
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1step_1opengl(
-        JNIEnv *env, jclass clazz) {
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1step_1opengl
+        (JNIEnv *env, jobject obj){
     ALOGI("native_1step_1opengl IN");
-    GlEngine::getGlEngine()->drawFrame();
+    getGlEngine(env,obj)->drawFrame();
     ALOGI("native_1step_1opengl OUT");
 }
 
 // onSurfaceCreated
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_gl2jni_GL2JNILib_native_1init_1opengl(
-        JNIEnv *env, jclass clazz) {
+JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1create_1opengl
+        (JNIEnv *env, jobject obj){
 
     ALOGI("native_1init_1opengl IN");
-    GlEngine::getGlEngine()->setupGraphics();
+    getGlEngine(env,obj)->setupGraphics();
     ALOGI("native_1init_1opengl OUT");
 
 }

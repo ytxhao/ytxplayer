@@ -3,6 +3,8 @@
 //
 
 #include <ytxplayer/audio_engine.h>
+
+
 #define LOG_NDEBUG 0
 #define TAG "AudioEngine"
 #include "ALog-priv.h"
@@ -41,32 +43,6 @@ AudioEngine::~AudioEngine() {
         engineEngine = NULL;
     }
 
-}
-
-Lock AudioEngine::mLock;
-AudioEngine *AudioEngine::mAudioEngine = NULL;
-
-AudioEngine* AudioEngine::getAudioEngine() {
-    if(mAudioEngine == NULL){
-        mLock.lock();
-        if(mAudioEngine == NULL){
-            mAudioEngine = new AudioEngine();
-        }
-        mLock.unlock();
-    }
-
-    return mAudioEngine;
-}
-
-void AudioEngine::releaseAudioEngine() {
-    if(mAudioEngine != NULL){
-        mLock.lock();
-        if(mAudioEngine != NULL){
-            delete mAudioEngine;
-            mAudioEngine = NULL;
-        }
-        mLock.unlock();
-    }
 }
 
 void AudioEngine::createEngine() {
@@ -114,8 +90,40 @@ void AudioEngine::createEngine() {
 
 }
 
-void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel,
-                                               slAndroidSimpleBufferQueueCallback callback) {
+
+void AudioEngine::RegisterCallback(slAndroidSimpleBufferQueueCallback callback){
+    SLresult result;
+    // register callback on the buffer queue
+    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, callback, NULL);
+    assert(SL_RESULT_SUCCESS == result);
+    (void)result;
+
+    bqPlayerEffectSend = NULL;
+    if( 0 == bqPlayerSampleRate) {
+        result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_EFFECTSEND,
+                                                 &bqPlayerEffectSend);
+        assert(SL_RESULT_SUCCESS == result);
+        (void)result;
+    }
+
+#if 0   // mute/solo is not supported for sources that are known to be mono, as this is
+    // get the mute/solo interface
+    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_MUTESOLO, &bqPlayerMuteSolo);
+    assert(SL_RESULT_SUCCESS == result);
+    (void)result;
+#endif
+
+    // get the volume interface
+    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_VOLUME, &bqPlayerVolume);
+    assert(SL_RESULT_SUCCESS == result);
+    (void)result;
+
+    // set the player's state to playing
+    result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
+    assert(SL_RESULT_SUCCESS == result);
+    (void)result;
+}
+void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize,int channel) {
 
     SLresult result;
     if (sampleRate >= 0 && bufSize >= 0 ) {
@@ -178,37 +186,5 @@ void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize,int c
                                              &bqPlayerBufferQueue);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
-
-    // register callback on the buffer queue
-    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, callback, NULL);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-
-    // get the effect send interface
-    bqPlayerEffectSend = NULL;
-    if( 0 == bqPlayerSampleRate) {
-        result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_EFFECTSEND,
-                                                 &bqPlayerEffectSend);
-        assert(SL_RESULT_SUCCESS == result);
-        (void)result;
-    }
-
-#if 0   // mute/solo is not supported for sources that are known to be mono, as this is
-    // get the mute/solo interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_MUTESOLO, &bqPlayerMuteSolo);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-#endif
-
-    // get the volume interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_VOLUME, &bqPlayerVolume);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-
-    // set the player's state to playing
-    result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-
 
 }

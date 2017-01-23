@@ -16,6 +16,8 @@
 extern "C" {
 #endif
 
+void android_media_player_notifyRenderFrame(jobject obj);
+JNIEnv* getJNIEnv();
 
 jstring  Java_com_ytx_ican_ytxplayer_MainActivity_stringFromJNI(
         JNIEnv* env,

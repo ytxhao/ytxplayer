@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 
 import com.ytx.ican.media.player.misc.IMediaDataSource;
 import com.ytx.ican.media.player.misc.ITrackInfo;
+import com.ytx.ican.media.player.render.GraphicRenderer;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
 import java.io.FileDescriptor;

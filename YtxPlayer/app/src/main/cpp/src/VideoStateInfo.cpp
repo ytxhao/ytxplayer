@@ -5,7 +5,7 @@
 #define TAG "VideoStateInfo-jni"
 
 
-
+#include <ytxplayer/android_media_YtxMediaPlayer.h>
 #include "VideoStateInfo.h"
 #include "ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
@@ -47,6 +47,11 @@ VideoStateInfo::~VideoStateInfo() {
     delete messageQueueAudio;
     delete messageQueueVideo;
     delete mMessageLoop;
+
+//    JNIEnv *env = getJNIEnv();
+//    env->DeleteGlobalRef(VideoGlSurfaceViewObj);
+//    env->DeleteGlobalRef(GraphicRendererObj);
+
     free(flushPkt);
     free(vidClk);
     free(extClk);

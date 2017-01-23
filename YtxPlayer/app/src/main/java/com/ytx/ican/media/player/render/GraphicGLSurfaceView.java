@@ -4,7 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.graphics.PixelFormat;
-import android.opengl.GLES20;
+
 import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -14,18 +14,11 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.ytx.ican.media.player.pragma.YtxLog;
-import com.ytx.ican.media.player.gl2jni.GL2JNILib;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by Administrator on 2016/9/10.
@@ -105,6 +98,12 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         return configurationInfo.reqGlEsVersion >= 0x20000;
     }
 
+
+    public GraphicRenderer getRenderer(){
+
+        return renderer;
+    }
+
     public interface OnScreenWindowChangedListener {
         void onScreenWindowChanged(boolean isFinger, int width, int height, int x1, int y1, int x2, int y2);
     }
@@ -168,145 +167,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         mHeight = picture.height();
     }
 
-    class GraphicRenderer implements Renderer{
-
-        // Vector与数组最大区别在于，数组对象创建之后长度就不能改变了，而Vector的存储空间可扩充
-        final Vector<Runnable> queue = new Vector<Runnable>();
-        private GLProgram prog = new GLProgram(0);
-        RendererUtils.RenderContext renderContext;
-        Picture picture;
-
-        private ByteBuffer y;
-        private ByteBuffer u;
-        private ByteBuffer v;
-        private int mSurfaceWidth , mSurfaceHeight ;
-        private int mVideoWidth, mVideoHeight;
-
-        private static final int FLOAT_SIZE_BYTES = 4;
-        private  FloatBuffer createVerticesBuffer(float[] vertices) {
-
-            FloatBuffer buffer = ByteBuffer
-                    .allocateDirect(vertices.length * FLOAT_SIZE_BYTES)
-                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            buffer.put(vertices).position(0);
-            return buffer;
-        }
-
-        void setPicture(Picture picture) {
-            this.picture = picture;
-        }
-
-
-        @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-//            if (!prog.isProgramBuilt()) {
-//                prog.buildProgram();
-//                YtxLog.d("GLFrameRenderer","GLFrameRenderer :: buildProgram done");
-//            }
-            YtxLog.d(TAG,"#### #### onSurfaceCreated=");
-            GL2JNILib.native_init_opengl();
-        }
-
-        @Override
-        public void onSurfaceChanged(GL10 gl, int width, int height) {
-            mSurfaceWidth = width;
-            mSurfaceHeight = height;
-            GL2JNILib.native_resize_opengl(width,height);
-            YtxLog.d(TAG,"#### #### onSurfaceChanged="+width+" height="+height);
-        }
-
-        @Override
-        public void onDrawFrame(GL10 gl) {
-          //  YtxLog.d(TAG,"#### #### onDrawFrame=");
-            GL2JNILib.native_step_opengl();
-              //         drawFrame2();
-        }
-
-        public void drawFrame2(){
-
-            synchronized (this) {
-                if (y != null) {
-                    // reset position, have to be done
-                    y.position(0);
-                    u.position(0);
-                    v.position(0);
-                    prog.buildTextures(y, u, v, 640, 272);
-                    GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-                    prog.drawFrame();
-                }
-            }
-        }
-        public void release() {
-            RendererUtils.releaseRenderContext(renderContext);
-        }
-
-
-
-        /**
-         * this method will be called from native code, it happens when the video is about to play or
-         * the video size changes.
-         */
-        public void update(int w, int h) {
-            YtxLog.d("GLFrameRenderer","INIT E");
-            if (w > 0 && h > 0) {
-                // 调整比例
-               // prog.createBuffers(GLProgram.squareVertices);
-
-                if (mSurfaceWidth > 0 && mSurfaceHeight > 0) {
-                    float f1 = 1f * mSurfaceHeight / mSurfaceWidth;
-                    float f2 = 1f * h / w;
-                    if (f1 == f2) {
-                        prog.createBuffers(GLProgram.squareVertices);
-                    } else if (f1 < f2) {
-                        float widScale = f1 / f2;
-                        prog.createBuffers(new float[] { -widScale, -1.0f, widScale, -1.0f, -widScale, 1.0f, widScale,
-                                1.0f, });
-                    } else {
-                        float heightScale = f2 / f1;
-                        prog.createBuffers(new float[] { -1.0f, -heightScale, 1.0f, -heightScale, -1.0f, heightScale, 1.0f,
-                                heightScale, });
-                    }
-                }
-
-                // 初始化容器
-                if (w != mVideoWidth && h != mVideoHeight) {
-                    this.mVideoWidth = w;
-                    this.mVideoHeight = h;
-                    int yarraySize = w * h;
-                    int uvarraySize = yarraySize / 4;
-                }
-            }
-
-            YtxLog.d("GLFrameRenderer","INIT X");
-        }
-
-        public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
-                update(640,272); //显示视频区域宽高
-                synchronized (this) {
-
-                    if(y == null){
-                        y = ByteBuffer.allocate(ydata.length);
-                    }
-                    if(u == null){
-                        u = ByteBuffer.allocate(udata.length);
-                    }
-                    if(v == null){
-                        v = ByteBuffer.allocate(vdata.length);
-                    }
-
-                    y.clear();
-                    u.clear();
-                    v.clear();
-                    y.put(ydata, 0, ydata.length);
-                    u.put(udata, 0, udata.length);
-                    v.put(vdata, 0, vdata.length);
-                }
-        }
-    }
-
     public void updateYuv(byte[] ydata, byte[] udata, byte[] vdata){
-        renderer.updateYuv(ydata,udata,vdata);
         requestRender();
     }
 
@@ -504,43 +365,6 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
         protected int mStencilSize;
         private int[] mValue = new int[1];
     }
-
-
-//    private static final class SurfaceCallback implements SurfaceHolder.Callback {
-//        private SurfaceHolder mSurfaceHolder;
-//        private boolean mIsFormatChanged;
-//        private int mFormat;
-//        private int mWidth;
-//        private int mHeight;
-//
-//
-//        @Override
-//        public void surfaceCreated(SurfaceHolder holder) {
-//            mSurfaceHolder = holder;
-//            mIsFormatChanged = false;
-//            mFormat = 0;
-//            mWidth = 0;
-//            mHeight = 0;
-//        }
-//
-//        @Override
-//        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-//            mSurfaceHolder = holder;
-//            mIsFormatChanged = true;
-//            mFormat = format;
-//            mWidth = width;
-//            mHeight = height;
-//        }
-//
-//        @Override
-//        public void surfaceDestroyed(SurfaceHolder holder) {
-//            mSurfaceHolder = null;
-//            mIsFormatChanged = false;
-//            mFormat = 0;
-//            mWidth = 0;
-//            mHeight = 0;
-//        }
-//    }
 
 
     @Override
