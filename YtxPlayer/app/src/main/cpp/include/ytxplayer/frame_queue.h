@@ -11,25 +11,6 @@
 
 
 
-#define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, FFMAX(VIDEO_PICTURE_QUEUE_SIZE, SUBPICTURE_QUEUE_SIZE))
-
-typedef struct Frame {
-    AVFrame *frame;
-    AVFrame *frameYuv;
-    AVSubtitle sub;
-    AVSubtitleRect **subrects;  /* rescaled subtitle rectangles in yuva */
-    int serial;
-    double pts;           /* presentation timestamp for the frame */
-    double duration;      /* estimated duration of the frame */
-    int64_t pos;          /* byte position of the frame in the input file */
-    int allocated;
-    int reallocate;
-    int width;
-    int height;
-    AVRational sar;
-} Frame;
-
-
 class FrameQueue{
 public:
 
@@ -55,7 +36,7 @@ public:
      */
     int64_t frameQueueLastPos();
 
-
+private:
     int size=0;
 
     Frame queue[FRAME_QUEUE_SIZE];

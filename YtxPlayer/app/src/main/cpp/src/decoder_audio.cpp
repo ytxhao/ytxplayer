@@ -115,7 +115,6 @@ bool DecoderAudio::process(MAVPacket *mPacket)
             mVideoStateInfo->isFirstAudioFrame  = false;
             msg.what = FFP_MSG_AUDIO_FIRST_FRAME;
             mVideoStateInfo->messageQueueAudio->put(&msg);
-          //  mAudioEngine->mLock.condSignal();
         }
     }
 

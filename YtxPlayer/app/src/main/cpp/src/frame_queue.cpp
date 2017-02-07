@@ -35,14 +35,14 @@ void FrameQueue::frameQueueReset(){
 }
 
 int FrameQueue::frameQueueInit(int max_size, int keep_last) {
-    int i=0;
+    int i = 0;
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&cond, NULL);
     this->max_size = max_size;
     this->keep_last = keep_last;
-    for(i=0;i<this->max_size;i++){
-        this->queue[i].frame = av_frame_alloc();
-        if(this->queue[i].frame == NULL){
+    for (i = 0; i < max_size; i++) {
+        queue[i].frame = av_frame_alloc();
+        if (queue[i].frame == NULL) {
             return AVERROR(ENOMEM);
         }
     }
@@ -51,8 +51,8 @@ int FrameQueue::frameQueueInit(int max_size, int keep_last) {
 
 void FrameQueue::frameQueueDestroy() {
     int i;
-    for(i=0;i<this->max_size;i++){
-        Frame *vp = &this->queue[i];
+    for(i=0;i<max_size;i++){
+        Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
         av_frame_free(&vp->frame);
     }
@@ -68,16 +68,16 @@ void FrameQueue::frameQueueSignal() {
 }
 
 Frame* FrameQueue::frameQueuePeek() {
-    return &this->queue[(rindex+rindex_shown)%max_size];
+    return &queue[(rindex+rindex_shown)%max_size];
 }
 
 
 Frame* FrameQueue::frameQueuePeekNext() {
-    return &this->queue[(rindex+rindex_shown+1)%max_size];
+    return &queue[(rindex+rindex_shown+1)%max_size];
 }
 
 Frame* FrameQueue::frameQueuePeekLast() {
-    return &this->queue[rindex];
+    return &queue[rindex];
 }
 
 Frame* FrameQueue::frameQueuePeekWritable() {
@@ -89,18 +89,18 @@ Frame* FrameQueue::frameQueuePeekWritable() {
 
     pthread_mutex_unlock(&mutex);
     ALOGI("frameQueuePeekWritable windex=%d\n",windex);
-    return &(this->queue[windex]);
+    return &queue[windex];
 }
 
-Frame* FrameQueue::frameQueuePeekReadable() {
+Frame *FrameQueue::frameQueuePeekReadable() {
 
     pthread_mutex_lock(&mutex);
-    while(size - rindex_shown <= 0 ){
+    while (size - rindex_shown <= 0) {
         pthread_cond_wait(&cond, &mutex);
     }
     pthread_mutex_unlock(&mutex);
 
-    return &this->queue[(rindex + rindex_shown)%max_size];
+    return &queue[(rindex + rindex_shown) % max_size];
 }
 
 void FrameQueue::frameQueuePush() {
@@ -120,7 +120,7 @@ void FrameQueue::frameQueueNext() {
         return;
     }
 
-    frameQueueUnrefItem(&this->queue[rindex]);
+    frameQueueUnrefItem(&queue[rindex]);
     if(++rindex == max_size){
         rindex = 0;
     }
@@ -135,7 +135,7 @@ int FrameQueue::frameQueueNumRemaining() {
 }
 
 int64_t FrameQueue::frameQueueLastPos() {
-    Frame *fp = &this->queue[rindex];
+    Frame *fp = &queue[rindex];
     if(rindex_shown){
         return fp->pos;
     }else{

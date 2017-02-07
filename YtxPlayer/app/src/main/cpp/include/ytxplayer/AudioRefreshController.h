@@ -10,7 +10,7 @@
 #include "MessageQueue.h"
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/audio_engine.h>
-#define MAX_AUDIO_FRAME_SIZE 48000 * 4
+
 class AudioRefreshController : public Thread
 {
 public:
