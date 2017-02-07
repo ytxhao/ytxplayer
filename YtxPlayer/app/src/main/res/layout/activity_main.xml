@@ -83,44 +83,4 @@
         />
    </LinearLayout>
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="#00ff00"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        >
-        <VideoView
-            android:id="@+id/mVideoView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:background="#00ff00"
-        />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        >
-
-        <com.ytx.ican.media.player.view.YtxVideoView
-            android:id="@+id/ytxVideoView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
-    </LinearLayout>
-
 </LinearLayout>

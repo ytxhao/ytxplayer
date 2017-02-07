@@ -43,11 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private YtxVideoView ytxVideoView;
     private YtxMediaController ytxMediaController;
 
-    private YtxVideoView ytxVideoView2;
-    private YtxMediaController ytxMediaController2;
-
-    private VideoView mVideoView;
-    private MediaController mMediaController;
     private AutoCompleteTextView actvFileName;
     private Button bt ;
     private ImageView ivDrag;
@@ -108,14 +103,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ytxVideoView.setVideoPath(fileName);
             }
         }else{
-            ytxVideoView.setVideoPath(filePath+files[0]);
+            ytxVideoView.setVideoPath(filePath+files[1]);
         }
 
         ytxVideoView.start();
-
-
-        ytxVideoView2.setVideoPath(filePath+files[1]);
-        ytxVideoView2.start();
 
 
 
@@ -123,8 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         ytxVideoView = (YtxVideoView) findViewById(R.id.ytxVideoView);
-        ytxVideoView2 = (YtxVideoView) findViewById(R.id.ytxVideoView2);
-        mVideoView = (VideoView) findViewById(R.id.mVideoView);
         actvFileName = (AutoCompleteTextView) findViewById(R.id.actvFileName);
         bt = (Button) findViewById(R.id.bt);
         ivDrag = (ImageView) findViewById(R.id.ivDrag);
@@ -148,22 +137,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
 
-        ytxMediaController2 = new YtxMediaController(this);
-        ytxVideoView2.setMediaController(ytxMediaController2);
-
-
-        mMediaController = new MediaController(this);
-
-        if(!TextUtils.isEmpty(fileName) && !fileName.equals(files[3])){
-            mVideoView.setVideoPath(filePath+fileName);
-        }else{
-            mVideoView.setVideoPath(filePath+files[0]);
-        }
-        mVideoView.setMediaController(mMediaController);
-        mVideoView.requestFocus();
-
-
-
         ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(IMediaPlayer mp, int what, int extra) {
@@ -179,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
         YtxLog.d(TAG,"#### #### onResume");
         ytxVideoView.onResume();
-        ytxVideoView2.onResume();
 
     }
 
@@ -189,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         YtxLog.d("MainActivity","#### #### onPause");
         ytxVideoView.onPause();
-        ytxVideoView2.onPause();
 
     }
 
@@ -210,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         YtxLog.d(TAG,"#### #### onDestroy");
         ytxVideoView.onDestroy();
-        ytxVideoView2.onDestroy();
     }
 
     @Override
