@@ -498,9 +498,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         public void onCompletion(IMediaPlayer mp) {
             mCurrentState = STATE_PLAYBACK_COMPLETED;
             mTargetState = STATE_PLAYBACK_COMPLETED;
-            if (mMediaController != null) {
-                mMediaController.hide();
-            }
+//            if (mMediaController != null) {
+//                mMediaController.hide();
+//            }
             if (mOnCompletionListener != null) {
                 mOnCompletionListener.onCompletion(mMediaPlayer);
             }

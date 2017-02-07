@@ -424,9 +424,10 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
             if(ret == AVERROR_EOF || avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof){
 
-                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]>=0){
+                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
                     mDecoderVideo->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
-                }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]>=0){
+                }
+                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
                     mDecoderAudio->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
                 }
                 mVideoStateInfo->eof = 1;

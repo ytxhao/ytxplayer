@@ -45,10 +45,21 @@ bool DecoderAudio::process(MAVPacket *mPacket)
     int pts = 0;
     int size = mSamplesSize;
     int	completed;
-    ALOGI("DecoderAudio::process mPacket->isEnd=%d",mPacket->isEnd);
-    if(mPacket->isEnd){
-        return false;
+//    ALOGI("DecoderAudio::process mPacket->isEnd=%d",mPacket->isEnd);
+//    if(mPacket->isEnd){
+//        return false;
+//    }
+
+    curStats = mPacket->isEnd;
+    ALOGI("DecoderAudio::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
+
+    if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
+        msg.what = FFP_MSG_COMPLETED;
+        mVideoStateInfo->messageQueueAudio->put(&msg);
+        //  fclose(mVideoStateInfo->fp_yuv);
+        return true;
     }
+    lastStats = curStats;
 
     if(mQueue->size() == 0){
         pthread_cond_signal(&mVideoStateInfo->continue_read_thread);

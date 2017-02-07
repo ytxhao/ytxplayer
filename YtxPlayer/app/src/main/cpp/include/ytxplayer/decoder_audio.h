@@ -40,6 +40,9 @@ private:
     AVRational next_pts_tb;
     AVMessage msg;
 
+    bool lastStats;
+    bool curStats;
+
  //   bool                        isFirstAudioFrame;
 };
 

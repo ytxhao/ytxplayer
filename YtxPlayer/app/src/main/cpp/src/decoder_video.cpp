@@ -91,7 +91,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     curStats = mPacket->isEnd;
     ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
 
-    if(curStats != lastStats && curStats && mPacket->pkt.data){
+    if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
         AVMessage msg;
         msg.what = FFP_MSG_COMPLETED;
         mVideoStateInfo->mMessageLoop->enqueue(&msg);

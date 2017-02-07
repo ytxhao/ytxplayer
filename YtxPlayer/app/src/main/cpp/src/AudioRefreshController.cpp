@@ -57,6 +57,10 @@ bool AudioRefreshController::process(AVMessage *msg) {
             (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             audioFrameProcess();
             break;
+        case FFP_MSG_COMPLETED:
+            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+            mVideoStateInfo->frameQueueAudio->frameQueueReset();
+            break;
     }
     ALOGI("AudioRefreshController::process out");
     return ret;
