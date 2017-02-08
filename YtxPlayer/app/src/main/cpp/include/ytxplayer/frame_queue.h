@@ -36,7 +36,6 @@ public:
      */
     int64_t frameQueueLastPos();
 
-private:
     int size=0;
 
     Frame queue[FRAME_QUEUE_SIZE];
