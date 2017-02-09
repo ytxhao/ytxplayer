@@ -15,6 +15,7 @@ DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 {
    // isFirstFrame = true;
    // this->mVideoStateInfo = mVideoStateInfo;
+    firstInit = false;
     mVideoStateInfo->initClock(mVideoStateInfo->audClk,&mQueue->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->audClk,1);
 
@@ -133,7 +134,18 @@ bool DecoderAudio::process(MAVPacket *mPacket)
                                                          mFrame->nb_samples, mVideoStateInfo->out_sample_fmt,
                                                          1);
 
-        af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_audio_size);
+
+//        if(!firstInit && mVideoStateInfo->frameQueueAudio->windex < SAMPLE_QUEUE_SIZE){
+
+            af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_audio_size);
+//        }
+
+//        if(mVideoStateInfo->frameQueueAudio->windex == SAMPLE_QUEUE_SIZE-1){
+//            firstInit = true;
+//        }
+
+
+
         memcpy(af->out_buffer_audio,mVideoStateInfo->out_buffer_audio,af->out_buffer_audio_size);
 
         mVideoStateInfo->frameQueueAudio->frameQueuePush();

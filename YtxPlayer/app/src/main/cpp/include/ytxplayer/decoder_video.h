@@ -26,6 +26,7 @@ public:
     int                         streamHasEnoughPackets();
 private:
     AVFrame*					mFrame;
+    AVFrame*                    mFrameYuv;
     double						mVideoClock;
     AVRational timeBase ;
     AVRational frameRate;
@@ -42,6 +43,7 @@ private:
     static void					releaseBuffer(struct AVCodecContext *c, AVFrame *pic);
     bool lastStats;
     bool curStats;
+    bool firstInit ;
 
 
 

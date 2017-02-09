@@ -101,14 +101,18 @@ void VideoRefreshController::process() {
 
 
                 android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+//                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
+//                                 vp->out_buffer_video_yuv[0],
+//                                 vp->out_buffer_video_yuv[1],
+//                                 vp->out_buffer_video_yuv[2],
+//                                 decodeWidth,
+//                                 decodeHeight);
                 addRendererFrame(mVideoStateInfo->GraphicRendererObj,
                                  (char *) vp->frame->data[0],
                                  (char *) vp->frame->data[1],
                                  (char *) vp->frame->data[2],
                                  decodeWidth,
                                  decodeHeight);
-
-//                  GlEngine::getGlEngine()->notifyRenderer();
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();

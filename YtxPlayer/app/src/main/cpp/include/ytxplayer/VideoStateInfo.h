@@ -7,6 +7,7 @@
 
 #include "InputStream.h"
 #include "ffinc.h"
+#include "frame_queue.h"
 #include "frame_queue_video.h"
 #include "frame_queue_audio.h"
 #include "avPacketList.h"
@@ -59,7 +60,7 @@ public:
     InputStream *streamVideo;
     InputStream *streamAudio;
 
-    FrameQueueVideo *frameQueueVideo;
+    FrameQueue *frameQueueVideo;
     FrameQueueAudio *frameQueueAudio;
     MessageLoop   *mMessageLoop;
     int *mCurrentState;

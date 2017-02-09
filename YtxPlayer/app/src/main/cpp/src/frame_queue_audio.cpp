@@ -21,8 +21,10 @@ void FrameQueueAudio::frameQueueUnrefItem(Frame *vp) {
 //    av_freep(&vp->subrects);
    // av_frame_unref(vp->frame);
   //  avsubtitle_free(&vp->sub);
+    if(vp->out_buffer_audio != NULL){
+        free(vp->out_buffer_audio);
+    }
 
-    free(vp->out_buffer_audio);
 
 }
 
@@ -48,6 +50,11 @@ int FrameQueueAudio::frameQueueInit(int max_size, int keep_last) {
 //            return AVERROR(ENOMEM);
 //        }
 //    }
+    for (i = 0; i < max_size; i++) {
+        queue[i].out_buffer_audio = NULL;
+        queue[i].out_buffer_audio_size = 0;
+    }
+
     return 1;
 }
 
@@ -106,18 +113,6 @@ Frame *FrameQueueAudio::frameQueuePeekReadable() {
 }
 
 void FrameQueueAudio::frameQueuePush() {
-//    int i=0;
-
-//    if(windex!=(max_size-1)){
-//        ++windex;
-//        size++;
-//    }else{
-//        if(tmp == 0){
-//            tmp = 1;
-//
-//        }
-//
-//    }
 
     if(++windex == max_size){
         windex = 0;

@@ -19,10 +19,16 @@ void FrameQueueVideo::frameQueueUnrefItem(Frame *vp) {
 //        av_freep(&vp->subrects[i]);
 //    }
 //    av_freep(&vp->subrects);
-    av_frame_unref(vp->frame);
+ //   av_frame_unref(vp->frame);
   //  avsubtitle_free(&vp->sub);
 
    // free(vp->out_buffer_audio);
+
+    for (i = 0; i < 3; i++) {
+        if (vp->out_buffer_video_yuv[i] != NULL) {
+            free(vp->out_buffer_video_yuv[i]);
+        }
+    }
 
 }
 
@@ -43,10 +49,13 @@ int FrameQueueVideo::frameQueueInit(int max_size, int keep_last) {
     this->max_size = max_size;
     this->keep_last = keep_last;
     for (i = 0; i < max_size; i++) {
-        queue[i].frame = av_frame_alloc();
-        if (queue[i].frame == NULL) {
-            return AVERROR(ENOMEM);
-        }
+//        queue[i].frame = av_frame_alloc();
+//        if (queue[i].frame == NULL) {
+//            return AVERROR(ENOMEM);
+//        }
+        queue[i].out_buffer_video_yuv[0] = NULL;
+        queue[i].out_buffer_video_yuv[1] = NULL;
+        queue[i].out_buffer_video_yuv[2] = NULL;
     }
     return 1;
 }
@@ -56,7 +65,7 @@ void FrameQueueVideo::frameQueueDestroy() {
     for(i=0;i<max_size;i++){
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
-        av_frame_free(&vp->frame);
+      //  av_frame_free(&vp->frame);
     }
 
     pthread_mutex_destroy(&mutex);

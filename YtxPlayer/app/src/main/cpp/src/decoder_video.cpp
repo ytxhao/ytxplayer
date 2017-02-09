@@ -12,6 +12,7 @@ static uint64_t global_video_pkt_pts = AV_NOPTS_VALUE;
 DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
     ALOGI("ytxhao DecoderVideo::DecoderVideo\n");
+    firstInit = false;
     mVideoStateInfo->initClock(mVideoStateInfo->vidClk,&mQueue->serial);
     mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
@@ -26,7 +27,11 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     if (mFrame == NULL) {
         ALOGE("mFrame == NULL");
     }
-
+    mFrameYuv = NULL;
+    mFrameYuv = av_frame_alloc();
+    if (mFrameYuv == NULL){
+        ALOGE("mFrameYuv == NULL");
+    }
 
 }
 
@@ -39,6 +44,11 @@ DecoderVideo::~DecoderVideo()
     if(!mFrame){
         av_frame_free(&mFrame);
         mFrame = NULL;
+    }
+
+    if(!mFrameYuv){
+        av_frame_free(&mFrameYuv);
+        mFrameYuv = NULL;
     }
 }
 
@@ -125,16 +135,17 @@ bool DecoderVideo::process(MAVPacket *mPacket)
                                  &mPacket->pkt);
 
     if (completed) {
-        ALOGI("####T 0 mFrame=%#x \n",mFrame);
+//        ALOGI("####T 0 mFrame=%#x \n",mFrame);
+        int size_y = 0;
         double duration;
         mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
         duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
         pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
 
 //        ALOGI("DecoderVideo::process completed");
-        ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
+ //       ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
 
-        ALOGI("####T 1 mFrame=%#x \n",mFrame);
+//        ALOGI("####T 1 mFrame=%#x \n",mFrame);
 
         Frame *vp;
         if(!(vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekWritable())){
@@ -147,8 +158,8 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
             vp->allocated  = 0;
             vp->reallocate = 0;
-            ALOGI("fef0=%#x mFrame=%#x \n",vp,mFrame);
-            ALOGI("####T vp->width=%d mFrame->width=%d \n",vp->width,mFrame->width);
+          //  ALOGI("fef0=%#x mFrame=%#x \n",vp,mFrame);
+          //  ALOGI("####T vp->width=%d mFrame->width=%d \n",vp->width,mFrame->width);
             vp->width = mFrame->width;
             vp->height = mFrame->height;
         }
@@ -159,8 +170,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         vp->pos = av_frame_get_pkt_pos(mFrame);
 
 
-
-//        out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
         av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
                              AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
                              mVideoStateInfo->streamVideo->dec_ctx->height,1);
@@ -173,8 +182,21 @@ bool DecoderVideo::process(MAVPacket *mPacket)
                   vp->frame->data,
                   vp->frame->linesize);
 
+//        size_y = mVideoStateInfo->streamVideo->dec_ctx->width *  mVideoStateInfo->streamVideo->dec_ctx->height;
+//
+//
+//
+//            vp->out_buffer_video_yuv[0] = (char *) malloc(sizeof(char) * size_y);
+//            vp->out_buffer_video_yuv[1] = (char *) malloc(sizeof(char) * size_y / 4);
+//            vp->out_buffer_video_yuv[2] = (char *) malloc(sizeof(char) * size_y / 4);
+//
+//        memcpy(vp->out_buffer_video_yuv[0], mFrameYuv->data[0], (size_t) size_y);
+//        memcpy(vp->out_buffer_video_yuv[1], mFrameYuv->data[1], (size_t) (size_y / 4));
+//        memcpy(vp->out_buffer_video_yuv[2], mFrameYuv->data[2], (size_t) (size_y / 4));
+
         mVideoStateInfo->frameQueueVideo->frameQueuePush();
         av_frame_unref(mFrame);
+        av_frame_unref(mFrameYuv);
         return true;
     }
 

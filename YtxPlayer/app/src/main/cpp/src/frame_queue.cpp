@@ -19,10 +19,10 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 //        av_freep(&vp->subrects[i]);
 //    }
 //    av_freep(&vp->subrects);
-   // av_frame_unref(vp->frame);
+    av_frame_unref(vp->frame);
   //  avsubtitle_free(&vp->sub);
 
-    free(vp->out_buffer_audio);
+ //   free(vp->out_buffer_audio);
 
 }
 
@@ -42,12 +42,12 @@ int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     pthread_cond_init(&cond, NULL);
     this->max_size = max_size;
     this->keep_last = keep_last;
-//    for (i = 0; i < max_size; i++) {
-//        queue[i].frame = av_frame_alloc();
-//        if (queue[i].frame == NULL) {
-//            return AVERROR(ENOMEM);
-//        }
-//    }
+    for (i = 0; i < max_size; i++) {
+        queue[i].frame = av_frame_alloc();
+        if (queue[i].frame == NULL) {
+            return AVERROR(ENOMEM);
+        }
+    }
     return 1;
 }
 
@@ -56,7 +56,7 @@ void FrameQueue::frameQueueDestroy() {
     for(i=0;i<max_size;i++){
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
-     //   av_frame_free(&vp->frame);
+        av_frame_free(&vp->frame);
     }
 
     pthread_mutex_destroy(&mutex);
@@ -106,18 +106,6 @@ Frame *FrameQueue::frameQueuePeekReadable() {
 }
 
 void FrameQueue::frameQueuePush() {
-//    int i=0;
-
-//    if(windex!=(max_size-1)){
-//        ++windex;
-//        size++;
-//    }else{
-//        if(tmp == 0){
-//            tmp = 1;
-//
-//        }
-//
-//    }
 
     if(++windex == max_size){
         windex = 0;

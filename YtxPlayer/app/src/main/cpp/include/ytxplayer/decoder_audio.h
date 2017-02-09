@@ -43,6 +43,7 @@ private:
     bool lastStats;
     bool curStats;
 
+    bool firstInit;
  //   bool                        isFirstAudioFrame;
 };
 

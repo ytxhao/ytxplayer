@@ -94,8 +94,10 @@ static unsigned sws_flags = SWS_BICUBIC;
 
 
 typedef struct Frame {
-    AVFrame *frame;
-  //  AVFrame *frameYuv;
+
+     AVFrame *frame;
+    //  AVFrame *frameYuv;
+    char *out_buffer_video_yuv[3];
     unsigned char *out_buffer_audio;
     int out_buffer_audio_size;
     AVSubtitle sub;

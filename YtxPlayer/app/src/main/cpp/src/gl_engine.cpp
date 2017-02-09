@@ -364,11 +364,11 @@ void GlEngine::waitRendererFinish() {
 }
 
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
-  //  addRendererFrameInit(videoWidth, videoHeight);
+    addRendererFrameInit(videoWidth, videoHeight);
 
-    plane[0] = y;
-    plane[1] = u;
-    plane[2] = v;
+//    plane[0] = y;
+//    plane[1] = u;
+//    plane[2] = v;
     if(this->videoWidth !=videoWidth || this->videoHeight != videoHeight){
         this->videoWidth = videoWidth;
         this->videoHeight = videoHeight;
