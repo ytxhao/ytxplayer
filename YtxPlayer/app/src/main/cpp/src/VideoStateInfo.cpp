@@ -9,8 +9,8 @@
 #include "VideoStateInfo.h"
 #include "ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
-    frameQueueVideo = new FrameQueue();
-    frameQueueAudio = new FrameQueue();
+    frameQueueVideo = new FrameQueueVideo();
+    frameQueueAudio = new FrameQueueAudio();
     streamVideo = new InputStream();
     streamAudio = new InputStream();
     messageQueueAudio = new MessageQueue();

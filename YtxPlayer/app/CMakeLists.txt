@@ -26,7 +26,9 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/Decoder.cpp
              src/main/cpp/src/decoder_video.cpp
              src/main/cpp/src/decoder_audio.cpp
-             src/main/cpp/src/frame_queue.cpp
+#             src/main/cpp/src/frame_queue.cpp
+             src/main/cpp/src/frame_queue_audio.cpp
+             src/main/cpp/src/frame_queue_video.cpp
              src/main/cpp/src/audio_engine.cpp
              src/main/cpp/src/gl_engine.cpp
              src/main/cpp/src/lock.cpp

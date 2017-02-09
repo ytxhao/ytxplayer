@@ -92,9 +92,9 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
 
     if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
-//        AVMessage msg;
-//        msg.what = FFP_MSG_COMPLETED;
-//        mVideoStateInfo->mMessageLoop->enqueue(&msg);
+        AVMessage msg;
+        msg.what = FFP_MSG_COMPLETED;
+        mVideoStateInfo->mMessageLoop->enqueue(&msg);
       //  fclose(mVideoStateInfo->fp_yuv);
         lastStats = curStats;
         return true;
@@ -160,18 +160,18 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
 
 
-   //     out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
-//        av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
-//                             AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
-//                             mVideoStateInfo->streamVideo->dec_ctx->height,1);
+//        out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  mStream->dec_ctx->width, mStream->dec_ctx->height,1));
+        av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
+                             AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
+                             mVideoStateInfo->streamVideo->dec_ctx->height,1);
 
-//        sws_scale(mConvertCtx,
-//          (const unsigned char *const *) mFrame->data,
-//                  mFrame->linesize,
-//                  0,
-//                  mVideoStateInfo->streamVideo->dec_ctx->height,
-//                  vp->frame->data,
-//                  vp->frame->linesize);
+        sws_scale(mConvertCtx,
+          (const unsigned char *const *) mFrame->data,
+                  mFrame->linesize,
+                  0,
+                  mVideoStateInfo->streamVideo->dec_ctx->height,
+                  vp->frame->data,
+                  vp->frame->linesize);
 
         mVideoStateInfo->frameQueueVideo->frameQueuePush();
         av_frame_unref(mFrame);

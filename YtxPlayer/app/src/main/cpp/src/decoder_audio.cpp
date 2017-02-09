@@ -56,8 +56,8 @@ bool DecoderAudio::process(MAVPacket *mPacket)
 //    ALOGI("DecoderAudio::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
 
     if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
-//        msg.what = FFP_MSG_COMPLETED;
-//        mVideoStateInfo->messageQueueAudio->put(&msg);
+        msg.what = FFP_MSG_COMPLETED;
+        mVideoStateInfo->messageQueueAudio->put(&msg);
         //  fclose(mVideoStateInfo->fp_yuv);
         lastStats = curStats;
         return true;
@@ -129,33 +129,22 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         swr_convert(mVideoStateInfo->swrCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
                     (const uint8_t **) mFrame->data, mFrame->nb_samples);
         //获取sample的size
-        af->out_buffer_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
+        af->out_buffer_audio_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
                                                          mFrame->nb_samples, mVideoStateInfo->out_sample_fmt,
                                                          1);
 
-        af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_size);
-        memcpy(af->out_buffer_audio,mVideoStateInfo->out_buffer_audio,af->out_buffer_size);
+        af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_audio_size);
+        memcpy(af->out_buffer_audio,mVideoStateInfo->out_buffer_audio,af->out_buffer_audio_size);
 
         mVideoStateInfo->frameQueueAudio->frameQueuePush();
         av_frame_unref(mFrame);
-//        for(i=0;i<SAMPLE_QUEUE_SIZE;i++){
-//
-//            if(j!=0 && i!=j+1){
-//                ALOGI("");
-//            }else{
-//                ALOGI("");
-//            }
-//            j=i;
-//         //   ALOGI("DecoderAudio::process test queue[%d].frame->data[0]=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].frame->data[0]);
-//
-//        }
-
-        if(mVideoStateInfo->isFirstAudioFrame && mVideoStateInfo->frameQueueAudio->windex == SAMPLE_QUEUE_SIZE-1){
+        if(mVideoStateInfo->isFirstAudioFrame && mVideoStateInfo->frameQueueAudio->windex > 3){
             for(i=0;i<SAMPLE_QUEUE_SIZE;i++){
 
                 ALOGI("FrameQueue::process yuhaotest queue[%d].out_buffer_audio=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio);
 
-                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio,1,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_size,mVideoStateInfo->fp_pcm);
+                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio, 1,
+                       (size_t) mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio_size, mVideoStateInfo->fp_pcm);
             }
             mVideoStateInfo->isFirstAudioFrame  = false;
             msg.what = FFP_MSG_AUDIO_FIRST_FRAME;

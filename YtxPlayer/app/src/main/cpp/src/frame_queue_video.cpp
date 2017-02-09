@@ -2,16 +2,16 @@
 // Created by Administrator on 2016/10/13.
 //
 
-#include "ytxplayer/frame_queue.h"
+#include "ytxplayer/frame_queue_video.h"
 #define TAG "YTX-FrameQueue-JNI"
 #include "ALog-priv.h"
 
 
 
-FrameQueue::~FrameQueue(){
+FrameQueueVideo::~FrameQueueVideo(){
     frameQueueDestroy();
 }
-void FrameQueue::frameQueueUnrefItem(Frame *vp) {
+void FrameQueueVideo::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间
 //    for(i=0;i<vp->sub.num_rects;i++){
@@ -19,14 +19,14 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 //        av_freep(&vp->subrects[i]);
 //    }
 //    av_freep(&vp->subrects);
-   // av_frame_unref(vp->frame);
+    av_frame_unref(vp->frame);
   //  avsubtitle_free(&vp->sub);
 
-    free(vp->out_buffer_audio);
+   // free(vp->out_buffer_audio);
 
 }
 
-void FrameQueue::frameQueueReset(){
+void FrameQueueVideo::frameQueueReset(){
     pthread_mutex_lock(&mutex);
     rindex = 0;
     windex = 0;
@@ -36,53 +36,53 @@ void FrameQueue::frameQueueReset(){
     pthread_mutex_unlock(&mutex);
 }
 
-int FrameQueue::frameQueueInit(int max_size, int keep_last) {
+int FrameQueueVideo::frameQueueInit(int max_size, int keep_last) {
     int i = 0;
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&cond, NULL);
     this->max_size = max_size;
     this->keep_last = keep_last;
-//    for (i = 0; i < max_size; i++) {
-//        queue[i].frame = av_frame_alloc();
-//        if (queue[i].frame == NULL) {
-//            return AVERROR(ENOMEM);
-//        }
-//    }
+    for (i = 0; i < max_size; i++) {
+        queue[i].frame = av_frame_alloc();
+        if (queue[i].frame == NULL) {
+            return AVERROR(ENOMEM);
+        }
+    }
     return 1;
 }
 
-void FrameQueue::frameQueueDestroy() {
+void FrameQueueVideo::frameQueueDestroy() {
     int i;
     for(i=0;i<max_size;i++){
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
-     //   av_frame_free(&vp->frame);
+        av_frame_free(&vp->frame);
     }
 
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&cond);
 }
 
-void FrameQueue::frameQueueSignal() {
+void FrameQueueVideo::frameQueueSignal() {
     pthread_mutex_lock(&mutex);
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&mutex);
 }
 
-Frame* FrameQueue::frameQueuePeek() {
+Frame* FrameQueueVideo::frameQueuePeek() {
     return &queue[(rindex+rindex_shown)%max_size];
 }
 
 
-Frame* FrameQueue::frameQueuePeekNext() {
+Frame* FrameQueueVideo::frameQueuePeekNext() {
     return &queue[(rindex+rindex_shown+1)%max_size];
 }
 
-Frame* FrameQueue::frameQueuePeekLast() {
+Frame* FrameQueueVideo::frameQueuePeekLast() {
     return &queue[rindex];
 }
 
-Frame* FrameQueue::frameQueuePeekWritable() {
+Frame* FrameQueueVideo::frameQueuePeekWritable() {
     pthread_mutex_lock(&mutex);
     ALOGI("frameQueuePeekWritable size=%d\n",size);
     while(size >= max_size){
@@ -94,7 +94,7 @@ Frame* FrameQueue::frameQueuePeekWritable() {
     return &queue[windex];
 }
 
-Frame *FrameQueue::frameQueuePeekReadable() {
+Frame *FrameQueueVideo::frameQueuePeekReadable() {
 
     pthread_mutex_lock(&mutex);
     while (size - rindex_shown <= 0) {
@@ -105,19 +105,7 @@ Frame *FrameQueue::frameQueuePeekReadable() {
     return &queue[(rindex + rindex_shown) % max_size];
 }
 
-void FrameQueue::frameQueuePush() {
-//    int i=0;
-
-//    if(windex!=(max_size-1)){
-//        ++windex;
-//        size++;
-//    }else{
-//        if(tmp == 0){
-//            tmp = 1;
-//
-//        }
-//
-//    }
+void FrameQueueVideo::frameQueuePush() {
 
     if(++windex == max_size){
         windex = 0;
@@ -129,7 +117,7 @@ void FrameQueue::frameQueuePush() {
 
 }
 
-void FrameQueue::frameQueueNext() {
+void FrameQueueVideo::frameQueueNext() {
     if(keep_last && !rindex_shown){
         rindex_shown = 1;
         return;
@@ -145,11 +133,11 @@ void FrameQueue::frameQueueNext() {
     pthread_mutex_unlock(&mutex);
 }
 
-int FrameQueue::frameQueueNumRemaining() {
+int FrameQueueVideo::frameQueueNumRemaining() {
     return size - rindex_shown;
 }
 
-int64_t FrameQueue::frameQueueLastPos() {
+int64_t FrameQueueVideo::frameQueueLastPos() {
     Frame *fp = &queue[rindex];
     if(rindex_shown){
         return fp->pos;

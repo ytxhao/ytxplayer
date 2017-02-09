@@ -2,16 +2,16 @@
 // Created by Administrator on 2016/10/13.
 //
 
-#include "ytxplayer/frame_queue.h"
+#include "ytxplayer/frame_queue_audio.h"
 #define TAG "YTX-FrameQueue-JNI"
 #include "ALog-priv.h"
 
 
 
-FrameQueue::~FrameQueue(){
+FrameQueueAudio::~FrameQueueAudio(){
     frameQueueDestroy();
 }
-void FrameQueue::frameQueueUnrefItem(Frame *vp) {
+void FrameQueueAudio::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间
 //    for(i=0;i<vp->sub.num_rects;i++){
@@ -26,7 +26,7 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 
 }
 
-void FrameQueue::frameQueueReset(){
+void FrameQueueAudio::frameQueueReset(){
     pthread_mutex_lock(&mutex);
     rindex = 0;
     windex = 0;
@@ -36,7 +36,7 @@ void FrameQueue::frameQueueReset(){
     pthread_mutex_unlock(&mutex);
 }
 
-int FrameQueue::frameQueueInit(int max_size, int keep_last) {
+int FrameQueueAudio::frameQueueInit(int max_size, int keep_last) {
     int i = 0;
     pthread_mutex_init(&mutex, NULL);
     pthread_cond_init(&cond, NULL);
@@ -51,7 +51,7 @@ int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     return 1;
 }
 
-void FrameQueue::frameQueueDestroy() {
+void FrameQueueAudio::frameQueueDestroy() {
     int i;
     for(i=0;i<max_size;i++){
         Frame *vp = &queue[i];
@@ -63,26 +63,26 @@ void FrameQueue::frameQueueDestroy() {
     pthread_cond_destroy(&cond);
 }
 
-void FrameQueue::frameQueueSignal() {
+void FrameQueueAudio::frameQueueSignal() {
     pthread_mutex_lock(&mutex);
     pthread_cond_signal(&cond);
     pthread_mutex_unlock(&mutex);
 }
 
-Frame* FrameQueue::frameQueuePeek() {
+Frame* FrameQueueAudio::frameQueuePeek() {
     return &queue[(rindex+rindex_shown)%max_size];
 }
 
 
-Frame* FrameQueue::frameQueuePeekNext() {
+Frame* FrameQueueAudio::frameQueuePeekNext() {
     return &queue[(rindex+rindex_shown+1)%max_size];
 }
 
-Frame* FrameQueue::frameQueuePeekLast() {
+Frame* FrameQueueAudio::frameQueuePeekLast() {
     return &queue[rindex];
 }
 
-Frame* FrameQueue::frameQueuePeekWritable() {
+Frame* FrameQueueAudio::frameQueuePeekWritable() {
     pthread_mutex_lock(&mutex);
     ALOGI("frameQueuePeekWritable size=%d\n",size);
     while(size >= max_size){
@@ -94,7 +94,7 @@ Frame* FrameQueue::frameQueuePeekWritable() {
     return &queue[windex];
 }
 
-Frame *FrameQueue::frameQueuePeekReadable() {
+Frame *FrameQueueAudio::frameQueuePeekReadable() {
 
     pthread_mutex_lock(&mutex);
     while (size - rindex_shown <= 0) {
@@ -105,7 +105,7 @@ Frame *FrameQueue::frameQueuePeekReadable() {
     return &queue[(rindex + rindex_shown) % max_size];
 }
 
-void FrameQueue::frameQueuePush() {
+void FrameQueueAudio::frameQueuePush() {
 //    int i=0;
 
 //    if(windex!=(max_size-1)){
@@ -129,7 +129,7 @@ void FrameQueue::frameQueuePush() {
 
 }
 
-void FrameQueue::frameQueueNext() {
+void FrameQueueAudio::frameQueueNext() {
     if(keep_last && !rindex_shown){
         rindex_shown = 1;
         return;
@@ -145,11 +145,11 @@ void FrameQueue::frameQueueNext() {
     pthread_mutex_unlock(&mutex);
 }
 
-int FrameQueue::frameQueueNumRemaining() {
+int FrameQueueAudio::frameQueueNumRemaining() {
     return size - rindex_shown;
 }
 
-int64_t FrameQueue::frameQueueLastPos() {
+int64_t FrameQueueAudio::frameQueueLastPos() {
     Frame *fp = &queue[rindex];
     if(rindex_shown){
         return fp->pos;

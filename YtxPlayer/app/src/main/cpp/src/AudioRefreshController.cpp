@@ -57,12 +57,12 @@ bool AudioRefreshController::process(AVMessage *msg) {
 
     switch (msg->what){
         case FFP_MSG_AUDIO_FIRST_FRAME:
-      //      (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             audioFrameProcess();
             break;
         case FFP_MSG_COMPLETED:
-//            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
-//            mVideoStateInfo->frameQueueAudio->frameQueueReset();
+            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+            mVideoStateInfo->frameQueueAudio->frameQueueReset();
             break;
     }
     ALOGI("AudioRefreshController::process out");
@@ -146,8 +146,8 @@ int AudioRefreshController::audioFrameProcess() {
 //    int out_buffer_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
 //                                                     af->frame->nb_samples, mVideoStateInfo->out_sample_fmt,
 //                                                     1);
-    size_buff = af->out_buffer_size;
-    fwrite(af->out_buffer_audio,1,af->out_buffer_size,mVideoStateInfo->fp_pcm1);
+    size_buff = (SLuint32) af->out_buffer_audio_size;
+    fwrite(af->out_buffer_audio,1,size_buff,mVideoStateInfo->fp_pcm1);
     (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
                                                   af->out_buffer_audio,
                                                   size_buff);

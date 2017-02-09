@@ -7,7 +7,8 @@
 
 #include "InputStream.h"
 #include "ffinc.h"
-#include "frame_queue.h"
+#include "frame_queue_video.h"
+#include "frame_queue_audio.h"
 #include "avPacketList.h"
 #include "MessageQueue.h"
 #include <ytxplayer/MessageLoop.h>
@@ -58,8 +59,8 @@ public:
     InputStream *streamVideo;
     InputStream *streamAudio;
 
-    FrameQueue *frameQueueVideo;
-    FrameQueue *frameQueueAudio;
+    FrameQueueVideo *frameQueueVideo;
+    FrameQueueAudio *frameQueueAudio;
     MessageLoop   *mMessageLoop;
     int *mCurrentState;
 
