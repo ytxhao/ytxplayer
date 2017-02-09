@@ -56,7 +56,7 @@ void MessageQueue::flush() {
 
 int MessageQueue::put(AVMessage *msg) {
     AVMessage *msg1;
-
+    pthread_mutex_lock(&mLock);
     msg1 = (AVMessage *) malloc(sizeof(AVMessage));
     if(!msg1){
         return -1;
@@ -64,7 +64,7 @@ int MessageQueue::put(AVMessage *msg) {
 
     *msg1 = *msg;
     msg1->next = NULL;
-    pthread_mutex_lock(&mLock);
+
 
     if(!mLast){
         mFirst = msg1;

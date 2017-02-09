@@ -19,7 +19,7 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
 //        av_freep(&vp->subrects[i]);
 //    }
 //    av_freep(&vp->subrects);
-    av_frame_unref(vp->frame);
+   // av_frame_unref(vp->frame);
   //  avsubtitle_free(&vp->sub);
 
 }
@@ -41,10 +41,10 @@ int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     this->max_size = max_size;
     this->keep_last = keep_last;
     for (i = 0; i < max_size; i++) {
-        queue[i].frame = av_frame_alloc();
-        if (queue[i].frame == NULL) {
-            return AVERROR(ENOMEM);
-        }
+//        queue[i].frame = av_frame_alloc();
+//        if (queue[i].frame == NULL) {
+//            return AVERROR(ENOMEM);
+//        }
     }
     return 1;
 }
@@ -54,7 +54,7 @@ void FrameQueue::frameQueueDestroy() {
     for(i=0;i<max_size;i++){
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
-        av_frame_free(&vp->frame);
+     //   av_frame_free(&vp->frame);
     }
 
     pthread_mutex_destroy(&mutex);
@@ -81,36 +81,49 @@ Frame* FrameQueue::frameQueuePeekLast() {
 }
 
 Frame* FrameQueue::frameQueuePeekWritable() {
-    pthread_mutex_lock(&mutex);
+  //  pthread_mutex_lock(&mutex);
     ALOGI("frameQueuePeekWritable size=%d\n",size);
     while(size >= max_size){
-        pthread_cond_wait(&cond, &mutex);
+   //     pthread_cond_wait(&cond, &mutex);
     }
 
-    pthread_mutex_unlock(&mutex);
+  //  pthread_mutex_unlock(&mutex);
     ALOGI("frameQueuePeekWritable windex=%d\n",windex);
     return &queue[windex];
 }
 
 Frame *FrameQueue::frameQueuePeekReadable() {
 
-    pthread_mutex_lock(&mutex);
-    while (size - rindex_shown <= 0) {
-        pthread_cond_wait(&cond, &mutex);
-    }
-    pthread_mutex_unlock(&mutex);
-
+//    pthread_mutex_lock(&mutex);
+//    while (size - rindex_shown <= 0) {
+//        pthread_cond_wait(&cond, &mutex);
+//    }
+//    pthread_mutex_unlock(&mutex);
+    ALOGI("frameQueuePeekReadable rindex=%d\n",rindex);
     return &queue[(rindex + rindex_shown) % max_size];
 }
 
 void FrameQueue::frameQueuePush() {
-    if(++windex == max_size){
-        windex = 0;
+    int i=0;
+
+    if(windex!=(max_size-1)){
+        ++windex;
+        size++;
+    }else{
+        if(tmp == 0){
+            tmp = 1;
+
+        }
+
     }
-    pthread_mutex_lock(&mutex);
-    size++;
-    pthread_cond_signal(&cond);
-    pthread_mutex_unlock(&mutex);
+
+//    if(++windex == max_size){
+//        windex = 0;
+//    }
+//    pthread_mutex_lock(&mutex);
+   // size++;
+//    pthread_cond_signal(&cond);
+//    pthread_mutex_unlock(&mutex);
 
 }
 
@@ -124,10 +137,10 @@ void FrameQueue::frameQueueNext() {
     if(++rindex == max_size){
         rindex = 0;
     }
-    pthread_mutex_lock(&mutex);
-    size--;
-    pthread_cond_signal(&cond);
-    pthread_mutex_unlock(&mutex);
+ //   pthread_mutex_lock(&mutex);
+ //   size--;
+//    pthread_cond_signal(&cond);
+//    pthread_mutex_unlock(&mutex);
 }
 
 int FrameQueue::frameQueueNumRemaining() {

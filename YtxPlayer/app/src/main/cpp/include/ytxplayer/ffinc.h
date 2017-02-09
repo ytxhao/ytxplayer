@@ -84,7 +84,7 @@ libLoader.loadLibrary("avfilter");
 
 #define VIDEO_PICTURE_QUEUE_SIZE 3
 #define SUBPICTURE_QUEUE_SIZE 16
-#define SAMPLE_QUEUE_SIZE 2
+#define SAMPLE_QUEUE_SIZE 1800
 
 #define FRAME_QUEUE_SIZE FFMAX(SAMPLE_QUEUE_SIZE, FFMAX(VIDEO_PICTURE_QUEUE_SIZE, SUBPICTURE_QUEUE_SIZE))
 
@@ -94,8 +94,10 @@ static unsigned sws_flags = SWS_BICUBIC;
 
 
 typedef struct Frame {
-    AVFrame *frame;
-    AVFrame *frameYuv;
+  //  AVFrame *frame;
+  //  AVFrame *frameYuv;
+    unsigned char *out_buffer_audio;
+    int out_buffer_size;
     AVSubtitle sub;
     AVSubtitleRect **subrects;  /* rescaled subtitle rectangles in yuva */
     int serial;

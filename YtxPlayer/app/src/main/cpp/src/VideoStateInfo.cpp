@@ -36,10 +36,15 @@ VideoStateInfo::VideoStateInfo(){
     seekFlags = 0;
     eof =0;
     currentTime =0;
-
+    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
+    fp_pcm = fopen(file_pcm,"wb+");
+    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
+    fp_pcm1 = fopen(file_pcm1,"wb+");
 
 }
 VideoStateInfo::~VideoStateInfo() {
+    fclose(fp_pcm);
+    fclose(fp_pcm1);
     delete frameQueueVideo;
     delete frameQueueAudio;
     delete streamVideo;

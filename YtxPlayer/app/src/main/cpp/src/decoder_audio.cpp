@@ -45,18 +45,21 @@ bool DecoderAudio::process(MAVPacket *mPacket)
     int pts = 0;
     int size = mSamplesSize;
     int	completed;
+    int i=0;
+    int j=0;
 //    ALOGI("DecoderAudio::process mPacket->isEnd=%d",mPacket->isEnd);
 //    if(mPacket->isEnd){
 //        return false;
 //    }
 
     curStats = mPacket->isEnd;
-    ALOGI("DecoderAudio::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
+//    ALOGI("DecoderAudio::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
 
     if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
-        msg.what = FFP_MSG_COMPLETED;
-        mVideoStateInfo->messageQueueAudio->put(&msg);
+//        msg.what = FFP_MSG_COMPLETED;
+//        mVideoStateInfo->messageQueueAudio->put(&msg);
         //  fclose(mVideoStateInfo->fp_yuv);
+        lastStats = curStats;
         return true;
     }
     lastStats = curStats;
@@ -81,14 +84,14 @@ bool DecoderAudio::process(MAVPacket *mPacket)
     }
 
     int ret = avcodec_decode_audio4(mVideoStateInfo->streamAudio->dec_ctx,mFrame,&completed,&mPacket->pkt);
-    ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
+  //  ALOGI("DecoderAudio::process ret=%d ; completed=%d \n",ret,completed);
     //call handler for posting buffer to os audio driver
 
     if (completed > 0) {
         //   pts = synchronize(mFrame, pts);
 
        // onDecode(mFrame, pts);
-        ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
+   //     ALOGI("DecoderAudio::process 0 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
         tb = (AVRational){1, mFrame->sample_rate};
 
         if (mFrame->pts != AV_NOPTS_VALUE){
@@ -107,7 +110,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
             next_pts_tb = tb;
         }
 
-        ALOGI("DecoderAudio::process 1 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
+//        ALOGI("DecoderAudio::process 1 mFrame->sample_rate=%d mFrame->pts=%lf",mFrame->sample_rate,(double)mFrame->pts);
 //////////////////////////////////////////////////////////////////////
         if(!(af = mVideoStateInfo->frameQueueAudio->frameQueuePeekWritable())){
             return true;
@@ -118,11 +121,42 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         af->pos = av_frame_get_pkt_pos(mFrame);
         af->serial = mVideoStateInfo->pkt_serial_audio;
         af->duration = av_q2d((AVRational){mFrame->nb_samples, mFrame->sample_rate});
-        ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
-        av_frame_move_ref(af->frame, mFrame);
-        mVideoStateInfo->frameQueueAudio->frameQueuePush();
+       // ALOGI("DecoderAudio::process mFrame->sample_rate=%d af->pts=%lf af->pos=%d af->duration=%lf",mFrame->sample_rate,af->pts,af->pos,af->duration);
+       // ALOGI("DecoderAudio::process test mFrame->data[0]=%#x",mFrame->data[0]);
+      //  av_frame_move_ref(af->frame, mFrame);
 
-        if(mVideoStateInfo->isFirstAudioFrame ){
+
+        swr_convert(mVideoStateInfo->swrCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
+                    (const uint8_t **) mFrame->data, mFrame->nb_samples);
+        //获取sample的size
+        af->out_buffer_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
+                                                         mFrame->nb_samples, mVideoStateInfo->out_sample_fmt,
+                                                         1);
+
+        af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_size);
+        memcpy(af->out_buffer_audio,mVideoStateInfo->out_buffer_audio,af->out_buffer_size);
+
+        mVideoStateInfo->frameQueueAudio->frameQueuePush();
+        av_frame_unref(mFrame);
+//        for(i=0;i<SAMPLE_QUEUE_SIZE;i++){
+//
+//            if(j!=0 && i!=j+1){
+//                ALOGI("");
+//            }else{
+//                ALOGI("");
+//            }
+//            j=i;
+//         //   ALOGI("DecoderAudio::process test queue[%d].frame->data[0]=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].frame->data[0]);
+//
+//        }
+
+        if(mVideoStateInfo->isFirstAudioFrame && mVideoStateInfo->frameQueueAudio->windex == SAMPLE_QUEUE_SIZE-1){
+            for(i=0;i<SAMPLE_QUEUE_SIZE;i++){
+
+                ALOGI("FrameQueue::process yuhaotest queue[%d].out_buffer_audio=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio);
+
+                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio,1,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_size,mVideoStateInfo->fp_pcm);
+            }
             mVideoStateInfo->isFirstAudioFrame  = false;
             msg.what = FFP_MSG_AUDIO_FIRST_FRAME;
             mVideoStateInfo->messageQueueAudio->put(&msg);

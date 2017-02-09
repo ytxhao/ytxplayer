@@ -115,6 +115,10 @@ public:
     int pkt_serial_video = 0;
     double max_frame_duration;
     FILE *fp_yuv;
+    FILE *fp_pcm;
+    FILE *fp_pcm1;
+    char file_pcm[100];
+    char file_pcm1[100];
     jobject VideoGlSurfaceViewObj;
     jobject GraphicRendererObj;
 

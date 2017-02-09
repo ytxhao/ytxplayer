@@ -384,10 +384,10 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     MAVPacket mPacket, *pPacket = &mPacket;
 
-    mVideoRefreshController->startAsync();
+   // mVideoRefreshController->startAsync();
     mAudioRefreshController->startAsync();
 
-    mDecoderVideo->startAsync();
+  //  mDecoderVideo->startAsync();
     mDecoderAudio->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
@@ -418,14 +418,14 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         checkSeekRequest();
 
         int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
-        ALOGI("decodeMovie ret out=%d\n",ret);
+    //    ALOGI("decodeMovie ret out=%d\n",ret);
 
         if(ret < 0) {
 
             if(ret == AVERROR_EOF || avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof){
 
                 if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-                    mDecoderVideo->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
+                  //  mDecoderVideo->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
                 }
                 if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
                     mDecoderAudio->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
@@ -448,7 +448,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         }
 
         if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]) {
-            mDecoderVideo->enqueue(pPacket);
+           // mDecoderVideo->enqueue(pPacket);
         }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]){
             mDecoderAudio->enqueue(pPacket);
         } else {
