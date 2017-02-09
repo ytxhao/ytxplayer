@@ -92,7 +92,7 @@ void VideoRefreshController::process() {
             int y_size = decodeWidth*decodeHeight;
             Frame *vp;
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
-            if (vp->frame != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
+            if (vp->out_buffer_video_yuv[0] != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
 //                ALOGI("to getGlEngine()->addRendererFrame %lu decodeWidth=%d decodeHeight=%d",pthread_self(),decodeWidth,decodeHeight);
 //                fwrite(vp->frame->data[0],1,y_size,mVideoStateInfo->fp_yuv);    //Y
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
@@ -101,18 +101,18 @@ void VideoRefreshController::process() {
 
 
                 android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-//                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
-//                                 vp->out_buffer_video_yuv[0],
-//                                 vp->out_buffer_video_yuv[1],
-//                                 vp->out_buffer_video_yuv[2],
-//                                 decodeWidth,
-//                                 decodeHeight);
                 addRendererFrame(mVideoStateInfo->GraphicRendererObj,
-                                 (char *) vp->frame->data[0],
-                                 (char *) vp->frame->data[1],
-                                 (char *) vp->frame->data[2],
+                                 vp->out_buffer_video_yuv[0],
+                                 vp->out_buffer_video_yuv[1],
+                                 vp->out_buffer_video_yuv[2],
                                  decodeWidth,
                                  decodeHeight);
+//                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
+//                                 (char *) vp->frame->data[0],
+//                                 (char *) vp->frame->data[1],
+//                                 (char *) vp->frame->data[2],
+//                                 decodeWidth,
+//                                 decodeHeight);
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();

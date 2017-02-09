@@ -60,7 +60,7 @@ public:
     InputStream *streamVideo;
     InputStream *streamAudio;
 
-    FrameQueue *frameQueueVideo;
+    FrameQueueVideo *frameQueueVideo;
     FrameQueueAudio *frameQueueAudio;
     MessageLoop   *mMessageLoop;
     int *mCurrentState;

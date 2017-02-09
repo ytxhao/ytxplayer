@@ -291,6 +291,7 @@ void GlEngine::drawFrameInit(int videoWidth, int videoHeight) {
  * the YUV data will be converted to RGB by shader.
  */
 void GlEngine::drawFrame() {
+    mLock.lock();
     if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL && videoWidth != 0 &&
         videoHeight != 0) {
 
@@ -343,6 +344,7 @@ void GlEngine::drawFrame() {
         glDisableVertexAttribArray(gCoordHandle);
 
     }
+    mLock.unlock();
 
 }
 
@@ -364,30 +366,58 @@ void GlEngine::waitRendererFinish() {
 }
 
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
+    mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
 
 //    plane[0] = y;
 //    plane[1] = u;
 //    plane[2] = v;
-    if(this->videoWidth !=videoWidth || this->videoHeight != videoHeight){
-        this->videoWidth = videoWidth;
-        this->videoHeight = videoHeight;
-    }
+//    if(this->videoWidth !=videoWidth || this->videoHeight != videoHeight){
+//        this->videoWidth = videoWidth;
+//        this->videoHeight = videoHeight;
+//    }
 
+    ALOGI("fffff debug plane[0]=%#x y=%#x videoWidth=%d videoHeight=%d",plane[0],y,videoWidth,videoHeight);
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
     memcpy(plane[1], u, (size_t) (videoWidth * videoHeight) / 4);
     memcpy(plane[2], v, (size_t) (videoWidth * videoHeight) / 4);
+    mLock.unlock();
 }
 
 void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
-    if (!isAddRendererFrameInit) {
-        isAddRendererFrameInit = true;
+//    if (!isAddRendererFrameInit) {
+//        isAddRendererFrameInit = true;
+//        this->videoWidth = videoWidth;
+//        this->videoHeight = videoHeight;
+//        ALOGI("addRendererFrameInit isAddRendererFrameInit");
+//        plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
+//        plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+//        plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+//    }
+
+    if ((this->videoWidth == 0 && this->videoHeight == 0 && videoWidth != 0)
+        || this->videoWidth != videoWidth || this->videoHeight != videoHeight) {
         this->videoWidth = videoWidth;
         this->videoHeight = videoHeight;
         ALOGI("addRendererFrameInit isAddRendererFrameInit");
-        plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
-        plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
-        plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+        if(plane[0]==NULL){
+            plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
+            plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+            plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+        }else{
+            char* plane_tmp[3];
+            plane_tmp[0] = plane[0];
+            plane_tmp[1] = plane[1];
+            plane_tmp[2] = plane[2];
+            plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
+            plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+            plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
+
+            free(plane_tmp[0]);
+            free(plane_tmp[1]);
+            free(plane_tmp[2]);
+        }
+
     }
 }
 

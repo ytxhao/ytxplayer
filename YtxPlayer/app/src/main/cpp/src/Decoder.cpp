@@ -25,7 +25,7 @@ IDecoder::~IDecoder()
 
 void IDecoder::enqueue(MAVPacket* mPacket)
 {
-    ALOGI("IDecoder mVideoStateInfo->flushPkt->pkt.data=%#x mPacket->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPacket->pkt.data);
+    //ALOGI("IDecoder mVideoStateInfo->flushPkt->pkt.data=%#x mPacket->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPacket->pkt.data);
     mQueue->put(mPacket);
 }
 

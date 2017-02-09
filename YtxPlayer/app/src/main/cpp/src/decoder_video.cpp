@@ -170,7 +170,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         vp->pos = av_frame_get_pkt_pos(mFrame);
 
 
-        av_image_fill_arrays(vp->frame->data, vp->frame->linesize,out_buffer_video,
+        av_image_fill_arrays(mFrameYuv->data, mFrameYuv->linesize,out_buffer_video,
                              AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
                              mVideoStateInfo->streamVideo->dec_ctx->height,1);
 
@@ -179,20 +179,18 @@ bool DecoderVideo::process(MAVPacket *mPacket)
                   mFrame->linesize,
                   0,
                   mVideoStateInfo->streamVideo->dec_ctx->height,
-                  vp->frame->data,
-                  vp->frame->linesize);
+                  mFrameYuv->data,
+                  mFrameYuv->linesize);
 
-//        size_y = mVideoStateInfo->streamVideo->dec_ctx->width *  mVideoStateInfo->streamVideo->dec_ctx->height;
-//
-//
-//
-//            vp->out_buffer_video_yuv[0] = (char *) malloc(sizeof(char) * size_y);
-//            vp->out_buffer_video_yuv[1] = (char *) malloc(sizeof(char) * size_y / 4);
-//            vp->out_buffer_video_yuv[2] = (char *) malloc(sizeof(char) * size_y / 4);
-//
-//        memcpy(vp->out_buffer_video_yuv[0], mFrameYuv->data[0], (size_t) size_y);
-//        memcpy(vp->out_buffer_video_yuv[1], mFrameYuv->data[1], (size_t) (size_y / 4));
-//        memcpy(vp->out_buffer_video_yuv[2], mFrameYuv->data[2], (size_t) (size_y / 4));
+        size_y = mVideoStateInfo->streamVideo->dec_ctx->width *  mVideoStateInfo->streamVideo->dec_ctx->height;
+
+        vp->out_buffer_video_yuv[0] = (char *) malloc(sizeof(char) * size_y);
+        vp->out_buffer_video_yuv[1] = (char *) malloc(sizeof(char) * size_y / 4);
+        vp->out_buffer_video_yuv[2] = (char *) malloc(sizeof(char) * size_y / 4);
+
+        memcpy(vp->out_buffer_video_yuv[0], mFrameYuv->data[0], (size_t) size_y);
+        memcpy(vp->out_buffer_video_yuv[1], mFrameYuv->data[1], (size_t) (size_y / 4));
+        memcpy(vp->out_buffer_video_yuv[2], mFrameYuv->data[2], (size_t) (size_y / 4));
 
         mVideoStateInfo->frameQueueVideo->frameQueuePush();
         av_frame_unref(mFrame);
