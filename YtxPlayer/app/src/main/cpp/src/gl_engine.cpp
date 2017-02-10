@@ -377,7 +377,7 @@ void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int v
 //        this->videoHeight = videoHeight;
 //    }
 
-    ALOGI("fffff debug plane[0]=%#x y=%#x videoWidth=%d videoHeight=%d",plane[0],y,videoWidth,videoHeight);
+//    ALOGI(" debug plane[0]=%#x y=%#x videoWidth=%d videoHeight=%d",plane[0],y,videoWidth,videoHeight);
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
     memcpy(plane[1], u, (size_t) (videoWidth * videoHeight) / 4);
     memcpy(plane[2], v, (size_t) (videoWidth * videoHeight) / 4);

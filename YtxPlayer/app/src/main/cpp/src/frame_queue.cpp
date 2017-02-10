@@ -8,9 +8,11 @@
 
 
 
-FrameQueue::~FrameQueue(){
-    frameQueueDestroy();
-}
+//FrameQueue::~FrameQueue(){
+//    frameQueueDestroy();
+//}
+
+/*
 void FrameQueue::frameQueueUnrefItem(Frame *vp) {
     int i;
     //释放subtitle空间
@@ -25,7 +27,7 @@ void FrameQueue::frameQueueUnrefItem(Frame *vp) {
  //   free(vp->out_buffer_audio);
 
 }
-
+*/
 void FrameQueue::frameQueueReset(){
     pthread_mutex_lock(&mutex);
     rindex = 0;
@@ -36,6 +38,7 @@ void FrameQueue::frameQueueReset(){
     pthread_mutex_unlock(&mutex);
 }
 
+/*
 int FrameQueue::frameQueueInit(int max_size, int keep_last) {
     int i = 0;
     pthread_mutex_init(&mutex, NULL);
@@ -62,7 +65,7 @@ void FrameQueue::frameQueueDestroy() {
     pthread_mutex_destroy(&mutex);
     pthread_cond_destroy(&cond);
 }
-
+*/
 void FrameQueue::frameQueueSignal() {
     pthread_mutex_lock(&mutex);
     pthread_cond_signal(&cond);

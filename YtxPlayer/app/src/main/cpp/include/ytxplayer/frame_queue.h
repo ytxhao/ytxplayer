@@ -14,10 +14,11 @@
 class FrameQueue{
 public:
 
-    ~FrameQueue();
-    void frameQueueUnrefItem(Frame *vp);
-    int frameQueueInit(int max_size,int keep_last);
-    void frameQueueDestroy();
+    virtual ~FrameQueue(){};
+
+    virtual  void frameQueueUnrefItem(Frame *vp)=0;
+    virtual  int frameQueueInit(int max_size,int keep_last)=0;
+    virtual  void frameQueueDestroy()=0;
     void frameQueueSignal();
     Frame* frameQueuePeek();
     Frame* frameQueuePeekNext();
@@ -48,8 +49,6 @@ public:
     int rindex_shown = 0 ;
     pthread_mutex_t mutex;
     pthread_cond_t cond;
-
-    int tmp=0;
 
 };
 
