@@ -12,6 +12,7 @@
 #include "ffinc.h"
 #include "decoder_video.h"
 #include "decoder_audio.h"
+#include "decoder_subtitle.h"
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/stat.h>
@@ -117,6 +118,7 @@ public:
     int isFinish;
     DecoderVideo  *mDecoderVideo;
     DecoderAudio  *mDecoderAudio;
+    DecoderSubtitle  *mDecoderSubtitle;
 
     VideoStateInfo *mVideoStateInfo;
 //private:
@@ -146,11 +148,10 @@ public:
     bool mLoop;
     float mLeftVolume;
     float mRightVolume;
-    int mVideoWidth;
-    int mVideoHeight;
+
     int mAudioSessionId;
     float mSendLevel;
-    //  struct sockaddr_in          mRetransmitEndpoint;
+
     bool mRetransmitEndpointValid;
     const char *filePath;
     AVFormatContext *pFormatCtx;

@@ -67,7 +67,6 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mLoop = false;
     pthread_mutex_init(&mLock, NULL);
     mLeftVolume = mRightVolume = 1.0;
-    mVideoWidth = mVideoHeight = 0;
     mVideoStateInfo = new VideoStateInfo();
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mVideoRefreshController = NULL;
@@ -81,6 +80,10 @@ YtxMediaPlayer::~YtxMediaPlayer() {
 
   //  AudioEngine::releaseAudioEngine();
   //  GlEngine::releaseGlEngine();
+
+    if(mDecoderSubtitle){
+        delete mDecoderSubtitle;
+    }
 
     if(mDecoderVideo){
         delete mDecoderVideo;
@@ -132,7 +135,7 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
 
 
 int  YtxMediaPlayer::prepare() {
-
+/*
     mCurrentState = MEDIA_PLAYER_PREPARING;
 
     av_register_all();
@@ -185,9 +188,9 @@ int  YtxMediaPlayer::prepare() {
         streamComponentOpen(mVideoStateInfo->streamVideo,mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
+
+    mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
     mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-
-
     mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
 
     mDecoderAudio = new DecoderAudio(mVideoStateInfo);
@@ -198,6 +201,7 @@ int  YtxMediaPlayer::prepare() {
     mAudioRefreshController = new AudioRefreshController(mVideoStateInfo);
 
     mCurrentState = MEDIA_PLAYER_PREPARED;
+    */
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
@@ -266,13 +270,16 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamVideo,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
     }
 
+    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
+        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamSubtitle,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
+    }
 
+    mPlayer->mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
     mPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-
-
     mPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
 
     mPlayer->mDecoderAudio = new DecoderAudio(mPlayer->mVideoStateInfo);
+    mPlayer->mDecoderSubtitle = new DecoderSubtitle(mPlayer->mVideoStateInfo);
     mPlayer->mDecoderVideo = new DecoderVideo(mPlayer->mVideoStateInfo);
 
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
@@ -389,9 +396,10 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     mDecoderVideo->startAsync();
     mDecoderAudio->startAsync();
+   // mDecoderSubtitle->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
-    ALOGI("playing %ix%i\n", mVideoWidth, mVideoHeight);
+    ALOGI("playing %ix%i\n", mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
 
     while (mCurrentState != MEDIA_PLAYER_DECODED && mCurrentState != MEDIA_PLAYER_STOPPED &&
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
@@ -515,12 +523,12 @@ bool YtxMediaPlayer::isPlaying() {
 
 int  YtxMediaPlayer::getVideoWidth() {
 
-    return mVideoWidth;
+    return mVideoStateInfo->mVideoWidth;
 }
 
 int  YtxMediaPlayer::getVideoHeight() {
 
-    return mVideoHeight;
+    return mVideoStateInfo->mVideoHeight;
 }
 
 int  YtxMediaPlayer::seekTo(int msec) {
@@ -690,7 +698,6 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //解压缩数据
                 mFrameAudio = av_frame_alloc();
                 //frame->16bit 44100 PCM 统一音频采样格式与采样率
-                mVideoStateInfo->swrCtx = swr_alloc();
                 //重采样设置参数-------------start
                 //输入的采样格式
                 mVideoStateInfo->in_sample_fmt = is->dec_ctx->sample_fmt;
@@ -706,23 +713,14 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 //av_get_default_channel_layout(codecCtx->channels);
                 mVideoStateInfo->out_nb_samples=is->dec_ctx->frame_size;
 
-                uint64_t in_ch_layout = is->dec_ctx->channel_layout;
+                mVideoStateInfo->in_ch_layout = is->dec_ctx->channel_layout;
                 //输出的声道布局（立体声）
-                uint64_t out_ch_layout = AV_CH_LAYOUT_STEREO;
-
-                swr_alloc_set_opts(mVideoStateInfo->swrCtx,
-                                   out_ch_layout,mVideoStateInfo->out_sample_fmt,mVideoStateInfo->out_sample_rate,
-                                   in_ch_layout,mVideoStateInfo->in_sample_fmt,mVideoStateInfo->in_sample_rate,
-                                   0, NULL);
-
-                swr_init(mVideoStateInfo->swrCtx);
+                mVideoStateInfo->out_ch_layout = AV_CH_LAYOUT_STEREO;
 
                 //输出的声道个数
-                mVideoStateInfo->out_channel_nb = av_get_channel_layout_nb_channels(out_ch_layout);
+                mVideoStateInfo->out_channel_nb = av_get_channel_layout_nb_channels(mVideoStateInfo->out_ch_layout);
 
                 //重采样设置参数-------------end
-                //16bit 44100 PCM 数据
-                mVideoStateInfo->out_buffer_audio = (uint8_t *)av_malloc(MAX_AUDIO_FRAME_SIZE);
 
                 ALOGI("### in_sample_rate=%d\n",mVideoStateInfo->in_sample_rate);
                 ALOGI("### in_sample_fmt=%d\n",mVideoStateInfo->in_sample_fmt);
@@ -731,30 +729,15 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 ALOGI("### out_sample_fmt=%d\n",mVideoStateInfo->out_sample_fmt);
                 ALOGI("### out_channel_nb=%d\n",mVideoStateInfo->out_channel_nb);
 
-                ALOGI("### in_ch_layout=%d\n",in_ch_layout);
-                ALOGI("### out_ch_layout=%d\n",out_ch_layout);
+                ALOGI("### in_ch_layout=%d\n",mVideoStateInfo->in_ch_layout);
+                ALOGI("### out_ch_layout=%d\n",mVideoStateInfo->out_ch_layout);
             }
             break;
         case AVMEDIA_TYPE_VIDEO:
 
-            mVideoWidth = is->dec_ctx->width;
-            mVideoHeight = is->dec_ctx->height;
+            mVideoStateInfo->mVideoWidth = is->dec_ctx->width;
+            mVideoStateInfo->mVideoHeight = is->dec_ctx->height;
             mDuration =  pFormatCtx->duration;
-
-            mVideoStateInfo->mConvertCtx = sws_getContext(is->dec_ctx->width,
-                                         is->dec_ctx->height,
-                                         is->dec_ctx->pix_fmt,
-                                         is->dec_ctx->width,
-                                         is->dec_ctx->height,
-                                         AV_PIX_FMT_YUV420P,
-                                         SWS_BICUBIC,
-                                         NULL,
-                                         NULL,
-                                         NULL);
-
-            if (mVideoStateInfo->mConvertCtx == NULL) {
-                return -1;
-            }
 
             mFrameVideo = av_frame_alloc();
             mYuvFrame = av_frame_alloc();
@@ -763,11 +746,14 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
                 return -1;
             }
 
-            mVideoStateInfo->out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  is->dec_ctx->width, is->dec_ctx->height,1));
-            av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,mVideoStateInfo->out_buffer_video,
-                                 AV_PIX_FMT_YUV420P,is->dec_ctx->width, is->dec_ctx->height,1);
+//            mVideoStateInfo->out_buffer_video=(unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P,  is->dec_ctx->width, is->dec_ctx->height,1));
+//            av_image_fill_arrays(mYuvFrame->data, mYuvFrame->linesize,mVideoStateInfo->out_buffer_video,
+//                                 AV_PIX_FMT_YUV420P,is->dec_ctx->width, is->dec_ctx->height,1);
             break;
         case AVMEDIA_TYPE_SUBTITLE:
+
+            ALOGI("AVMEDIA_TYPE_SUBTITLE");
+
             break;
     }
 

@@ -11,8 +11,10 @@
 VideoStateInfo::VideoStateInfo(){
     frameQueueVideo = new FrameQueueVideo();
     frameQueueAudio = new FrameQueueAudio();
+    frameQueueSubtitle = new FrameQueueSubtitle();
     streamVideo = new InputStream();
     streamAudio = new InputStream();
+    streamSubtitle = new InputStream();
     messageQueueAudio = new MessageQueue();
     messageQueueVideo = new MessageQueue();
     mMessageLoop = new MessageLoop();
@@ -47,6 +49,8 @@ VideoStateInfo::~VideoStateInfo() {
     fclose(fp_pcm1);
     delete frameQueueVideo;
     delete frameQueueAudio;
+    delete frameQueueSubtitle;
+    delete streamSubtitle;
     delete streamVideo;
     delete streamAudio;
     delete messageQueueAudio;

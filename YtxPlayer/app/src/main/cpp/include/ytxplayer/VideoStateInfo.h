@@ -10,6 +10,7 @@
 #include "frame_queue.h"
 #include "frame_queue_video.h"
 #include "frame_queue_audio.h"
+#include "frame_queue_subtitle.h"
 #include "avPacketList.h"
 #include "MessageQueue.h"
 #include <ytxplayer/MessageLoop.h>
@@ -59,9 +60,11 @@ public:
 
     InputStream *streamVideo;
     InputStream *streamAudio;
+    InputStream *streamSubtitle;
 
     FrameQueue *frameQueueVideo;
     FrameQueue *frameQueueAudio;
+    FrameQueue *frameQueueSubtitle;
     MessageLoop   *mMessageLoop;
     int *mCurrentState;
 
@@ -88,7 +91,7 @@ public:
 
 
 
-    unsigned char *out_buffer_video;
+//    unsigned char *out_buffer_video;
     unsigned char *out_buffer_audio;
 
     //视频帧率
@@ -104,9 +107,10 @@ public:
     int out_sample_rate = 44100;
     int out_channel_nb;
     int out_nb_samples;
+    uint64_t  in_ch_layout;
+    uint64_t out_ch_layout;
 
-    struct SwsContext*	mConvertCtx;
-    SwrContext *swrCtx;
+   // SwrContext *swrCtx;
 
     volatile bool   isFirstAudioFrame = true;
 
@@ -115,6 +119,7 @@ public:
 
     int pkt_serial_audio = 0;
     int pkt_serial_video = 0;
+    int pkt_serial_subtitle = 0;
     double max_frame_duration;
     FILE *fp_yuv;
     FILE *fp_pcm;
@@ -124,6 +129,8 @@ public:
     jobject VideoGlSurfaceViewObj;
     jobject GraphicRendererObj;
 
+    int mVideoWidth =0;
+    int mVideoHeight = 0;
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

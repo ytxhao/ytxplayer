@@ -4,10 +4,8 @@
 
 #include <android/log.h>
 #include <ytxplayer/VideoStateInfo.h>
-#include <ytxplayer/audio_engine.h>
 #include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_audio.h"
-#include "ffinc.h"
 #define TAG "FFMpegAudioDecoder"
 #include "ALog-priv.h"
 
@@ -34,10 +32,20 @@ bool DecoderAudio::prepare()
 {
 
     ALOGI("ytxhao DecoderAudio::prepare\n");
+    mConvertCtx = swr_alloc();
+    swr_alloc_set_opts(mConvertCtx,
+                       mVideoStateInfo->out_ch_layout,mVideoStateInfo->out_sample_fmt,mVideoStateInfo->out_sample_rate,
+                       mVideoStateInfo->in_ch_layout,mVideoStateInfo->in_sample_fmt,mVideoStateInfo->in_sample_rate,
+                       0, NULL);
+
+    swr_init(mConvertCtx);
+ //   16bit 44100 PCM 数据
+    mVideoStateInfo->out_buffer_audio = (uint8_t *)av_malloc(MAX_AUDIO_FRAME_SIZE);
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
     }
+
     return true;
 }
 
@@ -127,22 +135,14 @@ bool DecoderAudio::process(MAVPacket *mPacket)
       //  av_frame_move_ref(af->frame, mFrame);
 
 
-        swr_convert(mVideoStateInfo->swrCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
+        swr_convert(mConvertCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
                     (const uint8_t **) mFrame->data, mFrame->nb_samples);
         //获取sample的size
         af->out_buffer_audio_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
                                                          mFrame->nb_samples, mVideoStateInfo->out_sample_fmt,
                                                          1);
 
-
-//        if(!firstInit && mVideoStateInfo->frameQueueAudio->windex < SAMPLE_QUEUE_SIZE){
-
-            af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_audio_size);
-//        }
-
-//        if(mVideoStateInfo->frameQueueAudio->windex == SAMPLE_QUEUE_SIZE-1){
-//            firstInit = true;
-//        }
+        af->out_buffer_audio = (uint8_t *)av_malloc(af->out_buffer_audio_size);
 
 
 

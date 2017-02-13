@@ -142,10 +142,8 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
         pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
 
-//        ALOGI("DecoderVideo::process completed");
- //       ALOGI("DecoderVideo::process duration=%lf pts=%lf",duration,pts);
-
-//        ALOGI("####T 1 mFrame=%#x \n",mFrame);
+        mVideoStateInfo->mVideoWidth  = mFrame->width;
+        mVideoStateInfo->mVideoHeight = mFrame->height;
 
         Frame *vp;
         if(!(vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekWritable())){

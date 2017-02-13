@@ -69,10 +69,10 @@ int PacketQueue::put(MAVPacket* mPkt)
 
     MAVPacketList *pkt1;
     pthread_mutex_lock(&mLock);
-    if(mPkt == mVideoStateInfo->flushPkt){
-        ALOGI("PacketQueue0 mVideoStateInfo->flushPkt->pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPkt->pkt.data);
-
-    }
+//    if(mPkt == mVideoStateInfo->flushPkt){
+//        ALOGI("PacketQueue0 mVideoStateInfo->flushPkt->pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPkt->pkt.data);
+//
+//    }
 //    /* duplicate the packet */
 //    if (av_dup_packet(&mPkt->pkt) < 0)
 //        return -1;
