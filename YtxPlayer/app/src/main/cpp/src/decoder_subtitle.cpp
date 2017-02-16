@@ -12,7 +12,6 @@
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
    // isFirstFrame = true;
-   // this->mVideoStateInfo = mVideoStateInfo;
     firstInit = false;
 
 }
@@ -135,8 +134,8 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
                     ALOGI("ttttt sp->sub.rects[i]->type=%d, sp->sub.rects[i]->ass=%s\n",sp->sub.rects[i]->type,sp->sub.rects[i]->ass);
         }
 
-
-    }else{
+        mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
+    }else if(completed){
          avsubtitle_free(&sp->sub);
     }
 

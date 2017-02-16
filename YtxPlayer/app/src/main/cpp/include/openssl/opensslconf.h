@@ -118,8 +118,8 @@ extern "C" {
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/home/yuhao/github/multimedia/ff_extra_ld/lib/engines"
-#define OPENSSLDIR "/home/yuhao/github/multimedia/ff_extra_ld"
+#define ENGINESDIR "/home/yuhao/ytxPlayer/android/contrib/jni/jniLibs/lib/engines"
+#define OPENSSLDIR "/home/yuhao/ytxPlayer/android/contrib/jni/jniLibs"
 #endif
 #endif
 
