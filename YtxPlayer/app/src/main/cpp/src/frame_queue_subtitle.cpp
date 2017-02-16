@@ -27,8 +27,9 @@ int FrameQueueSubtitle::frameQueueInit(int max_size, int keep_last) {
     this->max_size = max_size;
     this->keep_last = keep_last;
     for (i = 0; i < max_size; i++) {
-        queue[i].out_buffer_audio = NULL;
-        queue[i].out_buffer_audio_size = 0;
+        if (!(queue[i].frame = av_frame_alloc())) {
+            return AVERROR(ENOMEM);
+        }
     }
 
     return 1;

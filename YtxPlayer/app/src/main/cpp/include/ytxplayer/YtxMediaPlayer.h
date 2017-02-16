@@ -154,7 +154,7 @@ public:
 
     bool mRetransmitEndpointValid;
     const char *filePath;
-    AVFormatContext *pFormatCtx;
+    //AVFormatContext *pFormatCtx;
     int mAudioStreamIndex;
     int mVideoStreamIndex;
     const char* wanted_stream_spec[AVMEDIA_TYPE_NB]={0};

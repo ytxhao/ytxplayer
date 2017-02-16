@@ -18,6 +18,7 @@ public:
 
     void stop();
     int streamHasEnoughPackets();
+    struct SwsContext *mConvertCtx = NULL;
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;

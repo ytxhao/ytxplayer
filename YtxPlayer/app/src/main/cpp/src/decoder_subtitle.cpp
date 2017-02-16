@@ -23,7 +23,11 @@ DecoderSubtitle::~DecoderSubtitle()
     if(mFrame != NULL){
         av_frame_free(&mFrame);
     }
-    avcodec_close(mVideoStateInfo->streamAudio->dec_ctx);
+    if(!mConvertCtx){
+        sws_freeContext(mConvertCtx);
+    }
+
+    //avcodec_close(mVideoStateInfo->streamSubtitle->dec_ctx);
 }
 
 bool DecoderSubtitle::prepare()
@@ -98,28 +102,42 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
             if (!(sp->subrects[i] = (AVSubtitleRect *) av_mallocz(sizeof(AVSubtitleRect))) ||
                 av_image_alloc(sp->subrects[i]->data, sp->subrects[i]->linesize, out_w, out_h, AV_PIX_FMT_YUVA420P, 16) < 0) {
-                av_log(NULL, AV_LOG_FATAL, "Cannot allocate subtitle data\n");
+                ALOGI("Cannot allocate subtitle data\n");
                 exit(1);
             }
-/*
-            is->sub_convert_ctx = sws_getCachedContext(is->sub_convert_ctx,
+
+            mConvertCtx = sws_getCachedContext(mConvertCtx,
                                                        in_w, in_h, AV_PIX_FMT_PAL8, out_w, out_h,
                                                        AV_PIX_FMT_YUVA420P, sws_flags, NULL, NULL, NULL);
-            if (!is->sub_convert_ctx) {
-                av_log(NULL, AV_LOG_FATAL, "Cannot initialize the sub conversion context\n");
+            if (!mConvertCtx) {
+                ALOGI("Cannot initialize the sub conversion context\n");
                 exit(1);
             }
-            sws_scale(is->sub_convert_ctx,
-                      (void*)sp->sub.rects[i]->data, sp->sub.rects[i]->linesize,
+            sws_scale(mConvertCtx,
+                      (const uint8_t *const *) sp->sub.rects[i]->data, sp->sub.rects[i]->linesize,
                       0, in_h, sp->subrects[i]->data, sp->subrects[i]->linesize);
 
             sp->subrects[i]->w = out_w;
             sp->subrects[i]->h = out_h;
             sp->subrects[i]->x = sp->sub.rects[i]->x * out_w / in_w;
             sp->subrects[i]->y = sp->sub.rects[i]->y * out_h / in_h;
-            */
+
+
+        }
+        /* now we can update the picture count */
+        mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
+
+
+    }else if(completed > 0 && sp->sub.format == 1){
+
+        for (int i = 0; i < sp->sub.num_rects; i++){
+
+                    ALOGI("ttttt sp->sub.rects[i]->type=%d, sp->sub.rects[i]->ass=%s\n",sp->sub.rects[i]->type,sp->sub.rects[i]->ass);
         }
 
+
+    }else{
+         avsubtitle_free(&sp->sub);
     }
 
     return true;

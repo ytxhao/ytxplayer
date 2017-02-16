@@ -47,6 +47,7 @@ VideoStateInfo::VideoStateInfo(){
 VideoStateInfo::~VideoStateInfo() {
     fclose(fp_pcm);
     fclose(fp_pcm1);
+    avformat_close_input(&pFormatCtx);
     delete frameQueueVideo;
     delete frameQueueAudio;
     delete frameQueueSubtitle;

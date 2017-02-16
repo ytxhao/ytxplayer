@@ -50,6 +50,11 @@ DecoderVideo::~DecoderVideo()
         av_frame_free(&mFrameYuv);
         mFrameYuv = NULL;
     }
+
+    if(!mConvertCtx){
+        sws_freeContext(mConvertCtx);
+    }
+
 }
 
 bool DecoderVideo::prepare()

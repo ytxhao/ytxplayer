@@ -107,6 +107,18 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("faac");
                     libLoader.loadLibrary("rtmp");
                     libLoader.loadLibrary("x264");
+
+                    libLoader.loadLibrary("charset");
+                    libLoader.loadLibrary("iconv");
+
+                    libLoader.loadLibrary("png");
+                    libLoader.loadLibrary("harfbuzz");
+                    libLoader.loadLibrary("freetype");
+
+                    libLoader.loadLibrary("fribidi");
+                    libLoader.loadLibrary("ass");
+
+
                     libLoader.loadLibrary("avutil");
                     libLoader.loadLibrary("swresample");
                     libLoader.loadLibrary("swscale");

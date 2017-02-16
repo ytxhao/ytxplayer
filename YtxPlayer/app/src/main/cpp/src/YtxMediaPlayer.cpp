@@ -223,27 +223,27 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     YtxMediaPlayer* mPlayer = (YtxMediaPlayer *) ptr;
     av_register_all();
     avformat_network_init();
-    mPlayer->pFormatCtx = avformat_alloc_context();
+    mPlayer->mVideoStateInfo->pFormatCtx = avformat_alloc_context();
 
     ALOGI("prepareAsyncPlayer prepare this->filePath=%s\n",mPlayer->filePath);
     //   ALOGI("Couldn't open input stream.\n");
-    if(avformat_open_input(&mPlayer->pFormatCtx,mPlayer->filePath,NULL,NULL)!=0){
+    if(avformat_open_input(&mPlayer->mVideoStateInfo->pFormatCtx,mPlayer->filePath,NULL,NULL)!=0){
         ALOGI("Couldn't open input stream.\n");
         return 0;
     }
 
-    if(avformat_find_stream_info(mPlayer->pFormatCtx,NULL)<0){
+    if(avformat_find_stream_info(mPlayer->mVideoStateInfo->pFormatCtx,NULL)<0){
         ALOGI("Couldn't find stream information.\n");
         return 0;
     }
 
 
-    for(int i=0; i<mPlayer->pFormatCtx->nb_streams; i++) {
-        AVStream *st = mPlayer->pFormatCtx->streams[i];
+    for(int i=0; i<mPlayer->mVideoStateInfo->pFormatCtx->nb_streams; i++) {
+        AVStream *st = mPlayer->mVideoStateInfo->pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
 
         if (type >= 0 && mPlayer->wanted_stream_spec[type] && mPlayer->mVideoStateInfo->st_index[type] == -1) {
-            if (avformat_match_stream_specifier(mPlayer->pFormatCtx, st, mPlayer->wanted_stream_spec[type]) > 0) {
+            if (avformat_match_stream_specifier(mPlayer->mVideoStateInfo->pFormatCtx, st, mPlayer->wanted_stream_spec[type]) > 0) {
                 mPlayer->mVideoStateInfo->st_index[type] = i;
             }
         }
@@ -258,7 +258,7 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     }
 
 
-    mPlayer->mVideoStateInfo->pFormatCtx = mPlayer->pFormatCtx;
+    //mPlayer->mVideoStateInfo->pFormatCtx = mPlayer->pFormatCtx;
     mPlayer->mVideoStateInfo->max_frame_duration = (mPlayer->mVideoStateInfo->pFormatCtx->iformat->flags & AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
 
     ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",mPlayer->mVideoStateInfo->max_frame_duration);
@@ -396,7 +396,9 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     mDecoderVideo->startAsync();
     mDecoderAudio->startAsync();
-   // mDecoderSubtitle->startAsync();
+
+
+    mDecoderSubtitle->startAsync();
 
     mCurrentState = MEDIA_PLAYER_STARTED;
     ALOGI("playing %ix%i\n", mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
@@ -425,7 +427,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
         checkSeekRequest();
 
-        int ret = av_read_frame(pFormatCtx, &pPacket->pkt);
+        int ret = av_read_frame(mVideoStateInfo->pFormatCtx, &pPacket->pkt);
     //    ALOGI("decodeMovie ret out=%d\n",ret);
 
         if(ret < 0) {
@@ -459,7 +461,9 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             mDecoderVideo->enqueue(pPacket);
         }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]){
             mDecoderAudio->enqueue(pPacket);
-        } else {
+        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]){
+            mDecoderSubtitle->enqueue(pPacket);
+        }else{
             av_packet_unref(&pPacket->pkt);
         }
     }
@@ -654,8 +658,6 @@ int  YtxMediaPlayer::setListener(MediaPlayerListener* listener) {
 void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
-//    sPlayer->mVideoRefreshController->stop();
-//    mAudioRefreshController->stop();
     mVideoStateInfo->mMessageLoop->stop();
     isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");
@@ -665,16 +667,16 @@ void  YtxMediaPlayer::finish() {
 int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 {
 
-    if (stream_index < 0 || stream_index > pFormatCtx->nb_streams) {
+    if (stream_index < 0 || stream_index > mVideoStateInfo->pFormatCtx->nb_streams) {
         return -1;
     }
 
 
     is->dec_ctx = avcodec_alloc_context3(NULL);
-    avcodec_parameters_to_context(is->dec_ctx, pFormatCtx->streams[stream_index]->codecpar);
+    avcodec_parameters_to_context(is->dec_ctx, mVideoStateInfo->pFormatCtx->streams[stream_index]->codecpar);
 
-    av_codec_set_pkt_timebase(is->dec_ctx, pFormatCtx->streams[stream_index]->time_base);
-    is->st = pFormatCtx->streams[stream_index];
+    av_codec_set_pkt_timebase(is->dec_ctx, mVideoStateInfo->pFormatCtx->streams[stream_index]->time_base);
+    is->st = mVideoStateInfo->pFormatCtx->streams[stream_index];
     AVCodec* codec = avcodec_find_decoder(is->dec_ctx->codec_id);
     if (codec == NULL) {
         return -1;
@@ -737,7 +739,7 @@ int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
 
             mVideoStateInfo->mVideoWidth = is->dec_ctx->width;
             mVideoStateInfo->mVideoHeight = is->dec_ctx->height;
-            mDuration =  pFormatCtx->duration;
+            mDuration =  mVideoStateInfo->pFormatCtx->duration;
 
             mFrameVideo = av_frame_alloc();
             mYuvFrame = av_frame_alloc();
