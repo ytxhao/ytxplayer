@@ -8,6 +8,18 @@
 
 #include "Decoder.h"
 #include "frame_queue.h"
+#include "ass/ass.h"
+#include <png.h>
+
+typedef struct image_s {
+    int width, height, stride;
+    unsigned char *buffer;      // RGB24
+} image_t;
+
+#define _r(c)  ((c)>>24)
+#define _g(c)  (((c)>>16)&0xFF)
+#define _b(c)  (((c)>>8)&0xFF)
+#define _a(c)  ((c)&0xFF)
 
 class DecoderSubtitle : public IDecoder
 {
@@ -19,6 +31,13 @@ public:
     void stop();
     int streamHasEnoughPackets();
     struct SwsContext *mConvertCtx = NULL;
+    void printFontProviders(ASS_Library *ass_library);
+    void init(int frame_w, int frame_h);
+    static void msg_callback(int level, const char *fmt, va_list va, void *data);
+    image_t *gen_image(int width, int height);
+    void blend(image_t * frame, ASS_Image *img);
+    void blend_single(image_t * frame, ASS_Image *img);
+    void write_png(char *fname, image_t *img);
 private:
     int16_t*                    mSamples;
     int                         mSamplesSize;
@@ -38,6 +57,20 @@ private:
 
     bool firstInit;
  //   bool                        isFirstAudioFrame;
+    ASS_Library *ass_library;
+    ASS_Renderer *ass_renderer;
+    const int frame_w = 1280;
+    const int frame_h = 720;
+    char *font_provider_labels[5] = {
+            [ASS_FONTPROVIDER_NONE]       = "None",
+            [ASS_FONTPROVIDER_AUTODETECT] = "Autodetect",
+            [ASS_FONTPROVIDER_CORETEXT]   = "CoreText",
+            [ASS_FONTPROVIDER_FONTCONFIG] = "Fontconfig",
+            [ASS_FONTPROVIDER_DIRECTWRITE]= "DirectWrite",
+    };
+    char subfile[100];
+    long long now=2500;
+    ASS_Track *track;
 };
 
 #endif //YTXPLAYER_DECODER_AUDIO_H

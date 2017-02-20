@@ -40,6 +40,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/src/MessageQueue.cpp
              src/main/cpp/src/MessageLoop.cpp
              src/main/cpp/src/AudioRefreshController.cpp
+             src/main/cpp/src/test.c
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -77,6 +78,89 @@ set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
 #message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
 include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
 
+find_library(png-lib
+                NAMES "png"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
+              )
+
+find_library(harfbuzz-lib
+              NAMES "harfbuzz"
+              PATHS ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH
+            )
+
+find_library(freetype-lib
+                NAMES "freetype"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
+              )
+
+
+
+find_library(iconv-lib
+              NAMES "iconv"
+              PATHS ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH
+            )
+
+find_library(xml2-lib
+                NAMES "xml2"
+                PATHS ${LINK_DIR}
+                NO_CMAKE_ENVIRONMENT_PATH
+                NO_CMAKE_PATH
+                NO_SYSTEM_ENVIRONMENT_PATH
+                NO_CMAKE_SYSTEM_PATH
+                NO_CMAKE_FIND_ROOT_PATH
+              )
+
+
+find_library(fontconfig-lib
+              NAMES "fontconfig"
+              PATHS ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH
+            )
+
+
+find_library(fribidi-lib
+              NAMES "fribidi"
+              PATHS ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH
+            )
+
+find_library(ass-lib
+              NAMES "ass"
+              PATHS ${LINK_DIR}
+              NO_CMAKE_ENVIRONMENT_PATH
+              NO_CMAKE_PATH
+              NO_SYSTEM_ENVIRONMENT_PATH
+              NO_CMAKE_SYSTEM_PATH
+              NO_CMAKE_FIND_ROOT_PATH
+            )
 
 
 
@@ -155,6 +239,19 @@ target_link_libraries( # Specifies the target library.
                        ${log-lib}
                        ${EGL-lib}
                        ${GLESv2-lib}
+
+                       ${png-lib}
+                        ${harfbuzz-lib}
+                        ${freetype-lib}
+                        ${iconv-lib}
+                        ${xml2-lib}
+                        ${fontconfig-lib}
+                        ${fribidi-lib}
+                        ${ass-lib}
+
+
+
+
                        ${avutil-lib}
                        ${swscale-lib}
                        ${swresample-lib}

@@ -107,6 +107,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("faac");
                     libLoader.loadLibrary("rtmp");
                     libLoader.loadLibrary("x264");
+                    libLoader.loadLibrary("xml2");
+                    libLoader.loadLibrary("fontconfig");
 
                     libLoader.loadLibrary("charset");
                     libLoader.loadLibrary("iconv");
@@ -127,6 +129,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("avformat");
                     libLoader.loadLibrary("avdevice");
                     libLoader.loadLibrary("avfilter");
+               //     libLoader.loadLibrary("native-lib");
 
                     mIsLibLoaded = true;
             }

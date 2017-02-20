@@ -34,7 +34,37 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     static {
+
+//        System.loadLibrary("gnustl_shared");
+//        System.loadLibrary("mp4v2");
+//        System.loadLibrary("faad");
+//        System.loadLibrary("faac");
+//        System.loadLibrary("rtmp");
+//        System.loadLibrary("x264");
+//        System.loadLibrary("xml2");
+//        System.loadLibrary("fontconfig");
+//
+//        System.loadLibrary("charset");
+//        System.loadLibrary("iconv");
+//
+//        System.loadLibrary("png");
+//        System.loadLibrary("harfbuzz");
+//        System.loadLibrary("freetype");
+//
+//        System.loadLibrary("fribidi");
+//        System.loadLibrary("ass");
+//
+//
+//        System.loadLibrary("avutil");
+//        System.loadLibrary("swresample");
+//        System.loadLibrary("swscale");
+//        System.loadLibrary("postproc");
+//        System.loadLibrary("avcodec");
+//        System.loadLibrary("avformat");
+//        System.loadLibrary("avdevice");
+//        System.loadLibrary("avfilter");
         System.loadLibrary("native-lib");
+
     }
 
     private static final String TAG = "MainActivity";
@@ -91,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fileName = PreferenceUtil.getInstance().getString(FILE_NAME);
 
         CopyAssets(this,"video",filePath);
+        CopyAssets(this,"fonts",filePath);
+        CopyAssets(this,"ass",filePath);
 
         initView();
 

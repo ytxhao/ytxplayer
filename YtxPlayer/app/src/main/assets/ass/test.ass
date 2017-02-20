@@ -1,0 +1,1625 @@
+﻿[Script Info]
+;SrtEdit 6.3.2012.1001
+;Copyright(C) 2005-2012 Yuan Weiguo
+
+Title: 
+Original Script: 
+Original Translation: 
+Original Timing: 
+Original Editing: 
+Script Updated By: 
+Update Details: 
+ScriptType: v4.00+
+Collisions: Normal
+PlayResX: 720
+PlayResY: 304
+Timer: 100.0000
+Synch Point: 
+WrapStyle: 0
+ScaledBorderAndShadow: no
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Microsoft YaHei,24,&H00FFD4C9,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,0,1,1,2,100,100,-40,1
+Style: En,Microsoft YaHei,14,&H00FFB893,&H00FFFFFF,&H0053371A,&H500E0A00,0,0,0,0,100,100,0,0,0,1,1,2,100,100,17,1
+Style: Top_en,Microsoft YaHei,8,&H00FFB893,&H00FFFFFF,&H23000000,&HFF000000,0,0,0,0,100,100,0,0,1,0,0,8,100,100,53,1
+Style: Top_cn,Microsoft YaHei,12,&H00FFD4C9,&H00FFFFFF,&H0053371A,&H500E0A00,0,0,0,0,100,100,0,0,1,0,0,8,100,100,53,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.50,0:00:10.00,Default,,0000,0000,0000,,中文字幕：dottob\N{\rEn}<b><i>Psagmeno.com</b> <font color=#ff0000>Subtitles / Screenshots / Trailers</font>
+Dialogue: 0,0:00:13.50,0:00:21.00,Default,,0000,0000,0000,,派拉蒙影业\N{\rEn}Paramount
+Dialogue: 0,0:00:18.00,0:00:21.00,Default,,0000,0000,0000,,维亚康姆公司\N{\rEn}A VIACOM COMPANY
+Dialogue: 0,0:00:25.00,0:00:29.50,Default,,0000,0000,0000,,工厂[葡语]电影[西语]\N{\rEn}FÁBRICA DE CINE
+Dialogue: 0,0:00:35.00,0:00:37.50,Default,,0000,0000,0000,,通路实业电影\N{\rEn}<font color=#ff0000>A</font>ccess <font color=#ff0000>I</font>ndustries FILM
+Dialogue: 0,0:00:37.80,0:00:47.00,Default,,0000,0000,0000,,{\a10}译者注\N1549年，天主教传教士\N圣·弗朗西斯·泽维尔\N(Saint Francis Xavier)\N在日本鹿儿岛开始传教\N\N1613年，德川家康发布禁教令，幕府在全国禁止天主教\N长崎云仙山区成为屠杀长崎地区天主教徒的场所\N岛原天主教徒劫难始于此时\N\N{\rTop_cn}引自：http://blog.sina.com.cn/s/blog_3f8e0f520101iauv.html
+Dialogue: 0,0:00:47.10,0:00:53.10,Default,,0000,0000,0000,,{\a10}译者注\N1627年，松仓重政首创了“云仙地狱”的拷问方式\N将教徒倒悬温泉正上方，受高温硫磺毒气熏蒸\N在其气绝之前拖上缓和呼吸后，再吊回原位继续折磨\N\N{\rTop_cn}引自：http://www.sanada.net.cn/shiliao/shiliao_38.htm
+Dialogue: 0,0:00:53.20,0:00:58.20,Default,,0000,0000,0000,,{\a10}译者注\N1629年，水野守信首先于长崎实践以“踏绘”形式识别天主教徒的做法\N所谓“踏绘”，即把圣像置于受检人面前，强迫践踏\N\N{\rTop_cn}引自：http://www.sanada.net.cn/shiliao/shiliao_38.htm
+Dialogue: 0,0:00:58.30,0:01:02.70,Default,,0000,0000,0000,,{\a10}译者注\N“穴吊”：将囚犯捆绑倒吊，头部插入大小如缸深坑\N耳后开口让血缓慢渗出，再用似枷木具从脖子两侧封住坑口\N埋住头部，持续多日致死
+Dialogue: 0,0:01:02.80,0:01:05.20,Default,,0000,0000,0000,,{\a10}译者注\N1634年，日本爆发反横征暴敛，反宗教迫害的农民大起义，即\N“岛原(、天草)之乱”\N\N{\rTop_cn}引自：http://www.qulishi.com/huati/daoyuanzl/
+Dialogue: 0,0:01:05.30,0:01:11.80,Default,,0000,0000,0000,,沉默\N{\rEn}Silence
+Dialogue: 0,0:02:12.65,0:02:15.28,Default,,0000,0000,0000,,赞美您，我主耶稣基督\N{\rEn}Praise to you, Lord Jesus Christ
+Dialogue: 0,0:02:21.00,0:02:22.50,Default,,0000,0000,0000,,开始\N{\rEn}始め
+Dialogue: 0,0:02:30.43,0:02:34.93,Default,,0000,0000,0000,,1633，主的平安[拉丁语]，赞美神\N{\rEn}1633. Pax Christi. Praised be God.
+Dialogue: 0,0:02:37.63,0:02:41.60,Default,,0000,0000,0000,,虽然于我们，如今此地再无和平\N{\rEn}Although for us. There is little peace in this land now.
+Dialogue: 0,0:02:42.94,0:02:45.77,Default,,0000,0000,0000,,我从未了解日本，当它成为文明之都\N{\rEn}I never knew Japan, when it was a country of light.
+Dialogue: 0,0:02:46.12,0:02:49.15,Default,,0000,0000,0000,,但我没想到它会如当前这般黑暗\N{\rEn}But I have never known it to be as dark as it is now.
+Dialogue: 0,0:02:50.24,0:02:53.04,Default,,0000,0000,0000,,我们所有进展都被新的迫害终止...\N{\rEn}All our progress has ended in new persecution...
+Dialogue: 0,0:02:53.89,0:02:56.63,Default,,0000,0000,0000,,新的镇压，新的苦难\N{\rEn}New repression, new suffering.
+Dialogue: 0,0:02:59.38,0:03:02.55,Default,,0000,0000,0000,,他们使用有洞的杓子(长柄勺)\N{\rEn}They use ladles filled with holes,
+Dialogue: 0,0:03:02.60,0:03:04.73,Default,,0000,0000,0000,,好让水慢慢漏出\N{\rEn}So the drops would come out slowly,
+Dialogue: 0,0:03:04.81,0:03:07.58,Default,,0000,0000,0000,,使痛苦持续更久\N{\rEn}And the pain would be prolonged.
+Dialogue: 0,0:03:07.78,0:03:10.50,Default,,0000,0000,0000,,每滴溅落的水花\N{\rEn}Each small splash of the water,
+Dialogue: 0,0:03:10.84,0:03:12.71,Default,,0000,0000,0000,,有如滚碳\N{\rEn}Was like a burning coal.
+Dialogue: 0,0:03:16.69,0:03:18.89,Default,,0000,0000,0000,,长崎奉行官抓了四名修士(奉行：大小藩的地方官)\N{\rEn}The Governor of Nagasaki took four friars,
+Dialogue: 0,0:03:19.56,0:03:22.50,Default,,0000,0000,0000,,和我们在云仙的一个自属教会\N{\rEn}and one of our own society to Unzen.
+Dialogue: 0,0:03:23.61,0:03:25.34,Default,,0000,0000,0000,,那里有温泉\N{\rEn}There are hotsprings there.
+Dialogue: 0,0:03:26.69,0:03:29.50,Default,,0000,0000,0000,,日本人称之为：“云仙地狱”\N{\rEn}The Japanese call them: Hells
+Dialogue: 0,0:03:29.78,0:03:31.58,Default,,0000,0000,0000,,一方面，我以为，讲笑\N{\rEn}Partly, I think, in mockery.
+Dialogue: 0,0:03:31.97,0:03:35.50,Default,,0000,0000,0000,,又一方面，我必须告诉你，讲真\N{\rEn}and partly, I must tell you, in truth.
+Dialogue: 0,0:03:43.52,0:03:48.46,Default,,0000,0000,0000,,官员们要我们的教士抛弃神及神的爱的福音\N{\rEn}The officials told our Padres to abandon God and the gospel of his love.
+Dialogue: 0,0:03:49.78,0:03:53.00,Default,,0000,0000,0000,,然而他们不只是拒绝弃教\N{\rEn}But they not only refused to apostatize.
+Dialogue: 0,0:03:53.29,0:03:55.70,Default,,0000,0000,0000,,他们要求受折磨\N{\rEn}They asked to be tortured.
+Dialogue: 0,0:03:55.79,0:03:59.09,Default,,0000,0000,0000,,这样，他们就可以证明他们信仰的力量\N{\rEn}So they could demonstrate the strength of their faith
+Dialogue: 0,0:03:59.29,0:04:01.59,Default,,0000,0000,0000,,而神将与他们同在\N{\rEn}and the presence of God within them.
+Dialogue: 0,0:04:03.82,0:04:08.42,Default,,0000,0000,0000,,有些留在山上，长达33天\N{\rEn}Some remained on the mountain, for 33 days.
+Dialogue: 0,0:04:12.16,0:04:16.49,Default,,0000,0000,0000,,他们的勇气故事把希望给了我们的传教士\N{\rEn}The story of their courage gives hope to those of us priests
+Dialogue: 0,0:04:16.72,0:04:18.99,Default,,0000,0000,0000,,那些潜藏此处者\N{\rEn}who remain here in secret.
+Dialogue: 0,0:04:19.28,0:04:22.41,Default,,0000,0000,0000,,我们不会抛弃我们潜藏的基督徒\N{\rEn}We will not abandon our hidden Christians.
+Dialogue: 0,0:04:22.52,0:04:23.99,Default,,0000,0000,0000,,那些身陷恐惧者\N{\rEn}Who live in fear.
+Dialogue: 0,0:04:26.97,0:04:31.30,Default,,0000,0000,0000,,我们只会变得更强，籍由主爱\N{\rEn}We only grow stronger in his love.
+Dialogue: 0,0:04:36.13,0:04:39.50,Default,,0000,0000,0000,,费雷拉和我们失联\N{\rEn}Ferreira is lost to us.
+Dialogue: 0,0:04:43.58,0:04:46.00,Default,,0000,0000,0000,,这是他最后一封信\N{\rEn}This was his last letter.
+Dialogue: 0,0:04:48.13,0:04:49.20,Default,,0000,0000,0000,,为何失联？\N{\rEn}Why lost?
+Dialogue: 0,0:04:50.33,0:04:53.26,Default,,0000,0000,0000,,此信送交我处，正值你旅行葡萄牙之际\N{\rEn}This letter came to us, when you were traveling from Portugal.
+Dialogue: 0,0:04:53.44,0:04:58.57,Default,,0000,0000,0000,,它经年始至我处，被藏匿、走私、赎回\N{\rEn}It took years to reach us, it was hidden, smuggled, ransomed.
+Dialogue: 0,0:04:58.98,0:05:02.14,Default,,0000,0000,0000,,最终交至我手则由一位荷兰商贩\N{\rEn}And finally put into my hand by a Dutch trader,
+Dialogue: 0,0:05:02.35,0:05:04.55,Default,,0000,0000,0000,,那位同携其它消息者\N{\rEn}Who had other news as well.
+Dialogue: 0,0:05:07.45,0:05:08.45,Default,,0000,0000,0000,,他活着吗\N{\rEn}He is alive?
+Dialogue: 0,0:05:10.63,0:05:12.30,Default,,0000,0000,0000,,传闻他已弃教\N{\rEn}That he apostatized.
+Dialogue: 0,0:05:13.63,0:05:18.20,Default,,0000,0000,0000,,据说他公开谴责神，抛弃了其信仰\N{\rEn}That he denounced God in public and abandoned his faith.
+Dialogue: 0,0:05:18.46,0:05:21.06,Default,,0000,0000,0000,,如今已成为一名日本人\N{\rEn}And is now living as a Japanese.
+Dialogue: 0,0:05:26.25,0:05:27.65,Default,,0000,0000,0000,,那不可能\N{\rEn}That's not possible.
+Dialogue: 0,0:05:29.92,0:05:32.95,Default,,0000,0000,0000,,神父费雷拉冒死于日本各地传播我等信仰\N{\rEn}Father Ferreira risked his life to spread our faith all over Japan.
+Dialogue: 0,0:05:33.87,0:05:35.94,Default,,0000,0000,0000,,我们有今天都因为他\N{\rEn}We're here today because of him.
+Dialogue: 0,0:05:36.83,0:05:39.33,Default,,0000,0000,0000,,是的，他曾是...他是我们中最强大的\N{\rEn}Yes, he was... he is the strongest of us.
+Dialogue: 0,0:05:39.36,0:05:44.16,Default,,0000,0000,0000,,他写下那些话，正值所有迫害最为彻底\N{\rEn}He wrote those words during the most sweeping persecution of all.
+Dialogue: 0,0:05:44.20,0:05:46.50,Default,,0000,0000,0000,,现在情况则更糟\N{\rEn}Now things are even worse.
+Dialogue: 0,0:05:46.66,0:05:49.06,Default,,0000,0000,0000,,数千人死去\N{\rEn}Thousands are dead.
+Dialogue: 0,0:05:49.43,0:05:51.20,Default,,0000,0000,0000,,因为我们带给他们那些\N{\rEn}Because of what we brought them.
+Dialogue: 0,0:05:51.40,0:05:53.17,Default,,0000,0000,0000,,还有数千人已放弃他们的信仰\N{\rEn}Thousands more have given up their faith.
+Dialogue: 0,0:05:54.57,0:05:58.80,Default,,0000,0000,0000,,你是说这商贩带来消息，只是未经证实，是吗\N{\rEn}You said this trader brought news, but it's not proven, is it?
+Dialogue: 0,0:05:58.96,0:06:03.03,Default,,0000,0000,0000,,它可能是个诽谤以深入瓦解我等信仰\N{\rEn}It could be a slander created to further discredit our faith.
+Dialogue: 0,0:06:03.16,0:06:06.62,Default,,0000,0000,0000,,考虑到该国的迫害程度\N{\rEn}Given the extent of the persecution in that country.
+Dialogue: 0,0:06:06.65,0:06:09.79,Default,,0000,0000,0000,,恕我失敬，那里定有大众仍需我们\N{\rEn}Respectfully, there must multitudes there who need us too.
+Dialogue: 0,0:06:09.82,0:06:13.15,Default,,0000,0000,0000,,而事实上，信中他再无多言\N{\rEn}And the fact, there has been no other word of him.
+Dialogue: 0,0:06:13.25,0:06:16.01,Default,,0000,0000,0000,,- 至于那些消息经由荷兰...- 谣言，神父，只是\N{\rEn}- And the news brought by the Dutch... - Rumors, Father, only.
+Dialogue: 0,0:06:16.60,0:06:20.00,Default,,0000,0000,0000,,我必须推断，那是真的\N{\rEn}I must conclude, it is true.
+Dialogue: 0,0:06:22.49,0:06:25.20,Default,,0000,0000,0000,,-如果是真的，神父\N{\rEn}-If it is true, Father.
+Dialogue: 0,0:06:25.25,0:06:29.50,Default,,0000,0000,0000,,那它意味着啥\N{\rEn}What would it mean?
+Dialogue: 0,0:06:30.40,0:06:33.47,Default,,0000,0000,0000,,对耶稣会，对于整个欧洲的天主教\N{\rEn}For the Jesuits. For the whole of Catholic Europe?
+Dialogue: 0,0:06:34.42,0:06:38.00,Default,,0000,0000,0000,,在我看来，我们此番使命，紧迫尤胜以往\N{\rEn}It's seems to me that our mission here, is more urgent than ever.
+Dialogue: 0,0:06:38.09,0:06:40.75,Default,,0000,0000,0000,,我们得去找到神父费雷拉\N{\rEn}We must go find Father Ferreira.
+Dialogue: 0,0:06:43.52,0:06:45.50,Default,,0000,0000,0000,,我不允许那样\N{\rEn}I can not allow that.
+Dialogue: 0,0:06:48.87,0:06:51.50,Default,,0000,0000,0000,,怎，我们怎能放弃我们的使命\N{\rEn}How. How can we abandon our mission?
+Dialogue: 0,0:06:51.66,0:06:53.15,Default,,0000,0000,0000,,你们的使命，神父加佩\N{\rEn}Your mission, Father Garupe,
+Dialogue: 0,0:06:53.35,0:06:55.83,Default,,0000,0000,0000,,是找到费雷拉的消息，你已找到了\N{\rEn}was to find word of Ferreira, you have found it.
+Dialogue: 0,0:06:58.25,0:07:00.81,Default,,0000,0000,0000,,-原谅我神父，只是这封信\N{\rEn}-Excuse me Father, but this letter
+Dialogue: 0,0:07:01.08,0:07:03.21,Default,,0000,0000,0000,,讲述了最可怕的故事\N{\rEn}Relates the most terrible story,
+Dialogue: 0,0:07:03.41,0:07:06.40,Default,,0000,0000,0000,,却只字未提费雷拉本人\N{\rEn}but it says nothing of Ferreira himself.
+Dialogue: 0,0:07:06.54,0:07:08.37,Default,,0000,0000,0000,,他出了啥事仍是未知\N{\rEn}Whatever happened to him is still unknown.
+Dialogue: 0,0:07:08.46,0:07:13.56,Default,,0000,0000,0000,,我们所知其命运的全部，只是这诽谤\N{\rEn}All that we know of his fate, is this one slander.
+Dialogue: 0,0:07:15.22,0:07:17.28,Default,,0000,0000,0000,,请允许我，神父范礼安，但\N{\rEn}Permit me, Father Valignano, but
+Dialogue: 0,0:07:19.73,0:07:22.66,Default,,0000,0000,0000,,我相信我们的使命依然成立\N{\rEn}I believe our mission still stands.
+Dialogue: 0,0:07:27.80,0:07:33.23,Default,,0000,0000,0000,,你可知有多少基督徒？在岛原半岛被当局处决\N{\rEn}Do you know how many Christians, the authorities executed in Shimabara?
+Dialogue: 0,0:07:33.72,0:07:36.32,Default,,0000,0000,0000,,数千人，数以万计\N{\rEn}Thousands, tens of thousands.
+Dialogue: 0,0:07:36.45,0:07:38.19,Default,,0000,0000,0000,,他们大多数被斩首\N{\rEn}Most of them beheaded.
+Dialogue: 0,0:07:38.32,0:07:39.95,Default,,0000,0000,0000,,不，对你们来说太危险了\N{\rEn}No, it's far too dangerous for you.
+Dialogue: 0,0:07:40.31,0:07:41.40,Default,,0000,0000,0000,,是，但神父\N{\rEn}Yes, but Father,
+Dialogue: 0,0:07:41.60,0:07:43.48,Default,,0000,0000,0000,,我们怎能忽视那个以信仰养育我们的人\N{\rEn}how can we neglect the man who nurtured us in faith?
+Dialogue: 0,0:07:44.49,0:07:46.79,Default,,0000,0000,0000,,他为我们塑造了世界\N{\rEn}He shapes the world for us.
+Dialogue: 0,0:07:46.81,0:07:48.95,Default,,0000,0000,0000,,即使诽谤是真的\N{\rEn}And even if the slander should be true
+Dialogue: 0,0:07:49.27,0:07:51.64,Default,,0000,0000,0000,,而神父费雷拉有罪。-是的\N{\rEn}then Father Ferreira is damned. - Yes.
+Dialogue: 0,0:07:51.68,0:07:54.48,Default,,0000,0000,0000,,我们别无选择除了拯救他的灵魂\N{\rEn}We have no choice but to save his soul.
+Dialogue: 0,0:07:56.76,0:07:59.16,Default,,0000,0000,0000,,- 这是你们俩真心所想？-是的\N{\rEn}- This is in your hearts in both of you? - Yes.
+Dialogue: 0,0:07:59.37,0:08:00.37,Default,,0000,0000,0000,,是的\N{\rEn}It is.
+Dialogue: 0,0:08:00.95,0:08:02.62,Default,,0000,0000,0000,,有如我们当初的热诚\N{\rEn}Like our first fervor.
+Dialogue: 0,0:08:07.63,0:08:10.83,Default,,0000,0000,0000,,那我必须相信是神安排它在那儿\N{\rEn}Then I must trust God has put it there.
+Dialogue: 0,0:08:12.58,0:08:14.38,Default,,0000,0000,0000,,他招唤你们来场伟大的考验\N{\rEn}He calls you to a great trial.
+Dialogue: 0,0:08:15.03,0:08:18.03,Default,,0000,0000,0000,,一旦你们涉足该国\N{\rEn}The moment you set foot in that country,
+Dialogue: 0,0:08:18.50,0:08:20.43,Default,,0000,0000,0000,,你们步入险境\N{\rEn}you step into high danger.
+Dialogue: 0,0:08:22.20,0:08:24.93,Default,,0000,0000,0000,,你们将是派往的最后两位传教士\N{\rEn}You will be the last two priests to go.
+Dialogue: 0,0:08:25.16,0:08:27.42,Default,,0000,0000,0000,,两个人的军队\N{\rEn}An army of two.
+Dialogue: 0,0:08:30.53,0:08:35.00,Default,,0000,0000,0000,,3月25日，1640。主的平安，神的荣誉\N{\rEn}May 25th, 1640. Pax Christi, God be praised.
+Dialogue: 0,0:08:35.82,0:08:38.29,Default,,0000,0000,0000,,神父范礼安，当我写下这些字句\N{\rEn}Father Valignano, as I begin these lines.
+Dialogue: 0,0:08:38.32,0:08:41.78,Default,,0000,0000,0000,,我不肯定它一旦完成，它还能抵达你处\N{\rEn}I can not be sure that once they are done, they will ever reach you.
+Dialogue: 0,0:08:42.37,0:08:45.57,Default,,0000,0000,0000,,但我想保持您对我们使命的信心\N{\rEn}But I want to maintain your confidence in our mission.
+Dialogue: 0,0:08:45.81,0:08:47.87,Default,,0000,0000,0000,,及证明您对我们的信任\N{\rEn}And vindicate your faith in us.
+Dialogue: 0,0:08:49.76,0:08:51.83,Default,,0000,0000,0000,,今天，有个极好的消息\N{\rEn}Today, there was wonderful news.
+Dialogue: 0,0:08:51.99,0:08:55.19,Default,,0000,0000,0000,,您的常先生找到艘中国船\N{\rEn}Your Mr.Chiong has found us a Chinese boat.
+Dialogue: 0,0:08:55.19,0:08:56.89,Default,,0000,0000,0000,,它将偷运我们去日本\N{\rEn}It will smuggle us into Japan.
+Dialogue: 0,0:08:57.36,0:09:02.00,Default,,0000,0000,0000,,他还说他在澳门找到了唯一的日本人\N{\rEn}And he claims he's found the only Japanese in Macau.
+Dialogue: 0,0:09:02.10,0:09:05.06,Default,,0000,0000,0000,,可当我们在该国的最佳向导\N{\rEn}To be our most valued guide in that country.
+Dialogue: 0,0:09:05.20,0:09:06.00,Default,,0000,0000,0000,,来吧，这边\N{\rEn}Come on，this way.
+Dialogue: 0,0:09:16.66,0:09:20.50,Default,,0000,0000,0000,,最后，我们见到了首位日本人\N{\rEn}Finally, we meet our first Japanese.
+Dialogue: 0,0:09:20.56,0:09:22.30,Default,,0000,0000,0000,,他不贵，你会明白\N{\rEn}He is not much, you will see.
+Dialogue: 0,0:09:22.82,0:09:25.52,Default,,0000,0000,0000,,但差不多两月了，他是唯一的一个\N{\rEn}But after almost two months, he is the only one.
+Dialogue: 0,0:09:43.71,0:09:45.01,Default,,0000,0000,0000,,醒醒\N{\rEn}Wake up!
+Dialogue: 0,0:09:45.56,0:09:48.50,Default,,0000,0000,0000,,来吧，起来\N{\rEn}Come on, get up!
+Dialogue: 0,0:09:53.75,0:09:57.18,Default,,0000,0000,0000,,他在海上漂流，葡萄牙人救了他\N{\rEn}He was drifting on sea. Portuguese bring him.
+Dialogue: 0,0:09:58.12,0:10:01.05,Default,,0000,0000,0000,,他被困此处，想要回家\N{\rEn}He's stuck here. Wants to go home.
+Dialogue: 0,0:10:05.10,0:10:06.90,Default,,0000,0000,0000,,是他？你真是日本人\N{\rEn}Is he? Are you really Japanese?
+Dialogue: 0,0:10:16.52,0:10:18.79,Default,,0000,0000,0000,,他们会带你回家\N{\rEn}They will take you home.
+Dialogue: 0,0:10:21.49,0:10:23.00,Default,,0000,0000,0000,,你家在哪儿\N{\rEn}Where is your home?
+Dialogue: 0,0:10:24.62,0:10:26.00,Default,,0000,0000,0000,,长崎\N{\rEn}Nagasaki.
+Dialogue: 0,0:10:27.45,0:10:28.71,Default,,0000,0000,0000,,你干哪行\N{\rEn}What's your work?
+Dialogue: 0,0:10:29.18,0:10:31.00,Default,,0000,0000,0000,,你叫他干啥都行\N{\rEn}He will do what you say.
+Dialogue: 0,0:10:34.05,0:10:35.52,Default,,0000,0000,0000,,你懂我们的话\N{\rEn}You know our language?
+Dialogue: 0,0:10:37.92,0:10:38.92,Default,,0000,0000,0000,,懂点\N{\rEn}Little.
+Dialogue: 0,0:10:39.32,0:10:41.32,Default,,0000,0000,0000,,是的，懂点\N{\rEn}Yes. Little.
+Dialogue: 0,0:10:43.07,0:10:45.09,Default,,0000,0000,0000,,你从耶稣会教士学的\N{\rEn}You learned from the Jesuit Padres,
+Dialogue: 0,0:10:45.29,0:10:46.90,Default,,0000,0000,0000,,你一定曾，因此\N{\rEn}you must have, so...
+Dialogue: 0,0:10:46.92,0:10:47.92,Default,,0000,0000,0000,,你是基督徒\N{\rEn}You're Christian.
+Dialogue: 0,0:10:48.08,0:10:49.08,Default,,0000,0000,0000,,不\N{\rEn}No!
+Dialogue: 0,0:10:50.59,0:10:51.59,Default,,0000,0000,0000,,不是基督徒\N{\rEn}No Christian.
+Dialogue: 0,0:10:53.99,0:10:57.00,Default,,0000,0000,0000,,好向导归你，他也是基督徒\N{\rEn}Good guide for you, he's Christian too.
+Dialogue: 0,0:10:57.35,0:10:59.48,Default,,0000,0000,0000,,我不是基督徒\N{\rEn}I am not Christian!
+Dialogue: 0,0:11:00.20,0:11:02.00,Default,,0000,0000,0000,,基督徒死了\N{\rEn}Christians die!
+Dialogue: 0,0:11:05.66,0:11:08.00,Default,,0000,0000,0000,,他们死在长崎了\N{\rEn}They die in Nagasaki.
+Dialogue: 0,0:11:10.78,0:11:12.00,Default,,0000,0000,0000,,-听我说\N{\rEn}-Listen to me.
+Dialogue: 0,0:11:13.53,0:11:15.00,Default,,0000,0000,0000,,我们有钱\N{\rEn}We have money.
+Dialogue: 0,0:11:16.83,0:11:19.20,Default,,0000,0000,0000,,如你肯帮我们，我们就带你回家\N{\rEn}If you can help us, we can take you home
+Dialogue: 0,0:11:19.25,0:11:20.95,Default,,0000,0000,0000,,我们就带你回日本的家\N{\rEn}We can take you home to Japan,
+Dialogue: 0,0:11:21.15,0:11:22.85,Default,,0000,0000,0000,,你想回日本的家吗\N{\rEn}would you like to go home to Japan?
+Dialogue: 0,0:11:23.85,0:11:24.85,Default,,0000,0000,0000,,我想\N{\rEn}I want.
+Dialogue: 0,0:11:26.16,0:11:27.29,Default,,0000,0000,0000,,我想回家\N{\rEn}I want to go home.
+Dialogue: 0,0:11:28.00,0:11:29.50,Default,,0000,0000,0000,,不要钱\N{\rEn}No for money!
+Dialogue: 0,0:11:30.17,0:11:33.30,Default,,0000,0000,0000,,日本是我的祖国\N{\rEn}Japan is the country of my family!
+Dialogue: 0,0:11:34.42,0:11:37.88,Default,,0000,0000,0000,,我求你，别抛弃我，神父\N{\rEn}I beg you, don't abandon me here, Father.
+Dialogue: 0,0:11:38.42,0:11:40.36,Default,,0000,0000,0000,,拜托\N{\rEn}Please!
+Dialogue: 0,0:11:42.00,0:11:43.00,Default,,0000,0000,0000,,带我回家\N{\rEn}Take me home.
+Dialogue: 0,0:11:45.03,0:11:46.23,Default,,0000,0000,0000,,他会是个好向导\N{\rEn}He will be good guide.
+Dialogue: 0,0:11:47.98,0:11:50.32,Default,,0000,0000,0000,,答应我。-我给你洗洗！他们带我回家\N{\rEn}Promise me. -I'll clean you up! They take me home.
+Dialogue: 0,0:11:52.34,0:11:53.34,Default,,0000,0000,0000,,答应我\N{\rEn}Promise me.
+Dialogue: 0,0:12:06.92,0:12:07.92,Default,,0000,0000,0000,,我们的向导\N{\rEn}Our guide.
+Dialogue: 0,0:12:08.99,0:12:10.52,Default,,0000,0000,0000,,他不是基督徒\N{\rEn}He can't be Christian.
+Dialogue: 0,0:12:11.25,0:12:14.32,Default,,0000,0000,0000,,他说他不是，但你能信他所说的一切？\N{\rEn}He says he's not, but can you believe anything he says?
+Dialogue: 0,0:12:15.46,0:12:17.96,Default,,0000,0000,0000,,我甚至不愿相信他是日本人\N{\rEn}I don't even want to believe he is Japanese.
+Dialogue: 0,0:12:21.50,0:12:23.90,Default,,0000,0000,0000,,他又对他们说：你们要到全世界去，\N{\rEn}And he said to them: Go ye into the whole world，\N{\rTop_cn}(注：《兰斯杜埃版圣经》马可福音 第16章第15节[Douay-Rheims Bible 16:15])
+Dialogue: 0,0:12:24.85,0:12:27.95,Default,,0000,0000,0000,,...将福音传给众生。\N{\rEn}...and preach the gospel to every (living) creature.\N{\rTop_cn}(注：该版本无括号内单词)
+Dialogue: 0,0:12:28.09,0:12:30.23,Default,,0000,0000,0000,,甚至有如此人\N{\rEn}Even to one such as this.
+Dialogue: 0,0:12:31.26,0:12:33.13,Default,,0000,0000,0000,,所以我们的主吩咐过\N{\rEn}So our Lord commanded.
+Dialogue: 0,0:12:33.82,0:12:37.92,Default,,0000,0000,0000,,而当我准备如他所托，我看到他的脸在我面前\N{\rEn}And as I prepare to do his work, I see his face before me.
+Dialogue: 0,0:12:39.36,0:12:42.36,Default,,0000,0000,0000,,他看起来像当他必须吩咐彼得时\N{\rEn}He looks as he must have when he commanded Peter.
+Dialogue: 0,0:12:43.59,0:12:45.26,Default,,0000,0000,0000,,喂养我的羊羔\N{\rEn}"Feed My lambs."\N{\rTop_cn}(注：约翰福音 21:15)
+Dialogue: 0,0:12:45.85,0:12:48.72,Default,,0000,0000,0000,,喂养我的羊羔，喂养我的羊\N{\rEn}"Feed my lambs.""Feed my sheep."\N{\rTop_cn}(注：约翰福音 21:15,17)
+Dialogue: 0,0:12:50.04,0:12:52.00,Default,,0000,0000,0000,,这震撼了我\N{\rEn}It fascinates me.
+Dialogue: 0,0:12:52.40,0:12:55.00,Default,,0000,0000,0000,,我感受到对他伟大的爱\N{\rEn}I feel such great love for him.
+Dialogue: 0,0:13:01.44,0:13:05.24,Default,,0000,0000,0000,,加佩和我当然没行李带往日本\N{\rEn}Garrpe and I had absolutely no luggage to bring to Japan.
+Dialogue: 0,0:13:05.24,0:13:07.04,Default,,0000,0000,0000,,除了我们自己的心\N{\rEn}Except our own hearts.
+Dialogue: 0,0:13:07.85,0:13:11.10,Default,,0000,0000,0000,,在航行的平静和风暴中\N{\rEn}And during the calm and storm of the voyage.
+Dialogue: 0,0:13:11.30,0:13:14.50,Default,,0000,0000,0000,,我回想过去的20年\N{\rEn}I reflected upon the 20 years which has passed
+Dialogue: 0,0:13:15.00,0:13:16.50,Default,,0000,0000,0000,,自从迫害爆发以来\N{\rEn}since the persecution has broken out.
+Dialogue: 0,0:13:18.53,0:13:24.50,Default,,0000,0000,0000,,日本的黑土地充满了那么多哀号的基督徒\N{\rEn}The black soil of Japan is filled with the wailing of so many Christians.
+Dialogue: 0,0:13:25.93,0:13:29.73,Default,,0000,0000,0000,,传教士的赤血已流淌太多\N{\rEn}The red blood of priests has float profusely.
+Dialogue: 0,0:13:30.38,0:13:34.00,Default,,0000,0000,0000,,教堂的墙已被推倒\N{\rEn}The walls of churches have fallen down.
+Dialogue: 0,0:13:58.83,0:14:02.03,Default,,0000,0000,0000,,我们已将生命托付此人\N{\rEn}We have committed our lives to this man.
+Dialogue: 0,0:14:03.18,0:14:04.65,Default,,0000,0000,0000,,-主所托付者更多\N{\rEn}-Jesus entrusted more.
+Dialogue: 0,0:14:08.80,0:14:09.80,Default,,0000,0000,0000,,来吧\N{\rEn}Come on.
+Dialogue: 0,0:14:27.09,0:14:28.50,Default,,0000,0000,0000,,这儿，这儿\N{\rEn}Here, here!
+Dialogue: 0,0:14:29.10,0:14:30.00,Default,,0000,0000,0000,,- 吉次郎! 你去哪儿\N{\rEn}- Kichijiro! Where you go?
+Dialogue: 0,0:14:31.84,0:14:32.84,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro!
+Dialogue: 0,0:14:36.66,0:14:39.00,Default,,0000,0000,0000,,他要背叛我们\N{\rEn}He is going to betray us.
+Dialogue: 0,0:14:44.55,0:14:45.55,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro!
+Dialogue: 0,0:14:50.86,0:14:52.66,Default,,0000,0000,0000,,(用拉丁语祷告)\N{\rEn}(Praying in Latin)
+Dialogue: 0,0:14:53.48,0:14:54.68,Default,,0000,0000,0000,,(用拉丁语祷告)\N{\rEn}(Praying in Latin)
+Dialogue: 0,0:14:56.03,0:14:59.00,Default,,0000,0000,0000,,你祷告得太快了\N{\rEn}What you will do too quickly.
+Dialogue: 0,0:15:54.08,0:15:55.28,Default,,0000,0000,0000,,神父(葡萄牙语)\N{\rEn}Padre?
+Dialogue: 0,0:16:09.02,0:16:11.96,Default,,0000,0000,0000,,快点，我们没时间了，没时间\N{\rEn}Hurry, we have no time. No time!
+Dialogue: 0,0:16:16.98,0:16:18.31,Default,,0000,0000,0000,,这地方是哪儿\N{\rEn}What is this place?
+Dialogue: 0,0:16:18.98,0:16:20.20,Default,,0000,0000,0000,,友義村\N{\rEn}Tomogi
+Dialogue: 0,0:16:20.31,0:16:21.31,Default,,0000,0000,0000,,日本\N{\rEn}Japan?
+Dialogue: 0,0:16:21.52,0:16:23.05,Default,,0000,0000,0000,,请快点\N{\rEn}Please be quick.
+Dialogue: 0,0:16:23.27,0:16:24.81,Default,,0000,0000,0000,,这样危险看不到你\N{\rEn}So dangers can not see you.
+Dialogue: 0,0:16:36.10,0:16:37.17,Default,,0000,0000,0000,,我很抱歉，神父\N{\rEn}I'm sorry, Padre.
+Dialogue: 0,0:16:38.07,0:16:41.81,Default,,0000,0000,0000,,太危险了，处决尤甚以往\N{\rEn}Too dangerous, there are more executions than ever.
+Dialogue: 0,0:16:43.19,0:16:45.25,Default,,0000,0000,0000,,如果他们知道我们是基督徒\N{\rEn}If they know we are Christians.
+Dialogue: 0,0:16:45.34,0:16:46.34,Default,,0000,0000,0000,,我们会被杀掉\N{\rEn}We will be killed.
+Dialogue: 0,0:16:46.94,0:16:48.34,Default,,0000,0000,0000,,上帝听到你了\N{\rEn}The Lord hears you.
+Dialogue: 0,0:16:49.55,0:16:53.52,Default,,0000,0000,0000,,是的，他把你们派给我们\N{\rEn}Yes. He sent you to us.
+Dialogue: 0,0:17:11.91,0:17:13.58,Default,,0000,0000,0000,,请，进来，进来\N{\rEn}Please. Enter, enter.
+Dialogue: 0,0:17:33.43,0:17:34.43,Default,,0000,0000,0000,,谢谢你\N{\rEn}Thank you.
+Dialogue: 0,0:17:35.21,0:17:39.00,Default,,0000,0000,0000,,我们有点吃的，如果你们愿意\N{\rEn}We have little food. If you would like.
+Dialogue: 0,0:17:40.13,0:17:43.00,Default,,0000,0000,0000,,你们会安处此地直至早上\N{\rEn}You will be safe here till morning.
+Dialogue: 0,0:17:43.29,0:17:45.29,Default,,0000,0000,0000,,坐吧，坐吧，请\N{\rEn}Sit, sit, please.
+Dialogue: 0,0:17:47.02,0:17:48.02,Default,,0000,0000,0000,,我很抱歉，对不起\N{\rEn}I'm sorry. Sorry.
+Dialogue: 0,0:17:54.74,0:17:57.00,Default,,0000,0000,0000,,你们这样怎么活\N{\rEn}How do you live like this?
+Dialogue: 0,0:17:57.34,0:18:01.00,Default,,0000,0000,0000,,我指，你们作为基督徒怎么活\N{\rEn}I mean, how do you live as Christians.
+Dialogue: 0,0:18:01.18,0:18:05.00,Default,,0000,0000,0000,,当危险如此之巨\N{\rEn}When the danger is so great.
+Dialogue: 0,0:18:05.02,0:18:06.02,Default,,0000,0000,0000,,你懂吗\N{\rEn}You understand?
+Dialogue: 0,0:18:07.42,0:18:11.22,Default,,0000,0000,0000,,我们秘密祈祷，但我们有爷爷大人(じいさま)\N{\rEn}We pray in secret, but we have a Jiisama.
+Dialogue: 0,0:18:12.59,0:18:13.59,Default,,0000,0000,0000,,爷爷大人\N{\rEn}Jiisama?
+Dialogue: 0,0:18:16.11,0:18:18.11,Default,,0000,0000,0000,,谁是爷爷大人\N{\rEn}Who is the Jiisama?
+Dialogue: 0,0:18:26.50,0:18:28.90,Default,,0000,0000,0000,,你领导他们？你领导村庄\N{\rEn}You lead them? You lead the village?
+Dialogue: 0,0:18:29.34,0:18:31.48,Default,,0000,0000,0000,,祷告？祈祷\N{\rEn}In prayer, in devotions?
+Dialogue: 0,0:18:34.73,0:18:39.13,Default,,0000,0000,0000,,他能施行的唯一圣礼是洗礼\N{\rEn}The only sacrament he can perform is baptism.
+Dialogue: 0,0:18:41.39,0:18:47.00,Default,,0000,0000,0000,,我们跟爷爷大人做礼拜，我们隐藏基督像\N{\rEn}We worship with the Jiisama, we hide the Christian images.
+Dialogue: 0,0:18:48.10,0:18:50.00,Default,,0000,0000,0000,,神依旧眷顾我们？\N{\rEn}God still sees us?
+Dialogue: 0,0:18:50.12,0:18:52.62,Default,,0000,0000,0000,,- 是吗？是的\N{\rEn}- Yes? Yes.
+Dialogue: 0,0:18:52.92,0:18:56.92,Default,,0000,0000,0000,,即使我们没有传教士，直到现在\N{\rEn}Even though we don't have a priest, until now.
+Dialogue: 0,0:19:00.77,0:19:01.90,Default,,0000,0000,0000,,请吃\N{\rEn}Please eat!
+Dialogue: 0,0:19:04.96,0:19:06.09,Default,,0000,0000,0000,,请吃\N{\rEn}Please eat!
+Dialogue: 0,0:19:07.19,0:19:08.19,Default,,0000,0000,0000,,谢谢你\N{\rEn}Thank you.
+Dialogue: 0,0:19:25.63,0:19:29.60,Default,,0000,0000,0000,,在此每位基督徒都是我们秘密教会一份子\N{\rEn}Every Christian here is part of our secret church.
+Dialogue: 0,0:19:30.41,0:19:35.98,Default,,0000,0000,0000,,这种信仰，这种信仰，你们有此信仰，如此强大\N{\rEn}This faith, this faith, this faith you have, is so strong.
+Dialogue: 0,0:19:36.15,0:19:37.48,Default,,0000,0000,0000,,你们能有这般勇气\N{\rEn}You have such courage.
+Dialogue: 0,0:19:38.80,0:19:41.20,Default,,0000,0000,0000,,只是这儿有此信仰，还是\N{\rEn}It is only here that there is such faith or...
+Dialogue: 0,0:19:42.42,0:19:44.29,Default,,0000,0000,0000,,其它村庄也有\N{\rEn}...in other villages too?
+Dialogue: 0,0:19:44.44,0:19:48.10,Default,,0000,0000,0000,,我们不知道别的村\N{\rEn}We do not know about other villages.
+Dialogue: 0,0:19:48.50,0:19:50.00,Default,,0000,0000,0000,,我们从不去那儿\N{\rEn}We never go there.
+Dialogue: 0,0:19:50.52,0:19:51.52,Default,,0000,0000,0000,,你们不去\N{\rEn}You don't go?
+Dialogue: 0,0:19:53.23,0:19:55.63,Default,,0000,0000,0000,,别的村太危险了\N{\rEn}Other villages are so dangerous.
+Dialogue: 0,0:19:56.36,0:19:58.23,Default,,0000,0000,0000,,你不知该信任谁\N{\rEn}You do not know who to trust.
+Dialogue: 0,0:19:59.40,0:20:03.00,Default,,0000,0000,0000,,每个人都害怕奉行官\N{\rEn}Everyone fears the Inquisitor,
+Dialogue: 0,0:20:03.30,0:20:04.50,Default,,0000,0000,0000,,井上大人\N{\rEn}Inoue Sama.
+Dialogue: 0,0:20:04.82,0:20:06.50,Default,,0000,0000,0000,,供出基督徒\N{\rEn}Inform on Christian,
+Dialogue: 0,0:20:07.00,0:20:09.50,Default,,0000,0000,0000,,他们给你壹佰枚银币\N{\rEn}and they give you 100 pieces of silver.
+Dialogue: 0,0:20:10.27,0:20:13.14,Default,,0000,0000,0000,,贰佰拿基督修道士\N{\rEn}200 for a Christian brother
+Dialogue: 0,0:20:14.27,0:20:17.00,Default,,0000,0000,0000,,拿传教士，叁佰\N{\rEn}and for priest. 300.
+Dialogue: 0,0:20:19.54,0:20:20.54,Default,,0000,0000,0000,,叁佰\N{\rEn}300.
+Dialogue: 0,0:20:22.57,0:20:24.43,Default,,0000,0000,0000,,我们必须去别的村\N{\rEn}We must go to the other villages.
+Dialogue: 0,0:20:25.36,0:20:29.00,Default,,0000,0000,0000,,你必须让他们知道传教士又来这儿了\N{\rEn}You must let them know that priests are here again.
+Dialogue: 0,0:20:29.62,0:20:31.52,Default,,0000,0000,0000,,我们又来日本这儿了\N{\rEn}And we are here in Japan again.
+Dialogue: 0,0:20:32.00,0:20:33.00,Default,,0000,0000,0000,,会好起来的\N{\rEn}It would be good.
+Dialogue: 0,0:20:37.26,0:20:39.00,Default,,0000,0000,0000,,传闻\N{\rEn}There was hears
+Dialogue: 0,0:20:39.26,0:20:42.00,Default,,0000,0000,0000,,有位神父，曾在此处\N{\rEn}a Padre, who was here
+Dialogue: 0,0:20:42.26,0:20:44.00,Default,,0000,0000,0000,,叫做费雷拉\N{\rEn}called Ferreira.
+Dialogue: 0,0:20:45.00,0:20:46.00,Default,,0000,0000,0000,,神父费雷拉\N{\rEn}Father Ferreira.
+Dialogue: 0,0:20:46.49,0:20:49.00,Default,,0000,0000,0000,,你听说过他吗\N{\rEn}Have you heard of him?
+Dialogue: 0,0:20:51.00,0:20:52.00,Default,,0000,0000,0000,,象我们\N{\rEn}Like us？
+Dialogue: 0,0:20:52.29,0:20:54.79,Default,,0000,0000,0000,,没。- 没\N{\rEn}No. - No?
+Dialogue: 0,0:21:00.52,0:21:01.52,Default,,0000,0000,0000,,你们不吃吗\N{\rEn}You do not eat?
+Dialogue: 0,0:21:04.88,0:21:11.35,Default,,0000,0000,0000,,这是为{\rTop_cn}(感谢){\rDefault}你们{\rTop_cn}(教导我们信仰主){\rDefault}准备的\N{\rEn}It is you who feed us.
+Dialogue: 0,0:22:16.74,0:22:19.74,Default,,0000,0000,0000,,他们不敢经由大路带我们去别处\N{\rEn}They do not dare take us anywhere by the main road.
+Dialogue: 0,0:22:20.15,0:22:24.22,Default,,0000,0000,0000,,如此潜行真是个可怕的负担\N{\rEn}To hide like this must be a terrible burden.
+Dialogue: 0,0:22:24.55,0:22:28.02,Default,,0000,0000,0000,,我被来自这些人的珍视的感受淹没\N{\rEn}I was overwhelmed by the love I felt from these people.
+Dialogue: 0,0:22:28.67,0:22:31.04,Default,,0000,0000,0000,,即使他们脸上并无明示\N{\rEn}Even though their faces couldn't show it.
+Dialogue: 0,0:22:32.35,0:22:36.28,Default,,0000,0000,0000,,多年的保密，已使他们的脸成为面具\N{\rEn}Long years of secrecy, have made their faces into masks.
+Dialogue: 0,0:22:37.49,0:22:40.56,Default,,0000,0000,0000,,为何他们非得痛苦如斯\N{\rEn}Why do they have to suffer so much?
+Dialogue: 0,0:22:40.97,0:22:44.50,Default,,0000,0000,0000,,为何神让他们忍受这般负累\N{\rEn}Why did God make them to bear such a burden?
+Dialogue: 0,0:22:45.36,0:22:48.50,Default,,0000,0000,0000,,这是这儿最安全的\N{\rEn}This is the safest here.
+Dialogue: 0,0:22:49.11,0:22:52.11,Default,,0000,0000,0000,,这是做木炭的小屋\N{\rEn}This hut for making charcoal.
+Dialogue: 0,0:22:53.81,0:22:56.61,Default,,0000,0000,0000,,- 当你听到这种声音\N{\rEn}- When you hear this sound.
+Dialogue: 0,0:22:59.43,0:23:01.16,Default,,0000,0000,0000,,就是我们\N{\rEn}It will be us.
+Dialogue: 0,0:23:01.69,0:23:04.23,Default,,0000,0000,0000,,如果你听到任何不一样\N{\rEn}If you hear anything else.
+Dialogue: 0,0:23:16.07,0:23:17.37,Default,,0000,0000,0000,,藏住\N{\rEn}Hide.
+Dialogue: 0,0:23:21.10,0:23:24.90,Default,,0000,0000,0000,,白天我们紧闭小屋门扉\N{\rEn}During the day we keep the door of our hut tightly closed.
+Dialogue: 0,0:23:25.22,0:23:27.10,Default,,0000,0000,0000,,力求悄无声息\N{\rEn}And refrain from the slightest noise,
+Dialogue: 0,0:23:27.30,0:23:29.18,Default,,0000,0000,0000,,以免外面路过的人听到\N{\rEn}lest anyone passing outside may hear it.
+Dialogue: 0,0:23:31.54,0:23:35.48,Default,,0000,0000,0000,,只有天黑才可安全的下山进村\N{\rEn}Only the dark makes it safe for us to go down into the village.
+Dialogue: 0,0:23:35.56,0:23:36.92,Default,,0000,0000,0000,,去主持信徒\N{\rEn}And administer to the faithful.
+Dialogue: 0,0:23:45.31,0:23:48.71,Default,,0000,0000,0000,,终于，他们有了传教士可以原谅他们的罪\N{\rEn}Finally, they had priests to forgive their sins.
+Dialogue: 0,0:23:52.55,0:23:56.00,Default,,0000,0000,0000,,赐福我，神父，我有罪啊\N{\rEn}Bless me Padre, for I have sinned.
+Dialogue: 0,0:23:56.40,0:23:58.13,Default,,0000,0000,0000,,忏悔。- 我有罪\N{\rEn}Confession. - I have sinned!
+Dialogue: 0,0:24:06.13,0:24:07.13,Default,,0000,0000,0000,,再来一次？\N{\rEn}One more time?
+Dialogue: 0,0:24:08.30,0:24:09.90,Default,,0000,0000,0000,,什么？从头开始吗\N{\rEn}What? From the beginning?
+Dialogue: 0,0:24:10.18,0:24:11.18,Default,,0000,0000,0000,,再来一次\N{\rEn}One more time.
+Dialogue: 0,0:24:15.17,0:24:17.77,Default,,0000,0000,0000,,我们整夜聆听他们的忏悔\N{\rEn}We heard their confessions all night.
+Dialogue: 0,0:24:18.87,0:24:22.73,Default,,0000,0000,0000,,即使我们并非总能确定告解的是什么\N{\rEn}Even though we could not always be sure what was being confessed
+Dialogue: 0,0:24:26.46,0:24:30.00,Default,,0000,0000,0000,,现在天主教带来了爱\N{\rEn}And now Christianity brought love，
+Dialogue: 0,0:24:30.79,0:24:37.12,Default,,0000,0000,0000,,尊严，既第一次被视为神的子民而非牲畜\N{\rEn}The dignity for the first time of being treated like God's creatures, not animals
+Dialogue: 0,0:24:37.59,0:24:41.50,Default,,0000,0000,0000,,以及承诺，既他们所有的苦难不会以虚无终结\N{\rEn}And the promise that all their suffering would not end in nothingness，
+Dialogue: 0,0:24:41.73,0:24:43.13,Default,,0000,0000,0000,,而是救赎\N{\rEn}But in salvation.
+Dialogue: 0,0:24:47.17,0:24:49.30,Default,,0000,0000,0000,,我们在深夜举行弥撒\N{\rEn}We offer mass in the dead of night.
+Dialogue: 0,0:24:49.92,0:24:52.32,Default,,0000,0000,0000,,就像他们在地下墓穴做那样\N{\rEn}Just as they did in the catacombs.
+Dialogue: 0,0:24:52.95,0:24:53.95,Default,,0000,0000,0000,,轻声地\N{\rEn}Quietly.
+Dialogue: 0,0:25:31.37,0:25:36.04,Default,,0000,0000,0000,,我们现在与神同在天堂了？\N{\rEn}We now are with God in Paradiso?
+Dialogue: 0,0:25:38.74,0:25:43.47,Default,,0000,0000,0000,,- 天堂？天堂！- 是的，天堂\N{\rEn}- Paradiso? Paradise? - Yes, paradise.
+Dialogue: 0,0:25:43.56,0:25:45.56,Default,,0000,0000,0000,,现在？- 是的\N{\rEn}Now? - Yes.
+Dialogue: 0,0:25:47.20,0:25:49.90,Default,,0000,0000,0000,,不，不是\N{\rEn}No, no.
+Dialogue: 0,0:25:50.42,0:25:54.00,Default,,0000,0000,0000,,但现在神就在那儿\N{\rEn}But God is there now
+Dialogue: 0,0:25:55.00,0:25:56.45,Default,,0000,0000,0000,,- 直至永远\N{\rEn}- and forever
+Dialogue: 0,0:25:56.95,0:26:00.08,Default,,0000,0000,0000,,他为我们大家准备了位置，即使现在\N{\rEn}He prepares a place for us all, even now.
+Dialogue: 0,0:26:10.51,0:26:13.51,Default,,0000,0000,0000,,抱歉，塞巴斯蒂，为我的不耐烦\N{\rEn}Sorry Sebastian for my impatience.
+Dialogue: 0,0:26:15.47,0:26:17.87,Default,,0000,0000,0000,,我为我的挫折甚感羞愧\N{\rEn}I'm ashamed of my frustration.
+Dialogue: 0,0:26:19.47,0:26:23.57,Default,,0000,0000,0000,,孩子现已安享神的恩典，那才是重要的\N{\rEn}The child is safe in the grace of God now, and that is what is important.
+Dialogue: 0,0:26:26.31,0:26:28.77,Default,,0000,0000,0000,,而你是个不良耶稣会士\N{\rEn}And you're a bad Jesuit.
+Dialogue: 0,0:26:43.55,0:26:46.48,Default,,0000,0000,0000,,我厌倦了整日被困此处\N{\rEn}I'm sick of being trapped in here all day!
+Dialogue: 0,0:26:48.69,0:26:49.69,Default,,0000,0000,0000,,吃吧\N{\rEn}Eat.
+Dialogue: 0,0:26:50.59,0:26:53.85,Default,,0000,0000,0000,,我们甚至不知神父费雷拉是生是死\N{\rEn}We don't even know if Father Ferreira is alive or dead.
+Dialogue: 0,0:26:54.00,0:26:56.60,Default,,0000,0000,0000,,村民们从未听说过他\N{\rEn}The villagers never even heard of him.
+Dialogue: 0,0:26:56.70,0:26:58.64,Default,,0000,0000,0000,,这些人太担惊受怕了\N{\rEn}These people are so frightened.
+Dialogue: 0,0:26:59.69,0:27:02.70,Default,,0000,0000,0000,,满脑子恐惧，还有虱子\N{\rEn}There's fear over their heads and lice.
+Dialogue: 0,0:27:02.88,0:27:05.75,Default,,0000,0000,0000,,他们有我们，我们使他们安心\N{\rEn}They have us, we comfort them.
+Dialogue: 0,0:27:05.80,0:27:07.66,Default,,0000,0000,0000,,我们还需坚持到几时\N{\rEn}How much longer can we do that?
+Dialogue: 0,0:27:08.93,0:27:12.00,Default,,0000,0000,0000,,我们请缨这使命，弗朗西斯科\N{\rEn}We asked for this mission, Francisco.
+Dialogue: 0,0:27:12.34,0:27:16.97,Default,,0000,0000,0000,,我们祈求此番历练，然后神听到了\N{\rEn}We prayed for this in the exercises. God heard us then.
+Dialogue: 0,0:27:17.00,0:27:18.21,Default,,0000,0000,0000,,现在他也听着我们\N{\rEn}And he hears us now!
+Dialogue: 0,0:27:18.84,0:27:22.00,Default,,0000,0000,0000,,那也许他能引导我们找到费雷拉，如此我们就能知道真相\N{\rEn}Then may he guide us to Ferreira, so we can know the truth.
+Dialogue: 0,0:27:25.06,0:27:27.62,Default,,0000,0000,0000,,你觉得那可能吗？他的力量失去了\N{\rEn}You think it's possible that his strength gave up
+Dialogue: 0,0:27:27.66,0:27:31.46,Default,,0000,0000,0000,,趴在筑后守面前，像狗一样献上膝盖\N{\rEn}And he groveled to this Inquisitor anyway, went on his knees like a dog?
+Dialogue: 0,0:27:31.48,0:27:32.88,Default,,0000,0000,0000,,谣言就是那样\N{\rEn}That so is the rumor.
+Dialogue: 0,0:27:34.09,0:27:39.19,Default,,0000,0000,0000,,即使井上是公认的魔鬼，费雷拉必能对抗他\N{\rEn}Even if Inoue is the devil everyone claims, Ferreira would stand up to him.
+Dialogue: 0,0:27:46.21,0:27:48.78,Default,,0000,0000,0000,,我们俩有一个得去长崎找到他\N{\rEn}One of us must go to Nagasaki and find him.
+Dialogue: 0,0:27:48.78,0:27:49.92,Default,,0000,0000,0000,,那太危险\N{\rEn}It's too dangerous!
+Dialogue: 0,0:27:50.55,0:27:53.62,Default,,0000,0000,0000,,对我们，对那些庇护我们的人\N{\rEn}For us, for the people who shelter us.
+Dialogue: 0,0:27:54.38,0:27:57.00,Default,,0000,0000,0000,,我们派吉次郎去，他带回消息我们再行动\N{\rEn}We sent Kichijiro and he brings back word we can act on.
+Dialogue: 0,0:27:57.11,0:27:58.11,Default,,0000,0000,0000,,你疯了吗\N{\rEn}Are you mad?
+Dialogue: 0,0:27:59.20,0:28:00.20,Default,,0000,0000,0000,,他在哪儿\N{\rEn}Where is he?
+Dialogue: 0,0:28:00.85,0:28:01.92,Default,,0000,0000,0000,,他并不在此\N{\rEn}He's never here.
+Dialogue: 0,0:28:02.71,0:28:05.27,Default,,0000,0000,0000,,他总是喝醉，你知他不可信\N{\rEn}He's always drunk, you know he can't be trusted.
+Dialogue: 0,0:28:05.52,0:28:08.62,Default,,0000,0000,0000,,那咋整啊？我们总得做点啥好找到神父费雷拉\N{\rEn}What do we do? We must do something to find Father Ferreira!
+Dialogue: 0,0:28:22.50,0:28:26.50,Default,,0000,0000,0000,,我们出去，我们冒个险，只呆一会儿\N{\rEn}Let's go out. Let's risk it. Just for a moment.
+Dialogue: 0,0:28:39.82,0:28:40.82,Default,,0000,0000,0000,,看啦\N{\rEn}Look.
+Dialogue: 0,0:28:47.32,0:28:48.72,Default,,0000,0000,0000,,那是神的信号\N{\rEn}That's God's sign.
+Dialogue: 0,0:29:05.37,0:29:06.37,Default,,0000,0000,0000,,别动\N{\rEn}Don't move.
+Dialogue: 0,0:29:09.56,0:29:10.96,Default,,0000,0000,0000,,有人在盯着我们\N{\rEn}Someone's here watching us.
+Dialogue: 0,0:29:46.01,0:29:47.01,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,0:29:51.72,0:29:52.72,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,0:29:59.51,0:30:01.50,Default,,0000,0000,0000,,那不是暗号\N{\rEn}That is not the signal.
+Dialogue: 0,0:30:19.35,0:30:20.35,Default,,0000,0000,0000,,- 神父\N{\rEn}- Padre.
+Dialogue: 0,0:30:22.00,0:30:24.55,Default,,0000,0000,0000,,- 别害怕，没事的\N{\rEn}- Do not be afraid. It's alright.
+Dialogue: 0,0:30:26.00,0:30:28.50,Default,,0000,0000,0000,,- 我们不会伤害你们\N{\rEn}- We won't hurt you.
+Dialogue: 0,0:30:29.50,0:30:31.00,Default,,0000,0000,0000,,- 我们是基督徒，神父\N{\rEn}- We're Christians, Padre.
+Dialogue: 0,0:30:31.50,0:30:32.50,Default,,0000,0000,0000,,- 基督徒！\N{\rEn}- Christian!
+Dialogue: 0,0:30:33.50,0:30:34.50,Default,,0000,0000,0000,,- 基督徒！\N{\rEn}- Christian!
+Dialogue: 0,0:30:38.78,0:30:39.78,Default,,0000,0000,0000,,- 我们需要你们\N{\rEn}- We need you.
+Dialogue: 0,0:30:50.25,0:30:51.25,Default,,0000,0000,0000,,别，别\N{\rEn}No, no.
+Dialogue: 0,0:30:52.37,0:30:55.03,Default,,0000,0000,0000,,塞巴斯蒂安！别！塞巴斯蒂安\N{\rEn}Sebastian! No! Sebastian!
+Dialogue: 0,0:30:58.31,0:30:59.81,Default,,0000,0000,0000,,神父\N{\rEn}Padre!
+Dialogue: 0,0:31:02.83,0:31:05.16,Default,,0000,0000,0000,,我们吓着你们，我们很抱歉\N{\rEn}We frightened you, we are sorry.
+Dialogue: 0,0:31:08.06,0:31:12.80,Default,,0000,0000,0000,,我们想请求你们去我们村，去五岛\N{\rEn}We want to ask you to come to our village. To Goto.
+Dialogue: 0,0:31:13.81,0:31:18.35,Default,,0000,0000,0000,,那儿的人失去其信仰，我们的孩子需要你们\N{\rEn}People miss our faith there. Our children need you.
+Dialogue: 0,0:31:18.53,0:31:21.27,Default,,0000,0000,0000,,我们没弥撒，没忏悔\N{\rEn}We have no mass, no confession.
+Dialogue: 0,0:31:24.72,0:31:27.00,Default,,0000,0000,0000,,我们能做的只有祷告\N{\rEn}All we can do is pray.
+Dialogue: 0,0:31:30.62,0:31:32.88,Default,,0000,0000,0000,,你们怎知我们在这儿\N{\rEn}How did you know we were here?
+Dialogue: 0,0:31:35.01,0:31:36.21,Default,,0000,0000,0000,,谁告诉你的\N{\rEn}Who told you?
+Dialogue: 0,0:31:36.79,0:31:37.99,Default,,0000,0000,0000,,是个信徒吗\N{\rEn}Did one of the faithful?
+Dialogue: 0,0:31:40.66,0:31:43.79,Default,,0000,0000,0000,,是我们村的基督徒，吉次郎\N{\rEn}It was a Christian of our village, Kichijiro.
+Dialogue: 0,0:31:46.33,0:31:47.33,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro?
+Dialogue: 0,0:31:50.87,0:31:52.14,Default,,0000,0000,0000,,我们，我们，我们的吉次郎\N{\rEn}Our, our, our Kichijiro?
+Dialogue: 0,0:31:53.36,0:31:55.49,Default,,0000,0000,0000,,他说他跟你们一起来这儿\N{\rEn}He said he came here with you.
+Dialogue: 0,0:31:58.44,0:32:00.31,Default,,0000,0000,0000,,是的，但他不是基督徒\N{\rEn}Yes, but he's not a Christian.
+Dialogue: 0,0:32:00.75,0:32:01.75,Default,,0000,0000,0000,,不，他是\N{\rEn}Yes, he is.
+Dialogue: 0,0:32:03.11,0:32:05.30,Default,,0000,0000,0000,,是真的，他宣布背叛神\N{\rEn}It's true, he spoke against God
+Dialogue: 0,0:32:05.50,0:32:09.00,Default,,0000,0000,0000,,向奉行官井上大人\N{\rEn}to the Inquisitor Inoue Sama.
+Dialogue: 0,0:32:09.50,0:32:11.10,Default,,0000,0000,0000,,- 但那是八年前了\N{\rEn}- But that was eight years ago.
+Dialogue: 0,0:32:22.81,0:32:25.48,Default,,0000,0000,0000,,- 他全家都被检验\N{\rEn}- His whole family was put to test.
+Dialogue: 0,0:32:26.28,0:32:28.10,Default,,0000,0000,0000,,他说背叛神\N{\rEn}He spoke against God.
+Dialogue: 0,0:32:28.34,0:32:31.34,Default,,0000,0000,0000,,但他仍相信\N{\rEn}But he still believes.
+Dialogue: 0,0:32:35.01,0:32:36.01,Default,,0000,0000,0000,,- 不\N{\rEn}- No.
+Dialogue: 0,0:32:36.21,0:32:39.00,Default,,0000,0000,0000,,- 他们需要传教士在五岛。不，不，神父\N{\rEn}- They need priests on Goto. - No, no Padre.
+Dialogue: 0,0:32:39.26,0:32:41.49,Default,,0000,0000,0000,,但是茂吉，我们会回到这儿\N{\rEn}But Mokichi we will return here.
+Dialogue: 0,0:32:41.50,0:32:42.77,Default,,0000,0000,0000,,- 不，不，神父！- 我们会回到这儿\N{\rEn}- No, no, Padre! - We will return here.
+Dialogue: 0,0:32:42.84,0:32:46.00,Default,,0000,0000,0000,,我不认识五岛的人\N{\rEn}I do not know the people of Goto,
+Dialogue: 0,0:32:46.14,0:32:49.90,Default,,0000,0000,0000,,因此我不知他们是否可信\N{\rEn}So I do not know they can be trusted.
+Dialogue: 0,0:32:50.07,0:32:52.50,Default,,0000,0000,0000,,他们是基督徒，跟我们一样\N{\rEn}These are Christians. Like us.
+Dialogue: 0,0:32:52.60,0:32:56.57,Default,,0000,0000,0000,,吉次郎叫他们来这里，我不知何故\N{\rEn}Kichijiro told them to come here. I am not sure why.
+Dialogue: 0,0:32:56.90,0:33:00.00,Default,,0000,0000,0000,,- 他为何做这一切？- 吉次郎带我们来到友義村这儿\N{\rEn}- Why does he do anything? - Kichijiro brought us here to Tomogi.
+Dialogue: 0,0:33:03.88,0:33:06.28,Default,,0000,0000,0000,,就只是待几天\N{\rEn}It will only be for a few days.
+Dialogue: 0,0:33:09.23,0:33:14.77,Default,,0000,0000,0000,,但是，一人留在这儿？拜托\N{\rEn}But one will stay here? Please.
+Dialogue: 0,0:34:13.50,0:34:15.29,Default,,0000,0000,0000,,我们正丢下他们\N{\rEn}We're losing them.
+Dialogue: 0,0:35:00.00,0:35:01.00,Default,,0000,0000,0000,,牧師大人\N{\rEn}神父大人
+Dialogue: 0,0:35:06.00,0:35:09.00,Default,,0000,0000,0000,,没关系的，没关系\N{\rEn}だいじょうぶ，だいじょうぶやげ
+Dialogue: 0,0:35:09.50,0:35:10.50,Default,,0000,0000,0000,,快点\N{\rEn}はやく
+Dialogue: 0,0:35:11.00,0:35:13.00,Default,,0000,0000,0000,,是的，是的\N{\rEn}そうだ，そうだ
+Dialogue: 0,0:35:31.13,0:35:34.39,Default,,0000,0000,0000,,我在旅途中感受到的恐惧逐渐消失\N{\rEn}The fear I felt on the journey faded away
+Dialogue: 0,0:35:34.88,0:35:39.00,Default,,0000,0000,0000,,因为迎接我的喜悦，几乎像我本人一样伟大\N{\rEn}Because the joy which greeted me was almost as great as my own.
+Dialogue: 0,0:35:41.16,0:35:44.30,Default,,0000,0000,0000,,即使吉次郎看起来也是颇受欢迎\N{\rEn}Even the sight of Kichijiro was somehow welcome.
+Dialogue: 0,0:35:49.79,0:35:52.26,Default,,0000,0000,0000,,我感谢神把我带到这里\N{\rEn}I thanked God for bringing me here.
+Dialogue: 0,0:36:00.85,0:36:03.91,Default,,0000,0000,0000,,在那天，信徒收到了新的希望\N{\rEn}On that day, the faithful received fresh hope.
+Dialogue: 0,0:36:05.59,0:36:06.99,Default,,0000,0000,0000,,而我重获新生\N{\rEn}And I was renewed.
+Dialogue: 0,0:36:19.39,0:36:20.46,Default,,0000,0000,0000,,他们则奔向我\N{\rEn}And they came to me.
+Dialogue: 0,0:36:22.79,0:36:26.29,Default,,0000,0000,0000,,不只是五岛，还有基督徒不辞路遥\N{\rEn}Not only from Goto, for the Christians made their way
+Dialogue: 0,0:36:26.46,0:36:29.16,Default,,0000,0000,0000,,翻山越岭，从别的村来\N{\rEn}through the mountains, from other villages.
+Dialogue: 0,0:36:29.87,0:36:32.61,Default,,0000,0000,0000,,我感觉神本尊是如此之近\N{\rEn}I felt God himself was so near.
+Dialogue: 0,0:36:33.40,0:36:35.40,Default,,0000,0000,0000,,他们在此活得如此艰难\N{\rEn}Their lives here were so hard.
+Dialogue: 0,0:36:35.74,0:36:38.54,Default,,0000,0000,0000,,他们生如牲畜又死如牲畜\N{\rEn}They live like beasts and die like beasts.
+Dialogue: 0,0:36:40.00,0:36:43.20,Default,,0000,0000,0000,,但基督不是为善良和美丽而死\N{\rEn}But Christ did not die for the good and beautiful
+Dialogue: 0,0:36:43.65,0:36:44.65,Default,,0000,0000,0000,,那太容易\N{\rEn}That is easy enough.
+Dialogue: 0,0:36:45.36,0:36:50.89,Default,,0000,0000,0000,,难的是为悲惨和堕落而死\N{\rEn}The hard thing is to die for the miserable and corrupt.
+Dialogue: 0,0:36:51.23,0:36:53.57,Default,,0000,0000,0000,,但在这儿，我知道我是他们中的一员\N{\rEn}But here I knew I was one of them
+Dialogue: 0,0:36:53.77,0:36:57.10,Default,,0000,0000,0000,,我能分享到他们灵魂的饥渴\N{\rEn}and I shared the hunger of their spirit.
+Dialogue: 0,0:37:01.53,0:37:04.00,Default,,0000,0000,0000,,又一个祷告得到回应，在五岛\N{\rEn}Another prayer was answered on Goto.
+Dialogue: 0,0:37:04.70,0:37:07.76,Default,,0000,0000,0000,,在那儿我得到了首个真实消息\N{\rEn}It was there I learned the first real news
+Dialogue: 0,0:37:07.85,0:37:10.05,Default,,0000,0000,0000,,某人可能知道神父费雷拉\N{\rEn}of someone who might know Father Ferreira.
+Dialogue: 0,0:37:11.41,0:37:12.41,Default,,0000,0000,0000,,神父费雷拉\N{\rEn}Padre Ferreira?
+Dialogue: 0,0:37:14.17,0:37:15.70,Default,,0000,0000,0000,,是的，你认识他？- 是啊\N{\rEn}Yes, do you know him? - Yes.
+Dialogue: 0,0:37:16.79,0:37:18.26,Default,,0000,0000,0000,,你见过他？- 是啊\N{\rEn}You've seen him? - Yes.
+Dialogue: 0,0:37:21.02,0:37:22.02,Default,,0000,0000,0000,,何时\N{\rEn}When?
+Dialogue: 0,0:37:23.19,0:37:28.26,Default,,0000,0000,0000,,他给婴儿施了赞美\N{\rEn}He made a praise for infant.
+Dialogue: 0,0:37:30.04,0:37:31.58,Default,,0000,0000,0000,,- 小孩。- 婴儿\N{\rEn}- Baby. - Infant.
+Dialogue: 0,0:37:33.72,0:37:35.72,Default,,0000,0000,0000,,还有病人\N{\rEn}And sick.
+Dialogue: 0,0:37:36.29,0:37:38.79,Default,,0000,0000,0000,,在千町\N{\rEn}At Chimachi.
+Dialogue: 0,0:37:41.71,0:37:45.78,Default,,0000,0000,0000,,但，是在最严禁之前\N{\rEn}But was before that Problem.
+Dialogue: 0,0:37:46.64,0:37:47.64,Default,,0000,0000,0000,,如今何在\N{\rEn}Where is this?
+Dialogue: 0,0:37:47.84,0:37:51.24,Default,,0000,0000,0000,,靠近长崎。长崎\N{\rEn}Near Nagasaki. Nagasaki.
+Dialogue: 0,0:37:56.64,0:37:57.90,Default,,0000,0000,0000,,我不晓得，我不晓得\N{\rEn}I don't know, I don't know.
+Dialogue: 0,0:38:01.01,0:38:03.91,Default,,0000,0000,0000,,他们渴望获得信仰的有形之物\N{\rEn}They are desperate for tangible signs of faith.
+Dialogue: 0,0:38:04.05,0:38:05.91,Default,,0000,0000,0000,,所以我尽我所能\N{\rEn}So I provided what I could.
+Dialogue: 0,0:38:07.53,0:38:10.73,Default,,0000,0000,0000,,我担心他们看重这些简陋的信物\N{\rEn}I worry they value these poor signs of faith
+Dialogue: 0,0:38:10.85,0:38:12.25,Default,,0000,0000,0000,,甚于信仰本身\N{\rEn}more than faith itself.
+Dialogue: 0,0:38:13.93,0:38:15.59,Default,,0000,0000,0000,,但我们怎能拒绝他们\N{\rEn}But how could we deny them?
+Dialogue: 0,0:38:17.63,0:38:21.56,Default,,0000,0000,0000,,最终，我只得把念珠分掉\N{\rEn}And finally, I had to part with my rosary.
+Dialogue: 0,0:38:45.65,0:38:48.51,Default,,0000,0000,0000,,在五岛，我完全疲于应付\N{\rEn}In Goto, I was completely overwhelmed.
+Dialogue: 0,0:38:48.57,0:38:51.03,Default,,0000,0000,0000,,我施洗过上百的成人和儿童\N{\rEn}I baptized over a hundred adults and children.
+Dialogue: 0,0:38:51.51,0:38:53.71,Default,,0000,0000,0000,,聆听无数的忏悔\N{\rEn}Heard confessions without number.
+Dialogue: 0,0:38:53.76,0:38:59.00,Default,,0000,0000,0000,,只有吉次郎的忏悔我觉得最有必要\N{\rEn}But it was from Kichijiro that I felt the greatest need.
+Dialogue: 0,0:39:01.16,0:39:05.00,Default,,0000,0000,0000,,你没拿念珠。- 我不配\N{\rEn}You did not take the rosary. - I did not deserve it.
+Dialogue: 0,0:39:06.12,0:39:07.12,Default,,0000,0000,0000,,为何\N{\rEn}Why?
+Dialogue: 0,0:39:09.04,0:39:10.58,Default,,0000,0000,0000,,因为你背弃神\N{\rEn}Because you denied God?
+Dialogue: 0,0:39:11.22,0:39:12.22,Default,,0000,0000,0000,,对\N{\rEn}Yes.
+Dialogue: 0,0:39:16.10,0:39:17.50,Default,,0000,0000,0000,,只是为了保命\N{\rEn}But only to live.
+Dialogue: 0,0:39:18.99,0:39:25.65,Default,,0000,0000,0000,,我们全家，奉行官逼我们放弃信仰\N{\rEn}My whole family, the Inquisitor wanted us to give up our faith.
+Dialogue: 0,0:39:26.13,0:39:28.19,Default,,0000,0000,0000,,踩踏基督像\N{\rEn}Stomp on Jesus,
+Dialogue: 0,0:39:28.20,0:39:29.50,Default,,0000,0000,0000,,用我们的脚\N{\rEn}with our foot.
+Dialogue: 0,0:39:31.21,0:39:34.00,Default,,0000,0000,0000,,只需一下，即可活命\N{\rEn}Just once, just rest.
+Dialogue: 0,0:39:34.76,0:39:36.50,Default,,0000,0000,0000,,他们不愿\N{\rEn}But they would not.
+Dialogue: 0,0:39:39.08,0:39:43.00,Default,,0000,0000,0000,,但... 我踩了\N{\rEn}But... I did.
+Dialogue: 0,0:39:52.15,0:39:55.50,Default,,0000,0000,0000,,而我不会背弃他们\N{\rEn}But I could not abandon them.
+Dialogue: 0,0:39:55.63,0:40:00.00,Default,,0000,0000,0000,,即使我背弃了神\N{\rEn}Even if I had abandoned God.
+Dialogue: 0,0:40:06.81,0:40:10.21,Default,,0000,0000,0000,,所以，我看着他们死去\N{\rEn}So I watched them die.
+Dialogue: 0,0:40:15.32,0:40:21.38,Default,,0000,0000,0000,,无论我去哪儿，我看到烈火、闻到焦臭\N{\rEn}Wherever I go, I see the fire and smell the flesh.
+Dialogue: 0,0:40:22.12,0:40:25.50,Default,,0000,0000,0000,,当我看到你跟神父加佩...\N{\rEn}When I saw you and Padre Garupe...
+Dialogue: 0,0:40:25.72,0:40:27.20,Default,,0000,0000,0000,,...第一次\N{\rEn}...for the first time,
+Dialogue: 0,0:40:27.48,0:40:29.48,Default,,0000,0000,0000,,我开始相信...\N{\rEn}I started to believe...
+Dialogue: 0,0:40:31.00,0:40:33.60,Default,,0000,0000,0000,,...神可能要我回去\N{\rEn}...that God might take me back.
+Dialogue: 0,0:40:34.94,0:40:38.27,Default,,0000,0000,0000,,因为在我梦里...\N{\rEn}Because in my dreams...
+Dialogue: 0,0:40:40.50,0:40:43.42,Default,,0000,0000,0000,,...烈火不再那么明亮\N{\rEn}...the fire was no longer so bright.
+Dialogue: 0,0:41:01.64,0:41:04.54,Default,,0000,0000,0000,,你要我听你的忏悔吗\N{\rEn}You want me to hear your confession?
+Dialogue: 0,0:41:13.26,0:41:15.33,Default,,0000,0000,0000,,赐福我，神父\N{\rEn}Bless me, Padre.
+Dialogue: 0,0:41:17.28,0:41:19.41,Default,,0000,0000,0000,,我有罪啊\N{\rEn}For I have sinned.
+Dialogue: 0,0:41:28.58,0:41:32.98,Default,,0000,0000,0000,,在五岛的六天以及吉次郎的重拾信仰\N{\rEn}Those six days at Goto and Kichijiro's renewal of faith
+Dialogue: 0,0:41:33.23,0:41:36.30,Default,,0000,0000,0000,,让我觉得吾命甚有价值\N{\rEn}Made me feel that my life was of value
+Dialogue: 0,0:41:36.47,0:41:40.00,Default,,0000,0000,0000,,而我真的是对那些民众有用，在这个国家...\N{\rEn}And that I could really be of use to the people in this country...
+Dialogue: 0,0:41:40.10,0:41:41.50,Default,,0000,0000,0000,,...地球的尽头\N{\rEn}...The ends of the earth.
+Dialogue: 0,0:41:45.83,0:41:49.63,Default,,0000,0000,0000,,奉行所来人了，他们在村里\N{\rEn}Men from the Inquisitor, they are in the village.
+Dialogue: 0,0:41:49.75,0:41:51.15,Default,,0000,0000,0000,,他们抓了市\N{\rEn}They took Ichizo.
+Dialogue: 0,0:43:19.00,0:43:20.50,Default,,0000,0000,0000,,我们收到告发...\N{\rEn}We've been informed...
+Dialogue: 0,0:43:21.50,0:43:22.50,Default,,0000,0000,0000,,...你们中有人...\N{\rEn}...that some of you...
+Dialogue: 0,0:43:23.00,0:43:24.50,Default,,0000,0000,0000,,...比如这个可怜的人\N{\rEn}...like this poor wretch here...
+Dialogue: 0,0:43:25.00,0:43:26.50,Default,,0000,0000,0000,,...是基督徒\N{\rEn}...are Christians.
+Dialogue: 0,0:43:30.00,0:43:33.00,Default,,0000,0000,0000,,但我们年年上缴赋税...\N{\rEn}But we pay our taxes every year...
+Dialogue: 0,0:43:33.50,0:43:36.25,Default,,0000,0000,0000,,...为藩背徭负役\N{\rEn}...and do our duty to the State.
+Dialogue: 0,0:43:36.80,0:43:38.50,Default,,0000,0000,0000,,我们在庙里敬拜神祗\N{\rEn}We worship Buddha in the temple.
+Dialogue: 0,0:43:40.00,0:43:41.20,Default,,0000,0000,0000,,我很清楚...\N{\rEn}I am well aware...
+Dialogue: 0,0:43:41.50,0:43:44.00,Default,,0000,0000,0000,,...你们都是良民\N{\rEn}...that you are all good people.
+Dialogue: 0,0:43:46.00,0:43:47.50,Default,,0000,0000,0000,,我们只要获悉...\N{\rEn}We only want to hear about...
+Dialogue: 0,0:43:48.00,0:43:49.30,Default,,0000,0000,0000,,...那些信奉着...\N{\rEn}...those who embrace...
+Dialogue: 0,0:43:50.00,0:43:51.50,Default,,0000,0000,0000,,...非法信仰的人...\N{\rEn}...the outlawed faith...
+Dialogue: 0,0:43:52.30,0:43:53.30,Default,,0000,0000,0000,,...和那些...\N{\rEn}...and those...
+Dialogue: 0,0:43:54.00,0:43:56.00,Default,,0000,0000,0000,,...窝藏他们的人...\N{\rEn}...who hide them...
+Dialogue: 0,0:43:57.00,0:43:59.50,Default,,0000,0000,0000,,迟早，我们将会知道他们是谁\N{\rEn}In time,we will know who they are.
+Dialogue: 0,0:44:07.20,0:44:09.00,Default,,0000,0000,0000,,想想告发的赏金\N{\rEn}Think of the price for information.
+Dialogue: 0,0:44:09.50,0:44:11.00,Default,,0000,0000,0000,,这么多的银币\N{\rEn}This much silver.
+Dialogue: 0,0:44:16.50,0:44:19.00,Default,,0000,0000,0000,,不要显得极害怕\N{\rEn}Don't look so scared.
+Dialogue: 0,0:44:20.50,0:44:22.50,Default,,0000,0000,0000,,我们给他们三天时间\N{\rEn}Let's give them three days.
+Dialogue: 0,0:44:25.30,0:44:26.30,Default,,0000,0000,0000,,松开他\N{\rEn}Untie him.
+Dialogue: 0,0:44:29.80,0:44:31.50,Default,,0000,0000,0000,,你有三天\N{\rEn}You have three days.
+Dialogue: 0,0:44:32.80,0:44:35.00,Default,,0000,0000,0000,,我们会放了这个人\N{\rEn}We will let this one go.
+Dialogue: 0,0:44:36.50,0:44:39.50,Default,,0000,0000,0000,,但如果三天内我们没收到任何消息\N{\rEn}But if we hear nothing in three days...
+Dialogue: 0,0:44:40.20,0:44:42.20,Default,,0000,0000,0000,,...除了他...\N{\rEn}...in addition to him...
+Dialogue: 0,0:44:42.90,0:44:45.50,Default,,0000,0000,0000,,...我还要带走三个人质\N{\rEn}...I will take three more hostages.
+Dialogue: 0,0:44:47.50,0:44:51.00,Default,,0000,0000,0000,,四个人质都会送往长崎\N{\rEn}The four hostages will be sent to Nagasaki.
+Dialogue: 0,0:44:52.00,0:44:53.00,Default,,0000,0000,0000,,还有...\N{\rEn}And...
+Dialogue: 0,0:44:55.00,0:44:56.50,Default,,0000,0000,0000,,...他们中的一个...\N{\rEn}...one of them...
+Dialogue: 0,0:44:57.00,0:44:58.25,Default,,0000,0000,0000,,...必有你\N{\rEn}...must be you.
+Dialogue: 0,0:45:20.87,0:45:24.00,Default,,0000,0000,0000,,- 不，我们不怕死，神父\N{\rEn}- No, we are not afraid to die, Padres.
+Dialogue: 0,0:45:24.18,0:45:25.78,Default,,0000,0000,0000,,我们永不背叛您\N{\rEn}And we will never surrender you.
+Dialogue: 0,0:45:26.39,0:45:29.43,Default,,0000,0000,0000,,- 没人该死。- 不，但是我们都危险\N{\rEn}- No one should die. - No, but we will be in danger
+Dialogue: 0,0:45:29.56,0:45:31.43,Default,,0000,0000,0000,,无论去留\N{\rEn}Whether you go or stay.
+Dialogue: 0,0:45:31.68,0:45:34.68,Default,,0000,0000,0000,,留下，留下，我们永不背叛您\N{\rEn}Stay. Stay. We will never surrender you.
+Dialogue: 0,0:45:35.58,0:45:37.85,Default,,0000,0000,0000,,但他们会不断搜查，如果我们留下\N{\rEn}But they'll keep coming if we stay.
+Dialogue: 0,0:45:37.98,0:45:41.12,Default,,0000,0000,0000,,他们会摧毁全村，杀掉你们全部，若我们躲于此\N{\rEn}They could destroy the entire village and kill you all while we hide.
+Dialogue: 0,0:45:41.18,0:45:44.41,Default,,0000,0000,0000,,是的，我们别无选择，茂吉，只能如此\N{\rEn}Yes, we have no choice, Mokichi, it's the only thing to do.
+Dialogue: 0,0:45:44.50,0:45:46.63,Default,,0000,0000,0000,,这样才会危险远离你们\N{\rEn}This would draw the danger away from you.
+Dialogue: 0,0:45:47.40,0:45:49.97,Default,,0000,0000,0000,,我们可以藏在吉次郎的岛上\N{\rEn}We can hide on Kichijiro's island.
+Dialogue: 0,0:45:52.88,0:45:53.88,Default,,0000,0000,0000,,我的岛\N{\rEn}My island?
+Dialogue: 0,0:45:55.26,0:45:59.50,Default,,0000,0000,0000,,不，不会有差别，在那儿还是在这儿\N{\rEn}No, there is no difference between there and here.
+Dialogue: 0,0:45:59.86,0:46:02.53,Default,,0000,0000,0000,,他们会去五岛，他们要搜查\N{\rEn}They will come to Goto, they will search.
+Dialogue: 0,0:46:03.06,0:46:05.13,Default,,0000,0000,0000,,同样的事会发生在五岛\N{\rEn}Same thing will happen to Goto.
+Dialogue: 0,0:46:06.82,0:46:07.82,Default,,0000,0000,0000,,他们应当离开\N{\rEn}They should leave.
+Dialogue: 0,0:46:08.41,0:46:09.88,Default,,0000,0000,0000,,神父应当离开\N{\rEn}The Padres should leave.
+Dialogue: 0,0:46:11.76,0:46:13.36,Default,,0000,0000,0000,,这样，我们将得救\N{\rEn}That way, we will be saved!
+Dialogue: 0,0:46:14.67,0:46:16.01,Default,,0000,0000,0000,,你不能那样说\N{\rEn}You can't say that!
+Dialogue: 0,0:46:16.40,0:46:19.33,Default,,0000,0000,0000,,他们来传播上帝的教诲\N{\rEn}They came to spread Deusu's teachings!
+Dialogue: 0,0:46:20.17,0:46:21.51,Default,,0000,0000,0000,,我们不能就这么抛弃他们...\N{\rEn}We can't just give them up...
+Dialogue: 0,0:46:21.65,0:46:24.65,Default,,0000,0000,0000,,...去遭受井上大人的酷刑，毕竟他们是为我们而为\N{\rEn}...to Inoue-sama's tortures after all they have done for us.
+Dialogue: 0,0:46:25.39,0:46:27.62,Default,,0000,0000,0000,,他们已把我们置于险境\N{\rEn}They've put us all in danger!
+Dialogue: 0,0:46:27.72,0:46:31.65,Default,,0000,0000,0000,,我们不至于如此遭罪，神父没来的话\N{\rEn}We wouldn't be in such trouble had the Padres not come!
+Dialogue: 0,0:46:32.85,0:46:35.18,Default,,0000,0000,0000,,安静！安静\N{\rEn}Be quiet! Be quiet!
+Dialogue: 0,0:46:37.27,0:46:39.27,Default,,0000,0000,0000,,我们得保护...\N{\rEn}We will protect...
+Dialogue: 0,0:46:39.56,0:46:41.56,Default,,0000,0000,0000,,...神父\N{\rEn}...the Padres.
+Dialogue: 0,0:46:43.03,0:46:44.03,Default,,0000,0000,0000,,你们得留下\N{\rEn}You will stay.
+Dialogue: 0,0:46:46.89,0:46:50.49,Default,,0000,0000,0000,,现在我们必须挑两人加入我们\N{\rEn}Now we must pick two more to join us.
+Dialogue: 0,0:46:52.17,0:46:57.67,Default,,0000,0000,0000,,我，茂吉和另两个人质\N{\rEn}Me, Mokichi and two more hostages.
+Dialogue: 0,0:46:57.99,0:47:01.26,Default,,0000,0000,0000,,谁愿加入我跟茂吉...\N{\rEn}Who will join me and Mokichi...
+Dialogue: 0,0:47:01.73,0:47:05.80,Default,,0000,0000,0000,,...成为人质去荣耀上帝\N{\rEn}...and become a hostage to honor Deusu?
+Dialogue: 0,0:47:36.52,0:47:39.00,Default,,0000,0000,0000,,吉次郎不是这儿的\N{\rEn}Kichijiro's not from here.
+Dialogue: 0,0:47:39.17,0:47:41.17,Default,,0000,0000,0000,,为何不选他\N{\rEn}Why not him?
+Dialogue: 0,0:47:44.12,0:47:45.12,Default,,0000,0000,0000,,是啊\N{\rEn}Yes.
+Dialogue: 0,0:47:46.44,0:47:49.04,Default,,0000,0000,0000,,为我们所有人着想，你愿去吗\N{\rEn}For all our sakes, would you go?
+Dialogue: 0,0:47:49.37,0:47:51.54,Default,,0000,0000,0000,,官差不会太为难你\N{\rEn}The officials won't be so hard on you.
+Dialogue: 0,0:47:51.71,0:47:53.94,Default,,0000,0000,0000,,他们只抓友義村的人\N{\rEn}It's the people of Tomogi they want.
+Dialogue: 0,0:47:54.35,0:47:55.35,Default,,0000,0000,0000,,他不是这儿的\N{\rEn}He's not from here.
+Dialogue: 0,0:47:56.35,0:47:58.62,Default,,0000,0000,0000,,他可能就是告发我们的人\N{\rEn}He could be the one who informed on us.
+Dialogue: 0,0:47:59.58,0:48:00.98,Default,,0000,0000,0000,,我不是告发者\N{\rEn}I'm not an informer!
+Dialogue: 0,0:48:02.01,0:48:03.51,Default,,0000,0000,0000,,神父，告诉他们\N{\rEn}Padre, tell them!
+Dialogue: 0,0:48:03.86,0:48:05.80,Default,,0000,0000,0000,,我不是告发者\N{\rEn}I'm not an informer!
+Dialogue: 0,0:48:06.09,0:48:07.82,Default,,0000,0000,0000,,我告解过我全部的罪行\N{\rEn}I confessed all my sins!
+Dialogue: 0,0:48:07.95,0:48:10.50,Default,,0000,0000,0000,,那如果你收到了上帝的祝福...\N{\rEn}Then if you've received the Lord's blessing...
+Dialogue: 0,0:48:11.00,0:48:12.00,Default,,0000,0000,0000,,...实行之\N{\rEn}...act like it.
+Dialogue: 0,0:48:12.20,0:48:14.20,Default,,0000,0000,0000,,荣耀他，用你的命\N{\rEn}Honor Him with your life.
+Dialogue: 0,0:48:14.80,0:48:15.30,Default,,0000,0000,0000,,说得对\N{\rEn}That's right!
+Dialogue: 0,0:48:15.70,0:48:17.70,Default,,0000,0000,0000,,荣耀？你说的是什么啊\N{\rEn}Honor? What are you talking about?
+Dialogue: 0,0:48:17.80,0:48:19.16,Default,,0000,0000,0000,,真正的基督徒会懂\N{\rEn}A real Kirishitan would know!
+Dialogue: 0,0:48:19.50,0:48:21.70,Default,,0000,0000,0000,,我要捣碎你的头\N{\rEn}I'm going to smash your head!
+Dialogue: 0,0:48:29.81,0:48:30.81,Default,,0000,0000,0000,,求你\N{\rEn}Please!
+Dialogue: 0,0:48:32.20,0:48:33.37,Default,,0000,0000,0000,,替我们去吧\N{\rEn}Go in our place.
+Dialogue: 0,0:48:33.97,0:48:34.97,Default,,0000,0000,0000,,求你\N{\rEn}Please.
+Dialogue: 0,0:48:44.21,0:48:45.21,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,0:48:52.66,0:48:53.66,Default,,0000,0000,0000,,但是神父\N{\rEn}But Padre?
+Dialogue: 0,0:48:55.10,0:49:01.00,Default,,0000,0000,0000,,如果我们被迫去踏踩圣像\N{\rEn}If we are forced to trample on the Lord,
+Dialogue: 0,0:49:01.50,0:49:03.03,Default,,0000,0000,0000,,我想照做\N{\rEn}I want that for me.
+Dialogue: 0,0:49:05.92,0:49:08.05,Default,,0000,0000,0000,,你必须祈祷以获勇气，茂吉\N{\rEn}You must pray for courage, Mokichi.
+Dialogue: 0,0:49:08.22,0:49:10.49,Default,,0000,0000,0000,,但如果我们不做他们要求的\N{\rEn}But if we do not do what they want,
+Dialogue: 0,0:49:11.02,0:49:13.49,Default,,0000,0000,0000,,本村的每个人都会有危险\N{\rEn}There can be danger for everyone in the village.
+Dialogue: 0,0:49:14.00,0:49:15.87,Default,,0000,0000,0000,,他们会入狱\N{\rEn}They can put in prison.
+Dialogue: 0,0:49:16.27,0:49:17.94,Default,,0000,0000,0000,,永远出不来\N{\rEn}They can wait forever.
+Dialogue: 0,0:49:18.77,0:49:19.97,Default,,0000,0000,0000,,我们该咋办\N{\rEn}What should we do?
+Dialogue: 0,0:49:22.00,0:49:23.47,Default,,0000,0000,0000,,踏踩\N{\rEn}Trample.
+Dialogue: 0,0:49:24.50,0:49:25.20,Default,,0000,0000,0000,,踏踩\N{\rEn}Trample.
+Dialogue: 0,0:49:26.20,0:49:27.00,Default,,0000,0000,0000,,那就踏踩吧\N{\rEn}It's alright to trample.
+Dialogue: 0,0:49:29.26,0:49:30.53,Default,,0000,0000,0000,,你在说啥？\N{\rEn}What are you saying?
+Dialogue: 0,0:49:32.99,0:49:33.99,Default,,0000,0000,0000,,你不能\N{\rEn}You can't!
+Dialogue: 0,0:49:36.38,0:49:40.00,Default,,0000,0000,0000,,- 茂吉，你不能\N{\rEn}- Mokichi. You can't.
+Dialogue: 0,0:50:11.70,0:50:13.37,Default,,0000,0000,0000,,我做了这个给爷爷大人\N{\rEn}I made this for the Jiisama.
+Dialogue: 0,0:50:14.94,0:50:19.14,Default,,0000,0000,0000,,它是我们的全部，直到你们来了\N{\rEn}It was all we had, until you came.
+Dialogue: 0,0:50:21.40,0:50:24.60,Default,,0000,0000,0000,,收下这个，请\N{\rEn}Take this, please.
+Dialogue: 0,0:50:26.81,0:50:28.58,Default,,0000,0000,0000,,以主之名\N{\rEn}In Jesus' name.
+Dialogue: 0,0:50:33.94,0:50:37.21,Default,,0000,0000,0000,,你的信念给了我力量，茂吉\N{\rEn}Your faith gives me strength, Mokichi.
+Dialogue: 0,0:50:38.76,0:50:43.00,Default,,0000,0000,0000,,我希望，我能以同样多的给你\N{\rEn}I wish, I could give as much to you.
+Dialogue: 0,0:50:43.11,0:50:46.00,Default,,0000,0000,0000,,我对神的爱很强烈\N{\rEn}My love for God is strong.
+Dialogue: 0,0:50:46.76,0:50:49.00,Default,,0000,0000,0000,,那跟信念一样吗\N{\rEn}Could that be the same as faith?
+Dialogue: 0,0:50:50.91,0:50:51.91,Default,,0000,0000,0000,,是的\N{\rEn}Yes.
+Dialogue: 0,0:50:54.09,0:50:57.00,Default,,0000,0000,0000,,是的，肯定是的\N{\rEn}Yes. It must be.
+Dialogue: 0,0:51:12.50,0:51:17.00,Default,,0000,0000,0000,,这些人是地球上最虔诚的神的生物\N{\rEn}These people are the most devoted of God's creatures on Earth.
+Dialogue: 0,0:51:18.38,0:51:21.91,Default,,0000,0000,0000,,神父范礼安我告解，我开始怀疑\N{\rEn}Father Valignano I confess, I began to wonder.
+Dialogue: 0,0:51:22.87,0:51:27.47,Default,,0000,0000,0000,,神予我们考验以测试我们，而他所做一切都是好的\N{\rEn}God sends us trials to test us and everything he does is good.
+Dialogue: 0,0:51:27.76,0:51:30.83,Default,,0000,0000,0000,,我祈祷能像主之子那样接受考验\N{\rEn}And I prayed to undergo trials like his son.
+Dialogue: 0,0:51:32.08,0:51:35.81,Default,,0000,0000,0000,,但为何一定要他们的考验如此可怕\N{\rEn}But why must their trial be so terrible?
+Dialogue: 0,0:51:38.90,0:51:42.03,Default,,0000,0000,0000,,且为何，当我看着自己的心\N{\rEn}And why, when I look in my own heart.
+Dialogue: 0,0:51:42.65,0:51:46.05,Default,,0000,0000,0000,,我给他们的答复显得那么软弱吗\N{\rEn}Do the answers I give them seem so weak?
+Dialogue: 0,0:52:00.40,0:52:01.50,Default,,0000,0000,0000,,踩(踏む)\N{\rEn}Fume.
+Dialogue: 0,0:52:42.31,0:52:45.24,Default,,0000,0000,0000,,所有人都做了他们所命令的\N{\rEn}All of them did as they were commanded.
+Dialogue: 0,0:52:46.01,0:52:47.55,Default,,0000,0000,0000,,但那还不够\N{\rEn}But it was not enough.
+Dialogue: 0,0:52:50.53,0:52:52.86,Default,,0000,0000,0000,,你以为我们极易被愚弄\N{\rEn}You think we're fooled so easily?
+Dialogue: 0,0:52:54.01,0:52:55.01,Default,,0000,0000,0000,,我们有注意...\N{\rEn}We noticed...
+Dialogue: 0,0:52:56.21,0:52:57.88,Default,,0000,0000,0000,,...你的呼吸如何...\N{\rEn}...how your breathing...
+Dialogue: 0,0:52:58.09,0:53:00.29,Default,,0000,0000,0000,,...马上变沉重\N{\rEn}...turned heavy just now.
+Dialogue: 0,0:53:00.48,0:53:01.48,Default,,0000,0000,0000,,那不可能\N{\rEn}That can't be!
+Dialogue: 0,0:53:02.28,0:53:03.74,Default,,0000,0000,0000,,因为我们是佛教徒\N{\rEn}Because we are Buddhists.
+Dialogue: 0,0:53:05.49,0:53:06.49,Default,,0000,0000,0000,,很好\N{\rEn}Fine.
+Dialogue: 0,0:53:10.24,0:53:12.57,Default,,0000,0000,0000,,我们试下另一个方式\N{\rEn}Let's try this another way.
+Dialogue: 0,0:53:18.02,0:53:19.02,Default,,0000,0000,0000,,吐这个...\N{\rEn}Spit on this...
+Dialogue: 0,0:53:21.04,0:53:22.31,Default,,0000,0000,0000,,...然后说...\N{\rEn}...and then say...
+Dialogue: 0,0:53:23.03,0:53:25.20,Default,,0000,0000,0000,,...你们所谓的圣洁的处女...\N{\rEn}...your so-called Blessed Blessed Virgin...
+Dialogue: 0,0:53:25.24,0:53:26.24,Default,,0000,0000,0000,,...是妓女\N{\rEn}...is a whore.
+Dialogue: 0,0:53:43.40,0:53:44.60,Default,,0000,0000,0000,,你是基督徒\N{\rEn}You are a Christian.
+Dialogue: 0,0:54:06.17,0:54:07.70,Default,,0000,0000,0000,,你也是基督徒\N{\rEn}You are also a Christian.
+Dialogue: 0,0:54:37.47,0:54:39.54,Default,,0000,0000,0000,,老市不愿吐\N{\rEn}Old Ichizo would not do it.
+Dialogue: 0,0:54:39.56,0:54:40.82,Default,,0000,0000,0000,,茂吉没吐\N{\rEn}Mokichi could not.
+Dialogue: 0,0:54:43.15,0:54:46.89,Default,,0000,0000,0000,,只有吉次郎吐了，余下没做\N{\rEn}But Kichijiro succeeded where the rest failed.
+Dialogue: 0,0:54:47.26,0:54:50.13,Default,,0000,0000,0000,,我必须相信他同遭痛苦，有如别人\N{\rEn}I must believe he suffered along with the others.
+Dialogue: 0,0:54:53.62,0:54:55.15,Default,,0000,0000,0000,,你也是基督徒\N{\rEn}You are a Christian, too.
+Dialogue: 0,0:54:56.34,0:54:58.14,Default,,0000,0000,0000,,他们都是...\N{\rEn}They are all...
+Dialogue: 0,0:54:58.50,0:54:59.40,Default,,0000,0000,0000,,...基督徒\N{\rEn}...Christians.
+Dialogue: 0,0:54:59.53,0:55:00.53,Default,,0000,0000,0000,,带走他们\N{\rEn}Seize them!
+Dialogue: 0,0:55:35.52,0:55:36.59,Default,,0000,0000,0000,,他们被给了米酒\N{\rEn}They were given Sake.
+Dialogue: 0,0:55:37.21,0:55:40.71,Default,,0000,0000,0000,,像罗马士兵把醋给垂死的基督\N{\rEn}As the Roman soldier offered vinegar to the dying Christ.
+Dialogue: 0,0:55:45.00,0:55:47.90,Default,,0000,0000,0000,,我祈祷，他们记得我们主的痛苦\N{\rEn}I prayed, they remembered our Lord's suffering.
+Dialogue: 0,0:55:48.30,0:55:51.00,Default,,0000,0000,0000,,并获得勇气及安慰于此\N{\rEn}And took courage and comfort from it.
+Dialogue: 0,0:56:24.55,0:56:25.55,Default,,0000,0000,0000,,上帝(拉丁语)\N{\rEn}Deus.
+Dialogue: 0,0:56:25.93,0:56:26.93,Default,,0000,0000,0000,,上帝\N{\rEn}Deus!
+Dialogue: 0,0:56:48.23,0:56:49.49,Default,,0000,0000,0000,,天堂\N{\rEn}Paradiso.
+Dialogue: 0,0:57:09.01,0:57:10.01,Default,,0000,0000,0000,,上帝大人\N{\rEn}Deus-sama.
+Dialogue: 0,0:57:12.88,0:57:15.68,Default,,0000,0000,0000,,请收下爷爷大人的灵魂\N{\rEn}Please receive Jiisama's spirit.
+Dialogue: 0,0:57:18.01,0:57:20.68,Default,,0000,0000,0000,,爷爷大人的苦难结束了\N{\rEn}Jiisama's suffering has ended.
+Dialogue: 0,0:57:22.56,0:57:23.56,Default,,0000,0000,0000,,收下他，主啊\N{\rEn}Receive him, Lord.
+Dialogue: 0,0:57:28.08,0:57:29.08,Default,,0000,0000,0000,,主啊\N{\rEn}Lord!
+Dialogue: 0,0:57:29.47,0:57:30.47,Default,,0000,0000,0000,,主啊\N{\rEn}Lord!
+Dialogue: 0,0:57:31.53,0:57:32.53,Default,,0000,0000,0000,,以您的荣耀\N{\rEn}In Your glory.
+Dialogue: 0,0:57:35.26,0:57:37.66,Default,,0000,0000,0000,,求您...耶稣啊\N{\rEn}Please... Jesus!
+Dialogue: 0,0:58:19.45,0:58:22.65,Default,,0000,0000,0000,,这使得茂吉四天才死\N{\rEn}It took Mokichi four days to die.
+Dialogue: 0,0:58:28.65,0:58:34.15,Default,,0000,0000,0000,,临终，他唱了赞美诗。他的歌喉是那唯一的声音\N{\rEn}At the end he sang a hymn. His voice was the only sound.
+Dialogue: 0,0:58:35.35,0:58:39.68,Default,,0000,0000,0000,,村民聚集在海滩上，始终沉默着\N{\rEn}The people of the village, who would gather on the beach, were always silent.
+Dialogue: 0,1:00:31.99,1:00:35.59,Default,,0000,0000,0000,,他们被严密看守，所以遗体不能进行...\N{\rEn}The people were watched closly, so the bodies could not be given...
+Dialogue: 0,1:00:35.67,1:00:37.27,Default,,0000,0000,0000,,天主教的葬礼\N{\rEn}a Christian burial.
+Dialogue: 0,1:00:39.25,1:00:43.78,Default,,0000,0000,0000,,茂吉的遗体浸水太多使火焰燃起浓烟\N{\rEn}Mokichi's body was so heavy with water it turned the flames to smoke.
+Dialogue: 0,1:00:44.42,1:00:46.55,Default,,0000,0000,0000,,在最终烧着之前\N{\rEn}Before it finally caught fire.
+Dialogue: 0,1:00:48.83,1:00:53.90,Default,,0000,0000,0000,,烧剩的遗骨被抛入大海，这样他们就得不到祭拜\N{\rEn}Any bones that remained were scattered in the ocean, so they could not be venerated.
+Dialogue: 0,1:01:02.54,1:01:06.41,Default,,0000,0000,0000,,神父范礼安，你会说他们的死不无意义\N{\rEn}Father Valignano, you will say that their death is not meaningless.
+Dialogue: 0,1:01:06.95,1:01:10.75,Default,,0000,0000,0000,,当然了，神听到了他们的祷告，当他们逝去之时\N{\rEn}Surely, God heard their prayers as they died.
+Dialogue: 0,1:01:10.93,1:01:13.13,Default,,0000,0000,0000,,但他听到他们的痛嚎吗\N{\rEn}But did he hear their screams?
+Dialogue: 0,1:01:14.17,1:01:18.47,Default,,0000,0000,0000,,我该如何解释他的沉默，对这些人，已忍受如此之多者\N{\rEn}How can I explain his silence to these people, who have endured so much?
+Dialogue: 0,1:01:19.78,1:01:23.01,Default,,0000,0000,0000,,我得竭尽全力去理解这些，亲自去\N{\rEn}I need all my strength to understand it myself.
+Dialogue: 0,1:01:25.32,1:01:28.32,Default,,0000,0000,0000,,这可能是我最后一次向您汇报，神父\N{\rEn}This may be my last report to you, Father.
+Dialogue: 0,1:01:28.34,1:01:31.50,Default,,0000,0000,0000,,今天我们得知差卒，上山搜寻我们\N{\rEn}Today we hear the guards, are in the mountains looking for us.
+Dialogue: 0,1:01:33.09,1:01:35.66,Default,,0000,0000,0000,,所以我们决定：要安全需分开\N{\rEn}So we have decided it would be safer to separate.
+Dialogue: 0,1:01:35.86,1:01:37.19,Default,,0000,0000,0000,,- 所以你才对？\N{\rEn}- So you were right?
+Dialogue: 0,1:01:38.11,1:01:39.94,Default,,0000,0000,0000,,- 如果我们离开，他们还能活命\N{\rEn}- If we left, they might still be alive.
+Dialogue: 0,1:01:40.02,1:01:42.62,Default,,0000,0000,0000,,别说那些，那不是真的！我们不用怀疑，留下会要我们的命\N{\rEn}Don't say that, that is not true! And we can not doubt. That will be our death.
+Dialogue: 0,1:01:42.64,1:01:45.00,Default,,0000,0000,0000,,- 我们放弃了？就干这些？我们就会跑路？\N{\rEn}- Are we giving up? Is that what we're doing? Are we running away?
+Dialogue: 0,1:01:45.20,1:01:46.97,Default,,0000,0000,0000,,不！- 在他们已为我们而死之后？\N{\rEn}No! - After the people have died for us?
+Dialogue: 0,1:01:47.94,1:01:51.81,Default,,0000,0000,0000,,他们不是为我们而亡！加佩，他们没有为我们而死\N{\rEn}They did not die for us! Garupe, they did not die for us!
+Dialogue: 0,1:01:52.55,1:01:54.29,Default,,0000,0000,0000,,- 我感觉象个懦夫\N{\rEn}- I feel like a coward.
+Dialogue: 0,1:02:05.03,1:02:09.03,Default,,0000,0000,0000,,我的爱永远与你同在。- 我祈祷能坚强如你\N{\rEn}My love is always with you. - I pray to be as strong as you.
+Dialogue: 0,1:02:15.95,1:02:19.50,Default,,0000,0000,0000,,神父加佩将去平户继续使命\N{\rEn}Father Garupe will make for Hirado to continue the mission,\N{\rTop_cn}(注：平户，日本最古老天主教会所在地)
+Dialogue: 0,1:02:20.25,1:02:21.50,Default,,0000,0000,0000,,而我则重返五岛\N{\rEn}and I will return to Goto.
+Dialogue: 0,1:02:22.25,1:02:23.66,Default,,0000,0000,0000,,弗朗西斯科！要活着\N{\rEn}Francisco! Stay alive.
+Dialogue: 0,1:02:25.57,1:02:26.77,Default,,0000,0000,0000,,要活着\N{\rEn}Stay alive!
+Dialogue: 0,1:02:28.22,1:02:32.29,Default,,0000,0000,0000,,神父，我请求原谅我的软弱和怀疑\N{\rEn}Father, I ask forgiveness for my weakness and my doubt.
+Dialogue: 0,1:02:34.00,1:02:35.36,Default,,0000,0000,0000,,我还恳请您记得\N{\rEn}And I ask you to remember
+Dialogue: 0,1:02:35.38,1:02:38.46,Default,,0000,0000,0000,,神父加佩跟我有您的慈悲有您的祷告\N{\rEn}Father Garupe and me in your mercies and in your prayers.
+Dialogue: 0,1:02:40.33,1:02:41.53,Default,,0000,0000,0000,,您忠诚的孩子\N{\rEn}Your obedient son.
+Dialogue: 0,1:03:01.13,1:03:02.33,Default,,0000,0000,0000,,我想像着您的儿子\N{\rEn}I imagine your son.
+Dialogue: 0,1:03:03.64,1:03:04.90,Default,,0000,0000,0000,,钉到十字架上\N{\rEn}Nailed to the cross.
+Dialogue: 0,1:03:07.00,1:03:09.50,Default,,0000,0000,0000,,我嘴有如尝醋\N{\rEn}My mouth tastes like vinegar.
+Dialogue: 0,1:03:19.98,1:03:20.98,Default,,0000,0000,0000,,那是五岛吗\N{\rEn}Is that Goto?
+Dialogue: 0,1:03:25.21,1:03:26.21,Default,,0000,0000,0000,,那是五岛吗\N{\rEn}Is that Goto?
+Dialogue: 0,1:03:33.96,1:03:36.09,Default,,0000,0000,0000,,天父，赞您之名\N{\rEn}Father in Heaven praised be thy name.
+Dialogue: 0,1:03:36.69,1:03:39.36,Default,,0000,0000,0000,,我就是一个带来灾难的外国人\N{\rEn}I'm just a foreigner who brought disaster.
+Dialogue: 0,1:03:40.36,1:03:43.03,Default,,0000,0000,0000,,那就是他们现在所认为的我\N{\rEn}That's what they think of me now.
+Dialogue: 0,1:04:46.60,1:04:49.07,Default,,0000,0000,0000,,我现在梦到了圣·弗朗西斯·泽维尔\N{\rEn}I dream of now Saint Francis.
+Dialogue: 0,1:04:51.14,1:04:55.74,Default,,0000,0000,0000,,他在这里找到的所有光荣的可能性发生了什么？\N{\rEn}What happened to all the glorious possibility he found here?
+Dialogue: 0,1:04:59.41,1:05:01.01,Default,,0000,0000,0000,,我为基督做了什么\N{\rEn}What have I done for Christ?
+Dialogue: 0,1:05:02.70,1:05:04.70,Default,,0000,0000,0000,,我为基督做着什么\N{\rEn}What am I doing for Christ?
+Dialogue: 0,1:05:06.25,1:05:07.88,Default,,0000,0000,0000,,我为基督将做什么\N{\rEn}What will I do for Christ?
+Dialogue: 0,1:05:21.12,1:05:24.98,Default,,0000,0000,0000,,我感到强烈的诱惑，我感到绝望的强烈诱惑\N{\rEn}I feel so tempted. I feel so tempted to despair.
+Dialogue: 0,1:05:26.02,1:05:27.02,Default,,0000,0000,0000,,我很害怕\N{\rEn}I'm afraid.
+Dialogue: 0,1:05:28.99,1:05:31.45,Default,,0000,0000,0000,,等待的你的沉默是可怕的\N{\rEn}The wait of your silence is terrible.
+Dialogue: 0,1:05:32.73,1:05:34.40,Default,,0000,0000,0000,,我祷告但我已迷失\N{\rEn}I pray but I'm lost.
+Dialogue: 0,1:05:37.40,1:05:39.93,Default,,0000,0000,0000,,莫非我只是向虚无祷告？\N{\rEn}Or am I just praying to nothing?
+Dialogue: 0,1:05:42.26,1:05:43.26,Default,,0000,0000,0000,,虚无\N{\rEn}Nothing.
+Dialogue: 0,1:05:45.09,1:05:46.49,Default,,0000,0000,0000,,因为您不在那儿\N{\rEn}Because you're not there.
+Dialogue: 0,1:06:24.29,1:06:25.86,Default,,0000,0000,0000,,我祈祷您的宽恕\N{\rEn}I pray for your forgiveness.
+Dialogue: 0,1:06:45.37,1:06:47.50,Default,,0000,0000,0000,,如果我的报告突然结束\N{\rEn}If my report now comes to an abrupt end,
+Dialogue: 0,1:06:47.70,1:06:49.84,Default,,0000,0000,0000,,别以为我们死了\N{\rEn}do not think that we are dead.
+Dialogue: 0,1:06:51.13,1:06:55.93,Default,,0000,0000,0000,,因为如果加佩和我死了，日本教会与我们同亡\N{\rEn}For if Garupe and I die, the Japanese Church dies with us.
+Dialogue: 0,1:07:20.74,1:07:24.78,Default,,0000,0000,0000,,我以为我被跟踪了。你还好吗？神父\N{\rEn}I thought I was being followed. Are you alright, Padre?
+Dialogue: 0,1:07:27.15,1:07:28.15,Default,,0000,0000,0000,,抱歉\N{\rEn}Sorry.
+Dialogue: 0,1:07:40.51,1:07:41.51,Default,,0000,0000,0000,,神父\N{\rEn}Padre?
+Dialogue: 0,1:07:45.84,1:07:48.31,Default,,0000,0000,0000,,为何你要回到这儿？神父\N{\rEn}Why did you come back here, Padre?
+Dialogue: 0,1:07:48.29,1:07:50.50,Default,,0000,0000,0000,,这地方危险\N{\rEn}This place is dangerous.
+Dialogue: 0,1:07:51.50,1:07:53.00,Default,,0000,0000,0000,,我们必须小心\N{\rEn}We must be careful.
+Dialogue: 0,1:07:53.74,1:07:57.30,Default,,0000,0000,0000,,悬赏叁佰个银币拿你\N{\rEn}There is a prize of 300 pieces of silver for you.
+Dialogue: 0,1:07:57.60,1:07:58.21,Default,,0000,0000,0000,,叁佰\N{\rEn}300.
+Dialogue: 0,1:07:59.30,1:08:01.20,Default,,0000,0000,0000,,犹大只得叁拾\N{\rEn}Judas got only 30.
+Dialogue: 0,1:08:02.03,1:08:05.00,Default,,0000,0000,0000,,有基督徒在别的村\N{\rEn}There are Christians in another villages...
+Dialogue: 0,1:08:05.03,1:08:06.00,Default,,0000,0000,0000,,并不远\N{\rEn}Not far
+Dialogue: 0,1:08:10.15,1:08:13.00,Default,,0000,0000,0000,,我们可以藏那儿，我会照顾你\N{\rEn}We can hide there. I will take care of you.
+Dialogue: 0,1:08:22.02,1:08:24.92,Default,,0000,0000,0000,,拿去，请\N{\rEn}Take it. Please.
+Dialogue: 0,1:08:27.24,1:08:29.00,Default,,0000,0000,0000,,你肯定很饿\N{\rEn}You must be so hungry.
+Dialogue: 0,1:08:49.07,1:08:54.00,Default,,0000,0000,0000,,茂吉和我的家人很坚强，我太软弱\N{\rEn}Mokichi and my family stayed strong. I am so weak.
+Dialogue: 0,1:08:55.44,1:08:58.30,Default,,0000,0000,0000,,你吗？你显然能照顾好你自己\N{\rEn}Are you? You can certainly look after yourself.
+Dialogue: 0,1:08:58.70,1:09:00.00,Default,,0000,0000,0000,,不要自私\N{\rEn}Not to be selfish.
+Dialogue: 0,1:09:01.01,1:09:02.54,Default,,0000,0000,0000,,我跟你不一样\N{\rEn}I’m not like you.
+Dialogue: 0,1:09:03.01,1:09:05.00,Default,,0000,0000,0000,,我已无处可去\N{\rEn}I have nowhere else to go.
+Dialogue: 0,1:09:08.11,1:09:10.50,Default,,0000,0000,0000,,何处可容弱者\N{\rEn}Where is the place for a weak man?
+Dialogue: 0,1:09:11.80,1:09:14.00,Default,,0000,0000,0000,,置身如此世道\N{\rEn}In a world like this.
+Dialogue: 0,1:09:24.25,1:09:27.50,Default,,0000,0000,0000,,你想为茂吉和市告解吗\N{\rEn}You want to confess for Mokichi and Ichizo?
+Dialogue: 0,1:09:44.50,1:09:47.00,Default,,0000,0000,0000,,“你想做什么，快去做。”\N{\rEn}"What you will do, do quickly."\N{\rTop_cn}(注：《约翰福音》13:27)
+Dialogue: 0,1:09:48.00,1:09:51.05,Default,,0000,0000,0000,,您儿子对犹大所说的话，于最后的晚餐时\N{\rEn}Your son's words to Judas at the Last Supper.
+Dialogue: 0,1:09:52.95,1:09:55.08,Default,,0000,0000,0000,,他愤怒吗？当他说出它们\N{\rEn}Was he angry, when he said them?
+Dialogue: 0,1:09:56.34,1:09:58.34,Default,,0000,0000,0000,,还是它们源自慈悲\N{\rEn}Or did they come from love?
+Dialogue: 0,1:09:59.29,1:10:00.36,Default,,0000,0000,0000,,你没事吧？神父\N{\rEn}Are you alright, Padre?
+Dialogue: 0,1:10:01.23,1:10:03.90,Default,,0000,0000,0000,,- 你看上去很累。- 我没事\N{\rEn}- You seem so tired. - I'm alright.
+Dialogue: 0,1:10:03.98,1:10:07.00,Default,,0000,0000,0000,,你给我那鱼太咸\N{\rEn}That fish you gave me was so salty.
+Dialogue: 0,1:10:07.50,1:10:08.98,Default,,0000,0000,0000,,我口渴\N{\rEn}I'm thirsty!
+Dialogue: 0,1:10:09.14,1:10:11.20,Default,,0000,0000,0000,,- 什么？- 口渴\N{\rEn}- What? - Thirst!
+Dialogue: 0,1:10:13.43,1:10:14.90,Default,,0000,0000,0000,,我们的主说过那话\N{\rEn}Our Lord said that.
+Dialogue: 0,1:10:16.70,1:10:17.70,Default,,0000,0000,0000,,我取些水。\N{\rEn}I get some water.
+Dialogue: 0,1:10:18.50,1:10:19.70,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro!
+Dialogue: 0,1:10:20.54,1:10:22.00,Default,,0000,0000,0000,,我取水\N{\rEn}I get water!
+Dialogue: 0,1:10:22.55,1:10:23.55,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro!
+Dialogue: 0,1:10:26.32,1:10:27.32,Default,,0000,0000,0000,,吉次郎\N{\rEn}Kichijiro!
+Dialogue: 0,1:10:38.91,1:10:41.17,Default,,0000,0000,0000,,- 抱歉，我掉了水，神父\N{\rEn}- Sorry, I dropped the water, Padre.
+Dialogue: 0,1:10:41.50,1:10:43.17,Default,,0000,0000,0000,,我以为有什么问题\N{\rEn}I thought something was wrong.
+Dialogue: 0,1:10:44.26,1:10:45.50,Default,,0000,0000,0000,,但是别担心\N{\rEn}But never mind,
+Dialogue: 0,1:10:45.80,1:10:47.46,Default,,0000,0000,0000,,有条河在附近\N{\rEn}there is a stream nearby.
+Dialogue: 0,1:10:48.04,1:10:50.10,Default,,0000,0000,0000,,你喜欢喝多少就喝多少\N{\rEn}You can drink as much as you like.
+Dialogue: 0,1:10:54.60,1:10:55.60,Default,,0000,0000,0000,,这儿\N{\rEn}Here.
+Dialogue: 0,1:12:26.51,1:12:27.94,Default,,0000,0000,0000,,神父！原谅我\N{\rEn}Padre! Forgive me!
+Dialogue: 0,1:12:32.88,1:12:33.88,Default,,0000,0000,0000,,神父\N{\rEn}Padre!
+Dialogue: 0,1:12:41.86,1:12:43.79,Default,,0000,0000,0000,,我祈祷神的宽恕\N{\rEn}I pray for God's forgiveness!
+Dialogue: 0,1:12:45.79,1:12:48.82,Default,,0000,0000,0000,,他会宽恕吗？甚至是我\N{\rEn}Will he forgive? Even me?
+Dialogue: 0,1:13:32.45,1:13:34.18,Default,,0000,0000,0000,,神的保佑\N{\rEn}Blessed be God.
+Dialogue: 0,1:13:35.97,1:13:37.70,Default,,0000,0000,0000,,啥是...你名字是啥\N{\rEn}What is...what is your name?
+Dialogue: 0,1:13:38.31,1:13:39.31,Default,,0000,0000,0000,,莫尼加\N{\rEn}Monica.
+Dialogue: 0,1:13:39.60,1:13:42.00,Default,,0000,0000,0000,,啊，跟奥古斯丁母亲一样\N{\rEn}Ah, like the mother of Augustine?\N{\rTop_cn}(注：圣·奥古斯丁 天主教圣师，奥斯定会的发起人，公元354－430)
+Dialogue: 0,1:13:42.25,1:13:44.00,Default,,0000,0000,0000,,我的受洗名\N{\rEn}My Baptismal name.
+Dialogue: 0,1:13:44.20,1:13:46.00,Default,,0000,0000,0000,,这男子是约翰\N{\rEn}This man is Juan.\N{\rTop_cn}(注：Juan，西班牙语)
+Dialogue: 0,1:13:47.64,1:13:51.80,Default,,0000,0000,0000,,他希望他的名字跟我们的传教士一样，约翰，逝者\N{\rEn}He wanted his name to be like our priest, Juan, who died.
+Dialogue: 0,1:13:52.00,1:13:53.34,Default,,0000,0000,0000,,在云仙\N{\rEn}At Unzen
+Dialogue: 0,1:13:55.31,1:13:57.84,Default,,0000,0000,0000,,将会有更多的人步其后尘\N{\rEn}There will be many more joining him.
+Dialogue: 0,1:13:59.66,1:14:00.66,Default,,0000,0000,0000,,你明白吗\N{\rEn}You understand?
+Dialogue: 0,1:14:06.39,1:14:08.32,Default,,0000,0000,0000,,为何你要那样看着我\N{\rEn}Why you are looking at me like that?
+Dialogue: 0,1:14:11.32,1:14:13.25,Default,,0000,0000,0000,,为何你如此平静\N{\rEn}Why are you so calm?
+Dialogue: 0,1:14:14.23,1:14:15.90,Default,,0000,0000,0000,,我们全都会死\N{\rEn}We are all about to die!
+Dialogue: 0,1:14:17.65,1:14:18.65,Default,,0000,0000,0000,,受酷刑\N{\rEn}Like that.
+Dialogue: 0,1:14:29.58,1:14:30.58,Default,,0000,0000,0000,,抱歉\N{\rEn}Sorry.
+Dialogue: 0,1:14:31.84,1:14:33.20,Default,,0000,0000,0000,,我很抱歉，谢谢你\N{\rEn}I'm sorry. Thank you.
+Dialogue: 0,1:14:33.30,1:14:34.27,Default,,0000,0000,0000,,谢谢你的食物\N{\rEn}Thank you for the food.
+Dialogue: 0,1:14:36.27,1:14:37.80,Default,,0000,0000,0000,,谢谢您\N{\rEn}ありがとうございます
+Dialogue: 0,1:14:38.59,1:14:39.50,Default,,0000,0000,0000,,但是神父\N{\rEn}But Padre?
+Dialogue: 0,1:14:40.09,1:14:41.20,Default,,0000,0000,0000,,我们的神父\N{\rEn}Our Father,
+Dialogue: 0,1:14:41.59,1:14:42.80,Default,,0000,0000,0000,,神父约翰...\N{\rEn}Padre Juan...
+Dialogue: 0,1:14:43.50,1:14:44.59,Default,,0000,0000,0000,,...说过如果我们死了...\N{\rEn}...said if we die...
+Dialogue: 0,1:14:44.80,1:14:46.59,Default,,0000,0000,0000,,...我们会上天堂\N{\rEn}...we will go to Paradiso?
+Dialogue: 0,1:14:47.43,1:14:48.43,Default,,0000,0000,0000,,天堂\N{\rEn}Paradise.
+Dialogue: 0,1:14:49.03,1:14:50.03,Default,,0000,0000,0000,,是的，是那样\N{\rEn}Yes, that's right.
+Dialogue: 0,1:14:50.09,1:14:52.55,Default,,0000,0000,0000,,死了不好吗\N{\rEn}Isn't it good to die?
+Dialogue: 0,1:14:52.80,1:14:54.75,Default,,0000,0000,0000,,天堂是如此的好过此处\N{\rEn}Paradiso is so much better than here.
+Dialogue: 0,1:14:54.88,1:14:56.20,Default,,0000,0000,0000,,没人挨饿\N{\rEn}No one hungry.
+Dialogue: 0,1:14:56.58,1:14:57.40,Default,,0000,0000,0000,,从不生病\N{\rEn}Never sick.
+Dialogue: 0,1:14:57.50,1:14:58.20,Default,,0000,0000,0000,,没有杂税\N{\rEn}No taxes.
+Dialogue: 0,1:14:58.58,1:14:59.61,Default,,0000,0000,0000,,没有重活\N{\rEn}No hard work.
+Dialogue: 0,1:15:01.30,1:15:03.00,Default,,0000,0000,0000,,是的，当然\N{\rEn}Yes, of course.
+Dialogue: 0,1:15:04.05,1:15:05.50,Default,,0000,0000,0000,,神父约翰\N{\rEn}Padre Juan,
+Dialogue: 0,1:15:06.25,1:15:07.00,Default,,0000,0000,0000,,是对的\N{\rEn}was right
+Dialogue: 0,1:15:07.50,1:15:10.05,Default,,0000,0000,0000,,...没有重活...\N{\rEn}...there is no hard work...
+Dialogue: 0,1:15:10.50,1:15:12.05,Default,,0000,0000,0000,,...在天堂里\N{\rEn}...in Paradiso.
+Dialogue: 0,1:15:12.61,1:15:13.80,Default,,0000,0000,0000,,根本不工作\N{\rEn}No work at all.
+Dialogue: 0,1:15:14.50,1:15:17.80,Default,,0000,0000,0000,,没有杂税\N{\rEn}There is no taxes.
+Dialogue: 0,1:15:18.00,1:15:19.61,Default,,0000,0000,0000,,没有苦难\N{\rEn}There is no suffering.
+Dialogue: 0,1:15:20.60,1:15:23.70,Default,,0000,0000,0000,,我们都将同神在一起\N{\rEn}We all will be united with God.
+Dialogue: 0,1:15:24.83,1:15:25.83,Default,,0000,0000,0000,,那里不会有痛苦\N{\rEn}There will be no pain.
+Dialogue: 0,1:15:26.03,1:15:42.03, *1,NTP,0000,0000,0000,Banner;25;0;30,本字幕由dottob制作，不足之处敬请海涵指正。谢谢！20170207-0217
+Dialogue: 0,1:15:43.81,1:15:46.91,Default,,0000,0000,0000,,我希望你们别再给我太多麻烦了\N{\rEn}I wish you would stop causing me so much trouble.
+Dialogue: 0,1:15:47.31,1:15:48.31,Default,,0000,0000,0000,,拜托\N{\rEn}Please.
+Dialogue: 0,1:15:49.26,1:15:50.69,Default,,0000,0000,0000,,我们这岁数...\N{\rEn}At our age...
+Dialogue: 0,1:15:51.49,1:15:54.62,Default,,0000,0000,0000,,...我们不该走那么远，在这大热天\N{\rEn}...we shouldn't be traveling so far in this heat.
+Dialogue: 0,1:15:56.25,1:15:58.25,Default,,0000,0000,0000,,而灰尘...\N{\rEn}And the dust...
+Dialogue: 0,1:16:02.24,1:16:04.77,Default,,0000,0000,0000,,今年更糟\N{\rEn}Especially bad this year.
+Dialogue: 0,1:16:06.85,1:16:09.00,Default,,0000,0000,0000,,这一切都没必要\N{\rEn}And it's all so unnecessary.
+Dialogue: 0,1:16:13.50,1:16:17.15,Default,,0000,0000,0000,,只需用一点功夫...\N{\rEn}Just make a little effort...
+Dialogue: 0,1:16:17.37,1:16:19.70,Default,,0000,0000,0000,,...即可明白我们的意图\N{\rEn}...to understand our point of view.
+Dialogue: 0,1:16:20.56,1:16:23.06,Default,,0000,0000,0000,,我们不恨你们\N{\rEn}We don't hate you.
+Dialogue: 0,1:16:24.59,1:16:28.50,Default,,0000,0000,0000,,你们自己背上麻烦\N{\rEn}You've brought it on yourselves.
+Dialogue: 0,1:16:30.00,1:16:31.00,Default,,0000,0000,0000,,你们也能...\N{\rEn}And you can...
+Dialogue: 0,1:16:31.20,1:16:34.62,Default,,0000,0000,0000,,...自己摆脱它\N{\rEn}...rid yourselves of it too.
+Dialogue: 0,1:16:39.20,1:16:41.80,Default,,0000,0000,0000,,没必要感到迷惑\N{\rEn}No need to feel lost.
+Dialogue: 0,1:16:42.33,1:16:45.10,Default,,0000,0000,0000,,我会给你们时间想个明白\N{\rEn}I'll give you time to think it over.
+Dialogue: 0,1:16:47.88,1:16:50.40,Default,,0000,0000,0000,,然后你们能给我个明理的答复\N{\rEn}Then you can give me a reasonable answer.
+Dialogue: 0,1:16:50.81,1:16:51.50,Default,,0000,0000,0000,,带走\N{\rEn}Go.
+Dialogue: 0,1:16:59.50,1:17:00.50,Default,,0000,0000,0000,,不，不是你\N{\rEn}No, not you.
+Dialogue: 0,1:17:01.20,1:17:03.00,Default,,0000,0000,0000,,你留下\N{\rEn}You stay!
+Dialogue: 0,1:17:16.50,1:17:18.83,Default,,0000,0000,0000,,你理解，我对他们说的吗\N{\rEn}You understood, what I was saying to them?
+Dialogue: 0,1:17:20.44,1:17:22.84,Default,,0000,0000,0000,,你的日语够好吗\N{\rEn}Your Japanese is good enough?
+Dialogue: 0,1:17:24.97,1:17:26.31,Default,,0000,0000,0000,,我看到你的眼睛\N{\rEn}I saw your eyes.
+Dialogue: 0,1:17:26.51,1:17:30.50,Default,,0000,0000,0000,,什么？你以为你从那儿看到了什么\N{\rEn}What? And what did you think you saw there?
+Dialogue: 0,1:17:34.80,1:17:38.20,Default,,0000,0000,0000,,他们是傻瓜，农民\N{\rEn}They are fools, the peasants.
+Dialogue: 0,1:17:40.05,1:17:43.58,Default,,0000,0000,0000,,主啊，赦免他们的苦难，以您之手护其平安\N{\rEn}Lord, spare them suffering and keep them safe in your hand.
+Dialogue: 0,1:17:44.05,1:17:49.32,Default,,0000,0000,0000,,他们能跟人高谈阔论不休却决断全无\N{\rEn}They can talk a man down south without end and decide nothing!
+Dialogue: 0,1:17:50.92,1:17:52.65,Default,,0000,0000,0000,,但是你明白，不是吗？\N{\rEn}But you understand, don't you?
+Dialogue: 0,1:17:55.73,1:17:57.33,Default,,0000,0000,0000,,直接说你啥意思\N{\rEn}Just say what you mean.
+Dialogue: 0,1:17:58.21,1:18:00.50,Default,,0000,0000,0000,,这一切全取决于你...\N{\rEn}That it all depends on you...
+Dialogue: 0,1:18:00.70,1:18:02.50,Default,,0000,0000,0000,,...他们是否获释\N{\rEn}...whether they are set free.
+Dialogue: 0,1:18:03.00,1:18:05.72,Default,,0000,0000,0000,,如果你只说一个词\N{\rEn}If you say just one single word,
+Dialogue: 0,1:18:06.57,1:18:09.40,Default,,0000,0000,0000,,...示范他们，否定你的信仰\N{\rEn}...show them, deny your faith.
+Dialogue: 0,1:18:11.76,1:18:14.50,Default,,0000,0000,0000,,所以若我拒绝，你杀了我\N{\rEn}So what if I refuse, you kill me?
+Dialogue: 0,1:18:15.99,1:18:18.30,Default,,0000,0000,0000,,殉道者之血乃教会之种苗\N{\rEn}The blood of martyrs is the seed of the Church.
+Dialogue: 0,1:18:19.20,1:18:20.73,Default,,0000,0000,0000,,有如那些传教士...\N{\rEn}Just like the priests...
+Dialogue: 0,1:18:20.80,1:18:23.30,Default,,0000,0000,0000,,...你屠杀于大村、长崎的\N{\rEn}...you slaughtered in Omora, Nagasaki.
+Dialogue: 0,1:18:23.60,1:18:25.42,Default,,0000,0000,0000,,- 我们从错误中学到了\N{\rEn}- We learned from our mistake.
+Dialogue: 0,1:18:25.85,1:18:30.25,Default,,0000,0000,0000,,处决传教士及处死农民让事情更糟\N{\rEn}Killing the priests and killing the peasants makes it worse.
+Dialogue: 0,1:18:31.38,1:18:33.30,Default,,0000,0000,0000,,若他们能为神而死...\N{\rEn}If they can die for their God...
+Dialogue: 0,1:18:33.60,1:18:37.31,Default,,0000,0000,0000,,...他们只会认为这能使他们更坚强\N{\rEn}...they think it only makes them stronger.
+Dialogue: 0,1:18:38.27,1:18:42.74,Default,,0000,0000,0000,,若你觉得有必要惩罚某人，单独惩罚我\N{\rEn}If you feel you must punish someone, punish me alone!
+Dialogue: 0,1:18:47.00,1:18:50.20,Default,,0000,0000,0000,,你！说得不像是个好传教士\N{\rEn}You! Do not speak like a good priest.
+Dialogue: 0,1:18:51.38,1:18:53.21,Default,,0000,0000,0000,,如果你是真实的男人\N{\rEn}If you are a real man
+Dialogue: 0,1:18:53.50,1:18:54.91,Default,,0000,0000,0000,,真正好的传教士\N{\rEn}a truly good priest.
+Dialogue: 0,1:18:55.60,1:18:58.88,Default,,0000,0000,0000,,你应该同情基督徒\N{\rEn}You should feel pity for the Christian.
+Dialogue: 0,1:18:59.50,1:19:01.63,Default,,0000,0000,0000,,不该那样吗？神父，不该那样吗\N{\rEn}Isn't that so, Padre, isn't that so?
+Dialogue: 0,1:19:11.09,1:19:16.02,Default,,0000,0000,0000,,你荣耀的代价，是他们的苦难\N{\rEn}The price for your glory is their suffering.
+Dialogue: 0,1:19:40.00,1:19:41.00,Default,,0000,0000,0000,,- 神父？\N{\rEn}- Padre?
+Dialogue: 0,1:19:42.00,1:19:44.55,Default,,0000,0000,0000,,- 赞美神，吾等之父\N{\rEn}- Praise be to God our Father.
+Dialogue: 0,1:19:46.32,1:19:47.62,Default,,0000,0000,0000,,赞美他\N{\rEn}Praise be to Him.
+Dialogue: 0,1:19:50.63,1:19:52.80,Default,,0000,0000,0000,,葡萄牙语是个礼物...\N{\rEn}The Portuguese language was a gift...
+Dialogue: 0,1:19:53.00,1:19:54.37,Default,,0000,0000,0000,,...来自你们的神父卡布拉尔\N{\rEn}...of your Father Cabral.
+Dialogue: 0,1:19:56.44,1:19:59.17,Default,,0000,0000,0000,,我被派做你的翻译\N{\rEn}I've been asked to interpret on your behalf.
+Dialogue: 0,1:20:02.48,1:20:06.92,Default,,0000,0000,0000,,考虑到我们可能需要你证词的一些微妙之处\N{\rEn}There was concern that we might need certain subtleties in your testimony,
+Dialogue: 0,1:20:07.00,1:20:09.44,Default,,0000,0000,0000,,如果你被告知只能说日语\N{\rEn}if you were told to speak only in Japanese.
+Dialogue: 0,1:20:10.54,1:20:11.90,Default,,0000,0000,0000,,证词？我...\N{\rEn}The testimony, I...
+Dialogue: 0,1:20:12.10,1:20:13.30,Default,,0000,0000,0000,,我们希望它是公平的\N{\rEn}We want it to be fair.
+Dialogue: 0,1:20:13.50,1:20:15.27,Default,,0000,0000,0000,,且我们已更好地掌握你们的语言...\N{\rEn}and we'd have a better grasp of your language
+Dialogue: 0,1:20:15.38,1:20:17.50,Default,,0000,0000,0000,,...胜过你们掌握我们的\N{\rEn}...than you do of ours.
+Dialogue: 0,1:20:18.00,1:20:22.20,Default,,0000,0000,0000,,神父卡布拉尔从未说过比“感谢神”更多\N{\rEn}Father Cabral never managed much more than "Arigataya".
+Dialogue: 0,1:20:18.00,1:20:24.20,Default,,0000,0000,0000,,{\a12}{\rTop_cn}Arigataya[ありがたや]，词汇原意指罕见的事。有好事发生时，当对神说这话。值得庆幸之意
+Dialogue: 0,1:20:22.86,1:20:24.92,Default,,0000,0000,0000,,他住这儿的日子\N{\rEn}All the time he lived here.
+Dialogue: 0,1:20:24.94,1:20:26.60,Default,,0000,0000,0000,,他只教不学\N{\rEn}He taught, but would not learn.
+Dialogue: 0,1:20:27.30,1:20:31.30,Default,,0000,0000,0000,,他鄙视我们的语言、我们的食物、我们的习惯\N{\rEn}He despised our language, our food, our customs.
+Dialogue: 0,1:20:32.07,1:20:34.47,Default,,0000,0000,0000,,我跟他不一样，我不像卡布拉尔\N{\rEn}I'm not like him, I'm not like Cabral.
+Dialogue: 0,1:20:34.98,1:20:36.18,Default,,0000,0000,0000,,- 真的？- 是的\N{\rEn}- Really? - Yes.
+Dialogue: 0,1:20:37.68,1:20:40.00,Default,,0000,0000,0000,,我们有自己的宗教信仰，神父\N{\rEn}We have our own religion, Padre.
+Dialogue: 0,1:20:40.20,1:20:42.21,Default,,0000,0000,0000,,可惜你没有注意到它\N{\rEn}Pity you did not notice it.
+Dialogue: 0,1:20:42.51,1:20:43.00,Default,,0000,0000,0000,,不，不\N{\rEn}No, no.
+Dialogue: 0,1:20:43.80,1:20:45.38,Default,,0000,0000,0000,,我们只是思考的方式不同\N{\rEn}We just think a different way.
+Dialogue: 0,1:20:45.63,1:20:46.50,Default,,0000,0000,0000,,真的\N{\rEn}True.
+Dialogue: 0,1:20:47.00,1:20:49.00,Default,,0000,0000,0000,,你相信我们的佛只是凡人\N{\rEn}You believe our Buddhas are only men.
+Dialogue: 0,1:20:50.00,1:20:51.00,Default,,0000,0000,0000,,只是人类\N{\rEn}Just human beings.
+Dialogue: 0,1:20:51.48,1:20:53.25,Default,,0000,0000,0000,,即使佛，也会死\N{\rEn}Even a Buddha dies.
+Dialogue: 0,1:20:54.00,1:20:55.75,Default,,0000,0000,0000,,跟所有人一样，他...\N{\rEn}Like all men, he is...
+Dialogue: 0,1:20:56.40,1:20:59.20,Default,,0000,0000,0000,,...不是造物主。- 你不懂\N{\rEn}...not the creator. - You are ignorant!
+Dialogue: 0,1:20:59.70,1:21:03.36,Default,,0000,0000,0000,,神父，只有基督徒把佛看得如凡人简单\N{\rEn}Padre, only a Christian would see Buddha simply as a man.
+Dialogue: 0,1:21:03.98,1:21:05.25,Default,,0000,0000,0000,,我们的佛是存在的\N{\rEn}Our Buddha is a being.
+Dialogue: 0,1:21:05.50,1:21:09.54,Default,,0000,0000,0000,,此乃人可以成为比其本身更伟大者\N{\rEn}Which men can become something greater than himself.
+Dialogue: 0,1:21:09.78,1:21:11.50,Default,,0000,0000,0000,,若他能克服其一切妄念\N{\rEn}If he can overcome all his illusions.
+Dialogue: 0,1:21:11.67,1:21:14.74,Default,,0000,0000,0000,,但你坚持你的妄念...\N{\rEn}But you cling to your illusions...
+Dialogue: 0,1:21:15.00,1:21:16.40,Default,,0000,0000,0000,,...还称之为信仰\N{\rEn}...and call them faith.
+Dialogue: 0,1:21:16.60,1:21:17.80,Default,,0000,0000,0000,,不，你不懂\N{\rEn}No, you don't understand.
+Dialogue: 0,1:21:18.00,1:21:20.23,Default,,0000,0000,0000,,任何人只要遵从神的嘱咐\N{\rEn}If any man follows God's commandments.
+Dialogue: 0,1:21:20.29,1:21:22.46,Default,,0000,0000,0000,,他就能过上平静快乐的生活\N{\rEn}Then he can live a peaceful and joyous life!
+Dialogue: 0,1:21:22.66,1:21:24.23,Default,,0000,0000,0000,,我懂！我明白\N{\rEn}I do! I do understand.
+Dialogue: 0,1:21:24.60,1:21:27.20,Default,,0000,0000,0000,,神父，这太简单了\N{\rEn}Padre, it is perfectly simple!
+Dialogue: 0,1:21:28.72,1:21:29.40,Default,,0000,0000,0000,,"Korobu."\N{\rEn}転ぶ
+Dialogue: 0,1:21:30.02,1:21:32.39,Default,,0000,0000,0000,,你听过那词吗\N{\rEn}Have you heard that word?
+Dialogue: 0,1:21:33.02,1:21:34.70,Default,,0000,0000,0000,,"Korobu."\N{\rEn}転ぶ
+Dialogue: 0,1:21:35.69,1:21:38.79,Default,,0000,0000,0000,,它意思是塌下，放弃\N{\rEn}It means fall down. Surrender.
+Dialogue: 0,1:21:39.65,1:21:42.85,Default,,0000,0000,0000,,放弃信仰，弃教，如你所说\N{\rEn}Give up the faith, apostatize, as you say.
+Dialogue: 0,1:21:44.52,1:21:45.52,Default,,0000,0000,0000,,做吧\N{\rEn}Do it.
+Dialogue: 0,1:21:46.14,1:21:47.14,Default,,0000,0000,0000,,如果你不弃教\N{\rEn}If you don't apostatize.
+Dialogue: 0,1:21:47.80,1:21:50.44,Default,,0000,0000,0000,,囚犯们会被挂起“穴吊”\N{\rEn}The prisoners will be hang over the Pit.
+Dialogue: 0,1:21:50.54,1:21:53.64,Default,,0000,0000,0000,,直到你弃教，你们的命随血流，\N{\rEn}Until you do, your life's bleeding away,
+Dialogue: 0,1:21:54.10,1:21:55.10,Default,,0000,0000,0000,,...一滴连一滴\N{\rEn}...drop by drop.
+Dialogue: 0,1:21:55.48,1:21:58.02,Default,,0000,0000,0000,,有些持续几天，有些不行\N{\rEn}Some last for days, some do not.
+Dialogue: 0,1:21:59.00,1:22:00.15,Default,,0000,0000,0000,,他们死了\N{\rEn}They die.
+Dialogue: 0,1:22:00.56,1:22:03.00,Default,,0000,0000,0000,,他们折磨神父斯伯罗和卡索拉\N{\rEn}They tortured Father Sporo and Kasora.
+Dialogue: 0,1:22:03.10,1:22:04.25,Default,,0000,0000,0000,,穴吊\N{\rEn}Over the Pit.
+Dialogue: 0,1:22:04.50,1:22:06.00,Default,,0000,0000,0000,,你听说过他们吗\N{\rEn}Have you heard of them?
+Dialogue: 0,1:22:06.18,1:22:08.50,Default,,0000,0000,0000,,还有个叫神父图姆\N{\rEn}There was one called Pedro Tomb.
+Dialogue: 0,1:22:08.75,1:22:10.00,Default,,0000,0000,0000,,还有费雷拉，当然\N{\rEn}And Ferreira, of course.
+Dialogue: 0,1:22:10.50,1:22:11.20,Default,,0000,0000,0000,,费雷拉\N{\rEn}Ferreira?
+Dialogue: 0,1:22:11.57,1:22:12.57,Default,,0000,0000,0000,,你认识他\N{\rEn}Did you knew him?
+Dialogue: 0,1:22:15.87,1:22:17.34,Default,,0000,0000,0000,,我听过他\N{\rEn}I've heard of him.
+Dialogue: 0,1:22:17.54,1:22:21.00,Default,,0000,0000,0000,,毫无疑问，他现在在全日本都很有名\N{\rEn}No doubt, he's well-known all over Japan now.
+Dialogue: 0,1:22:21.40,1:22:25.34,Default,,0000,0000,0000,,“有着日本名及日本妻的传教士。”\N{\rEn}"The Priest with a Japanese name and a Japanese wife."
+Dialogue: 0,1:22:27.55,1:22:30.82,Default,,0000,0000,0000,,我不信。- 你可问任何人\N{\rEn}I don't believe. - You can ask anyone.
+Dialogue: 0,1:22:31.00,1:22:34.53,Default,,0000,0000,0000,,长崎的人提到他就惊叹\N{\rEn}People in Nagasaki point him out and marvel.
+Dialogue: 0,1:22:37.53,1:22:39.73,Default,,0000,0000,0000,,他如今身份很高\N{\rEn}He is helding great steam now.
+Dialogue: 0,1:22:40.04,1:22:43.64,Default,,0000,0000,0000,,这就是为何，我相信他首先会来这儿\N{\rEn}Which is why，I believe he came here in the first place.
+Dialogue: 0,1:22:47.24,1:22:49.58,Default,,0000,0000,0000,,傲慢的人。像他们所有人\N{\rEn}Arrogant man. Like all of them.
+Dialogue: 0,1:22:50.79,1:22:53.39,Default,,0000,0000,0000,,这意味着他最终会屈服\N{\rEn}Which means he'll eventually fall.
+Dialogue: 0,1:23:06.40,1:23:09.07,Default,,0000,0000,0000,,我以为殉教会成为我的救赎\N{\rEn}I thought that martyrdom would be my salvation.
+Dialogue: 0,1:23:09.69,1:23:12.56,Default,,0000,0000,0000,,恳求神。别让它成为我的耻辱\N{\rEn}Please God. Do not let it be my shame.
+Dialogue: 0,1:23:14.63,1:23:16.23,Default,,0000,0000,0000,,看啦！他好高\N{\rEn}Look! He's so big!
+Dialogue: 0,1:23:39.35,1:23:41.15,Default,,0000,0000,0000,,为何你要跟着我\N{\rEn}Why are you following me?
+Dialogue: 0,1:23:44.71,1:23:46.40,Default,,0000,0000,0000,,别跟着我\N{\rEn}Stop following me!
+Dialogue: 0,1:24:18.60,1:24:21.67,Default,,0000,0000,0000,,感谢主，赐予温和的日子于此处\N{\rEn}Thank you Lord for the gentle days here.
+Dialogue: 0,1:24:23.69,1:24:25.76,Default,,0000,0000,0000,,- 主教导我要爱每个人\N{\rEn}- Jesus taught me to love everyone.
+Dialogue: 0,1:24:26.82,1:24:29.50,Default,,0000,0000,0000,,- 但我不能感到爱，对那些\N{\rEn}- But I can not feel love to those who
+Dialogue: 0,1:24:29.60,1:24:32.00,Default,,0000,0000,0000,,- 把我们的朋友折磨致死的人\N{\rEn}- torture our friends to death.
+Dialogue: 0,1:24:32.36,1:24:34.76,Default,,0000,0000,0000,,- 我愤怒，我不能爱他们\N{\rEn}- I am angry. I can not love them.
+Dialogue: 0,1:24:35.04,1:24:38.58,Default,,0000,0000,0000,,连卫兵都被你的手碰过，主\N{\rEn}Even the guards have been touched by your hand, Lord.
+Dialogue: 0,1:24:39.04,1:24:40.34,Default,,0000,0000,0000,,- 我感到有罪\N{\rEn}- I feel guilty.
+Dialogue: 0,1:24:40.54,1:24:46.00,Default,,0000,0000,0000,,我想知道是否这连日的平静已证明\N{\rEn}I wonder if this unbroken peace is proof...
+Dialogue: 0,1:24:46.80,1:24:48.60,Default,,0000,0000,0000,,- 我的死不远了\N{\rEn}- That my death is not far away.
+Dialogue: 0,1:24:48.80,1:24:49.60,Default,,0000,0000,0000,,永不动摇\N{\rEn}Shall never be shaken.
+Dialogue: 0,1:24:52.00,1:24:53.80,Default,,0000,0000,0000,,永不动摇\N{\rEn}Shall never be shaken.
+Dialogue: 0,1:24:53.83,1:24:57.86,Default,,0000,0000,0000,,我看到您儿子的命运，如此清晰，有如我自己的\N{\rEn}I see the life of your son so clearly, almost like my own.
+Dialogue: 0,1:25:00.00,1:25:01.30,Default,,0000,0000,0000,,还有他的脸\N{\rEn}And his face...
+Dialogue: 0,1:25:01.80,1:25:03.89,Default,,0000,0000,0000,,它带走了我的所有恐惧\N{\rEn}it takes all fear from me.
+Dialogue: 0,1:25:04.96,1:25:07.42,Default,,0000,0000,0000,,它就是那张我儿时便记得的脸\N{\rEn}It is the face that I remember from childhood.
+Dialogue: 0,1:25:08.48,1:25:09.48,Default,,0000,0000,0000,,对我说着话\N{\rEn}Speaking to me.
+Dialogue: 0,1:25:11.17,1:25:12.50,Default,,0000,0000,0000,,我确信这点\N{\rEn}I'm sure of it.
+Dialogue: 0,1:25:13.90,1:25:15.84,Default,,0000,0000,0000,,承诺着我不会放弃你\N{\rEn}Promising I will not abandon you.
+Dialogue: 0,1:25:17.40,1:25:19.53,Default,,0000,0000,0000,,我不会放弃你\N{\rEn}I will not abandon you.
+Dialogue: 0,1:25:20.75,1:25:22.25,Default,,0000,0000,0000,,我不会放弃你\N{\rEn}I will not abandon you.
+Dialogue: 0,1:25:24.71,1:25:25.71,Default,,0000,0000,0000,,穿上它们\N{\rEn}Put them on.
+Dialogue: 0,1:25:27.38,1:25:32.00,Default,,0000,0000,0000,,你该感到荣幸，这是我们的传教士(指和尚)穿的\N{\rEn}You should be honored, it is what our priests wear.
+Dialogue: 0,1:25:52.29,1:25:55.42,Default,,0000,0000,0000,,神父罗德里格斯，来自葡萄牙，是吗\N{\rEn}Padre Rodriguez from Portugal, yes?
+Dialogue: 0,1:25:56.94,1:25:59.14,Default,,0000,0000,0000,,我很抱歉，神父，为我说的话\N{\rEn}I am sorry, Padre, for my speaking.
+Dialogue: 0,1:26:00.68,1:26:02.00,Default,,0000,0000,0000,,我的语言不太好\N{\rEn}My language is not so good
+Dialogue: 0,1:26:02.50,1:26:04.00,Default,,0000,0000,0000,,...但是藩主...\N{\rEn}...but His Lordship...
+Dialogue: 0,1:26:04.20,1:26:06.00,Default,,0000,0000,0000,,...筑后奉行...\N{\rEn}...the governor of Chikuwo...
+Dialogue: 0,1:26:06.20,1:26:07.54,Default,,0000,0000,0000,,...担心关于...\N{\rEn}...is anxious about...
+Dialogue: 0,1:26:07.96,1:26:11.00,Default,,0000,0000,0000,,...你的...适...适应...\N{\rEn}...Your are com...comfort...
+Dialogue: 0,1:26:12.00,1:26:13.20,Default,,0000,0000,0000,,...适应\N{\rEn}...Comfort.
+Dialogue: 0,1:26:13.80,1:26:16.00,Default,,0000,0000,0000,,- 也许不适应\N{\rEn}- Perhaps discomfort.
+Dialogue: 0,1:26:16.49,1:26:17.55,Default,,0000,0000,0000,,不适应，是的\N{\rEn}Discomfort, yes.
+Dialogue: 0,1:26:18.84,1:26:20.44,Default,,0000,0000,0000,,关于你为何到此\N{\rEn}About why you are here
+Dialogue: 0,1:26:20.60,1:26:22.60,Default,,0000,0000,0000,,如果你不自在\N{\rEn}and if you are not at ease
+Dialogue: 0,1:26:22.84,1:26:24.00,Default,,0000,0000,0000,,请说出来\N{\rEn}please say so.
+Dialogue: 0,1:26:27.52,1:26:30.00,Default,,0000,0000,0000,,你旅途遥远\N{\rEn}Your trip was long.
+Dialogue: 0,1:26:30.40,1:26:32.32,Default,,0000,0000,0000,,危险众多\N{\rEn}There were many dangers.
+Dialogue: 0,1:26:33.26,1:26:37.33,Default,,0000,0000,0000,,你决心的力量极大的触动了我们\N{\rEn}The power of your determination touches us greatly.
+Dialogue: 0,1:26:39.30,1:26:41.50,Default,,0000,0000,0000,,我们知你已受苦甚巨\N{\rEn}We know you have already suffered greatly.
+Dialogue: 0,1:26:42.10,1:26:44.80,Default,,0000,0000,0000,,我们不希望再增你的苦难\N{\rEn}We do not wish to add to your suffering.
+Dialogue: 0,1:26:45.07,1:26:47.30,Default,,0000,0000,0000,,即使我们可能这样做\N{\rEn}And the thought that we might do so
+Dialogue: 0,1:26:47.40,1:26:50.20,Default,,0000,0000,0000,,...也使我们痛苦\N{\rEn}...is painful for us too.
+Dialogue: 0,1:26:51.00,1:26:52.09,Default,,0000,0000,0000,,谢谢\N{\rEn}Thank you.
+Dialogue: 0,1:26:53.78,1:26:54.78,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,1:26:56.23,1:26:58.00,Default,,0000,0000,0000,,你带来的教义...\N{\rEn}The doctrine you bring with you...
+Dialogue: 0,1:26:58.23,1:27:00.59,Default,,0000,0000,0000,,...在西班牙和葡萄牙可能是真的\N{\rEn}...may be true in Spain and Portugal.
+Dialogue: 0,1:27:00.71,1:27:03.00,Default,,0000,0000,0000,,但我们仔细研究过\N{\rEn}But we have studied it carefully.
+Dialogue: 0,1:27:03.20,1:27:05.50,Default,,0000,0000,0000,,专心致志，积日累久\N{\rEn}So devotedly over much time.
+Dialogue: 0,1:27:08.01,1:27:12.31,Default,,0000,0000,0000,,我们发现它在日本毫无用处，没有价值\N{\rEn}We find it is of no use and no value in Japan.
+Dialogue: 0,1:27:16.80,1:27:20.30,Default,,0000,0000,0000,,我们断定它是危险之物\N{\rEn}We have concluded that it is a danger.
+Dialogue: 0,1:27:26.82,1:27:29.82,Default,,0000,0000,0000,,但我们相信，我们给你们带来了真理\N{\rEn}But we believe, we have brought you the truth.
+Dialogue: 0,1:27:30.99,1:27:32.66,Default,,0000,0000,0000,,而真理是普遍的\N{\rEn}And the truth is universal.
+Dialogue: 0,1:27:33.68,1:27:38.21,Default,,0000,0000,0000,,它对任何国家都是共同的，在任何时候。这就是为何我们称之为真理\N{\rEn}It's common to all countries, at all times. That's why we call it the truth.
+Dialogue: 0,1:27:40.65,1:27:44.78,Default,,0000,0000,0000,,如果教义在日本这儿不像在葡萄牙那么正确\N{\rEn}If a doctrine weren't as true here in Japan, as it is in Portugal.
+Dialogue: 0,1:27:45.00,1:27:47.81,Default,,0000,0000,0000,,那么我们就不会称之为真理\N{\rEn}Then we couldn't call it the truth.
+Dialogue: 0,1:27:55.55,1:27:58.32,Default,,0000,0000,0000,,我看出你不用你的双手工作，神父\N{\rEn}I see that you do not work with your hands, Father.
+Dialogue: 0,1:28:00.51,1:28:04.58,Default,,0000,0000,0000,,但人人皆知，一棵树在某地茂盛茁壮\N{\rEn}But everyone knows a tree which flourishes in one kind of earth.
+Dialogue: 0,1:28:05.00,1:28:07.80,Default,,0000,0000,0000,,在别处可能腐烂死亡\N{\rEn}May decay and die in another.
+Dialogue: 0,1:28:10.71,1:28:15.20,Default,,0000,0000,0000,,这与天主教的树是一样的，叶烂于此\N{\rEn}It is the same with the tree of Christianity. The leaves decay here.
+Dialogue: 0,1:28:16.31,1:28:17.78,Default,,0000,0000,0000,,芽遂亡\N{\rEn}The buds die.
+Dialogue: 0,1:28:17.98,1:28:21.00,Default,,0000,0000,0000,,不是土壤杀死了芽\N{\rEn}It is not the soil that has killed the buds.
+Dialogue: 0,1:28:21.12,1:28:25.92,Default,,0000,0000,0000,,有叁拾万基督徒在日本这儿，在土壤...\N{\rEn}There were 300.000 Christians here in Japan, before the soil was...
+Dialogue: 0,1:28:30.67,1:28:31.67,Default,,0000,0000,0000,,怎样\N{\rEn}Yes?
+Dialogue: 0,1:28:33.63,1:28:35.16,Default,,0000,0000,0000,,...中毒前\N{\rEn}...was poisoned.
+Dialogue: 0,1:28:45.17,1:28:46.73,Default,,0000,0000,0000,,你没有回复吗？\N{\rEn}You have no reply?
+Dialogue: 0,1:28:48.83,1:28:53.03,Default,,0000,0000,0000,,你又何必？你永远不必去改变我的心\N{\rEn}Why should you? You're never going to change my heart.
+Dialogue: 0,1:28:55.16,1:28:57.83,Default,,0000,0000,0000,,这就有如，我不必去改变你的\N{\rEn}And it seems like, I'm not going to change yours.
+Dialogue: 0,1:28:58.48,1:29:01.48,Default,,0000,0000,0000,,你想测试我的信仰？给我一个真正的挑战\N{\rEn}You want to test my faith? Give me a real challenge!
+Dialogue: 0,1:29:02.78,1:29:04.31,Default,,0000,0000,0000,,带我去见奉行官\N{\rEn}Bring me to the Inquisitor!
+Dialogue: 0,1:29:04.78,1:29:05.31,Default,,0000,0000,0000,,带我...\N{\rEn}Bring me...
+Dialogue: 0,1:29:06.09,1:29:07.00,Default,,0000,0000,0000,,...去见井上大人\N{\rEn}...to Inoue Sama!
+Dialogue: 0,1:29:18.34,1:29:19.20,Default,,0000,0000,0000,,为何他们要笑？\N{\rEn}Why are they laughing?
+Dialogue: 0,1:29:21.00,1:29:22.75,Default,,0000,0000,0000,,我没说任何好笑的，为何他们要笑\N{\rEn}I didn't say anything funny, why are they laughing?
+Dialogue: 0,1:29:23.51,1:29:24.51,Default,,0000,0000,0000,,因为，神父...\N{\rEn}Because Padre...
+Dialogue: 0,1:29:27.08,1:29:28.08,Default,,0000,0000,0000,,因为\N{\rEn}Because.
+Dialogue: 0,1:29:30.54,1:29:33.00,Default,,0000,0000,0000,,我就是筑后国的筑后守(官职名)\N{\rEn}I am the governor of Chikuwo.
+Dialogue: 0,1:29:34.92,1:29:37.50,Default,,0000,0000,0000,,我就是奉行官\N{\rEn}I am the Inquisitor.
+Dialogue: 0,1:29:40.07,1:29:42.07,Default,,0000,0000,0000,,我是，你知道吗\N{\rEn}I am, you know it?
+Dialogue: 0,1:30:28.91,1:30:31.88,Default,,0000,0000,0000,,多久？他们得这样干多久？在雨中\N{\rEn}How long? How long will they have to work like this in the rain?
+Dialogue: 0,1:30:32.52,1:30:34.35,Default,,0000,0000,0000,,直到完工\N{\rEn}Until finished.
+Dialogue: 0,1:30:51.50,1:30:52.50,Default,,0000,0000,0000,,- 神父！\N{\rEn}- Padre!
+Dialogue: 0,1:30:53.40,1:30:54.00,Default,,0000,0000,0000,,- 神父\N{\rEn}- Padre!
+Dialogue: 0,1:30:54.60,1:30:55.20,Default,,0000,0000,0000,,- 神父\N{\rEn}- Padre!
+Dialogue: 0,1:30:56.30,1:30:57.70,Default,,0000,0000,0000,,请听我说\N{\rEn}Please listen to me!
+Dialogue: 0,1:30:59.89,1:31:01.29,Default,,0000,0000,0000,,他们威胁我\N{\rEn}They threatened me.
+Dialogue: 0,1:31:02.11,1:31:03.58,Default,,0000,0000,0000,,- 我从没拿过他们的钱\N{\rEn}- I never took their money!
+Dialogue: 0,1:31:04.56,1:31:06.56,Default,,0000,0000,0000,,我没有为钱出卖你\N{\rEn}I did not betray you for money!
+Dialogue: 0,1:31:51.51,1:31:53.28,Default,,0000,0000,0000,,小心他，神父\N{\rEn}Be careful with him, Padre.
+Dialogue: 0,1:31:53.50,1:31:56.90,Default,,0000,0000,0000,,可能井上大人雇他使我们踏踩\N{\rEn}Maybe Inoue Sama pays him to make us trample.
+Dialogue: 0,1:31:57.12,1:31:58.82,Default,,0000,0000,0000,,- 不！他没有\N{\rEn}- No, he did not!
+Dialogue: 0,1:32:00.77,1:32:04.00,Default,,0000,0000,0000,,恳求神父，让我告解\N{\rEn}Please Padre, let me confess.
+Dialogue: 0,1:32:05.00,1:32:06.00,Default,,0000,0000,0000,,- 神父\N{\rEn}- Padre.
+Dialogue: 0,1:32:22.58,1:32:25.34,Default,,0000,0000,0000,,我知，我闻到了，我闻到了罪\N{\rEn}I know, I smell. I smell of sin.
+Dialogue: 0,1:32:26.81,1:32:31.07,Default,,0000,0000,0000,,我想再次告解，主就会把我洗干净\N{\rEn}I want to confess again, so the Lord can wash me clean.
+Dialogue: 0,1:32:36.80,1:32:38.20,Default,,0000,0000,0000,,为何你要来这儿？\N{\rEn}Why did you come here?
+Dialogue: 0,1:32:42.13,1:32:44.00,Default,,0000,0000,0000,,这是为赎罪吗？\N{\rEn}Is it for absolution?
+Dialogue: 0,1:32:46.80,1:32:49.13,Default,,0000,0000,0000,,你有任何赎罪是啥的认识吗？\N{\rEn}Do you have any understanding what absolution is?
+Dialogue: 0,1:32:49.33,1:32:51.50,Default,,0000,0000,0000,,你懂我正在说什么吗？\N{\rEn}Do you understand what I've been saying?
+Dialogue: 0,1:32:53.25,1:32:58.00,Default,,0000,0000,0000,,多年前，我可能会死为一个好基督徒\N{\rEn}Years ago, I could have died a good Christian.
+Dialogue: 0,1:32:58.60,1:33:00.50,Default,,0000,0000,0000,,没有迫害\N{\rEn}There was no persecution.
+Dialogue: 0,1:33:01.60,1:33:03.54,Default,,0000,0000,0000,,为何我生在现在？\N{\rEn}Why was I born now?
+Dialogue: 0,1:33:05.20,1:33:06.80,Default,,0000,0000,0000,,这太不公平\N{\rEn}This is so unfair!
+Dialogue: 0,1:33:08.00,1:33:10.10,Default,,0000,0000,0000,,对不起\N{\rEn}I am sorry.
+Dialogue: 0,1:33:15.33,1:33:16.89,Default,,0000,0000,0000,,你还相信吗\N{\rEn}Do you still believe?
+Dialogue: 0,1:33:40.72,1:33:44.50,Default,,0000,0000,0000,,赐福我神父，我有罪啊\N{\rEn}Bless me Padre. For I have sinned.
+Dialogue: 0,1:33:45.50,1:33:50.40,Default,,0000,0000,0000,,我惭愧，因如此软弱\N{\rEn}I am sorry for being so weak.
+Dialogue: 0,1:33:51.98,1:33:56.21,Default,,0000,0000,0000,,我惭愧，这已经发生了\N{\rEn}I am sorry, this has happened.
+Dialogue: 0,1:33:58.27,1:34:03.03,Default,,0000,0000,0000,,我惭愧，因我对你所做的一切\N{\rEn}I am sorry for what I did to you!
+Dialogue: 0,1:34:04.91,1:34:06.50,Default,,0000,0000,0000,,救救我，神父\N{\rEn}Help me, Padre.
+Dialogue: 0,1:34:07.38,1:34:08.88,Default,,0000,0000,0000,,解除此罪\N{\rEn}Take away the sin.
+Dialogue: 0,1:34:11.52,1:34:14.19,Default,,0000,0000,0000,,我会再次尝试要坚强\N{\rEn}I will try again to be strong.
+Dialogue: 0,1:34:18.47,1:34:21.94,Default,,0000,0000,0000,,天父，耶稣怎会爱一个卑鄙如此的人\N{\rEn}Father, how could Jesus love a wretch like this?
+Dialogue: 0,1:34:24.11,1:34:28.50,Default,,0000,0000,0000,,这里到处都是邪恶，我感觉到它的力量，甚至它的美丽\N{\rEn}There is evil all around in this place, I sense its strength even its beauty.
+Dialogue: 0,1:34:30.18,1:34:32.91,Default,,0000,0000,0000,,但这个男人两者皆无\N{\rEn}But there is none of that in this man.
+Dialogue: 0,1:34:33.73,1:34:36.00,Default,,0000,0000,0000,,他不配称为邪恶\N{\rEn}He is not worthy to be called evil.
+Dialogue: 0,1:34:45.80,1:34:47.14,Default,,0000,0000,0000,,安心去吧\N{\rEn}Go in peace.
+Dialogue: 0,1:34:51.06,1:34:56.00,Default,,0000,0000,0000,,我觉得.. 我，我害怕.. 耶稣，原谅我\N{\rEn}I feel.. I, I fear.. Jesus, forgive me.
+Dialogue: 0,1:34:56.20,1:34:59.00,Default,,0000,0000,0000,,我也许不值得您爱\N{\rEn}I may not be worthy of you.
+Dialogue: 0,1:35:07.20,1:35:09.00,Default,,0000,0000,0000,,这只是个形式\N{\rEn}This is just a formality.
+Dialogue: 0,1:35:10.80,1:35:11.80,Default,,0000,0000,0000,,只要一步就行\N{\rEn}Just one step will do.
+Dialogue: 0,1:35:12.40,1:35:13.80,Default,,0000,0000,0000,,我们不要求你真诚地去做\N{\rEn}We're not asking you to do it sincerely.
+Dialogue: 0,1:35:15.10,1:35:17.90,Default,,0000,0000,0000,,只须把你的脚放这东西上，不用背叛你的信仰\N{\rEn}Just putting your foot on the thing won't betray your faith.
+Dialogue: 0,1:35:19.70,1:35:22.10,Default,,0000,0000,0000,,我不会真的关心\N{\rEn}I don't really care.
+Dialogue: 0,1:35:23.20,1:35:24.80,Default,,0000,0000,0000,,你越早做...\N{\rEn}The sooner you do it...
+Dialogue: 0,1:35:25.20,1:35:27.40,Default,,0000,0000,0000,,...我们就越快避开太阳\N{\rEn}...the sooner we get out of the sun.
+Dialogue: 0,1:35:32.20,1:35:35.80,Default,,0000,0000,0000,,只需用你的脚轻轻地踩，若你愿意\N{\rEn}Just touch it with your foot lightly if you like.
+Dialogue: 0,1:35:36.50,1:35:37.80,Default,,0000,0000,0000,,不管你愿意几何...\N{\rEn}However you like...
+Dialogue: 0,1:35:39.20,1:35:41.80,Default,,0000,0000,0000,,...你将会立即获释\N{\rEn}...and you'll be free immediately.
+Dialogue: 0,1:36:15.80,1:36:16.90,Default,,0000,0000,0000,,它只是图片\N{\rEn}It's only a picture.
+Dialogue: 0,1:36:17.90,1:36:19.10,Default,,0000,0000,0000,,把你脚放其上\N{\rEn}Put your foot on it.
+Dialogue: 0,1:36:20.90,1:36:21.80,Default,,0000,0000,0000,,马上\N{\rEn}Now!
+Dialogue: 0,1:36:29.30,1:36:29.90,Default,,0000,0000,0000,,下一个\N{\rEn}Next!
+Dialogue: 0,1:36:37.60,1:36:38.40,Default,,0000,0000,0000,,你怎么样？\N{\rEn}How about you?
+Dialogue: 0,1:36:42.30,1:36:43.40,Default,,0000,0000,0000,,这绝无意义\N{\rEn}It is pointless.
+Dialogue: 0,1:36:45.20,1:36:45.90,Default,,0000,0000,0000,,马上\N{\rEn}Now!
+Dialogue: 0,1:36:51.60,1:36:52.30,Default,,0000,0000,0000,,下一个\N{\rEn}Next!
+Dialogue: 0,1:37:03.10,1:37:04.40,Default,,0000,0000,0000,,你可以轻轻地做\N{\rEn}You can do it lightly.
+Dialogue: 0,1:37:06.30,1:37:07.80,Default,,0000,0000,0000,,然后你就自由了\N{\rEn}Then you will be free.
+Dialogue: 0,1:37:09.70,1:37:10.40,Default,,0000,0000,0000,,马上\N{\rEn}Now.
+Dialogue: 0,1:37:11.50,1:37:12.30,Default,,0000,0000,0000,,只需踏上它\N{\rEn}Just step on it.
+Dialogue: 0,1:37:15.00,1:37:15.60,Default,,0000,0000,0000,,前进\N{\rEn}Go ahead.
+Dialogue: 0,1:37:21.60,1:37:22.30,Default,,0000,0000,0000,,下一个\N{\rEn}Next.
+Dialogue: 0,1:37:25.30,1:37:26.30,Default,,0000,0000,0000,,只一步\N{\rEn}Only one step.
+Dialogue: 0,1:37:29.30,1:37:29.90,Default,,0000,0000,0000,,马上...\N{\rEn}Now...
+Dialogue: 0,1:37:30.30,1:37:31.30,Default,,0000,0000,0000,,你肯定想获释\N{\rEn}You must want to be free.
+Dialogue: 0,1:37:32.30,1:37:33.20,Default,,0000,0000,0000,,获释\N{\rEn}Be free!
+Dialogue: 0,1:37:34.60,1:37:35.70,Default,,0000,0000,0000,,把你脚放其上\N{\rEn}Put your foot on it!
+Dialogue: 0,1:38:09.70,1:38:10.90,Default,,0000,0000,0000,,都带他们回去\N{\rEn}Take them all back.
+Dialogue: 0,1:38:17.10,1:38:18.40,Default,,0000,0000,0000,,留下那个\N{\rEn}Leave that one behind.
+Dialogue: 0,1:38:51.39,1:38:53.52,Default,,0000,0000,0000,,谢谢主听到我的祈祷\N{\rEn}Thank you Lord for hearing my prayer!
+Dialogue: 0,1:40:06.10,1:40:08.00,Default,,0000,0000,0000,,这就是基督徒的下场\N{\rEn}This is what happens to Christians!
+Dialogue: 0,1:40:11.30,1:40:12.00,Default,,0000,0000,0000,,但是...\N{\rEn}But...
+Dialogue: 0,1:40:12.80,1:40:15.80,Default,,0000,0000,0000,,...我将向你们示范，一个如何避免那种命运的例子\N{\rEn}...I will show you an example of how to avoid that fate.
+Dialogue: 0,1:40:19.60,1:40:20.40,Default,,0000,0000,0000,,带他过来\N{\rEn}Bring him here.
+Dialogue: 0,1:40:39.80,1:40:40.70,Default,,0000,0000,0000,,前进\N{\rEn}Go ahead.
+Dialogue: 0,1:40:41.10,1:40:42.40,Default,,0000,0000,0000,,把脚放上去\N{\rEn}Just put your foot there.
+Dialogue: 0,1:40:43.10,1:40:45.13,Default,,0000,0000,0000,,看看这有多容易\N{\rEn}See how easy it is?
+Dialogue: 0,1:40:46.80,1:40:48.70,Default,,0000,0000,0000,,我承认他练习过\N{\rEn}I admit he's had practice.
+Dialogue: 0,1:40:49.40,1:40:52.90,Default,,0000,0000,0000,,但看看这动作多简单\N{\rEn}But look how simple the movement is.
+Dialogue: 0,1:41:00.00,1:41:02.10,Default,,0000,0000,0000,,它甚至没有鞠躬难\N{\rEn}It is not even as hard as bowing.
+Dialogue: 0,1:41:02.90,1:41:03.80,Default,,0000,0000,0000,,不是吗\N{\rEn}Is it not?
+Dialogue: 0,1:41:06.30,1:41:07.60,Default,,0000,0000,0000,,或跑步\N{\rEn}Or running.
+Dialogue: 0,1:41:09.10,1:41:10.00,Default,,0000,0000,0000,,马上滚\N{\rEn}Now go!
+Dialogue: 0,1:41:12.30,1:41:12.90,Default,,0000,0000,0000,,滚出去\N{\rEn}Get out of here!
+Dialogue: 0,1:41:19.80,1:41:20.60,Default,,0000,0000,0000,,你们看见了吗\N{\rEn}You see?
+Dialogue: 0,1:41:22.20,1:41:24.40,Default,,0000,0000,0000,,他履行了他的义务\N{\rEn}He lived up to his obligation.
+Dialogue: 0,1:41:25.60,1:41:26.70,Default,,0000,0000,0000,,就这样\N{\rEn}That is all.
+Dialogue: 0,1:42:22.80,1:42:30.16,Default,,0000,0000,0000,,我很抱歉，如今我已忽略你多日，神父\N{\rEn}I'm sorry I've neglected you for some days now, Padre.
+Dialogue: 0,1:42:30.58,1:42:33.58,Default,,0000,0000,0000,,我在平户有些事\N{\rEn}But I had business in Hirado.
+Dialogue: 0,1:42:34.30,1:42:38.23,Default,,0000,0000,0000,,我希望有天你能亲自去那儿\N{\rEn}I hope you get to go there yourself sometime.
+Dialogue: 0,1:42:39.16,1:42:41.33,Default,,0000,0000,0000,,那里确实很漂亮\N{\rEn}Sure it's very beautiful.
+Dialogue: 0,1:42:41.62,1:42:46.50,Default,,0000,0000,0000,,传闻有个有趣故事，关于统治那儿的大名\N{\rEn}There lays an interesting story about the Dimeov who ruled there
+Dialogue: 0,1:42:46.68,1:42:49.08,Default,,0000,0000,0000,,他有四个侧室\N{\rEn}He had four concubines.
+Dialogue: 0,1:42:49.79,1:42:50.79,Default,,0000,0000,0000,,四个\N{\rEn}Four.
+Dialogue: 0,1:42:51.78,1:42:55.72,Default,,0000,0000,0000,,她们都漂亮，但她们...\N{\rEn}They were all beautiful, but they...
+Dialogue: 0,1:42:58.06,1:42:59.36,Default,,0000,0000,0000,,我很抱歉\N{\rEn}I'm sorry.
+Dialogue: 0,1:43:00.00,1:43:04.20,Default,,0000,0000,0000,,也许这故事不应说与独身的传教士\N{\rEn}Maybe this is not a story for a celibate priest.
+Dialogue: 0,1:43:04.47,1:43:06.60,Default,,0000,0000,0000,,没关系，请继续\N{\rEn}It's alright, please go on.
+Dialogue: 0,1:43:07.54,1:43:11.50,Default,,0000,0000,0000,,那种情况下，大名的侧室都嫉妒\N{\rEn}In that case, the Dimeov's concubines were all jealous.
+Dialogue: 0,1:43:11.65,1:43:13.75,Default,,0000,0000,0000,,她们斗来斗去没完没了\N{\rEn}And they fought and fought without end,
+Dialogue: 0,1:43:14.00,1:43:19.32,Default,,0000,0000,0000,,于是平户大名赶她们出其城\N{\rEn}so the Dimeov Hirado drove them away from his castle.
+Dialogue: 0,1:43:19.50,1:43:22.50,Default,,0000,0000,0000,,安宁就再次来到他的生活\N{\rEn}And peace came into his life again.
+Dialogue: 0,1:43:23.99,1:43:26.79,Default,,0000,0000,0000,,你认为这故事有教训吗？\N{\rEn}Do you think this story has a lesson?
+Dialogue: 0,1:43:29.54,1:43:30.84,Default,,0000,0000,0000,,是的\N{\rEn}Yes.
+Dialogue: 0,1:43:32.37,1:43:34.64,Default,,0000,0000,0000,,即这是个很明智的男人\N{\rEn}That this was a very wise man.
+Dialogue: 0,1:43:35.69,1:43:40.16,Default,,0000,0000,0000,,我很高兴，那意味着你明白大名就像日本\N{\rEn}I'm glad. That means you understand the Dimeov is like Japan.
+Dialogue: 0,1:43:40.98,1:43:49.50,Default,,0000,0000,0000,,那些侧室是西班牙，葡萄牙，荷兰，英格兰\N{\rEn}And these concubines are Spain, Portugal, Holland, England.
+Dialogue: 0,1:43:50.00,1:43:53.00,Default,,0000,0000,0000,,人人试图获得相对别人的优势\N{\rEn}Each trying to gain advantage against the other
+Dialogue: 0,1:43:53.20,1:43:56.20,Default,,0000,0000,0000,,还在过程中摧毁了房子\N{\rEn}and destroy the house in the process.
+Dialogue: 0,1:43:57.57,1:44:02.00,Default,,0000,0000,0000,,既然你说此人聪明，你就会明白\N{\rEn}Since you said this man is wise, you will understand
+Dialogue: 0,1:44:02.20,1:44:05.40,Default,,0000,0000,0000,,...为何我们必须禁止天主教\N{\rEn}...why we must outlaw the Christians.
+Dialogue: 0,1:44:07.31,1:44:11.50,Default,,0000,0000,0000,,然而，我们的教会教导一夫一妻\N{\rEn}Well. Our Church teaches monogamy.
+Dialogue: 0,1:44:18.50,1:44:19.52,Default,,0000,0000,0000,,一个妻子\N{\rEn}One wife.
+Dialogue: 0,1:44:21.04,1:44:24.84,Default,,0000,0000,0000,,那如果日本在四人中选一个合法的妻子呢？\N{\rEn}What if Japan were to choose one lawful wife from the four?
+Dialogue: 0,1:44:27.18,1:44:29.00,Default,,0000,0000,0000,,你指葡萄牙\N{\rEn}You mean Portugal?
+Dialogue: 0,1:44:29.63,1:44:30.83,Default,,0000,0000,0000,,不\N{\rEn}No.
+Dialogue: 0,1:44:31.74,1:44:33.74,Default,,0000,0000,0000,,我指神圣的教堂\N{\rEn}I mean the Holy Church.
+Dialogue: 0,1:44:39.40,1:44:45.60,Default,,0000,0000,0000,,难道你不认为这样好多了，男人忘记外国女人...\N{\rEn}Don't you think it would be better for the man to forget about foreign women...
+Dialogue: 0,1:44:45.89,1:44:47.79,Default,,0000,0000,0000,,...选一个他本国的\N{\rEn}...and choose one of his own?
+Dialogue: 0,1:44:48.21,1:44:51.61,Default,,0000,0000,0000,,国籍并不那么重要，当婚姻已至\N{\rEn}Nationality is not so important when it comes to a marriage.
+Dialogue: 0,1:44:51.68,1:44:53.15,Default,,0000,0000,0000,,...重要的是爱\N{\rEn}...what matters is love.
+Dialogue: 0,1:44:53.50,1:44:57.15,Default,,0000,0000,0000,,爱和忠诚\N{\rEn}Love and fidelity.
+Dialogue: 0,1:44:58.31,1:44:59.20,Default,,0000,0000,0000,,爱！\N{\rEn}Love!
+Dialogue: 0,1:45:00.50,1:45:03.90,Default,,0000,0000,0000,,神父，也有男人被困扰于\N{\rEn}Padre, there are men who are plagued
+Dialogue: 0,1:45:04.00,1:45:08.20,Default,,0000,0000,0000,,...丑女的痴情\N{\rEn}...by the persistent love of an ugly woman.
+Dialogue: 0,1:45:09.96,1:45:13.09,Default,,0000,0000,0000,,这就是传教工作对你的意义吗\N{\rEn}Is that what missionary work is to you?
+Dialogue: 0,1:45:13.40,1:45:14.60,Default,,0000,0000,0000,,丑女？\N{\rEn}An ugly woman?
+Dialogue: 0,1:45:15.13,1:45:16.73,Default,,0000,0000,0000,,好吧\N{\rEn}Well.
+Dialogue: 0,1:45:19.00,1:45:20.00,Default,,0000,0000,0000,,是的\N{\rEn}Yes.
+Dialogue: 0,1:45:22.34,1:45:25.68,Default,,0000,0000,0000,,你们怎么称呼一个不能生孩子的女人\N{\rEn}How do you call a woman who cannot bear children?
+Dialogue: 0,1:45:26.94,1:45:27.94,Default,,0000,0000,0000,,不育\N{\rEn}Barren.
+Dialogue: 0,1:45:28.00,1:45:31.00,Default,,0000,0000,0000,,不育之女不能成为真正的妻子\N{\rEn}A barren woman can not be a true wife.
+Dialogue: 0,1:45:32.85,1:45:36.41,Default,,0000,0000,0000,,如果福音在此迷失方向，那不是教会的错\N{\rEn}If the gospel has lost its way here, it is not the fault of the Church.
+Dialogue: 0,1:45:37.77,1:45:42.87,Default,,0000,0000,0000,,错在那些强行把忠诚从其信仰拉开者\N{\rEn}It is the fault of those who tear away the faithful from their faith,
+Dialogue: 0,1:45:43.07,1:45:45.97,Default,,0000,0000,0000,,就像丈夫从妻子\N{\rEn}like a husband from a wife.
+Dialogue: 0,1:45:47.49,1:45:49.35,Default,,0000,0000,0000,,你指...\N{\rEn}You mean...
+Dialogue: 0,1:45:50.00,1:45:51.00,Default,,0000,0000,0000,,...我\N{\rEn}...Me?
+Dialogue: 0,1:45:53.46,1:45:58.20,Default,,0000,0000,0000,,神父，你们传教士似乎不懂日本\N{\rEn}Padre, your missionaries do not seem to know Japan!
+Dialogue: 0,1:45:59.09,1:46:04.50,Default,,0000,0000,0000,,而你，尊敬的奉行官，似乎不懂天主教\N{\rEn}And you, Honorable Inquisitor, do not seem to know Christianity.
+Dialogue: 0,1:46:19.70,1:46:25.03,Default,,0000,0000,0000,,有些人认为你们的宗教是诅咒\N{\rEn}There are those who think of your religion as a curse.
+Dialogue: 0,1:46:25.49,1:46:26.63,Default,,0000,0000,0000,,我不\N{\rEn}I do not.
+Dialogue: 0,1:46:27.89,1:46:34.02,Default,,0000,0000,0000,,我懂它。从别的角度，但依然危险\N{\rEn}I see it. In another way, but still dangerous.
+Dialogue: 0,1:46:50.56,1:46:56.00,Default,,0000,0000,0000,,我想让你想想丑女的痴情\N{\rEn}I'd like for you to think about the persistent love of an ugly woman.
+Dialogue: 0,1:46:56.20,1:47:00.20,Default,,0000,0000,0000,,及不育之女如何绝不能当妻子\N{\rEn}And how a barren woman should never be a wife.
+Dialogue: 0,1:47:09.39,1:47:10.39,Default,,0000,0000,0000,,神父！神父！\N{\rEn}Padre! Padre!
+Dialogue: 0,1:47:11.00,1:47:14.37,Default,,0000,0000,0000,,神父！救救我！神父\N{\rEn}Padre! Help me! Padre!
+Dialogue: 0,1:47:22.55,1:47:24.00,Default,,0000,0000,0000,,你们要带她们去那儿\N{\rEn}Where are you taking them?
+Dialogue: 0,1:47:25.26,1:47:27.00,Default,,0000,0000,0000,,你们要带她们去那儿\N{\rEn}Where are you taking them?
+Dialogue: 0,1:47:27.99,1:47:31.00,Default,,0000,0000,0000,,神父！神父\N{\rEn}Padre! Padre!
+Dialogue: 0,1:47:37.88,1:47:40.00,Default,,0000,0000,0000,,你今天要出行\N{\rEn}You are traveling today.
+Dialogue: 0,1:48:24.91,1:48:28.20,Default,,0000,0000,0000,,坐下，这对你更好，我认为\N{\rEn}Sit down. It's better for you, I think.
+Dialogue: 0,1:48:29.19,1:48:30.19,Default,,0000,0000,0000,,请\N{\rEn}Please.
+Dialogue: 0,1:48:43.76,1:48:44.76,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,1:48:46.11,1:48:47.50,Default,,0000,0000,0000,,你今天感觉如何\N{\rEn}How are you feeling today?
+Dialogue: 0,1:48:49.75,1:48:52.80,Default,,0000,0000,0000,,我确信空气肯定感觉不错\N{\rEn}I'm sure the air must feel good.
+Dialogue: 0,1:48:53.43,1:48:55.56,Default,,0000,0000,0000,,即使你是在我们的最新监狱\N{\rEn}Even though you were in our newest prison.
+Dialogue: 0,1:48:56.18,1:48:59.01,Default,,0000,0000,0000,,旧监狱对神父们甚为艰苦\N{\rEn}The old prison was very tough on the Padres.
+Dialogue: 0,1:48:59.00,1:49:00.70,Default,,0000,0000,0000,,雨，风及各方面\N{\rEn}Rain, wind and every sort.
+Dialogue: 0,1:49:00.80,1:49:02.50,Default,,0000,0000,0000,,抱歉，对不起\N{\rEn}Sorry, excuse me.
+Dialogue: 0,1:49:02.98,1:49:05.30,Default,,0000,0000,0000,,井上大人几时到此\N{\rEn}When will Inoue Sama be here?
+Dialogue: 0,1:49:06.24,1:49:08.50,Default,,0000,0000,0000,,噢！他今天不会来\N{\rEn}Oh! He's not coming today.
+Dialogue: 0,1:49:09.50,1:49:10.50,Default,,0000,0000,0000,,你想他吗\N{\rEn}Do you miss him?
+Dialogue: 0,1:49:12.28,1:49:14.50,Default,,0000,0000,0000,,他对我和蔼。一日三餐\N{\rEn}He treats me kindly. Three meals a day.
+Dialogue: 0,1:49:14.63,1:49:17.96,Default,,0000,0000,0000,,这样我的身体就会背叛我的心\N{\rEn}So that my body will betray my heart.
+Dialogue: 0,1:49:18.06,1:49:19.66,Default,,0000,0000,0000,,这是你们的计划，不是吗\N{\rEn}It's your plan, isn't it?
+Dialogue: 0,1:49:20.35,1:49:22.75,Default,,0000,0000,0000,,- 那就是你在等待的。- 根本不是\N{\rEn}- That's what you're waiting for. - Not at all!
+Dialogue: 0,1:49:22.80,1:49:24.10,Default,,0000,0000,0000,,不是\N{\rEn}No?
+Dialogue: 0,1:49:24.77,1:49:27.24,Default,,0000,0000,0000,,但今天我们在等某人\N{\rEn}But we are waiting for someone today.
+Dialogue: 0,1:49:27.41,1:49:29.81,Default,,0000,0000,0000,,井上大人想你见见他\N{\rEn}Inoue Sama wants you to meet him.
+Dialogue: 0,1:49:31.26,1:49:33.46,Default,,0000,0000,0000,,他随时都会到此\N{\rEn}He will be here any moment.
+Dialogue: 0,1:49:34.07,1:49:36.20,Default,,0000,0000,0000,,他是葡萄牙人，如你本人\N{\rEn}He's Portuguese, like yourself.
+Dialogue: 0,1:49:36.75,1:49:39.50,Default,,0000,0000,0000,,你们应该有很多话要谈\N{\rEn}You should have a lot to talk about.
+Dialogue: 0,1:49:40.63,1:49:41.93,Default,,0000,0000,0000,,费雷拉\N{\rEn}Ferreira?
+Dialogue: 0,1:49:58.13,1:49:59.73,Default,,0000,0000,0000,,他是你所期望的吗\N{\rEn}Is it who you expected?
+Dialogue: 0,1:50:04.02,1:50:05.62,Default,,0000,0000,0000,,他是你所期望的吗\N{\rEn}Is it who you expected?
+Dialogue: 0,1:50:12.51,1:50:16.00,Default,,0000,0000,0000,,我想跟他谈。- 不忙\N{\rEn}- I want to talk to him. - There's no hurry.
+Dialogue: 0,1:50:16.81,1:50:19.20,Default,,0000,0000,0000,,还早。有的是时间\N{\rEn}It is early. Plenty of time.
+Dialogue: 0,1:50:21.54,1:50:24.54,Default,,0000,0000,0000,,告诉我，他知道我在这里吗\N{\rEn}Tell me. Does he know I'm here?
+Dialogue: 0,1:50:25.19,1:50:29.86,Default,,0000,0000,0000,,我不能告诉你，我不能谈论奉行所的事\N{\rEn}I can not tell you. I must not speak about the business of the Inquisitor's office.
+Dialogue: 0,1:50:31.07,1:50:35.47,Default,,0000,0000,0000,,但是，我能告诉你，他知道你活着\N{\rEn}But, I can tell you, he knows you are alive.
+Dialogue: 0,1:50:35.69,1:50:38.55,Default,,0000,0000,0000,,因为我们告诉他你弃教了\N{\rEn}Because we told him you apostatized.
+Dialogue: 0,1:50:45.47,1:50:48.46,Default,,0000,0000,0000,,现在，你知他们用那些草席干啥吗？\N{\rEn}Now, do you know what they use those mats for?
+Dialogue: 0,1:50:48.66,1:50:50.04,Default,,0000,0000,0000,,不\N{\rEn}No.
+Dialogue: 0,1:50:57.94,1:51:03.14,Default,,0000,0000,0000,,看，守卫，他会对神父加佩说啥呢\N{\rEn}Look, the guard. What could he be saying to Father Garupe?
+Dialogue: 0,1:51:04.58,1:51:10.34,Default,,0000,0000,0000,,- 记住这个，“如果你真是基督徒，你会弃教...\N{\rEn}- Remember this, "If you are truly a Christian, you will apostatize...
+Dialogue: 0,1:51:10.50,1:51:12.34,Default,,0000,0000,0000,,...而不是让他们死。”\N{\rEn}...and not let them die."
+Dialogue: 0,1:51:25.49,1:51:30.06,Default,,0000,0000,0000,,你知的，奉行官承诺，如果神父加佩弃教\N{\rEn}You know. The Inquisitor promises that if Father Garupe apostatizes.
+Dialogue: 0,1:51:30.27,1:51:32.07,Default,,0000,0000,0000,,四人就会获释\N{\rEn}The four will be free.
+Dialogue: 0,1:51:32.74,1:51:35.14,Default,,0000,0000,0000,,我希望神父加佩同意\N{\rEn}I hope Father Garupe agrees.
+Dialogue: 0,1:51:38.50,1:51:40.00,Default,,0000,0000,0000,,我应该告诉你\N{\rEn}I should tell you.
+Dialogue: 0,1:51:40.10,1:51:43.43,Default,,0000,0000,0000,,这些基督徒已踏踩及否认其信仰\N{\rEn}These Christians already trampled and denied their faith.
+Dialogue: 0,1:51:43.52,1:51:45.00,Default,,0000,0000,0000,,在奉行所\N{\rEn}At the Inquisitor's office.
+Dialogue: 0,1:51:45.19,1:51:47.45,Default,,0000,0000,0000,,如果他们做了你想要的，就让他们走\N{\rEn}If they did what you wanted, then let them go!
+Dialogue: 0,1:51:47.84,1:51:51.00,Default,,0000,0000,0000,,让他们走！他们做了你想要的！所以让他们走！\N{\rEn}Let them go! They did what you wanted! So let them go!
+Dialogue: 0,1:51:51.00,1:51:54.40,Default,,0000,0000,0000,,拜托！拜托！拜托！让他们走！\N{\rEn}Please! Please! Please! Let them go!
+Dialogue: 0,1:51:54.60,1:51:55.00,Default,,0000,0000,0000,,我们不想要他们。\N{\rEn}We don't want them.
+Dialogue: 0,1:51:55.40,1:51:57.00,Default,,0000,0000,0000,,四农民吗？\N{\rEn}Four farmers?
+Dialogue: 0,1:51:57.20,1:51:59.00,Default,,0000,0000,0000,,海岸边的岛屿上仍有数百名天主教农民\N{\rEn}There are still hundreds of Christian peasants
+Dialogue: 0,1:51:59.22,1:52:00.69,Default,,0000,0000,0000,,在海岸边的岛屿上\N{\rEn}on the islands off the coast.
+Dialogue: 0,1:52:01.92,1:52:03.20,Default,,0000,0000,0000,,我们希望神父去否认\N{\rEn}We want the Padre to deny
+Dialogue: 0,1:52:03.50,1:52:06.20,Default,,0000,0000,0000,,及做他们的榜样\N{\rEn}and be an example to them.
+Dialogue: 0,1:52:10.52,1:52:13.52,Default,,0000,0000,0000,,- 神啊求求您\N{\rEn}- God please!
+Dialogue: 0,1:52:13.87,1:52:15.50,Default,,0000,0000,0000,,弃教，弃教\N{\rEn}Apostatize, Apostatize.
+Dialogue: 0,1:52:15.87,1:52:17.10,Default,,0000,0000,0000,,为他们着想，主\N{\rEn}For their sake, Lord.
+Dialogue: 0,1:52:17.50,1:52:19.20,Default,,0000,0000,0000,,别将此留予我们\N{\rEn}Do not leave this to us.
+Dialogue: 0,1:52:19.37,1:52:21.37,Default,,0000,0000,0000,,- 求求您\N{\rEn}- Please!
+Dialogue: 0,1:52:26.76,1:52:27.76,Default,,0000,0000,0000,,不\N{\rEn}No!
+Dialogue: 0,1:52:31.66,1:52:33.86,Default,,0000,0000,0000,,不，不加佩，不\N{\rEn}No, no Garupe, no!
+Dialogue: 0,1:52:36.58,1:52:39.50,Default,,0000,0000,0000,,不，不，不，不，不，不\N{\rEn}No, no, no, no, no, no.
+Dialogue: 0,1:53:14.50,1:53:15.20,Default,,0000,0000,0000,,- 不\N{\rEn}- No!
+Dialogue: 0,1:53:18.00,1:53:21.00,Default,,0000,0000,0000,,不！求求您！求求您\N{\rEn}No! Please! Please!
+Dialogue: 0,1:53:58.36,1:54:00.69,Default,,0000,0000,0000,,可怕的事，可怕的\N{\rEn}Terrible business. Terrible.
+Dialogue: 0,1:54:02.51,1:54:05.51,Default,,0000,0000,0000,,无论你目睹它多少次\N{\rEn}No matter how many times you see it.
+Dialogue: 0,1:54:06.50,1:54:08.00,Default,,0000,0000,0000,,想想这苦难...\N{\rEn}Think about the suffering...
+Dialogue: 0,1:54:08.33,1:54:10.70,Default,,0000,0000,0000,,...你给这些人所造成的\N{\rEn}...You have inflicted on these people!
+Dialogue: 0,1:54:10.90,1:54:13.27,Default,,0000,0000,0000,,只因你自私的梦想...\N{\rEn}Just because of your selfish dream of...
+Dialogue: 0,1:54:13.48,1:54:15.15,Default,,0000,0000,0000,,...一个基督徒的日本\N{\rEn}...a Christian Japan.
+Dialogue: 0,1:54:15.35,1:54:17.50,Default,,0000,0000,0000,,你的上帝惩罚日本...\N{\rEn}Your Deus punishes Japan...
+Dialogue: 0,1:54:17.50,1:54:18.50,Default,,0000,0000,0000,,...通过你\N{\rEn}...through you!
+Dialogue: 0,1:54:19.47,1:54:22.64,Default,,0000,0000,0000,,至少加佩是干净的\N{\rEn}At least Garupe was clean,
+Dialogue: 0,1:54:22.80,1:54:24.00,Default,,0000,0000,0000,,但你\N{\rEn}but you!
+Dialogue: 0,1:54:24.34,1:54:25.54,Default,,0000,0000,0000,,你毫无决心\N{\rEn}You have no will.
+Dialogue: 0,1:54:26.37,1:54:29.51,Default,,0000,0000,0000,,你不配被称为传教士\N{\rEn}You do not deserve to be called a priest.
+Dialogue: 0,1:55:06.43,1:55:08.38,Default,,0000,0000,0000,,亲爱的神，亲爱的神，你为何抛弃我\N{\rEn}Dear God, dear God, why have you forsaken me?
+Dialogue: 0,1:55:08.58,1:55:10.13,Default,,0000,0000,0000,,你为何抛弃我\N{\rEn}Why have you forsaken me?
+Dialogue: 0,1:55:12.06,1:55:13.56,Default,,0000,0000,0000,,我是您的儿子\N{\rEn}I was your son.
+Dialogue: 0,1:55:16.84,1:55:18.64,Default,,0000,0000,0000,,您走上十字架的儿子\N{\rEn}Your son who went up to the cross.
+Dialogue: 0,1:55:23.04,1:55:24.97,Default,,0000,0000,0000,,所给予他的沉默\N{\rEn}The silent given to him.
+Dialogue: 0,1:55:26.50,1:55:29.50,Default,,0000,0000,0000,,有此岛残酷吗？沉默\N{\rEn}Is this island cold? Silent?
+Dialogue: 0,1:55:31.45,1:55:32.45,Default,,0000,0000,0000,,噢，不，不\N{\rEn}Oh, no, no.
+Dialogue: 0,1:55:36.25,1:55:38.05,Default,,0000,0000,0000,,可笑的？可笑的！\N{\rEn}Ludicrous? Ludicrous!
+Dialogue: 0,1:55:40.28,1:55:41.78,Default,,0000,0000,0000,,愚蠢的？\N{\rEn}Stupid?
+Dialogue: 0,1:55:42.28,1:55:44.50,Default,,0000,0000,0000,,愚蠢的！\N{\rEn}Stupid!
+Dialogue: 0,1:55:48.60,1:55:50.00,Default,,0000,0000,0000,,他不会回复的\N{\rEn}He's not going to answer.
+Dialogue: 0,1:55:56.01,1:55:57.41,Default,,0000,0000,0000,,他不会回复的\N{\rEn}He's not going to answer.
+Dialogue: 0,1:56:09.15,1:56:11.50,Default,,0000,0000,0000,,你要我让你进去吗\N{\rEn}Do you want me to let you in?
+Dialogue: 0,1:56:13.83,1:56:15.03,Default,,0000,0000,0000,,迟早\N{\rEn}In time.
+Dialogue: 0,1:56:31.97,1:56:32.57,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,1:56:33.97,1:56:34.57,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,1:56:53.66,1:56:54.66,Default,,0000,0000,0000,,神父\N{\rEn}Padre!
+Dialogue: 0,1:57:11.61,1:57:12.61,Default,,0000,0000,0000,,来吧，神父\N{\rEn}Come along, Padre.
+Dialogue: 0,1:57:24.97,1:57:27.38,Default,,0000,0000,0000,,我们传教士(指和尚)不喜欢你们传教士\N{\rEn}Our priests do not like your priests,
+Dialogue: 0,1:57:27.58,1:57:30.50,Default,,0000,0000,0000,,但你仍能在此找到很多意义\N{\rEn}but you will still find much of value here.
+Dialogue: 0,1:57:55.18,1:57:56.72,Default,,0000,0000,0000,,这是什么呢？神父\N{\rEn}What is it, Padre?
+Dialogue: 0,1:57:59.46,1:58:00.46,Default,,0000,0000,0000,,香\N{\rEn}The incense?
+Dialogue: 0,1:58:03.15,1:58:04.48,Default,,0000,0000,0000,,肉的气息\N{\rEn}The smell of meat?
+Dialogue: 0,1:58:07.59,1:58:10.46,Default,,0000,0000,0000,,你吃过肉吗，自从你来到日本\N{\rEn}Have you had any meat, since you came to Japan?
+Dialogue: 0,1:58:10.69,1:58:13.12,Default,,0000,0000,0000,,我不太喜欢自己的气味\N{\rEn}I don't much like the smell myself.
+Dialogue: 0,1:58:19.80,1:58:21.53,Default,,0000,0000,0000,,你还没猜到？\N{\rEn}Have you guessed yet?
+Dialogue: 0,1:58:23.20,1:58:24.87,Default,,0000,0000,0000,,你猜到谁要来吗？\N{\rEn}Have you guessed who's coming?
+Dialogue: 0,1:58:28.60,1:58:31.00,Default,,0000,0000,0000,,这是井上大人的命令\N{\rEn}This is Inoue Sama's command.
+Dialogue: 0,1:58:33.13,1:58:35.00,Default,,0000,0000,0000,,也是那人的愿望\N{\rEn}And the others wish.
+Dialogue: 0,1:58:39.38,1:58:40.88,Default,,0000,0000,0000,,那人\N{\rEn}The other?
+Dialogue: 0,1:58:54.00,1:58:58.50,Default,,0000,0000,0000,,- 神父，想想你能拯救的灵魂\N{\rEn}- Padre, think of the souls you can save.
+Dialogue: 0,1:58:59.00,1:59:00.58,Default,,0000,0000,0000,,- 神父费雷拉\N{\rEn}- Padre Ferreira
+Dialogue: 0,1:59:01.80,1:59:03.60,Default,,0000,0000,0000,,- 封住那儿\N{\rEn}- Hold there!
+Dialogue: 0,2:00:08.88,2:00:12.38,Default,,0000,0000,0000,,神.. 神父\N{\rEn}Fa.. Father.
+Dialogue: 0,2:00:21.49,2:00:22.89,Default,,0000,0000,0000,,神父费雷拉\N{\rEn}Father Ferreira.
+Dialogue: 0,2:00:26.72,2:00:27.99,Default,,0000,0000,0000,,我放弃了\N{\rEn}I've given up.
+Dialogue: 0,2:00:32.93,2:00:36.00,Default,,0000,0000,0000,,我们已经很久未见了\N{\rEn}So long since we have met.
+Dialogue: 0,2:00:38.31,2:00:39.81,Default,,0000,0000,0000,,你不说点啥\N{\rEn}Would you say something?
+Dialogue: 0,2:00:42.35,2:00:43.85,Default,,0000,0000,0000,,啥...\N{\rEn}What...
+Dialogue: 0,2:00:45.37,2:00:48.14,Default,,0000,0000,0000,,我能对你说啥？此种场合\N{\rEn}Can I say to you on such an occasion?
+Dialogue: 0,2:00:52.87,2:00:55.67,Default,,0000,0000,0000,,如你对我有丝毫同情，说点啥\N{\rEn}If you have any pity for me, say something.
+Dialogue: 0,2:01:06.20,2:01:10.30,Default,,0000,0000,0000,,你已，你已... 你已在此住了很久了吗\N{\rEn}Have you, have you... have you been living here for long?
+Dialogue: 0,2:01:12.45,2:01:14.50,Default,,0000,0000,0000,,大约一年，我以为\N{\rEn}About a year, I suppose.
+Dialogue: 0,2:01:22.32,2:01:23.80,Default,,0000,0000,0000,,- 这是啥地方？\N{\rEn}- What is this place?
+Dialogue: 0,2:01:24.10,2:01:27.50,Default,,0000,0000,0000,,- 一座庙，我学习之处\N{\rEn}- A temple. Where I study.
+Dialogue: 0,2:01:31.27,2:01:33.00,Default,,0000,0000,0000,,我也在狱中\N{\rEn}I'm also in a prison.
+Dialogue: 0,2:01:33.50,2:01:35.20,Default,,0000,0000,0000,,在长崎某地\N{\rEn}Somewhere in Nagasaki.
+Dialogue: 0,2:01:35.40,2:01:38.20,Default,,0000,0000,0000,,我不知确切位置\N{\rEn}I don't know precisely where.
+Dialogue: 0,2:01:38.59,2:01:40.43,Default,,0000,0000,0000,,我知\N{\rEn}I know.
+Dialogue: 0,2:01:44.06,2:01:45.73,Default,,0000,0000,0000,,你是我的导师\N{\rEn}You are my teacher.
+Dialogue: 0,2:01:48.56,2:01:52.06,Default,,0000,0000,0000,,- 你曾是我的忏悔师，我的导师\N{\rEn}- You were my confessor, my teacher.
+Dialogue: 0,2:01:52.36,2:01:53.56,Default,,0000,0000,0000,,- 我几乎一样\N{\rEn}- I'm much the same.
+Dialogue: 0,2:02:04.00,2:02:06.20,Default,,0000,0000,0000,,做件简单的事\N{\rEn}Do a single simple thing.
+Dialogue: 0,2:02:06.50,2:02:09.20,Default,,0000,0000,0000,,跟我说，神父\N{\rEn}Tell me, Padre.
+Dialogue: 0,2:02:09.70,2:02:13.00,Default,,0000,0000,0000,,跟我说你同意\N{\rEn}Tell me you agreed.
+Dialogue: 0,2:02:26.21,2:02:30.77,Default,,0000,0000,0000,,我是？我是真的显得如此不同？\N{\rEn}Do I? Do I really seem so different?
+Dialogue: 0,2:02:37.12,2:02:40.50,Default,,0000,0000,0000,,尊敬的泽野大人每天都在书写\N{\rEn}The honorable Sawano spends his days writing...
+Dialogue: 0,2:02:40.75,2:02:42.45,Default,,0000,0000,0000,,...关于天文学\N{\rEn}...about astronomy.
+Dialogue: 0,2:02:43.47,2:02:45.00,Default,,0000,0000,0000,,井上大人的命令\N{\rEn}Inoue Sama's order.
+Dialogue: 0,2:02:45.47,2:02:49.43,Default,,0000,0000,0000,,这里有丰富的知识\N{\rEn}There is great knowledge here
+Dialogue: 0,2:02:50.28,2:02:53.50,Default,,0000,0000,0000,,但医学和天文学仍有很多要教\N{\rEn}but in Medicine and Astronomy much remains to be taught.
+Dialogue: 0,2:02:53.80,2:02:56.00,Default,,0000,0000,0000,,我很乐意帮忙\N{\rEn}I'm happy to help.
+Dialogue: 0,2:02:56.72,2:02:58.62,Default,,0000,0000,0000,,欣慰的是...\N{\rEn}It is fulfilling to...
+Dialogue: 0,2:02:59.80,2:03:02.20,Default,,0000,0000,0000,,...终于对这个国家有用了\N{\rEn}...finally be of use in this country.
+Dialogue: 0,2:03:06.00,2:03:08.20,Default,,0000,0000,0000,,你快乐吗？神父\N{\rEn}And you're happy, Father?
+Dialogue: 0,2:03:11.98,2:03:12.98,Default,,0000,0000,0000,,我那样说了\N{\rEn}I said so.
+Dialogue: 0,2:03:19.83,2:03:22.76,Default,,0000,0000,0000,,说起你正在写的另一本书\N{\rEn}Mention the other book you are writing.
+Dialogue: 0,2:03:25.10,2:03:27.40,Default,,0000,0000,0000,,叫作《显伪录》\N{\rEn}It is called <i>Kengiroku.
+Dialogue: 0,2:03:25.10,2:03:29.40,Default,,0000,0000,0000,,{\a12}\N{\rTop_cn}注：<i>Kengiroku {\rEn}http://www.worldcat.org/title/kengiroku-disclosure-of-falsehoods/oclc/122712825)
+Dialogue: 0,2:03:27.80,2:03:29.75,Default,,0000,0000,0000,,它展示了基督教的时代\N{\rEn}It shows the eras of Christianity
+Dialogue: 0,2:03:30.20,2:03:32.20,Default,,0000,0000,0000,,及驳斥那些教义\N{\rEn}and refutes the teachings of those.
+Dialogue: 0,2:03:32.40,2:03:34.87,Default,,0000,0000,0000,,你理解标题吗？\N{\rEn}Do you understand the title?
+Dialogue: 0,2:03:36.56,2:03:37.96,Default,,0000,0000,0000,,告诉他\N{\rEn}Tell him.
+Dialogue: 0,2:03:41.63,2:03:42.60,Default,,0000,0000,0000,,它意味着...\N{\rEn}It means...
+Dialogue: 0,2:03:44.03,2:03:47.00,Default,,0000,0000,0000,,...欺骗，披露或揭穿...\N{\rEn}...deceit, disclosed or unmasked...
+Dialogue: 0,2:03:47.50,2:03:49.50,Default,,0000,0000,0000,,...如你喜欢一个更华丽的读法\N{\rEn}...if you prefer a more florid reading.
+Dialogue: 0,2:03:51.95,2:03:54.50,Default,,0000,0000,0000,,连奉行官，他...\N{\rEn}There's also the Inquisitor, he...
+Dialogue: 0,2:03:55.00,2:03:57.82,Default,,0000,0000,0000,,...赞美它，他说它写得很好\N{\rEn}...praises it, he says it is well done.
+Dialogue: 0,2:04:01.21,2:04:02.00,Default,,0000,0000,0000,,- 这是真的。\N{\rEn}- It's the truth.
+Dialogue: 0,2:04:02.20,2:04:04.61,Default,,0000,0000,0000,,你用真的当毒药\N{\rEn}You use the truth like poison.
+Dialogue: 0,2:04:04.70,2:04:06.37,Default,,0000,0000,0000,,传教士这样说多滑稽啊\N{\rEn}What a funny thing for a priest to say.
+Dialogue: 0,2:04:07.00,2:04:09.44,Default,,0000,0000,0000,,这是残酷的，残酷!\N{\rEn}This is cruel. Cruel!
+Dialogue: 0,2:04:10.00,2:04:14.00,Default,,0000,0000,0000,,此举比用任意酷刑扭曲一个人的灵魂更坏\N{\rEn}Worse than any torture to twist a man's soul in this way
+Dialogue: 0,2:04:14.03,2:04:16.70,Default,,0000,0000,0000,,我觉得你定是在说你自己...\N{\rEn}I think you must speaking of yourself...
+Dialogue: 0,2:04:17.03,2:04:18.40,Default,,0000,0000,0000,,...而非泽野忠庵\N{\rEn}...not of Sawano Chūan.
+Dialogue: 0,2:04:18.50,2:04:19.72,Default,,0000,0000,0000,,谁\N{\rEn}Who?
+Dialogue: 0,2:04:19.92,2:04:23.12,Default,,0000,0000,0000,,他！他对你只是费雷拉\N{\rEn}Him! He is Ferreira only to you.
+Dialogue: 0,2:04:23.26,2:04:26.50,Default,,0000,0000,0000,,他如今叫泽野忠庵\N{\rEn}He is Sawano Chūan now.
+Dialogue: 0,2:04:27.04,2:04:29.37,Default,,0000,0000,0000,,一个找到安宁的男人\N{\rEn}A man who has found peace.
+Dialogue: 0,2:04:29.52,2:04:32.32,Default,,0000,0000,0000,,让他引导你走他的路\N{\rEn}Let him guide you along his path.
+Dialogue: 0,2:04:32.39,2:04:34.46,Default,,0000,0000,0000,,慈悲之路\N{\rEn}The path of mercy.
+Dialogue: 0,2:04:34.55,2:04:36.20,Default,,0000,0000,0000,,那只意味着你放弃自我\N{\rEn}That means only your abandoned self.
+Dialogue: 0,2:04:36.40,2:04:39.20,Default,,0000,0000,0000,,没人能左右别人的灵魂\N{\rEn}No one should interfere with another man's spirit.
+Dialogue: 0,2:04:40.00,2:04:42.90,Default,,0000,0000,0000,,帮助他人，这是佛的方式\N{\rEn}To help others, is the way of the Buddha.
+Dialogue: 0,2:04:43.41,2:04:44.80,Default,,0000,0000,0000,,而你们的方式亦然\N{\rEn}And your way too,
+Dialogue: 0,2:04:45.00,2:04:47.24,Default,,0000,0000,0000,,两种宗教在这方面是同样的\N{\rEn}The two religions are the same in this.
+Dialogue: 0,2:04:47.57,2:04:51.23,Default,,0000,0000,0000,,无需争取任何人到一边或另一边...\N{\rEn}It is not necessary to win anyone over to one side or another...
+Dialogue: 0,2:04:51.43,2:04:53.30,Default,,0000,0000,0000,,...当分享如此之多时\N{\rEn}...when there is so much to share.
+Dialogue: 0,2:04:54.21,2:04:55.71,Default,,0000,0000,0000,,继续\N{\rEn}Go on.
+Dialogue: 0,2:04:59.50,2:05:03.60,Default,,0000,0000,0000,,有人告诉我，让你放弃信仰\N{\rEn}I've been told to get you to abandon the faith.
+Dialogue: 0,2:05:06.50,2:05:07.30,Default,,0000,0000,0000,,- 这个...\N{\rEn}- This...
+Dialogue: 0,2:05:10.50,2:05:12.00,Default,,0000,0000,0000,,- 这个来自“穴吊”\N{\rEn}- This is from the Pit.
+Dialogue: 0,2:05:15.22,2:05:17.82,Default,,0000,0000,0000,,你被紧绑，因此你不能动\N{\rEn}You're tied, so you can't move.
+Dialogue: 0,2:05:18.10,2:05:20.00,Default,,0000,0000,0000,,然后倒吊\N{\rEn}And hung upside down.
+Dialogue: 0,2:05:22.50,2:05:24.50,Default,,0000,0000,0000,,弄个切口\N{\rEn}An incision is made.
+Dialogue: 0,2:05:29.35,2:05:32.00,Default,,0000,0000,0000,,你感到血液滴下\N{\rEn}You feel the blood dripping down.
+Dialogue: 0,2:05:32.20,2:05:33.80,Default,,0000,0000,0000,,一滴连一滴\N{\rEn}Drop by drop.
+Dialogue: 0,2:05:34.11,2:05:36.34,Default,,0000,0000,0000,,所以它不会流到你头上...\N{\rEn}So it doesn't run to your head...
+Dialogue: 0,2:05:36.80,2:05:38.04,Default,,0000,0000,0000,,...你不会死得太快\N{\rEn}...and you won't die too soon.
+Dialogue: 0,2:05:51.30,2:05:53.80,Default,,0000,0000,0000,,踏上你的圣像\N{\rEn}Step on your Jesus.
+Dialogue: 0,2:06:38.26,2:06:40.83,Default,,0000,0000,0000,,如今你是此地最后一个传教士，神父\N{\rEn}You are the last priest left here now, Padre.
+Dialogue: 0,2:06:41.33,2:06:43.60,Default,,0000,0000,0000,,- 我确信井上大人定会高兴的把...\N{\rEn}- I'm sure Inoue Sama will be pleased to put
+Dialogue: 0,2:06:43.83,2:06:46.00,Default,,0000,0000,0000,,...后继者穴吊\N{\rEn}...an heir to the Pit.
+Dialogue: 0,2:06:46.50,2:06:48.50,Default,,0000,0000,0000,,他是个务实的人，神父\N{\rEn}He is a practical man, Padre.
+Dialogue: 0,2:06:49.00,2:06:50.60,Default,,0000,0000,0000,,而非残酷者\N{\rEn}Not a cruel one.
+Dialogue: 0,2:06:51.32,2:06:54.50,Default,,0000,0000,0000,,我苦撑于此国长达15年\N{\rEn}I have labored in this country for 15 years.
+Dialogue: 0,2:06:54.62,2:06:56.50,Default,,0000,0000,0000,,我了解它多过你\N{\rEn}I know it better than you.
+Dialogue: 0,2:06:56.99,2:07:00.00,Default,,0000,0000,0000,,我们的宗教扎不了根\N{\rEn}Our religion does not take root...
+Dialogue: 0,2:07:00.20,2:07:01.00,Default,,0000,0000,0000,,...在这个国家\N{\rEn}...in this country.
+Dialogue: 0,2:07:01.20,2:07:04.00,Default,,0000,0000,0000,,因为树根已经被磨烂了\N{\rEn}Because the roots have been torn up.
+Dialogue: 0,2:07:04.20,2:07:07.00,Default,,0000,0000,0000,,不，因为这国家是个沼泽\N{\rEn}No. Because this country is a swamp.
+Dialogue: 0,2:07:07.12,2:07:08.00,Default,,0000,0000,0000,,这里长不了东西\N{\rEn}Nothing grows here.
+Dialogue: 0,2:07:08.22,2:07:10.62,Default,,0000,0000,0000,,植物尚为幼苗根即腐烂\N{\rEn}Plant is sapling here and the roots rot.
+Dialogue: 0,2:07:10.76,2:07:13.40,Default,,0000,0000,0000,,天主教在此有过生长及繁茂的时候\N{\rEn}There was a time when Christianity here grew and flourished here.
+Dialogue: 0,2:07:13.58,2:07:14.10,Default,,0000,0000,0000,,何时？\N{\rEn}When?
+Dialogue: 0,2:07:14.30,2:07:18.30,Default,,0000,0000,0000,,何时？在你的时代，神父\N{\rEn}When? In your time, Father.
+Dialogue: 0,2:07:19.50,2:07:21.80,Default,,0000,0000,0000,,在你的时代，在你变得像...\N{\rEn}In your time, before you became like...
+Dialogue: 0,2:07:22.00,2:07:24.03,Default,,0000,0000,0000,,象谁？象他们\N{\rEn}Like who, like them?
+Dialogue: 0,2:07:24.19,2:07:26.00,Default,,0000,0000,0000,,罗德里格斯，请听着\N{\rEn}Rodriguez, please listen.
+Dialogue: 0,2:07:26.20,2:07:28.80,Default,,0000,0000,0000,,日本人只相信他们所扭曲的...\N{\rEn}The Japanese only believe in their distortion...
+Dialogue: 0,2:07:29.00,2:07:31.31,Default,,0000,0000,0000,,...我们的真理，因此他们根本不信\N{\rEn}...Of our gospel. So they did not believe at all.
+Dialogue: 0,2:07:31.50,2:07:32.71,Default,,0000,0000,0000,,他们从未信过\N{\rEn}They never believed.
+Dialogue: 0,2:07:32.76,2:07:33.52,Default,,0000,0000,0000,,你怎能如此说这些？\N{\rEn}How can you say that?
+Dialogue: 0,2:07:33.60,2:07:36.62,Default,,0000,0000,0000,,从圣·弗朗西斯·泽维尔时代到你自己的时代\N{\rEn}From the time of St. Francis Xavier through your own time.
+Dialogue: 0,2:07:36.65,2:07:39.02,Default,,0000,0000,0000,,有过成千上万的皈依者在此\N{\rEn}There were hundreds of thousands of converts here.
+Dialogue: 0,2:07:39.21,2:07:40.15,Default,,0000,0000,0000,,成百的？\N{\rEn}Hundreds?
+Dialogue: 0,2:07:40.35,2:07:41.28,Default,,0000,0000,0000,,皈依者，是的\N{\rEn}Converts, yes!
+Dialogue: 0,2:07:41.32,2:07:45.09,Default,,0000,0000,0000,,弗朗西斯·泽维尔来这里教日本人关于神之子...\N{\rEn}Francis Xavier came here to teach the Japanese about the son of God...
+Dialogue: 0,2:07:45.18,2:07:48.80,Default,,0000,0000,0000,,...但首先，他必须问如何提到神\N{\rEn}...but first he had to ask how to refer to God.
+Dialogue: 0,2:07:49.00,2:07:51.65,Default,,0000,0000,0000,,大日，他被告知\N{\rEn}DaiNiChi, he was told.
+Dialogue: 0,2:07:51.87,2:07:55.30,Default,,0000,0000,0000,,要我告诉你他们的大日吗？\N{\rEn}Shall I show you their DaiNiChi?
+Dialogue: 0,2:07:55.50,2:07:57.00,Default,,0000,0000,0000,,看吧\N{\rEn}Behold.
+Dialogue: 0,2:07:57.25,2:08:00.00,Default,,0000,0000,0000,,神之子在那儿\N{\rEn}There is the son of God.
+Dialogue: 0,2:08:00.55,2:08:02.25,Default,,0000,0000,0000,,神只有一个儿子\N{\rEn}God's only begotten son.
+Dialogue: 0,2:08:03.95,2:08:07.00,Default,,0000,0000,0000,,在圣经中，耶稣在第三天复活\N{\rEn}In the scriptures, Jesus rose on the third day.
+Dialogue: 0,2:08:07.20,2:08:10.00,Default,,0000,0000,0000,,在日本，神的儿子...\N{\rEn}In Japan the son of God...
+Dialogue: 0,2:08:10.24,2:08:12.14,Default,,0000,0000,0000,,...每天升起\N{\rEn}...rises daily.
+Dialogue: 0,2:08:12.24,2:08:16.00,Default,,0000,0000,0000,,日本人想不出一种超越自然界的存在\N{\rEn}The Japanese can not think of an existence beyond the realm of nature.
+Dialogue: 0,2:08:16.49,2:08:19.00,Default,,0000,0000,0000,,对他们来说，没有什么能超越人类\N{\rEn}For them nothing transcends to human.
+Dialogue: 0,2:08:19.12,2:08:19.35,Default,,0000,0000,0000,,不\N{\rEn}No!
+Dialogue: 0,2:08:19.45,2:08:22.44,Default,,0000,0000,0000,,他们无法构想我们的天主教之神的理念\N{\rEn}They can't conceive of our idea of the Christian God!
+Dialogue: 0,2:08:22.64,2:08:24.22,Default,,0000,0000,0000,,不，你错了，你错了\N{\rEn}No, you're wrong. You're wrong.
+Dialogue: 0,2:08:24.51,2:08:28.00,Default,,0000,0000,0000,,他们敬拜神！神！我们的主\N{\rEn}They worship God! God! Our Lord!
+Dialogue: 0,2:08:28.28,2:08:30.20,Default,,0000,0000,0000,,他们赞美耶稣之名\N{\rEn}They praise the name of Deus!
+Dialogue: 0,2:08:30.40,2:08:32.72,Default,,0000,0000,0000,,那只是神的另一个名字，他们从不知道\N{\rEn}That's just another name for a God, they never knew.
+Dialogue: 0,2:08:34.53,2:08:35.80,Default,,0000,0000,0000,,我看到人死了\N{\rEn}I saw men die!
+Dialogue: 0,2:08:36.00,2:08:36.86,Default,,0000,0000,0000,,我也看到了\N{\rEn}I did too.
+Dialogue: 0,2:08:37.15,2:08:38.20,Default,,0000,0000,0000,,为耶稣！\N{\rEn}For Deus!
+Dialogue: 0,2:08:38.50,2:08:40.30,Default,,0000,0000,0000,,与他们的信仰烧在一起\N{\rEn}On fire with their faith.
+Dialogue: 0,2:08:40.80,2:08:43.41,Default,,0000,0000,0000,,你的烈士可能烧着了，神父\N{\rEn}Your martyrs might have been on fire, Father.
+Dialogue: 0,2:08:43.51,2:08:45.05,Default,,0000,0000,0000,,但那不是基督徒的信仰\N{\rEn}But it was not of the Christian faith.
+Dialogue: 0,2:08:46.68,2:08:50.28,Default,,0000,0000,0000,,我目睹他们死去，我目睹他们死去，他们不是为虚无而死\N{\rEn}I saw them die. I saw them die. They did not die for nothing.
+Dialogue: 0,2:08:51.24,2:08:52.50,Default,,0000,0000,0000,,他们不是\N{\rEn}They did not.
+Dialogue: 0,2:08:54.00,2:08:56.50,Default,,0000,0000,0000,,他们为你而死，罗德里格斯\N{\rEn}They're dying for you, Rodriguez.
+Dialogue: 0,2:09:01.00,2:09:02.50,Default,,0000,0000,0000,,你救了多少\N{\rEn}How many did you save?
+Dialogue: 0,2:09:03.23,2:09:05.20,Default,,0000,0000,0000,,当你踏踩我们主之脸之时\N{\rEn}When you trampled on the face of our Lord?
+Dialogue: 0,2:09:05.50,2:09:07.10,Default,,0000,0000,0000,,你自己身边有多少人\N{\rEn}How many beside yourself?
+Dialogue: 0,2:09:07.76,2:09:09.00,Default,,0000,0000,0000,,我不知道\N{\rEn}I don't know.
+Dialogue: 0,2:09:09.20,2:09:11.89,Default,,0000,0000,0000,,当然不象你可能救的那么多\N{\rEn}Certainly not as many as you may help.
+Dialogue: 0,2:09:12.18,2:09:15.00,Default,,0000,0000,0000,,你试图为自己的弱点辩护\N{\rEn}You're trying to justify your own weakness.
+Dialogue: 0,2:09:16.00,2:09:17.84,Default,,0000,0000,0000,,愿神怜悯你！\N{\rEn}God have mercy on you!
+Dialogue: 0,2:09:18.00,2:09:19.54,Default,,0000,0000,0000,,哪个神？哪一位？\N{\rEn}Which God? Which one?
+Dialogue: 0,2:09:20.20,2:09:22.00,Default,,0000,0000,0000,,我们说，山...\N{\rEn}We say Sangewalede...
+Dialogue: 0,2:09:24.50,2:09:27.53,Default,,0000,0000,0000,,我很抱歉，实际上你尚未学过此语言，是吗\N{\rEn}I'm sorry, you haven't learned the language though really, have you?
+Dialogue: 0,2:09:27.81,2:09:29.00,Default,,0000,0000,0000,,这儿有句俗话\N{\rEn}There is a saying here
+Dialogue: 0,2:09:30.20,2:09:32.00,Default,,0000,0000,0000,,江山易改\N{\rEn}Mountains and rivers can be moved.
+Dialogue: 0,2:09:32.50,2:09:35.00,Default,,0000,0000,0000,,本性难易\N{\rEn}But man's nature can not be moved.
+Dialogue: 0,2:09:35.41,2:09:38.01,Default,,0000,0000,0000,,这很睿智，像极此处\N{\rEn}It's very wise, like so much here.
+Dialogue: 0,2:09:39.60,2:09:44.20,Default,,0000,0000,0000,,我们在日本找到了我们的本性，罗德里格斯\N{\rEn}We find our original nature in Japan, Rodriguez.
+Dialogue: 0,2:09:45.22,2:09:48.19,Default,,0000,0000,0000,,也许是通过找寻神而被领悟\N{\rEn}Perhaps this was meant by finding God.
+Dialogue: 0,2:09:50.06,2:09:51.79,Default,,0000,0000,0000,,你是个耻辱\N{\rEn}You're a disgrace.
+Dialogue: 0,2:09:56.62,2:09:58.49,Default,,0000,0000,0000,,你是个耻辱，神父\N{\rEn}You're a disgrace, Father.
+Dialogue: 0,2:10:00.08,2:10:01.58,Default,,0000,0000,0000,,我不能\N{\rEn}I can't.
+Dialogue: 0,2:10:02.29,2:10:05.02,Default,,0000,0000,0000,,我再也不能那样叫你了\N{\rEn}I can't even call you that anymore.
+Dialogue: 0,2:10:06.79,2:10:08.19,Default,,0000,0000,0000,,好的\N{\rEn}Good.
+Dialogue: 0,2:10:08.35,2:10:10.35,Default,,0000,0000,0000,,我如今有了日本名\N{\rEn}I have a Japanese name now.
+Dialogue: 0,2:10:12.00,2:10:13.77,Default,,0000,0000,0000,,一位妻子及孩子\N{\rEn}A wife and children.
+Dialogue: 0,2:10:17.09,2:10:20.40,Default,,0000,0000,0000,,我全继承了她们，从一名被处决者那里\N{\rEn}I inherited them all from an executed man.
+Dialogue: 0,2:10:35.81,2:10:36.81,Default,,0000,0000,0000,,- 你觉得如何？\N{\rEn}- How do you feel?
+Dialogue: 0,2:10:37.11,2:10:39.88,Default,,0000,0000,0000,,- 他已向你展示仁慈之路\N{\rEn}- He has shown you the path of mercy.
+Dialogue: 0,2:10:40.49,2:10:41.96,Default,,0000,0000,0000,,- 我希望你接受它\N{\rEn}- I hope you take it.
+Dialogue: 0,2:10:43.90,2:10:46.43,Default,,0000,0000,0000,,你何不就吊我入穴？\N{\rEn}Why don't you just hang me in the pit?
+Dialogue: 0,2:11:07.00,2:11:09.20,Default,,0000,0000,0000,,你被奉行所传唤\N{\rEn}You are called to the Inquisitor's office.
+Dialogue: 0,2:11:19.36,2:11:23.64,Default,,0000,0000,0000,,神父，你为他们来到这儿，而他们都恨你\N{\rEn}Padre, you came here for them and they all hate you.
+Dialogue: 0,2:11:23.84,2:11:27.13,Default,,0000,0000,0000,,尽情侮辱我，这只会给我更多勇气\N{\rEn}Insult me all you like, it just give me more courage.
+Dialogue: 0,2:11:27.80,2:11:29.54,Default,,0000,0000,0000,,今晚你会需要它\N{\rEn}You will need it tonight.
+Dialogue: 0,2:11:30.74,2:11:36.27,Default,,0000,0000,0000,,你是个好男人，神父。你受不了苦难。但你错了，对别人来说\N{\rEn}You are a good man, Padre. You can not stand suffering. You're wrong, for others.
+Dialogue: 0,2:11:41.16,2:11:44.12,Default,,0000,0000,0000,,井上大人说你今晚会成为一个弃教者\N{\rEn}Inoue Sama says you will be a apostatize tonight.
+Dialogue: 0,2:11:46.21,2:11:47.80,Default,,0000,0000,0000,,他对费雷拉是对的...\N{\rEn}He was right about Ferreira...
+Dialogue: 0,2:11:49.00,2:11:50.50,Default,,0000,0000,0000,,...他对你也是对的\N{\rEn}...and he's right about you.
+Dialogue: 0,2:11:49.20,2:11:53.87,Default,,0000,0000,0000,,赞美他(拉丁语)\N{\rEn}{\a6}\N{\rEn}LauDate Eum
+Dialogue: 0,2:11:55.50,2:11:57.87,Default,,0000,0000,0000,,神帮帮我。耶稣帮帮我\N{\rEn}God help me. Jesus help me.
+Dialogue: 0,2:12:05.32,2:12:07.10,Default,,0000,0000,0000,,在果园里，您说过\N{\rEn}In the garden, you said
+Dialogue: 0,2:12:07.32,2:12:12.00,Default,,0000,0000,0000,,“您的灵魂是悲伤的，甚至接近死亡。”\N{\rEn}"Thy soul is sorrowful even unto death."\N{\rTop_cn}(马太福音，26章38节，此处比原文少了些词。果园，指Gethsemane，客西马尼园，耶稣蒙被犹大出卖之地)
+Dialogue: 0,2:12:12.20,2:12:15.00,Default,,0000,0000,0000,,我会为您流血，我会...\N{\rEn}I would bleed for you, I would...
+Dialogue: 0,2:12:16.20,2:12:18.20,Default,,0000,0000,0000,,我会为您去死\N{\rEn}I would die for you.
+Dialogue: 0,2:12:18.40,2:12:19.77,Default,,0000,0000,0000,,若我了解您\N{\rEn}If I knew you.
+Dialogue: 0,2:12:21.18,2:12:22.44,Default,,0000,0000,0000,,您与我同在于此吗\N{\rEn}Are you here with me?
+Dialogue: 0,2:12:40.83,2:12:42.16,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,2:12:43.00,2:12:44.00,Default,,0000,0000,0000,,原谅我\N{\rEn}Forgive me.
+Dialogue: 0,2:12:46.13,2:12:47.20,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,2:12:47.50,2:12:49.20,Default,,0000,0000,0000,,我要做忏悔\N{\rEn}I came to make confession!
+Dialogue: 0,2:12:50.38,2:12:51.72,Default,,0000,0000,0000,,神父\N{\rEn}Padre!
+Dialogue: 0,2:12:53.58,2:12:55.20,Default,,0000,0000,0000,,原谅我，神父\N{\rEn}Forgive me, Padre!
+Dialogue: 0,2:13:05.81,2:13:09.14,Default,,0000,0000,0000,,阻止它！阻止它！阻止它！阻止噪声\N{\rEn}Stop it! Stop it! Stop it! Stop the noise!
+Dialogue: 0,2:13:09.61,2:13:11.48,Default,,0000,0000,0000,,阻止它！来人帮帮他\N{\rEn}Stop it! Someone help him!
+Dialogue: 0,2:13:13.41,2:13:14.68,Default,,0000,0000,0000,,你要什么\N{\rEn}What do you need?
+Dialogue: 0,2:13:14.88,2:13:16.20,Default,,0000,0000,0000,,不是我，那下边\N{\rEn}Not me, down there.
+Dialogue: 0,2:13:16.58,2:13:18.20,Default,,0000,0000,0000,,有人受痛苦\N{\rEn}there is a man in agony!
+Dialogue: 0,2:13:18.40,2:13:22.73,Default,,0000,0000,0000,,守卫在酣睡还打着鼾，像只野狗\N{\rEn}And the guard is sound asleep and snoring like a wild dog!
+Dialogue: 0,2:13:22.97,2:13:25.00,Default,,0000,0000,0000,,你以为那噪声是守卫\N{\rEn}You think that noise is the guard?
+Dialogue: 0,2:13:26.00,2:13:27.50,Default,,0000,0000,0000,,难以置信\N{\rEn}Incredible!
+Dialogue: 0,2:13:27.56,2:13:29.63,Default,,0000,0000,0000,,泽野！告诉他，说它是啥\N{\rEn}Sawa! Tell him, say what it is.
+Dialogue: 0,2:13:30.98,2:13:34.00,Default,,0000,0000,0000,,它不是守卫也不是打鼾\N{\rEn}It is not the guard and it's not snoring.
+Dialogue: 0,2:13:36.00,2:13:37.20,Default,,0000,0000,0000,,是基督徒\N{\rEn}It's Christians.
+Dialogue: 0,2:13:37.50,2:13:39.00,Default,,0000,0000,0000,,他们五个，事实上\N{\rEn}Five of them in fact.
+Dialogue: 0,2:13:39.20,2:13:40.60,Default,,0000,0000,0000,,全被吊在穴里\N{\rEn}All hanging in the pit.
+Dialogue: 0,2:13:46.35,2:13:48.78,Default,,0000,0000,0000,,你找到墙上的话了吗\N{\rEn}Have you found the words on the wall?
+Dialogue: 0,2:13:50.10,2:13:51.50,Default,,0000,0000,0000,,赞美他(拉丁语)\N{\rEn}LauDaTe E u m
+Dialogue: 0,2:13:52.75,2:13:54.25,Default,,0000,0000,0000,,赞美他\N{\rEn}Praise him.
+Dialogue: 0,2:13:56.14,2:13:59.14,Default,,0000,0000,0000,,我用石头刻下它们，当我此牢房时...\N{\rEn}I cut them there with a stone when I was in this cell...
+Dialogue: 0,2:13:59.77,2:14:00.77,Default,,0000,0000,0000,,...跟你一样\N{\rEn}...like you
+Dialogue: 0,2:14:05.72,2:14:06.72,Default,,0000,0000,0000,,闭嘴\N{\rEn}Be quiet.
+Dialogue: 0,2:14:07.07,2:14:09.50,Default,,0000,0000,0000,,不要，不要跟我说，你没权力跟我说\N{\rEn}Don't, don't speak to me, you have no right to speak to me.
+Dialogue: 0,2:14:10.00,2:14:12.31,Default,,0000,0000,0000,,噢，我有，因为你就像我\N{\rEn}Oh, I do, because you were just like me.
+Dialogue: 0,2:14:12.73,2:14:16.63,Default,,0000,0000,0000,,你看到耶稣及客西马尼园，相信你的考验和他的一样\N{\rEn}You see Jesus and Gethsemane believe that your trial is the same as his.
+Dialogue: 0,2:14:17.27,2:14:19.52,Default,,0000,0000,0000,,穴吊的苦难远远不及耶稣所受\N{\rEn}That's far from the Pit of suffering too just like Jesus.
+Dialogue: 0,2:14:19.72,2:14:21.37,Default,,0000,0000,0000,,而这些人没有你的骄傲\N{\rEn}but they don't have your pride.
+Dialogue: 0,2:14:21.55,2:14:24.21,Default,,0000,0000,0000,,他们永远不会把自己同耶稣相比\N{\rEn}They would never compare themselves to Jesus.
+Dialogue: 0,2:14:24.60,2:14:27.80,Default,,0000,0000,0000,,你有权利吗？让他们受苦？\N{\rEn}Do you have the right? To make them suffer?
+Dialogue: 0,2:14:28.52,2:14:31.52,Default,,0000,0000,0000,,我在此牢听过这般苦难的痛苦\N{\rEn}I heard the cries of suffering in this same cell.
+Dialogue: 0,2:14:31.54,2:14:32.20,Default,,0000,0000,0000,,于是我做了\N{\rEn}And I acted.
+Dialogue: 0,2:14:32.30,2:14:34.08,Default,,0000,0000,0000,,你原谅自己，你原谅自己\N{\rEn}You excuse yourself, you excuse yourself,
+Dialogue: 0,2:14:34.30,2:14:36.08,Default,,0000,0000,0000,,那是黑暗之灵\N{\rEn}that is the spirit of darkness!
+Dialogue: 0,2:14:37.24,2:14:40.20,Default,,0000,0000,0000,,你会为他们做啥？祈祷吗？\N{\rEn}What would you do for them? Pray?
+Dialogue: 0,2:14:41.00,2:14:43.04,Default,,0000,0000,0000,,又得到什么回应？\N{\rEn}And get what in return?
+Dialogue: 0,2:14:43.50,2:14:45.04,Default,,0000,0000,0000,,只有更多的苦难\N{\rEn}Only more suffering.
+Dialogue: 0,2:14:45.32,2:14:50.00,Default,,0000,0000,0000,,唯你能结束的苦难，不是神！- 离我远点！\N{\rEn}A suffering only you can end, not God! - Go away from me.
+Dialogue: 0,2:14:50.93,2:14:53.40,Default,,0000,0000,0000,,我也祷告，罗德里格斯\N{\rEn}I pray too, Rodriguez.
+Dialogue: 0,2:14:54.30,2:14:56.40,Default,,0000,0000,0000,,那没用\N{\rEn}It doesn't help.
+Dialogue: 0,2:14:57.57,2:14:58.80,Default,,0000,0000,0000,,继续\N{\rEn}Go on.
+Dialogue: 0,2:14:59.50,2:15:00.50,Default,,0000,0000,0000,,祷告\N{\rEn}Pray.
+Dialogue: 0,2:15:06.40,2:15:08.53,Default,,0000,0000,0000,,但要睁眼祷告\N{\rEn}But pray with your eyes open.
+Dialogue: 0,2:15:26.67,2:15:28.00,Default,,0000,0000,0000,,你可以赦免他们\N{\rEn}You can spare them.
+Dialogue: 0,2:15:29.10,2:15:31.50,Default,,0000,0000,0000,,他们呼唤救命，就像你呼唤神\N{\rEn}They call out for help, just as you call to God.
+Dialogue: 0,2:15:31.82,2:15:34.16,Default,,0000,0000,0000,,他沉默，而你不必\N{\rEn}He is silent and you do not have to be.
+Dialogue: 0,2:15:34.40,2:15:37.13,Default,,0000,0000,0000,,他们该弃教！弃教\N{\rEn}They should apostatize! Apostatize!
+Dialogue: 0,2:15:37.48,2:15:39.78,Default,,0000,0000,0000,,神救我，弃教\N{\rEn}God help me, apostatize!
+Dialogue: 0,2:15:41.22,2:15:43.20,Default,,0000,0000,0000,,但他们已弃教\N{\rEn}But they have apostatized.
+Dialogue: 0,2:15:43.50,2:15:44.80,Default,,0000,0000,0000,,很多次\N{\rEn}Many times over.
+Dialogue: 0,2:15:45.50,2:15:47.66,Default,,0000,0000,0000,,他们因你在此，罗德里格斯\N{\rEn}They're here for you, Rodriguez!
+Dialogue: 0,2:15:47.84,2:15:50.57,Default,,0000,0000,0000,,只要你不放弃信仰，他们就不能获救\N{\rEn}As long as you don't apostatize, they can not be saved.
+Dialogue: 0,2:15:50.83,2:15:54.03,Default,,0000,0000,0000,,传教士应该效仿基督\N{\rEn}A priest should act in imitation of Christ.
+Dialogue: 0,2:15:54.13,2:15:55.50,Default,,0000,0000,0000,,如果基督在此。\N{\rEn}If Christ were here.
+Dialogue: 0,2:15:57.50,2:15:59.31,Default,,0000,0000,0000,,基督在此\N{\rEn}Christ were here.
+Dialogue: 0,2:15:59.60,2:16:01.20,Default,,0000,0000,0000,,他会做的\N{\rEn}He would have acted.
+Dialogue: 0,2:16:01.40,2:16:03.00,Default,,0000,0000,0000,,为他们着想弃教\N{\rEn}Apostatized for their sake.
+Dialogue: 0,2:16:05.00,2:16:07.77,Default,,0000,0000,0000,,不，不，他在这儿，基督在这儿，我只是听不到他\N{\rEn}No. No, he's here, Christ is here. I just can't hear him.
+Dialogue: 0,2:16:08.05,2:16:10.00,Default,,0000,0000,0000,,给神看你爱他\N{\rEn}Show God you love him!
+Dialogue: 0,2:16:10.10,2:16:12.30,Default,,0000,0000,0000,,救他所爱者之命\N{\rEn}Save the lives of the people he loves!
+Dialogue: 0,2:16:14.23,2:16:16.00,Default,,0000,0000,0000,,有东西...\N{\rEn}There is something...
+Dialogue: 0,2:16:16.20,2:16:19.90,Default,,0000,0000,0000,,...比教会的审判更为重要\N{\rEn}...more important than the judgement of the Church.
+Dialogue: 0,2:16:21.95,2:16:23.99,Default,,0000,0000,0000,,你如今将去完成...\N{\rEn}You are now going to fulfill...
+Dialogue: 0,2:16:24.19,2:16:27.22,Default,,0000,0000,0000,,...最痛苦且从未被履行过的慈悲之举\N{\rEn}...the most painful act of love that has ever been performed.
+Dialogue: 0,2:16:47.17,2:16:51.17,Default,,0000,0000,0000,,这只是形式，只是形式\N{\rEn}It's only a formality. Just a formality.
+Dialogue: 0,2:17:24.75,2:17:26.28,Default,,0000,0000,0000,,<b>现在来吧\N{\rEn}Come ahead now.
+Dialogue: 0,2:17:28.30,2:17:29.50,Default,,0000,0000,0000,,<b>这没什么\N{\rEn}It's alright.
+Dialogue: 0,2:17:31.60,2:17:33.00,Default,,0000,0000,0000,,<b>踏踩我\N{\rEn}Step on me.
+Dialogue: 0,2:17:37.00,2:17:39.50,Default,,0000,0000,0000,,<b>我理解你的痛苦\N{\rEn}I understand your pain.
+Dialogue: 0,2:17:42.55,2:17:44.50,Default,,0000,0000,0000,,<b>我生于这世上...\N{\rEn}I was born into this world...
+Dialogue: 0,2:17:44.70,2:17:47.00,Default,,0000,0000,0000,,<b>...就为分担人痛苦\N{\rEn}...to share men's pain.
+Dialogue: 0,2:17:48.28,2:17:50.00,Default,,0000,0000,0000,,<b>我背负这十字架...\N{\rEn}I carried this cross...
+Dialogue: 0,2:17:50.40,2:17:51.80,Default,,0000,0000,0000,,<b>...免除你们的痛苦\N{\rEn}...for your pain.
+Dialogue: 0,2:17:56.46,2:17:59.50,Default,,0000,0000,0000,,<b>你命现与我同在\N{\rEn}Your life is with me now.
+Dialogue: 0,2:18:02.24,2:18:04.55,Default,,0000,0000,0000,,<b>踏{\fad(3000,100)}吧\N{\rEn}Step.
+Dialogue: 0,2:19:26.61,2:19:27.90,Default,,0000,0000,0000,,“弃教的保罗”\N{\rEn}"Apostate Paul!"
+Dialogue: 0,2:19:28.11,2:19:29.76,Default,,0000,0000,0000,,“弃教的保罗”\N{\rEn}"Apostate Paul!"
+Dialogue: 0,2:19:35.90,2:19:39.30,Default,,0000,0000,0000,,<i>那是在1641年...\N{\rEn}<i>It was in the year 1641...
+Dialogue: 0,2:19:39.50,2:19:43.50,Default,,0000,0000,0000,,<i>...在我首次航海旅日期间\N{\rEn}<i>...during the first of my voyages to Japan.
+Dialogue: 0,2:19:43.75,2:19:46.00,Default,,0000,0000,0000,,<i>我，迪特尔·阿尔博瑞奇...\N{\rEn}<i>That I, Dieter Albritch...
+Dialogue: 0,2:19:46.25,2:19:48.50,Default,,0000,0000,0000,,<i>...发现了最特别的事...\N{\rEn}<i>...came upon the most extraordinary story
+Dialogue: 0,2:19:48.60,2:19:50.25,Default,,0000,0000,0000,,<i>...在这些纸页中\N{\rEn}<i>...in these pages.
+Dialogue: 0,2:19:52.18,2:19:53.18,Default,,0000,0000,0000,,天主教\N{\rEn}Christian.
+Dialogue: 0,2:19:54.30,2:19:55.30,Default,,0000,0000,0000,,非天主教\N{\rEn}Unchristian.
+Dialogue: 0,2:19:56.13,2:19:59.00,Default,,0000,0000,0000,,<i>作为一家伟大的荷兰贸易公司的医生...\N{\rEn}<i>As a physician in a great Dutch trading company...
+Dialogue: 0,2:19:59.13,2:20:00.83,Default,,0000,0000,0000,,<i>...我四处旅行\N{\rEn}<i>...I traveled widely.
+Dialogue: 0,2:20:01.69,2:20:02.69,Default,,0000,0000,0000,,天主教\N{\rEn}Christian.
+Dialogue: 0,2:20:03.61,2:20:07.00,Default,,0000,0000,0000,,<i>然而没有任何一桩我所详述于此日记的奇观...\N{\rEn}<i>But none of the wonders I have recounted in this journal...
+Dialogue: 0,2:20:07.11,2:20:09.42,Default,,0000,0000,0000,,<i>...被如此评论...\N{\rEn}<i>...has been so commented on...
+Dialogue: 0,2:20:09.60,2:20:12.00,Default,,0000,0000,0000,,<i>...作为稀奇事件...\N{\rEn}<i>...as the curious matter...
+Dialogue: 0,2:20:12.80,2:20:15.42,Default,,0000,0000,0000,,<i>...弃教传教士的\N{\rEn}<i>...of the apostatized priests.
+Dialogue: 0,2:20:15.93,2:20:16.93,Default,,0000,0000,0000,,天主教\N{\rEn}Christian.
+Dialogue: 0,2:20:18.20,2:20:24.50,Default,,0000,0000,0000,,<i>我比任何欧洲记者更接近此国之谜\N{\rEn}<i>I came closer than any European chronicler to the enigma of this country.
+Dialogue: 0,2:20:24.77,2:20:25.77,Default,,0000,0000,0000,,非天主教\N{\rEn}Unchristian.
+Dialogue: 0,2:20:26.61,2:20:30.41,Default,,0000,0000,0000,,<i>...及学习失联传教士的生活\N{\rEn}<i>...and to learning of the lives of the lost priests.
+Dialogue: 0,2:20:32.44,2:20:35.80,Default,,0000,0000,0000,,<i>在某种程度上，奉行官，会突袭住宅...\N{\rEn}<i>In a way, the Inquisitor, would raid homes...
+Dialogue: 0,2:20:36.00,2:20:40.42,Default,,0000,0000,0000,,<i>...并搜查任何藏有天主教图像之物\N{\rEn}<i>...and search for any objects with hidden Christian images.
+Dialogue: 0,2:20:41.36,2:20:42.36,Default,,0000,0000,0000,,天主教\N{\rEn}Christian.
+Dialogue: 0,2:20:44.98,2:20:50.44,Default,,0000,0000,0000,,<i>两位传教士被要求检查这些东西，并核实它们的用途\N{\rEn}<i>The two priests were required to examine these things, and verify their use.
+Dialogue: 0,2:20:52.28,2:20:57.35,Default,,0000,0000,0000,,<i>我甚至偶尔，亲自观察它们\N{\rEn}<i>I even on occasion, observed them myself.
+Dialogue: 0,2:20:59.44,2:21:04.10,Default,,0000,0000,0000,,<i>荷兰人是唯一被允许在日本进行贸易的欧洲人\N{\rEn}<i>The Dutch were the only Europeans allowed to trade in Japan.
+Dialogue: 0,2:21:04.11,2:21:09.56,Default,,0000,0000,0000,,<i>所有船支被搜查，以确保他们不走私宗教物品\N{\rEn}<i>All ships were searched to warrant they were not smuggling religious objects.
+Dialogue: 0,2:21:10.13,2:21:16.53,Default,,0000,0000,0000,,<i>没有任何带有十字、圣人图像的东西或念珠能通过\N{\rEn}<i>Nothing bearing the images of the cross, the saint or rosary could pass.
+Dialogue: 0,2:21:31.56,2:21:36.22,Default,,0000,0000,0000,,<i>尽管每次必查，少数物品难免被走私进来\N{\rEn}<i>Despite every attempt, a few things inevitably were smuggled in.
+Dialogue: 0,2:21:36.44,2:21:37.44,Default,,0000,0000,0000,,<i>天主教\N{\rEn}<i>Christian.
+Dialogue: 0,2:21:42.86,2:21:48.20,Default,,0000,0000,0000,,<i>然后它就会使日本人痛苦，仿佛血已溢出\N{\rEn}<i>And then it was as distressing to the Japanese, as if blood had been spilled.
+Dialogue: 0,2:21:59.71,2:22:03.78,Default,,0000,0000,0000,,我们被教导要爱那些跟我们不和者\N{\rEn}We were taught to love those who discord us.
+Dialogue: 0,2:22:04.69,2:22:06.36,Default,,0000,0000,0000,,我对他们毫无感觉\N{\rEn}I feel nothing for them.
+Dialogue: 0,2:22:07.26,2:22:09.99,Default,,0000,0000,0000,,只有我们的主能审判你的心\N{\rEn}Only our Lord can judge your heart.
+Dialogue: 0,2:22:13.37,2:22:14.84,Default,,0000,0000,0000,,你说，我们的主\N{\rEn}You said our Lord.
+Dialogue: 0,2:22:22.59,2:22:23.59,Default,,0000,0000,0000,,我怀疑\N{\rEn}I doubt it.
+Dialogue: 0,2:22:30.89,2:22:35.32,Default,,0000,0000,0000,,<i>泽野忠庵死后，另一位传教士承担了其职责\N{\rEn}<i>When Sawano Chūan died, the other priests assumed his duties.
+Dialogue: 0,2:22:35.75,2:22:39.15,Default,,0000,0000,0000,,<i>并以区别对待他们\N{\rEn}<i>And performed them with distinction.
+Dialogue: 0,2:22:41.93,2:22:47.06,Default,,0000,0000,0000,,<i>但是这次，我观察到一个相当大的语言技巧\N{\rEn}<i>But this time, I observed yet a quite considerable skill with the language.
+Dialogue: 0,2:22:48.57,2:22:53.00,Default,,0000,0000,0000,,<i>且似乎对他的处境很满意\N{\rEn}<i>And seemed to be at peace with his situation.
+Dialogue: 0,2:22:54.35,2:22:56.25,Default,,0000,0000,0000,,我有个好消息\N{\rEn}I have good news.
+Dialogue: 0,2:22:56.50,2:22:59.55,Default,,0000,0000,0000,,江户有人死了\N{\rEn}A man has died in Edo.
+Dialogue: 0,2:22:59.76,2:23:01.50,Default,,0000,0000,0000,,冈田三右卫门\N{\rEn}Okada Sanyemon.
+Dialogue: 0,2:23:02.29,2:23:04.10,Default,,0000,0000,0000,,你将继承其名字\N{\rEn}You will take his name.
+Dialogue: 0,2:23:04.81,2:23:06.31,Default,,0000,0000,0000,,就像他一样\N{\rEn}Just as he did.
+Dialogue: 0,2:23:07.30,2:23:11.00,Default,,0000,0000,0000,,他有一个家庭，妻子，儿子\N{\rEn}He had a household and wife and son.
+Dialogue: 0,2:23:12.18,2:23:14.31,Default,,0000,0000,0000,,你可以把她当作你的妻子\N{\rEn}You can take her as your wife.
+Dialogue: 0,2:23:15.77,2:23:18.91,Default,,0000,0000,0000,,男人工作得最好当他不再单身时\N{\rEn}A man works best when he's not alone.
+Dialogue: 0,2:23:21.12,2:23:26.59,Default,,0000,0000,0000,,你应当知道这岛上的生月和五岛\N{\rEn}You should know that on the islands of Ikitsuki and Goto.
+Dialogue: 0,2:23:30.21,2:23:34.27,Default,,0000,0000,0000,,仍有许多农民自以为是基督徒\N{\rEn}There are still many farmers who think themselves as Christian.
+Dialogue: 0,2:23:35.02,2:23:38.58,Default,,0000,0000,0000,,你喜欢那样吧？他们可以继续当基督徒\N{\rEn}You like that? They can continue to be Christian.
+Dialogue: 0,2:23:39.07,2:23:41.94,Default,,0000,0000,0000,,你可能会对此感到满意\N{\rEn}You may take some satisfaction in that.
+Dialogue: 0,2:23:42.68,2:23:45.08,Default,,0000,0000,0000,,因为根被砍断了\N{\rEn}Because the roots are cut.
+Dialogue: 0,2:23:47.99,2:23:50.00,Default,,0000,0000,0000,,沼泽里长不了任何东西\N{\rEn}Nothing grows in a swamp.
+Dialogue: 0,2:23:52.25,2:23:56.00,Default,,0000,0000,0000,,是的，日本就是那种国家\N{\rEn}Yes, Japan is that kind of country.
+Dialogue: 0,2:23:56.10,2:23:59.20,Default,,0000,0000,0000,,那宗教，那些你带给我们的基督徒\N{\rEn}The religion, the Christian you brought us
+Dialogue: 0,2:23:59.47,2:24:02.87,Default,,0000,0000,0000,,已成为奇怪的东西，它变了\N{\rEn}has became a strange thing. It's changed.
+Dialogue: 0,2:24:19.85,2:24:21.80,Default,,0000,0000,0000,,你不是败给我\N{\rEn}You were not defeated by me.
+Dialogue: 0,2:24:22.50,2:24:26.55,Default,,0000,0000,0000,,你败给了日本这个沼泽\N{\rEn}You were defeated by this swamp of Japan.
+Dialogue: 0,2:24:29.89,2:24:30.89,Default,,0000,0000,0000,,欢迎\N{\rEn}Welcome.
+Dialogue: 0,2:24:34.39,2:24:37.00,Default,,0000,0000,0000,,<i>冈田三右卫门住进江户\N{\rEn}<i>Okada Sanyemon lived in Edo
+Dialogue: 0,2:24:37.39,2:24:40.00,Default,,0000,0000,0000,,<i>度过他的余生\N{\rEn}<i>for the remaining years of his life.
+Dialogue: 0,2:24:40.65,2:24:44.20,Default,,0000,0000,0000,,<i>大约10年后，我获准访问江户\N{\rEn}<i>Some 10 years later, I was allowed to visit Edo.
+Dialogue: 0,2:24:45.15,2:24:49.15,Default,,0000,0000,0000,,<i>日本人随意地闲聊了冈田三右卫门\N{\rEn}<i>The Japanese gossiped freely about Okada Sanyemon.
+Dialogue: 0,2:24:49.70,2:24:54.00,Default,,0000,0000,0000,,<i>奉行官井上再三要求他的弃教誓言\N{\rEn}<i>The Inquisitor Inoue demanded repeated vows of apostasy from him.
+Dialogue: 0,2:24:54.66,2:25:01.00,Default,,0000,0000,0000,,<i>他们则说，那沦落的传教士全都迅速积极的回应了他们\N{\rEn}<i>And they say, the fallen priest applied them all quickly and vigorously.
+Dialogue: 0,2:25:17.30,2:25:20.90,Default,,0000,0000,0000,,我听说奉行官派他的人找你\N{\rEn}I heard the Inquisitor sent his men for you.
+Dialogue: 0,2:25:21.25,2:25:23.18,Default,,0000,0000,0000,,有麻烦吗？- 不\N{\rEn}Was there trouble? - No.
+Dialogue: 0,2:25:26.10,2:25:29.57,Default,,0000,0000,0000,,他们只是想确保我写下那证据\N{\rEn}They only wanted to make sure I wrote that corroboration.
+Dialogue: 0,2:25:30.12,2:25:32.12,Default,,0000,0000,0000,,我的谴责信\N{\rEn}My letters of denunciation.
+Dialogue: 0,2:25:43.06,2:25:44.06,Default,,0000,0000,0000,,谢谢你\N{\rEn}Thank you.
+Dialogue: 0,2:25:45.06,2:25:47.06,Default,,0000,0000,0000,,谢谢你\N{\rEn}ありがとうございます
+Dialogue: 0,2:25:49.00,2:25:50.80,Default,,0000,0000,0000,,你没有任何事需要谢我\N{\rEn}You have nothing to thank me for.
+Dialogue: 0,2:25:55.73,2:25:57.26,Default,,0000,0000,0000,,为在此陪我\N{\rEn}For being here with me.
+Dialogue: 0,2:26:09.22,2:26:10.72,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,2:26:12.43,2:26:15.53,Default,,0000,0000,0000,,不，不，我不是\N{\rEn}No, no. I'm not.
+Dialogue: 0,2:26:16.43,2:26:18.00,Default,,0000,0000,0000,,我不再是了\N{\rEn}I'm not anymore！
+Dialogue: 0,2:26:20.51,2:26:22.00,Default,,0000,0000,0000,,我是个沦落的传教士\N{\rEn}I'm a fallen priest
+Dialogue: 0,2:26:22.20,2:26:24.51,Default,,0000,0000,0000,,但你是最后一个传教士\N{\rEn}But you are the last priest left.
+Dialogue: 0,2:26:26.23,2:26:28.60,Default,,0000,0000,0000,,你仍能听我的忏悔\N{\rEn}You could still hear my confession.
+Dialogue: 0,2:26:28.80,2:26:29.71,Default,,0000,0000,0000,,不！我不能\N{\rEn}No! I can't!
+Dialogue: 0,2:26:30.71,2:26:32.51,Default,,0000,0000,0000,,不！我不能\N{\rEn}No! I can't!
+Dialogue: 0,2:26:34.59,2:26:37.19,Default,,0000,0000,0000,,我仍为我的所为痛苦，神父\N{\rEn}I still suffer for what I did, Padre.
+Dialogue: 0,2:26:38.59,2:26:40.19,Default,,0000,0000,0000,,我背叛了你\N{\rEn}I betrayed you.
+Dialogue: 0,2:26:40.59,2:26:42.19,Default,,0000,0000,0000,,我背叛了我的家人\N{\rEn}I betrayed my family.
+Dialogue: 0,2:26:42.65,2:26:44.39,Default,,0000,0000,0000,,我背叛了我们的主\N{\rEn}I betrayed our Lord.
+Dialogue: 0,2:26:46.30,2:26:47.50,Default,,0000,0000,0000,,求您\N{\rEn}Please!
+Dialogue: 0,2:26:49.80,2:26:52.83,Default,,0000,0000,0000,,听我忏悔吧\N{\rEn}Hear my confession.
+Dialogue: 0,2:26:54.93,2:26:55.93,Default,,0000,0000,0000,,神父\N{\rEn}Padre.
+Dialogue: 0,2:27:15.24,2:27:19.50,Default,,0000,0000,0000,,主啊，我反抗您的沉默\N{\rEn}Lord, I fought against your silence.
+Dialogue: 0,2:27:24.60,2:27:27.14,Default,,0000,0000,0000,,<b>我陪同你受苦\N{\rEn}I suffered beside you.
+Dialogue: 0,2:27:27.60,2:27:29.00,Default,,0000,0000,0000,,<b>我从不沉默\N{\rEn}I was never silent.
+Dialogue: 0,2:27:35.09,2:27:36.69,Default,,0000,0000,0000,,我知\N{\rEn}I know.
+Dialogue: 0,2:27:43.01,2:27:44.91,Default,,0000,0000,0000,,但是即使...\N{\rEn}But even...
+Dialogue: 0,2:27:45.76,2:27:49.23,Default,,0000,0000,0000,,...神沉默我的一生\N{\rEn}...if God had been silent my whole life.
+Dialogue: 0,2:27:51.58,2:27:53.21,Default,,0000,0000,0000,,在此每天\N{\rEn}To this very day.
+Dialogue: 0,2:27:55.77,2:27:58.30,Default,,0000,0000,0000,,事事我为，事事我已为\N{\rEn}Everything I do, everything I've done.
+Dialogue: 0,2:28:04.60,2:28:06.10,Default,,0000,0000,0000,,对他说话\N{\rEn}Speaks of him.
+Dialogue: 0,2:28:10.04,2:28:12.78,Default,,0000,0000,0000,,那是我在沉默中听到了您的声音\N{\rEn}It was in the silence that I heard your voice.
+Dialogue: 0,2:28:31.86,2:28:36.50,Default,,0000,0000,0000,,<i>奉行官继续坚持定期查验...\N{\rEn}<i>The Inquisitor continued to insist on periodic examinations...
+Dialogue: 0,2:28:36.79,2:28:39.42,Default,,0000,0000,0000,,<i>...所有疑似基督徒\N{\rEn}<i>...Of all suspected Christians.
+Dialogue: 0,2:28:40.33,2:28:44.10,Default,,0000,0000,0000,,<i>冈田三右卫门，未能从中豁免\N{\rEn}<i>Okada Sanyemon, was not exempt from this.
+Dialogue: 0,2:28:44.31,2:28:49.11,Default,,0000,0000,0000,,<i>在某种程度上，这就决定了他的榜样永远不会被遗忘\N{\rEn}<i>In a way, it was determined to never let his example be forgotten.
+Dialogue: 0,2:28:49.50,2:28:51.90,Default,,0000,0000,0000,,<i>也许尤其是...\N{\rEn}<i>Perhaps most particularly...
+Dialogue: 0,2:28:52.20,2:28:54.10,Default,,0000,0000,0000,,<i>...通过传教士本人\N{\rEn}<i>...by the priest himself.
+Dialogue: 0,2:29:31.26,2:29:38.40,Default,,0000,0000,0000,,<i>在1667年，一个宗教图像在护身符中被发现\N{\rEn}<i>In the year 1667. A religious image was discovered inside an amulet.
+Dialogue: 0,2:29:38.51,2:29:41.91,Default,,0000,0000,0000,,<i>属于一名唤作吉次郎的仆人\N{\rEn}<i>Belonging to a servant called Kichijiro.
+Dialogue: 0,2:29:47.87,2:29:52.81,Default,,0000,0000,0000,,<i>仆人说他是在赌博中赢得，从未看过里面\N{\rEn}<i>The servant said he had won at gambling. Had never looked inside.
+Dialogue: 0,2:29:52.95,2:29:56.58,Default,,0000,0000,0000,,<i>且从未从冈田三右卫门处得到此护身符\N{\rEn}<i>And could never have gotten the amulet from Okada Sanyemon.
+Dialogue: 0,2:29:56.71,2:29:59.17,Default,,0000,0000,0000,,<i>因为他总是在看守下\N{\rEn}<i>Since he was always under guard.
+Dialogue: 0,2:30:05.06,2:30:09.20,Default,,0000,0000,0000,,<i>此仆人，吉次郎，被带走\N{\rEn}<i>The servant, Kichijiro, was taken away.
+Dialogue: 0,2:30:11.11,2:30:16.24,Default,,0000,0000,0000,,<i>此后，冈田三右卫门本人，被密切监视\N{\rEn}<i>After that, Okada Sanyemon himself, was carefully watched.
+Dialogue: 0,2:30:16.88,2:30:21.50,Default,,0000,0000,0000,,<i>在我最后的旅行期间，在1682，我问及他\N{\rEn}<i>During my last voyage, in 1682, I asked about him.
+Dialogue: 0,2:30:21.84,2:30:24.78,Default,,0000,0000,0000,,<i>日本人则热切回答\N{\rEn}<i>And the Japanese were eager to reply.
+Dialogue: 0,2:30:25.84,2:30:30.00,Default,,0000,0000,0000,,<i>最后的传教士从未承认天主教的神...\N{\rEn}<i>The last priest never acknowledged the Christian God...
+Dialogue: 0,2:30:30.50,2:30:33.01,Default,,0000,0000,0000,,<i>...没有通过文字或图像\N{\rEn}<i>...not by word or symbol.
+Dialogue: 0,2:30:34.04,2:30:35.50,Default,,0000,0000,0000,,<i>他从未说过他\N{\rEn}<i>He never spoke of him.
+Dialogue: 0,2:30:36.18,2:30:38.20,Default,,0000,0000,0000,,<i>且从未祷告过\N{\rEn}<i>And never prayed.
+Dialogue: 0,2:30:38.41,2:30:40.08,Default,,0000,0000,0000,,<i>甚至在他死去时\N{\rEn}<i>Not even when he died.
+Dialogue: 0,2:30:41.35,2:30:46.00,Default,,0000,0000,0000,,<i>他所信仰的事，早已结束\N{\rEn}<i>The business of his faith, was long ended.
+Dialogue: 0,2:30:51.77,2:30:54.71,Default,,0000,0000,0000,,<i>三名守卫看守棺材\N{\rEn}<i>Three guards stood watch over the coffin.
+Dialogue: 0,2:30:55.40,2:30:58.73,Default,,0000,0000,0000,,<i>直至其可被带走，只是为了被确定\N{\rEn}<i>Until it could be taken away, just to be certain.
+Dialogue: 0,2:31:00.77,2:31:04.64,Default,,0000,0000,0000,,<i>只有他的妻子被短暂允许看到遗体\N{\rEn}<i>Only his wife was briefly allowed to view the body.
+Dialogue: 0,2:31:05.20,2:31:08.13,Default,,0000,0000,0000,,<i>并把一件简陋的纪念须刀放入\N{\rEn}<i>And placed there a humble memory gatana.
+Dialogue: 0,2:31:09.37,2:31:11.97,Default,,0000,0000,0000,,<i>以辟开邪恶之灵\N{\rEn}<i>To ward off evil spirits.
+Dialogue: 0,2:31:50.80,2:31:54.33,Default,,0000,0000,0000,,<i>没有迹象表明她哭了\N{\rEn}<i>There was no indication that she wept.
+Dialogue: 0,2:32:47.26,2:32:51.06,Default,,0000,0000,0000,,<i>遗体以佛教的仪礼处置\N{\rEn}<i>The body was treated in the Buddhist manner.
+Dialogue: 0,2:32:51.48,2:32:55.81,Default,,0000,0000,0000,,<i>他还被赐予一个死去的法号\N{\rEn}<i>And he was given a posthumous Buddhist name.
+Dialogue: 0,2:33:05.94,2:33:08.41,Default,,0000,0000,0000,,<i>那个曾名罗德里格斯的男人\N{\rEn}<i>The man who was once Rodriguez.
+Dialogue: 0,2:33:09.96,2:33:12.29,Default,,0000,0000,0000,,<i>按他们之意结束\N{\rEn}<i>Ended as they wanted.
+Dialogue: 0,2:33:13.62,2:33:16.08,Default,,0000,0000,0000,,<i>而当我第一次看见他\N{\rEn}<i>And as I first saw him.
+Dialogue: 0,2:33:17.43,2:33:19.13,Default,,0000,0000,0000,,<i>与神失联\N{\rEn}<i>Lost to God.
+Dialogue: 0,2:33:25.32,2:33:27.00,Default,,0000,0000,0000,,<i>但是否如此\N{\rEn}<i>But as to that.
+Dialogue: 0,2:33:27.60,2:33:28.60,Default,,0000,0000,0000,,<i>实际上\N{\rEn}<i>In deed.
+Dialogue: 0,2:33:30.00,2:33:32.00,Default,,0000,0000,0000,,只有神能回答\N{\rEn}<i>Only God can answer.
+Dialogue: 0,2:34:20.81,2:34:25.51,Default,,0000,0000,0000,,为日本的基督徒及他们的牧师 为上帝的最大荣耀\N{\rEn}For the Japanese Christians and their pastors.For the greater glory of God.
+Dialogue: 0,2:34:28.00,2:34:30.19,Default,,0000,0000,0000,,导演：马丁·斯科塞斯\N{\rEn}Martin Scorsese
+Dialogue: 0,2:34:34.00,2:34:37.00,Default,,0000,0000,0000,,Author：Shusaku Endo\N{\rEn}原著：遠藤周作 えんどう しゅうさく [1923—1996] 出版于1966
+Dialogue: 0,2:34:40.00,2:35:45.00,Default,,0000,0000,0000,,中文字幕：dottob 20170207-0217\N{\rEn}<b><i>Psagmeno.com</b> <font color=#ff0000>Subtitles / Screenshots / Trailers</font>
+

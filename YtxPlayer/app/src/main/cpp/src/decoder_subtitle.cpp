@@ -8,17 +8,25 @@
 #include "ytxplayer/decoder_subtitle.h"
 #define TAG "FFMpegSubtitleDecoder"
 #include "ALog-priv.h"
-
+#include "test.h"
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
    // isFirstFrame = true;
     firstInit = false;
+    sprintf(subfile,"/storage/emulated/0/test.ass");
+    //fp_pcm = fopen(subfile,"wb+");
 
 }
 
 DecoderSubtitle::~DecoderSubtitle()
 {
     // Free audio samples buffer
+
+
+    ass_renderer_done(ass_renderer);
+    ass_library_done(ass_library);
+
+
     if(mFrame != NULL){
         av_frame_free(&mFrame);
     }
@@ -37,6 +45,25 @@ bool DecoderSubtitle::prepare()
     if (mFrame == NULL) {
         return false;
     }
+
+
+    printFontProviders(ass_library);
+    init(frame_w, frame_h);
+    track = ass_new_track(ass_library);
+    if (!track) {
+        ALOGI("track init failed!\n");
+        return 1;
+    }
+
+    if (mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header){
+        ass_process_codec_private(track,
+                                  (char *) mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header,
+                                  mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header_size);
+    }
+
+ //   track = ass_read_file(ass_library,subfile , NULL);
+//    char *argv[]={"ass_test","/storage/emulated/0/ass1.png","/storage/emulated/0/test.ass","25"};
+//    main_test(4,argv);
     return true;
 }
 
@@ -129,9 +156,35 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
     }else if(completed > 0 && sp->sub.format == 1){
 
-        for (int i = 0; i < sp->sub.num_rects; i++){
+        const int64_t start_time = av_rescale_q(sp->sub.pts, AV_TIME_BASE_Q, av_make_q(1, 1000));
+        const int64_t duration   = sp->sub.end_display_time;
 
-                    ALOGI("ttttt sp->sub.rects[i]->type=%d, sp->sub.rects[i]->ass=%s\n",sp->sub.rects[i]->type,sp->sub.rects[i]->ass);
+        for (int i = 0; i < sp->sub.num_rects; i++){
+            ALOGI("ttttt sp->sub.rects[i]->type=%d, sp->sub.rects[i]->ass=%s\n",sp->sub.rects[i]->type,sp->sub.rects[i]->ass);
+
+
+
+            char *ass_line = sp->sub.rects[i]->ass;
+            if (!ass_line){
+                break;
+            }
+
+            if (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57,25,100)){
+                ass_process_data(track, ass_line, strlen(ass_line));
+            } else {
+                ass_process_chunk(track, ass_line, strlen(ass_line), start_time, duration);
+            }
+
+            now = start_time;
+            ASS_Image *img = ass_render_frame(ass_renderer, track, now, NULL);
+            image_t *frame = gen_image(frame_w, frame_h);
+            blend(frame, img);
+
+
+            ass_free_track(track);
+            write_png("/storage/emulated/0/ass.png", frame);
+            free(frame->buffer);
+            free(frame);
         }
 
         mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
@@ -186,4 +239,145 @@ int DecoderSubtitle::streamHasEnoughPackets(){
           mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamAudio->st->time_base) * mQueue->duration > 1.0);
 
     return ret;
+}
+
+void DecoderSubtitle::printFontProviders(ASS_Library *ass_library) {
+    int i;
+    ASS_DefaultFontProvider *providers;
+    size_t providers_size = 0;
+    ass_get_available_font_providers(ass_library, &providers, &providers_size);
+    ALOGI("test.c: Available font providers (%zu): ", providers_size);
+    for (i = 0; i < providers_size; i++) {
+        const char *separator = i > 0 ? ", ": "";
+        ALOGI("%s'%s'", separator,  font_provider_labels[providers[i]]);
+    }
+    ALOGI(".\n");
+    free(providers);
+}
+
+void DecoderSubtitle::init(int frame_w, int frame_h) {
+    ass_library = ass_library_init();
+    if (!ass_library) {
+        ALOGI("ass_library_init failed!\n");
+        exit(1);
+    }
+
+    ass_set_message_cb(ass_library, msg_callback, NULL);
+
+    ass_renderer = ass_renderer_init(ass_library);
+    if (!ass_renderer) {
+        ALOGI("ass_renderer_init failed!\n");
+        exit(1);
+    }
+
+    ass_set_frame_size(ass_renderer, frame_w, frame_h);
+    ass_set_fonts(ass_renderer, "/storage/emulated/0/tang_cn.ttf", "sans-serif",
+                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
+}
+
+
+void DecoderSubtitle::msg_callback(int level, const char *fmt, va_list va, void *data) {
+    if (level > 6)
+        return;
+    ALOGI("libass: ");
+    vprintf(fmt, va);
+    ALOGI("\n");
+}
+
+image_t* DecoderSubtitle::gen_image(int width, int height) {
+
+    image_t *img = (image_t *) malloc(sizeof(image_t));
+    img->width = width;
+    img->height = height;
+    img->stride = width * 3;
+    img->buffer = (unsigned char *) calloc(1, height * width * 3);
+    memset(img->buffer, 63, img->stride * img->height);
+    //for (int i = 0; i < height * width * 3; ++i)
+    // img->buffer[i] = (i/3/50) % 100;
+    return img;
+}
+
+void DecoderSubtitle::blend(image_t *frame, ASS_Image *img) {
+    int cnt = 0;
+    while (img) {
+        blend_single(frame, img);
+        ++cnt;
+        img = img->next;
+    }
+    ALOGI("%d images blended\n", cnt);
+}
+
+void DecoderSubtitle::blend_single(image_t *frame, ASS_Image *img) {
+    int x, y;
+    unsigned char opacity = 255 - _a(img->color);
+    unsigned char r = _r(img->color);
+    unsigned char g = _g(img->color);
+    unsigned char b = _b(img->color);
+
+    unsigned char *src;
+    unsigned char *dst;
+
+    src = img->bitmap;
+    dst = frame->buffer + img->dst_y * frame->stride + img->dst_x * 3;
+    for (y = 0; y < img->h; ++y) {
+        for (x = 0; x < img->w; ++x) {
+            unsigned k = ((unsigned) src[x]) * opacity / 255;
+            // possible endianness problems
+            dst[x * 3] = (k * b + (255 - k) * dst[x * 3]) / 255;
+            dst[x * 3 + 1] = (k * g + (255 - k) * dst[x * 3 + 1]) / 255;
+            dst[x * 3 + 2] = (k * r + (255 - k) * dst[x * 3 + 2]) / 255;
+        }
+        src += img->stride;
+        dst += frame->stride;
+    }
+}
+
+
+void DecoderSubtitle::write_png(char *fname, image_t *img) {
+
+    FILE *fp;
+    png_structp png_ptr;
+    png_infop info_ptr;
+    png_byte **row_pointers;
+    int k;
+
+    png_ptr =
+            png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    info_ptr = png_create_info_struct(png_ptr);
+    fp = NULL;
+
+    if (setjmp(png_jmpbuf(png_ptr))) {
+        png_destroy_write_struct(&png_ptr, &info_ptr);
+        fclose(fp);
+        return;
+    }
+
+    fp = fopen(fname, "wb");
+    if (fp == NULL) {
+        printf("PNG Error opening %s for writing!\n", fname);
+        return;
+    }
+
+    png_init_io(png_ptr, fp);
+    png_set_compression_level(png_ptr, 0);
+
+    png_set_IHDR(png_ptr, info_ptr, img->width, img->height,
+                 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+    png_write_info(png_ptr, info_ptr);
+
+    png_set_bgr(png_ptr);
+
+    row_pointers = (png_byte **) malloc(img->height * sizeof(png_byte *));
+    for (k = 0; k < img->height; k++)
+        row_pointers[k] = img->buffer + img->stride * k;
+
+    png_write_image(png_ptr, row_pointers);
+    png_write_end(png_ptr, info_ptr);
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+
+    free(row_pointers);
+
+    fclose(fp);
 }

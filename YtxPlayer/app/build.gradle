@@ -32,6 +32,7 @@ android {
         }
         debug {
             jniDebuggable true
+            debuggable true
         }
     }
 
