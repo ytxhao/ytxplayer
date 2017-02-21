@@ -56,20 +56,6 @@ find_library( # Sets the name of the path variable.
               log )
 
 find_library( # Sets the name of the path variable.
-            EGL-lib
-
-            # Specifies the name of the NDK library that
-            # you want CMake to locate.
-            EGL )
-
-find_library( # Sets the name of the path variable.
-            GLESv2-lib
-
-            # Specifies the name of the NDK library that
-            # you want CMake to locate.
-            GLESv2 )
-
-find_library( # Sets the name of the path variable.
             OpenSLES-lib
 
             # Specifies the name of the NDK library that
@@ -81,161 +67,198 @@ find_library( # Sets the name of the path variable.
 set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
 
 
-#message(FATAL_ERROR "Invalid Android INC_DIR result: "${Project_BINARY_DIR}")
-#include_directories(${Project_SOURCE_DIR}/../cpp/include ${Project_SOURCE_DIR}/../cpp/include/ytxplayer)
+add_library( png-lib
+             SHARED
+             IMPORTED )
 
-find_library(png-lib
-                NAMES "png"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+set_target_properties( # Specifies the target library.
+                       png-lib
 
-find_library(harfbuzz-lib
-              NAMES "harfbuzz"
-              PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH
-            )
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
 
-find_library(freetype-lib
-                NAMES "freetype"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libpng.so )
 
 
+add_library( harfbuzz-lib
+             SHARED
+             IMPORTED )
 
-find_library(iconv-lib
-              NAMES "iconv"
-              PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH
-            )
+set_target_properties( # Specifies the target library.
+                       harfbuzz-lib
 
-find_library(xml2-lib
-                NAMES "xml2"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
 
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libharfbuzz.so )
 
-find_library(fontconfig-lib
-              NAMES "fontconfig"
-              PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH
-            )
+add_library( freetype-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       freetype-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libfreetype.so )
 
 
-find_library(fribidi-lib
-              NAMES "fribidi"
-              PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH
-            )
+add_library( iconv-lib
+             SHARED
+             IMPORTED )
 
-find_library(ass-lib
-              NAMES "ass"
-              PATHS ${LINK_DIR}
-              NO_CMAKE_ENVIRONMENT_PATH
-              NO_CMAKE_PATH
-              NO_SYSTEM_ENVIRONMENT_PATH
-              NO_CMAKE_SYSTEM_PATH
-              NO_CMAKE_FIND_ROOT_PATH
-            )
+set_target_properties( # Specifies the target library.
+                       iconv-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libiconv.so )
 
 
+add_library( xml2-lib
+             SHARED
+             IMPORTED )
 
-find_library(avutil-lib
-                NAMES "avutil"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+set_target_properties( # Specifies the target library.
+                       xml2-lib
 
-find_library(swscale-lib
-                NAMES "swscale"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-            )
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
 
-find_library(swresample-lib
-                NAMES "swresample"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
-find_library(avcodec-lib
-                NAMES "avcodec"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-            )
-find_library(avformat-lib
-                NAMES "avformat"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libxml2.so )
 
-find_library(avfilter-lib
-                NAMES "avfilter"
-                PATHS ${LINK_DIR}
-                NO_CMAKE_ENVIRONMENT_PATH
-                NO_CMAKE_PATH
-                NO_SYSTEM_ENVIRONMENT_PATH
-                NO_CMAKE_SYSTEM_PATH
-                NO_CMAKE_FIND_ROOT_PATH
-              )
+add_library( fontconfig-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       fontconfig-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libfontconfig.so )
 
 
+add_library( fribidi-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       fribidi-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libfribidi.so )
+
+add_library( ass-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       ass-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libass.so )
+
+
+add_library( avutil-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avutil-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libavutil.so )
+
+add_library( swscale-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       swscale-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libswscale.so )
+
+add_library( swresample-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       swresample-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libswresample.so )
+
+
+add_library( avcodec-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avcodec-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libavcodec.so )
+
+add_library( avformat-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avformat-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libavformat.so )
+
+add_library( avfilter-lib
+             SHARED
+             IMPORTED )
+
+set_target_properties( # Specifies the target library.
+                       avfilter-lib
+
+                       # Specifies the parameter you want to define.
+                       PROPERTIES IMPORTED_LOCATION
+
+                       # Provides the path to the library you want to import.
+                       ${LINK_DIR}/libavfilter.so )
 #-----------------------------------------------------------------
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in the
 # build script, prebuilt third-party libraries, or system libraries.
 
-#MESSAGE(STATUS "lsx result: " "${LINK_DIR}/libavformat.so")
-#message(FATAL_ERROR "Invalid Android lsx2 result: " "${avformat-lib}   ${LINK_DIR}")
 
 target_link_libraries( # Specifies the target library.
                        native-ytx-lib
@@ -244,22 +267,20 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
 
                        ${log-lib}
-                       ${EGL-lib}
-                       ${GLESv2-lib}
                        ${OpenSLES-lib}
-                       ${png-lib}
-                       ${harfbuzz-lib}
-                       ${freetype-lib}
-                       ${iconv-lib}
-                       ${xml2-lib}
-                       ${fontconfig-lib}
-                       ${fribidi-lib}
-                       ${ass-lib}
-                       ${avutil-lib}
-                       ${swscale-lib}
-                       ${swresample-lib}
-                       ${avcodec-lib}
-                       ${avformat-lib}
-                       ${avfilter-lib}
+                       png-lib
+                       harfbuzz-lib
+                       freetype-lib
+                       iconv-lib
+                       xml2-lib
+                       fontconfig-lib
+                       fribidi-lib
+                       ass-lib
+                       avutil-lib
+                       swscale-lib
+                       swresample-lib
+                       avcodec-lib
+                       avformat-lib
+                       avfilter-lib
                        native-gl-lib
                        )
