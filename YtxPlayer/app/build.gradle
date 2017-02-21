@@ -45,7 +45,7 @@ android {
     //-------------------------------------------
     externalNativeBuild {
         cmake {
-            path "CMakeLists.txt"
+            path 'src/main/cpp/ytxplayer/CMakeLists.txt'
         }
     }
 }

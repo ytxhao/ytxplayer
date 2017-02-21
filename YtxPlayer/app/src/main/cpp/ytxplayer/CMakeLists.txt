@@ -19,28 +19,28 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             src/main/cpp/src/android_media_YtxMediaPlayer.cpp
-             src/main/cpp/src/YtxMediaPlayer.cpp
-             src/main/cpp/src/Thread.cpp
-             src/main/cpp/src/PacketQueue.cpp
-             src/main/cpp/src/Decoder.cpp
-             src/main/cpp/src/decoder_video.cpp
-             src/main/cpp/src/decoder_audio.cpp
-             src/main/cpp/src/decoder_subtitle.cpp
-             src/main/cpp/src/frame_queue.cpp
-             src/main/cpp/src/frame_queue_audio.cpp
-             src/main/cpp/src/frame_queue_video.cpp
-             src/main/cpp/src/frame_queue_subtitle.cpp
-             src/main/cpp/src/audio_engine.cpp
-             src/main/cpp/src/gl_engine.cpp
-             src/main/cpp/src/lock.cpp
-             src/main/cpp/src/VideoRefreshController.cpp
-             src/main/cpp/src/VideoStateInfo.cpp
-             src/main/cpp/src/playerPrepareAsync.cpp
-             src/main/cpp/src/MessageQueue.cpp
-             src/main/cpp/src/MessageLoop.cpp
-             src/main/cpp/src/AudioRefreshController.cpp
-             src/main/cpp/src/test.c
+             src/android_media_YtxMediaPlayer.cpp
+             src/YtxMediaPlayer.cpp
+             src/Thread.cpp
+             src/PacketQueue.cpp
+             src/Decoder.cpp
+             src/decoder_video.cpp
+             src/decoder_audio.cpp
+             src/decoder_subtitle.cpp
+             src/frame_queue.cpp
+             src/frame_queue_audio.cpp
+             src/frame_queue_video.cpp
+             src/frame_queue_subtitle.cpp
+             src/audio_engine.cpp
+             src/gl_engine.cpp
+             src/lock.cpp
+             src/VideoRefreshController.cpp
+             src/VideoStateInfo.cpp
+             src/playerPrepareAsync.cpp
+             src/MessageQueue.cpp
+             src/MessageLoop.cpp
+             src/AudioRefreshController.cpp
+             src/test.c
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -70,13 +70,20 @@ find_library( # Sets the name of the path variable.
             # you want CMake to locate.
             GLESv2 )
 
+find_library( # Sets the name of the path variable.
+            OpenSLES-lib
+
+            # Specifies the name of the NDK library that
+            # you want CMake to locate.
+            OpenSLES )
+
 #----------------------------------------------------------------
 
-set(LINK_DIR "${Project_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a")
+set(LINK_DIR "${Project_SOURCE_DIR}/../../jniLibs/armeabi-v7a")
 
 
 #message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
-include_directories(${Project_SOURCE_DIR}/src/main/cpp/include  ${Project_SOURCE_DIR}/src/main/cpp/include/ffmpeg ${Project_SOURCE_DIR}/src/main/cpp/include/ytxplayer)
+include_directories(${Project_SOURCE_DIR}/../../cpp/include ${Project_SOURCE_DIR}/../../cpp/include/ytxplayer)
 
 find_library(png-lib
                 NAMES "png"
@@ -236,28 +243,23 @@ target_link_libraries( # Specifies the target library.
 
                        # Links the target library to the log library
                        # included in the NDK.
+
                        ${log-lib}
                        ${EGL-lib}
                        ${GLESv2-lib}
-
+                       ${OpenSLES-lib}
                        ${png-lib}
-                        ${harfbuzz-lib}
-                        ${freetype-lib}
-                        ${iconv-lib}
-                        ${xml2-lib}
-                        ${fontconfig-lib}
-                        ${fribidi-lib}
-                        ${ass-lib}
-
-
-
-
+                       ${harfbuzz-lib}
+                       ${freetype-lib}
+                       ${iconv-lib}
+                       ${xml2-lib}
+                       ${fontconfig-lib}
+                       ${fribidi-lib}
+                       ${ass-lib}
                        ${avutil-lib}
                        ${swscale-lib}
                        ${swresample-lib}
                        ${avcodec-lib}
                        ${avformat-lib}
                        ${avfilter-lib}
-                       OpenSLES )
-
-
+                       )

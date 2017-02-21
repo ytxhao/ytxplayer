@@ -3,7 +3,7 @@
 //
 
 #include <pthread.h>
-#include "Lock.h"
+#include "lock.h"
 
 Lock::Lock() {
     pthread_mutex_init(&mLock, NULL);
