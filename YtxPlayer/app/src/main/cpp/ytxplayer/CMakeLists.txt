@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
 add_library( # Sets the name of the library.
-             native-lib
+             native-ytx-lib
 
              # Sets the library as a shared library.
              SHARED
@@ -32,7 +32,6 @@ add_library( # Sets the name of the library.
              src/frame_queue_video.cpp
              src/frame_queue_subtitle.cpp
              src/audio_engine.cpp
-             src/gl_engine.cpp
              src/lock.cpp
              src/VideoRefreshController.cpp
              src/VideoStateInfo.cpp
@@ -82,7 +81,7 @@ find_library( # Sets the name of the path variable.
 set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
 
 
-#message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
+#message(FATAL_ERROR "Invalid Android INC_DIR result: "${Project_BINARY_DIR}")
 #include_directories(${Project_SOURCE_DIR}/../cpp/include ${Project_SOURCE_DIR}/../cpp/include/ytxplayer)
 
 find_library(png-lib
@@ -239,7 +238,7 @@ find_library(avfilter-lib
 #message(FATAL_ERROR "Invalid Android lsx2 result: " "${avformat-lib}   ${LINK_DIR}")
 
 target_link_libraries( # Specifies the target library.
-                       native-lib
+                       native-ytx-lib
 
                        # Links the target library to the log library
                        # included in the NDK.
@@ -262,4 +261,5 @@ target_link_libraries( # Specifies the target library.
                        ${avcodec-lib}
                        ${avformat-lib}
                        ${avfilter-lib}
+                       native-gl-lib
                        )

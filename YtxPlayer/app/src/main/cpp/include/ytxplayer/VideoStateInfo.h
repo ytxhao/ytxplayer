@@ -128,6 +128,7 @@ public:
     char file_pcm1[100];
     jobject VideoGlSurfaceViewObj;
     jobject GraphicRendererObj;
+    JavaVM *sVm;
 
     int mVideoWidth =0;
     int mVideoHeight = 0;
