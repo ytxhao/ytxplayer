@@ -5,10 +5,10 @@
 #include <ytxplayer/gl_engine.h>
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
-#include "VideoRefreshController.h"
+#include "ytxplayer/VideoRefreshController.h"
 #define LOG_NDEBUG 0
 #define TAG "YTX-VideoRefreshThread-JNI"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 VideoRefreshController::VideoRefreshController(VideoStateInfo* mVideoStateInfo)
 {

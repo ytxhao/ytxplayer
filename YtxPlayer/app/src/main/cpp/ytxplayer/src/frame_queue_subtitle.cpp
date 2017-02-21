@@ -4,7 +4,7 @@
 
 #include "ytxplayer/frame_queue_subtitle.h"
 #define TAG "YTX-FrameQueueSubtitle-JNI"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 
 FrameQueueSubtitle::~FrameQueueSubtitle(){

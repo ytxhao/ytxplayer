@@ -3,7 +3,7 @@
 //
 
 #include <pthread.h>
-#include "lock.h"
+#include "ytxplayer/lock.h"
 
 Lock::Lock() {
     pthread_mutex_init(&mLock, NULL);

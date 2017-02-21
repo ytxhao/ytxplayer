@@ -23,10 +23,10 @@
 #include <string.h>
 #include "ass/ass.h"
 #include <png.h>
-#include "test.h"
+#include "ytxplayer/test.h"
 #define NDEBUG 0
 #define TAG "test-jni"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 typedef struct image_s {
     int width, height, stride;
     unsigned char *buffer;      // RGB24

@@ -4,7 +4,7 @@
 
 #include "ytxplayer/frame_queue_video.h"
 #define TAG "YTX-FrameQueueVideo-JNI"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 
 FrameQueueVideo::~FrameQueueVideo(){

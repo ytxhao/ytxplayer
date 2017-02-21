@@ -5,9 +5,9 @@
 #define TAG "MessageLoop"
 
 
-#include "ALog-priv.h"
-#include "MessageLoop.h"
-#include "ffmsg.h"
+#include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/MessageLoop.h"
+#include "ytxplayer/ffmsg.h"
 
 MessageLoop::MessageLoop() {
     mQueue = new MessageQueue();

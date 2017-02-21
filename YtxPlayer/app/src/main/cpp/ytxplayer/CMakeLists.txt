@@ -79,11 +79,11 @@ find_library( # Sets the name of the path variable.
 
 #----------------------------------------------------------------
 
-set(LINK_DIR "${Project_SOURCE_DIR}/../../jniLibs/armeabi-v7a")
+set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
 
 
 #message(FATAL_ERROR "Invalid Android INC_DIR result: "${INC_DIR}")
-include_directories(${Project_SOURCE_DIR}/../../cpp/include ${Project_SOURCE_DIR}/../../cpp/include/ytxplayer)
+#include_directories(${Project_SOURCE_DIR}/../cpp/include ${Project_SOURCE_DIR}/../cpp/include/ytxplayer)
 
 find_library(png-lib
                 NAMES "png"

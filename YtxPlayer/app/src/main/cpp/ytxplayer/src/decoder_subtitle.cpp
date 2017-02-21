@@ -7,8 +7,8 @@
 #include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_subtitle.h"
 #define TAG "FFMpegSubtitleDecoder"
-#include "ALog-priv.h"
-#include "test.h"
+#include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/test.h"
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
    // isFirstFrame = true;

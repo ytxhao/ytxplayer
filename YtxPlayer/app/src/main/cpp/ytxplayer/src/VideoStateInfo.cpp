@@ -6,8 +6,8 @@
 
 
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
-#include "VideoStateInfo.h"
-#include "ALog-priv.h"
+#include "ytxplayer/VideoStateInfo.h"
+#include "ytxplayer/ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
     frameQueueVideo = new FrameQueueVideo();
     frameQueueAudio = new FrameQueueAudio();

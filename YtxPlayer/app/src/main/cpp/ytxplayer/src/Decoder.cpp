@@ -5,7 +5,7 @@
 #include "ytxplayer/Decoder.h"
 
 #define TAG "FFMpegIDecoder"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 IDecoder::IDecoder(VideoStateInfo *mVideoStateInfo)
 {

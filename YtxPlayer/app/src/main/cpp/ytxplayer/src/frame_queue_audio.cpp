@@ -4,7 +4,7 @@
 
 #include "ytxplayer/frame_queue_audio.h"
 #define TAG "YTX-FrameQueueAudio-JNI"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 
 FrameQueueAudio::~FrameQueueAudio(){

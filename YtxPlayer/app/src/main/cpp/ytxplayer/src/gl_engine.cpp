@@ -1,8 +1,8 @@
 #define  TAG  "gl2jni"
 
 
-#include "ALog-priv.h"
-#include "gl_engine.h"
+#include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/gl_engine.h"
 
 GlEngine::GlEngine() {
     ALOGI("GlEngine");

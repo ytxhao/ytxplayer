@@ -4,7 +4,7 @@
 #define LOG_NDEBUG 0
 #define TAG "YTX-playerPrepareAsync-JNI"
 #include <ytxplayer/ALog-priv.h>
-#include "PlayerPrepareAsync.h"
+#include "ytxplayer/PlayerPrepareAsync.h"
 
 void PlayerPrepareAsync::handleRun(void *ptr) {
     if(!prepare())

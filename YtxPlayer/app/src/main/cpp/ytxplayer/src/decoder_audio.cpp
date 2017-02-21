@@ -7,7 +7,7 @@
 #include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_audio.h"
 #define TAG "FFMpegAudioDecoder"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
 DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {

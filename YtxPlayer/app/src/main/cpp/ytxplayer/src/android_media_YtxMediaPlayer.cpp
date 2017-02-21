@@ -4,7 +4,7 @@
 
 #define LOG_NDEBUG 0
 #define TAG "YTX-PLAYER-JNI"
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 #include <string>
 #include <ytxplayer/gl_engine.h>
 #include "ytxplayer/ffinc.h"

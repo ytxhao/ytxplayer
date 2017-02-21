@@ -2,12 +2,12 @@
 // Created by Administrator on 2017/1/3.
 //
 
-#include "AudioRefreshController.h"
+#include "ytxplayer/AudioRefreshController.h"
 
 #define LOG_NDEBUG 0
 #define TAG "YTX-AudioRefreshController-JNI"
-#include "ALog-priv.h"
-#include "ffmsg.h"
+#include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/ffmsg.h"
 #include <map>
 #include <unistd.h>
 

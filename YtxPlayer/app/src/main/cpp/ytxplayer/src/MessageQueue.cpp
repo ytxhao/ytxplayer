@@ -4,9 +4,9 @@
 #define NDEBUG 0
 #define TAG "FFMpegMessageQueue"
 
-#include "ALog-priv.h"
+#include "ytxplayer/ALog-priv.h"
 
-#include "MessageQueue.h"
+#include "ytxplayer/MessageQueue.h"
 
 MessageQueue::MessageQueue() {
     mFirst = NULL;
