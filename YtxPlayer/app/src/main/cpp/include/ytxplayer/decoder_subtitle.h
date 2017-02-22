@@ -69,7 +69,7 @@ private:
             [ASS_FONTPROVIDER_DIRECTWRITE]= "DirectWrite",
     };
     char subfile[100];
-    long long now=2500;
+   // long long now=2500;
     ASS_Track *track;
 };
 

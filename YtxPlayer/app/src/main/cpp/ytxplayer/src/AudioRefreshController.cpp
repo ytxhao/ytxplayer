@@ -147,7 +147,7 @@ int AudioRefreshController::audioFrameProcess() {
 //                                                     af->frame->nb_samples, mVideoStateInfo->out_sample_fmt,
 //                                                     1);
     size_buff = (SLuint32) af->out_buffer_audio_size;
-    fwrite(af->out_buffer_audio,1,size_buff,mVideoStateInfo->fp_pcm1);
+   // fwrite(af->out_buffer_audio,1,size_buff,mVideoStateInfo->fp_pcm1);
     (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
                                                   af->out_buffer_audio,
                                                   size_buff);

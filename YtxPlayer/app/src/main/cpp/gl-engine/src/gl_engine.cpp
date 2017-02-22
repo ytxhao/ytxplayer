@@ -1,8 +1,22 @@
-#define  TAG  "gl2jni"
 
+#define LOG_NDEBUG 0
+#define TAG "YTX-RENDERER-JNI"
 
+#include <unistd.h>
+#include <assert.h>
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/gl_engine.h"
+
+
+
+// 获取数组的大小
+#ifndef NELEM
+#define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
+#endif
+#define JNIREG_RENDERER_CLASS "com/ytx/ican/media/player/render/GraphicRenderer"
+
+
+static JavaVM *sVm;
 
 GlEngine::GlEngine() {
     ALOGI("GlEngine");
@@ -492,18 +506,7 @@ void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
     glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
     checkGlError("glViewport");
 }
-extern "C" {
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1init_1opengl
-        (JNIEnv *env, jclass clazz);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1resize_1opengl
-        (JNIEnv *env, jobject obj, jint width, jint height);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1step_1opengl
-        (JNIEnv *env, jobject obj);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1create_1opengl
-        (JNIEnv *env, jobject obj);
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1constructor_1opengl
-        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj);
-}
+
 
 
 
@@ -526,7 +529,7 @@ static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine
 
 
 
-void addRendererFrame(jobject obj,JavaVM *sVm,char *y, char *u, char *v, int videoWidth, int videoHeight)
+void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight)
 {
     ALOGI("addRendererFrame IN\n");
 
@@ -541,7 +544,7 @@ void addRendererFrame(jobject obj,JavaVM *sVm,char *y, char *u, char *v, int vid
 }
 
 
-int  rendererStarted(jobject obj,JavaVM *sVm){
+int  rendererStarted(jobject obj){
     ALOGI("rendererCanStart IN\n");
 
     int ret = -1;
@@ -554,8 +557,20 @@ int  rendererStarted(jobject obj,JavaVM *sVm){
     ALOGI("rendererCanStart OUT ret=%d\n",ret);
     return ret;
 }
+//extern "C" {
+//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
+//        (JNIEnv *env, jclass clazz);
+//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
+//        (JNIEnv *env, jobject obj, jint width, jint height);
+//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
+//        (JNIEnv *env, jobject obj);
+//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
+//        (JNIEnv *env, jobject obj);
+//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_opengl
+//        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj);
+//}
 
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1init_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
         (JNIEnv *env, jclass clazz){
     ALOGI("native_1init_1opengl IN");
     context = env->GetFieldID(clazz, "mNativeRenderContext", "I");
@@ -566,7 +581,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
 }
 
 
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1constructor_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_opengl
         (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj){
     ALOGI("native_1constructor_1opengl IN");
 
@@ -579,7 +594,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
 
 
 // onSurfaceChanged
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1resize_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
         (JNIEnv *env, jobject obj, jint width, jint height){
     ALOGI("native_1resize_1opengl IN");
 
@@ -591,7 +606,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1step_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
         (JNIEnv *env, jobject obj){
     ALOGI("native_1step_1opengl IN");
     getGlEngine(env,obj)->drawFrame();
@@ -599,11 +614,79 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
 }
 
 // onSurfaceCreated
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1create_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
         (JNIEnv *env, jobject obj){
 
     ALOGI("native_1init_1opengl IN");
     getGlEngine(env,obj)->setupGraphics();
     ALOGI("native_1init_1opengl OUT");
 
+}
+
+
+
+// ----------------------------------------------------------------------------
+
+static JNINativeMethod gMethods[] = {
+
+        {"native_init_opengl",      "()V",                      (void *)android_media_player_GraphicRenderer_native_init_opengl},
+        {"native_resize_opengl",        "(II)V",                (void *)android_media_player_GraphicRenderer_native_resize_opengl},
+        {"native_step_opengl",  "()V",                          (void *)android_media_player_GraphicRenderer_native_step_opengl},
+        {"native_create_opengl", "()V",                         (void *)android_media_player_GraphicRenderer_native_create_opengl},
+        {"native_constructor_opengl", "(Ljava/lang/Object;)V",  (void *)android_media_player_GraphicRenderer_native_constructor_opengl}
+
+};
+
+
+
+
+
+// 注册native方法到java中
+static int registerNativeMethods(JNIEnv* env, const char* className,
+                                 JNINativeMethod* gMethods, int numMethods)
+{
+    jclass clazz;
+    clazz = env->FindClass(className);
+    if (clazz == NULL) {
+        return JNI_FALSE;
+    }
+    if (env->RegisterNatives(clazz, gMethods, numMethods) < 0) {
+        return JNI_FALSE;
+    }
+
+    return JNI_TRUE;
+}
+
+
+int register_android_media_player_renderer(JNIEnv *env)
+{
+    // 调用注册方法
+    return registerNativeMethods(env, JNIREG_RENDERER_CLASS,
+                                 gMethods, NELEM(gMethods));
+}
+
+
+jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+    JNIEnv *env = NULL;
+    jint result = -1;
+    sVm = vm;
+    ALOGI("main renderer tid:%u,pid:%u\n", (unsigned) pthread_self(),
+          (unsigned) getpid());
+    ALOGI("ERROR renderer: sVm=%d\n", sVm);
+    if (sVm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
+        ALOGE("ERROR renderer: GetEnv failed\n");
+        goto bail;
+    }
+    assert(env != NULL);
+
+
+    if (register_android_media_player_renderer(env) < 0) {
+        ALOGE("ERROR: mediaPlayer renderer native registration failed\n");
+        goto bail;
+    }
+    /* success -- return valid version number */
+    result = JNI_VERSION_1_4;
+
+    bail:
+    return result;
 }

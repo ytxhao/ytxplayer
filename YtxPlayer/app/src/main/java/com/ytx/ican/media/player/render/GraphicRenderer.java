@@ -21,6 +21,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class GraphicRenderer implements GLSurfaceView.Renderer {
 
+    static {
+        System.loadLibrary("native-gl-lib");
+    }
+
     private static final String TAG = "GraphicRenderer";
     final Vector<Runnable> queue = new Vector<Runnable>();
     private GLProgram prog = new GLProgram(0);

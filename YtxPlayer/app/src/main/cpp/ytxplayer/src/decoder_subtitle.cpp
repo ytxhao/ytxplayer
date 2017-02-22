@@ -13,7 +13,7 @@ DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVide
 {
    // isFirstFrame = true;
     firstInit = false;
-    sprintf(subfile,"/storage/emulated/0/test.ass");
+    sprintf(subfile,"%s/test.ass",mVideoStateInfo->mStorageDir);
     //fp_pcm = fopen(subfile,"wb+");
 
 }
@@ -25,7 +25,7 @@ DecoderSubtitle::~DecoderSubtitle()
 
     ass_renderer_done(ass_renderer);
     ass_library_done(ass_library);
-
+    ass_free_track(track);
 
     if(mFrame != NULL){
         av_frame_free(&mFrame);
@@ -169,22 +169,21 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
                 break;
             }
 
-            if (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57,25,100)){
-                ass_process_data(track, ass_line, strlen(ass_line));
-            } else {
-                ass_process_chunk(track, ass_line, strlen(ass_line), start_time, duration);
-            }
 
-            now = start_time;
-            ASS_Image *img = ass_render_frame(ass_renderer, track, now, NULL);
+            ass_process_data(track, ass_line, strlen(ass_line));
+
+
+            ASS_Image *img = ass_render_frame(ass_renderer, track, start_time, NULL);
             image_t *frame = gen_image(frame_w, frame_h);
             blend(frame, img);
 
 
-            ass_free_track(track);
-            write_png("/storage/emulated/0/ass.png", frame);
+           // ass_free_track(track);
+            //write_png("/storage/emulated/0/ass.png", frame);
+            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), frame);
             free(frame->buffer);
             free(frame);
+            ass_flush_events(track);
         }
 
         mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
@@ -271,7 +270,9 @@ void DecoderSubtitle::init(int frame_w, int frame_h) {
     }
 
     ass_set_frame_size(ass_renderer, frame_w, frame_h);
-    ass_set_fonts(ass_renderer, "/storage/emulated/0/tang_cn.ttf", "sans-serif",
+//    ass_set_fonts(ass_renderer, "/storage/emulated/0/tang_cn.ttf", "sans-serif",
+//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
+    ass_set_fonts(ass_renderer, mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"tang_cn.ttf"), "sans-serif",
                   ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
 }
 

@@ -18,7 +18,7 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->extClk,1);
 
-    sprintf(file,"/storage/emulated/0/%lu.yuv",pthread_self());
+    sprintf(file,"%s%lu.yuv",mVideoStateInfo->mStorageDir,pthread_self());
     ALOGI("ytxhao DecoderVideo file = %s",file);
    // mVideoStateInfo->fp_yuv = fopen(file,"wb+");
     mFrame = NULL;

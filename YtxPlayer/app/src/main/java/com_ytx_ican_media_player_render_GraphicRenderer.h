@@ -14,7 +14,7 @@ extern "C" {
  * Method:    native_init_opengl
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1init_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
   (JNIEnv *, jclass);
 
 /*
@@ -22,7 +22,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
  * Method:    native_resize_opengl
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1resize_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
   (JNIEnv *, jobject, jint, jint);
 
 /*
@@ -30,7 +30,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
  * Method:    native_step_opengl
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1step_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
   (JNIEnv *, jobject);
 
 /*
@@ -38,7 +38,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
  * Method:    native_create_opengl
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1create_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
   (JNIEnv *, jobject);
 
 /*
@@ -46,7 +46,7 @@ JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_nat
  * Method:    native_constructor_opengl
  * Signature: (Ljava/lang/Object;)V
  */
-JNIEXPORT void JNICALL Java_com_ytx_ican_media_player_render_GraphicRenderer_native_1constructor_1opengl
+JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_opengl
   (JNIEnv *, jobject, jobject);
 
 #ifdef __cplusplus

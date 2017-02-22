@@ -16,11 +16,10 @@
 #endif
 
 // 指定要注册的类，对应完整的java类名
-//#define JNIREG_CLASS "com/example/aecm/MobileAEC"
 
 #define JNIREG_CLASS "com/ytx/ican/media/player/pragma/YtxMediaPlayer"
 
-JavaVM *sVm;
+static JavaVM *sVm;
 // ----------------------------------------------------------------------------
 /*
  * Throw an exception with the specified class and an optional message.
@@ -292,6 +291,24 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
 
     ALOGI("android_media_player_setGlSurface jmtdId=%d GraphicRendererObj=%#x\n",jmtdId,GraphicRendererObj);
     mPlayer->mVideoStateInfo->GraphicRendererObj = env->NewGlobalRef(GraphicRendererObj);
+
+
+
+
+    /**
+     * for test
+     */
+    // 得到jclass
+    jclass jclazz_player = env->GetObjectClass(obj);
+    ALOGI("android_media_player_setGlSurface jclazz_player=%d\n",jclazz_player);
+    // 得到方法ID
+    jmethodID jmtdId_player = env->GetMethodID(jclazz_player, "getStorageDirectory", "()Ljava/lang/String;");
+    ALOGI("android_media_player_setGlSurface jmtdId_player=%d\n",jmtdId_player);
+    // 调用方法
+    jstring url = (jstring) env->CallObjectMethod(obj, jmtdId_player);
+    const char *storageDirectory = env->GetStringUTFChars(url,NULL);
+    mPlayer->mVideoStateInfo->mStorageDir = (char *) storageDirectory;
+    ALOGI("android_media_player_setGlSurface storageDirectory=%s\n",mPlayer->mVideoStateInfo->mStorageDir);
     ALOGI("android_media_player_setGlSurface OUT\n");
 }
 

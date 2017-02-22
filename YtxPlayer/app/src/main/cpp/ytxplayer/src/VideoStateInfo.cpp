@@ -38,15 +38,15 @@ VideoStateInfo::VideoStateInfo(){
     seekFlags = 0;
     eof =0;
     currentTime =0;
-    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
-    fp_pcm = fopen(file_pcm,"wb+");
-    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
-    fp_pcm1 = fopen(file_pcm1,"wb+");
+//    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
+//    fp_pcm = fopen(file_pcm,"wb+");
+//    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
+//    fp_pcm1 = fopen(file_pcm1,"wb+");
 
 }
 VideoStateInfo::~VideoStateInfo() {
-    fclose(fp_pcm);
-    fclose(fp_pcm1);
+//    fclose(fp_pcm);
+//    fclose(fp_pcm1);
     avformat_close_input(&pFormatCtx);
     delete frameQueueVideo;
     delete frameQueueAudio;
@@ -146,4 +146,17 @@ void VideoStateInfo::syncClock2Slave(Clock *c, Clock *slave) {
     double slave_clock = getClock(slave);
     if (!isnan(slave_clock) && (isnan(clock) || fabs(clock - slave_clock) > AV_NOSYNC_THRESHOLD))
         setClock(c, slave_clock, slave->serial);
+}
+
+
+char* VideoStateInfo::join3(char *s1, char *s2)
+{
+    char *result = (char *) malloc(strlen(s1) + strlen(s2) + 1);//+1 for the zero-terminator
+    //in real code you would check for errors in malloc here
+    if (result == NULL) exit (1);
+
+    strcpy(result, s1);
+    strcat(result, s2);
+
+    return result;
 }

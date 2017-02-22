@@ -333,7 +333,7 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 
     do{
         usleep(50);
-    }while(rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj,mPlayer->mVideoStateInfo->sVm) != 1);
+    }while(rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
 
     mPlayer->decodeMovie(ptr);
 

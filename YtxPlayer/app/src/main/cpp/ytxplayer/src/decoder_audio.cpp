@@ -155,8 +155,8 @@ bool DecoderAudio::process(MAVPacket *mPacket)
 
                 ALOGI("FrameQueue::process yuhaotest queue[%d].out_buffer_audio=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio);
 
-                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio, 1,
-                       (size_t) mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio_size, mVideoStateInfo->fp_pcm);
+//                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio, 1,
+//                       (size_t) mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio_size, mVideoStateInfo->fp_pcm);
             }
             mVideoStateInfo->isFirstAudioFrame  = false;
             msg.what = FFP_MSG_AUDIO_FIRST_FRAME;

@@ -101,7 +101,7 @@ void VideoRefreshController::process() {
 
 
                 android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-                addRendererFrame(mVideoStateInfo->GraphicRendererObj,mVideoStateInfo->sVm,
+                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
                                  vp->out_buffer_video_yuv[0],
                                  vp->out_buffer_video_yuv[1],
                                  vp->out_buffer_video_yuv[2],

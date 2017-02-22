@@ -2,6 +2,7 @@ package com.ytx.ican.media.player.pragma;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -87,6 +88,10 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
         native_setup(new WeakReference<YtxMediaPlayer>(this));
     }
 
+    public String getStorageDirectory(){
+        return Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/" ;
+    }
 
     private static final LibLoader sLocalLibLoader = new LibLoader() {
         @Override
@@ -106,17 +111,17 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("faad");
                     libLoader.loadLibrary("faac");
                     libLoader.loadLibrary("rtmp");
-                    libLoader.loadLibrary("x264");
-                    libLoader.loadLibrary("xml2");
-                    libLoader.loadLibrary("fontconfig");
+              //      libLoader.loadLibrary("x264");
 
                     libLoader.loadLibrary("charset");
                     libLoader.loadLibrary("iconv");
+                    libLoader.loadLibrary("xml2");
 
                     libLoader.loadLibrary("png");
-                    libLoader.loadLibrary("harfbuzz");
+                 //   libLoader.loadLibrary("harfbuzz");
                     libLoader.loadLibrary("freetype");
 
+                    libLoader.loadLibrary("fontconfig");
                     libLoader.loadLibrary("fribidi");
                     libLoader.loadLibrary("ass");
 
@@ -129,7 +134,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("avformat");
                     libLoader.loadLibrary("avdevice");
                     libLoader.loadLibrary("avfilter");
-               //     libLoader.loadLibrary("native-lib");
+                    libLoader.loadLibrary("native-ytx-lib");
 
                     mIsLibLoaded = true;
             }
@@ -412,7 +417,6 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
             mp.mEventHandler.sendMessage(m);
         }
     }
-
 
     private static native void native_init();
 

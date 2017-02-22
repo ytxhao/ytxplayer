@@ -43,7 +43,7 @@ class VideoStateInfo{
 public:
     VideoStateInfo();
     ~VideoStateInfo();
-
+    char* join3(char *s1, char *s2);
     void notify();
     void notifyAll();
     void waitOnNotify(int mCurrentState);
@@ -121,14 +121,14 @@ public:
     int pkt_serial_video = 0;
     int pkt_serial_subtitle = 0;
     double max_frame_duration;
-    FILE *fp_yuv;
-    FILE *fp_pcm;
-    FILE *fp_pcm1;
+ //   FILE *fp_yuv;
+//    FILE *fp_pcm;
+//    FILE *fp_pcm1;
     char file_pcm[100];
     char file_pcm1[100];
     jobject VideoGlSurfaceViewObj;
     jobject GraphicRendererObj;
-    JavaVM *sVm;
+    char *mStorageDir;
 
     int mVideoWidth =0;
     int mVideoHeight = 0;

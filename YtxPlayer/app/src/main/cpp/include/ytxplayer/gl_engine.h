@@ -22,8 +22,8 @@
 extern "C" {
 #endif
 
-void addRendererFrame(jobject obj,JavaVM *sVm,char *y, char *u, char *v, int videoWidth, int videoHeight);
-int  rendererStarted(jobject obj,JavaVM *sVm);
+void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight);
+int  rendererStarted(jobject obj);
 
 #ifdef __cplusplus
 }
