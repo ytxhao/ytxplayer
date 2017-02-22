@@ -379,6 +379,13 @@ void GlEngine::waitRendererFinish() {
     mRendererLock.unlock();
 }
 
+
+void GlEngine::addRendererFrame(image_t *img){
+
+
+
+}
+
 void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
     mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
@@ -529,7 +536,7 @@ static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine
 
 
 
-void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight)
+void addRendererVideoFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight)
 {
     ALOGI("addRendererFrame IN\n");
 
@@ -542,7 +549,18 @@ void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int
     ALOGI("addRendererFrame OUT\n");
 
 }
+void addRendererSubtitleFrame(jobject obj, image_t *img){
 
+    ALOGI("addRendererSubtitleFrame IN\n");
+
+    JNIEnv *env = NULL;
+    sVm->AttachCurrentThread(&env, NULL);
+
+    getGlEngine(env,obj)->addRendererFrame(img);
+
+    sVm->DetachCurrentThread();
+    ALOGI("addRendererSubtitleFrame OUT\n");
+}
 
 int  rendererStarted(jobject obj){
     ALOGI("rendererCanStart IN\n");

@@ -17,12 +17,14 @@
 #include <math.h>
 #include <pthread.h>
 #include "lock.h"
+#include "ffinc.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void addRendererFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight);
+void addRendererVideoFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight);
+void addRendererSubtitleFrame(jobject obj, image_t *img);
 int  rendererStarted(jobject obj);
 
 #ifdef __cplusplus
@@ -163,6 +165,7 @@ public:
     bool isDrawFrameInit;
 
     void addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight);
+    void addRendererFrame(image_t *img);
 
     bool isAddRendererFrameInit;
 

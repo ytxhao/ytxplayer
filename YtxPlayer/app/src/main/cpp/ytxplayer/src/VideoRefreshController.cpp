@@ -5,6 +5,7 @@
 #include <ytxplayer/gl_engine.h>
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
+#include <png.h>
 #include "ytxplayer/VideoRefreshController.h"
 #define LOG_NDEBUG 0
 #define TAG "YTX-VideoRefreshThread-JNI"
@@ -31,7 +32,7 @@ bool VideoRefreshController::prepare() {
 #define REFRESH_RATE 0.01
 #define AV_SYNC_THRESHOLD_MAX 0.1
 void VideoRefreshController::process() {
-
+    Frame *sp, *sp2;
     if(mVideoStateInfo != NULL) {
 
         if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
@@ -86,6 +87,33 @@ void VideoRefreshController::process() {
                 mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
             }
 
+            /*
+             * 添加subtitles
+             */
+
+            if(mVideoStateInfo->streamSubtitle->st){
+
+                while(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
+                    sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
+
+                    if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 1){
+                        sp2 = mVideoStateInfo->frameQueueSubtitle->frameQueuePeekNext();
+                    }else{
+                        sp2 = NULL;
+                    }
+
+
+                    if (sp->serial != mVideoStateInfo->pkt_serial_subtitle
+                        || (mVideoStateInfo->vidClk->pts > (sp->pts + ((float) sp->sub.end_display_time / 1000)))
+                        || (sp2 && mVideoStateInfo->vidClk->pts > (sp2->pts + ((float) sp2->sub.start_display_time / 1000))))
+                    {
+                        mVideoStateInfo->frameQueueSubtitle->frameQueueNext();
+                    } else {
+                        break;
+                    }
+                }
+            }
+
           //  display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
@@ -98,27 +126,78 @@ void VideoRefreshController::process() {
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
 //                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
 
-
-
                 android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
+                addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                  vp->out_buffer_video_yuv[0],
                                  vp->out_buffer_video_yuv[1],
                                  vp->out_buffer_video_yuv[2],
                                  decodeWidth,
                                  decodeHeight);
-//                addRendererFrame(mVideoStateInfo->GraphicRendererObj,
-//                                 (char *) vp->frame->data[0],
-//                                 (char *) vp->frame->data[1],
-//                                 (char *) vp->frame->data[2],
-//                                 decodeWidth,
-//                                 decodeHeight);
+
+                if(mVideoStateInfo->streamSubtitle->st){
+                    if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
+                        sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
+
+                        if (vp->pts >= sp->pts + ((float) sp->sub.start_display_time / 1000)) {
+//                            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
+                            addRendererSubtitleFrame(mVideoStateInfo->GraphicRendererObj,sp->imageFrame);
+                        }
+                    }
+                }
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();
         }
     }
 
+}
+
+void VideoRefreshController::write_png(char *fname, image_t *img) {
+
+    FILE *fp;
+    png_structp png_ptr;
+    png_infop info_ptr;
+    png_byte **row_pointers;
+    int k;
+
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    info_ptr = png_create_info_struct(png_ptr);
+    fp = NULL;
+
+    if (setjmp(png_jmpbuf(png_ptr))) {
+        png_destroy_write_struct(&png_ptr, &info_ptr);
+        fclose(fp);
+        return;
+    }
+
+    fp = fopen(fname, "wb");
+    if (fp == NULL) {
+        printf("PNG Error opening %s for writing!\n", fname);
+        return;
+    }
+
+    png_init_io(png_ptr, fp);
+    png_set_compression_level(png_ptr, 0);
+
+    png_set_IHDR(png_ptr, info_ptr, img->width, img->height,
+                 8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
+                 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+
+    png_write_info(png_ptr, info_ptr);
+
+    png_set_bgr(png_ptr);
+
+    row_pointers = (png_byte **) malloc(img->height * sizeof(png_byte *));
+    for (k = 0; k < img->height; k++)
+        row_pointers[k] = img->buffer + img->stride * k;
+
+    png_write_image(png_ptr, row_pointers);
+    png_write_end(png_ptr, info_ptr);
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+
+    free(row_pointers);
+
+    fclose(fp);
 }
 
 void VideoRefreshController::stop() {

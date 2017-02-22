@@ -11,10 +11,7 @@
 #include "ass/ass.h"
 #include <png.h>
 
-typedef struct image_s {
-    int width, height, stride;
-    unsigned char *buffer;      // RGB24
-} image_t;
+
 
 #define _r(c)  ((c)>>24)
 #define _g(c)  (((c)>>16)&0xFF)
@@ -59,8 +56,8 @@ private:
  //   bool                        isFirstAudioFrame;
     ASS_Library *ass_library;
     ASS_Renderer *ass_renderer;
-    const int frame_w = 1280;
-    const int frame_h = 720;
+//    const int frame_w = 1280;
+//    const int frame_h = 720;
     char *font_provider_labels[5] = {
             [ASS_FONTPROVIDER_NONE]       = "None",
             [ASS_FONTPROVIDER_AUTODETECT] = "Autodetect",

@@ -27,6 +27,7 @@ public:
     void                stop();
     double              vpDuration(Frame *vp, Frame *next_vp);
     double              computeTargetDelay(double delay);
+    void write_png(char *fname, image_t *img);
 };
 
 

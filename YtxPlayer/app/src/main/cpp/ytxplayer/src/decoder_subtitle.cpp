@@ -8,6 +8,7 @@
 #include "ytxplayer/decoder_subtitle.h"
 #define TAG "FFMpegSubtitleDecoder"
 #include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/frame_queue_subtitle.h"
 #include "ytxplayer/test.h"
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
@@ -48,7 +49,7 @@ bool DecoderSubtitle::prepare()
 
 
     printFontProviders(ass_library);
-    init(frame_w, frame_h);
+    init(mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
     track = ass_new_track(ass_library);
     if (!track) {
         ALOGI("track init failed!\n");
@@ -156,6 +157,12 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
     }else if(completed > 0 && sp->sub.format == 1){
 
+        if (sp->sub.pts != AV_NOPTS_VALUE) {
+            pts = sp->sub.pts / (double) AV_TIME_BASE;
+        }
+        sp->pts = pts;
+        sp->serial = mVideoStateInfo->pkt_serial_subtitle;
+
         const int64_t start_time = av_rescale_q(sp->sub.pts, AV_TIME_BASE_Q, av_make_q(1, 1000));
         const int64_t duration   = sp->sub.end_display_time;
 
@@ -174,15 +181,12 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
 
             ASS_Image *img = ass_render_frame(ass_renderer, track, start_time, NULL);
-            image_t *frame = gen_image(frame_w, frame_h);
-            blend(frame, img);
+            sp->imageFrame = gen_image(mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
+            blend(sp->imageFrame, img);
 
-
-           // ass_free_track(track);
-            //write_png("/storage/emulated/0/ass.png", frame);
-            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), frame);
-            free(frame->buffer);
-            free(frame);
+//            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
+//            free(sp->imageFrame->buffer);
+//            free(sp->imageFrame);
             ass_flush_events(track);
         }
 
@@ -342,8 +346,7 @@ void DecoderSubtitle::write_png(char *fname, image_t *img) {
     png_byte **row_pointers;
     int k;
 
-    png_ptr =
-            png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     info_ptr = png_create_info_struct(png_ptr);
     fp = NULL;
 
