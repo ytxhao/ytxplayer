@@ -33,8 +33,6 @@ GlEngine::GlEngine() {
     isSetupGraphics = 0;
     isDrawFrameInit = false;
     isFrameRendererFinish = false;
-
-
 }
 
 GlEngine::~GlEngine() {
@@ -429,10 +427,22 @@ void GlEngine::addRendererFrame(image_t *img){
 
 }
 
+
+image_t* GlEngine::gen_image(int width, int height) {
+
+    image_t *img = (image_t *) malloc(sizeof(image_t));
+    img->width = width;
+    img->height = height;
+    img->stride = width * 3;
+    img->buffer = (unsigned char *) calloc(1, height * width * 3);
+    memset(img->buffer, 0, img->stride * img->height);
+    return img;
+}
+
 void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight) {
     mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
-    this->img = img;
+//    this->img = img;
 //    plane[0] = y;
 //    plane[1] = u;
 //    plane[2] = v;
@@ -442,6 +452,12 @@ void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int vide
 //    }
 
 //    ALOGI(" debug plane[0]=%#x y=%#x videoWidth=%d videoHeight=%d",plane[0],y,videoWidth,videoHeight);
+    if(img != NULL){
+        memcpy(this->img->buffer, img->buffer, (size_t) (this->img->stride * this->img->height));
+    }else{
+        memset(this->img->buffer,0,(size_t) (this->img->stride * this->img->height));
+    }
+
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
     memcpy(plane[1], u, (size_t) (videoWidth * videoHeight) / 4);
     memcpy(plane[2], v, (size_t) (videoWidth * videoHeight) / 4);
@@ -480,6 +496,10 @@ void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
             free(plane_tmp[0]);
             free(plane_tmp[1]);
             free(plane_tmp[2]);
+        }
+
+        if(img == NULL){
+            img = gen_image(videoWidth,videoHeight);
         }
 
     }
@@ -618,18 +638,7 @@ int  rendererStarted(jobject obj){
     ALOGI("rendererCanStart OUT ret=%d\n",ret);
     return ret;
 }
-//extern "C" {
-//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
-//        (JNIEnv *env, jclass clazz);
-//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
-//        (JNIEnv *env, jobject obj, jint width, jint height);
-//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
-//        (JNIEnv *env, jobject obj);
-//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
-//        (JNIEnv *env, jobject obj);
-//JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_opengl
-//        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj);
-//}
+
 
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
         (JNIEnv *env, jclass clazz){

@@ -167,7 +167,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         const int64_t duration   = sp->sub.end_display_time;
 
         for (int i = 0; i < sp->sub.num_rects; i++){
-            ALOGI("ttttt sp->sub.rects[i]->type=%d, sp->sub.rects[i]->ass=%s\n",sp->sub.rects[i]->type,sp->sub.rects[i]->ass);
+            ALOGI("ttttt1 sp->sub.rects[%d]->type=%d, sp->sub.rects[%d]->ass=%s\n",i,sp->sub.rects[i]->type,i,sp->sub.rects[i]->ass);
 
 
 
@@ -175,22 +175,30 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
             if (!ass_line){
                 break;
             }
+//            if (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57,25,100)){
+//                ass_process_data(track,ass_line, strlen(ass_line));
+//            } else {
+//                ass_process_chunk(track, ass_line, strlen(ass_line),
+//                                  start_time, duration);
+//            }
 
 
             ass_process_data(track, ass_line, strlen(ass_line));
 
-
+            track->events->Start = start_time;
             ASS_Image *img = ass_render_frame(ass_renderer, track, start_time, NULL);
             sp->imageFrame = gen_image(mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
             blend(sp->imageFrame, img);
-
-//            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
+//            x++;
+//            sprintf(subpng,"%s/test%d.png",mVideoStateInfo->mStorageDir,x);
+//            write_png(subpng, sp->imageFrame);
 //            free(sp->imageFrame->buffer);
 //            free(sp->imageFrame);
             ass_flush_events(track);
+            mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
         }
 
-        mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
+
     }else if(completed){
          avsubtitle_free(&sp->sub);
     }

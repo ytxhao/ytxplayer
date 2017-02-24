@@ -129,13 +129,13 @@ private:
     bool isInitComplete;
 
     image_t *img;
-
 public:
     GlEngine();
 
     ~GlEngine();
 
 public:
+     image_t* gen_image(int width, int height);
      void releaseGlEngine();
 
      bool glEngineInitComplete() {
