@@ -296,7 +296,7 @@ image_t* DecoderSubtitle::gen_image(int width, int height) {
     img->height = height;
     img->stride = width * 3;
     img->buffer = (unsigned char *) calloc(1, height * width * 3);
-    memset(img->buffer, 63, img->stride * img->height);
+    memset(img->buffer, 0, img->stride * img->height);
     //for (int i = 0; i < height * width * 3; ++i)
     // img->buffer[i] = (i/3/50) % 100;
     return img;
@@ -321,7 +321,6 @@ void DecoderSubtitle::blend_single(image_t *frame, ASS_Image *img) {
 
     unsigned char *src;
     unsigned char *dst;
-
     src = img->bitmap;
     dst = frame->buffer + img->dst_y * frame->stride + img->dst_x * 3;
     for (y = 0; y < img->h; ++y) {
