@@ -126,24 +126,40 @@ void VideoRefreshController::process() {
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
 //                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
 
-                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-                addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
-                                 vp->out_buffer_video_yuv[0],
-                                 vp->out_buffer_video_yuv[1],
-                                 vp->out_buffer_video_yuv[2],
-                                 decodeWidth,
-                                 decodeHeight);
-
+                bool hasSubtitles = false;
                 if(mVideoStateInfo->streamSubtitle->st){
                     if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
                         sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
 
                         if (vp->pts >= sp->pts + ((float) sp->sub.start_display_time / 1000)) {
 //                            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
-                            addRendererSubtitleFrame(mVideoStateInfo->GraphicRendererObj,sp->imageFrame);
+                            hasSubtitles = true;
+                        //    addRendererSubtitleFrame(mVideoStateInfo->GraphicRendererObj,sp->imageFrame);
                         }
                     }
                 }
+
+
+                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+                if(hasSubtitles){
+                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
+                                          sp->imageFrame,
+                                          vp->out_buffer_video_yuv[0],
+                                          vp->out_buffer_video_yuv[1],
+                                          vp->out_buffer_video_yuv[2],
+                                          decodeWidth,
+                                          decodeHeight);
+                }else{
+                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
+                                          NULL,
+                                          vp->out_buffer_video_yuv[0],
+                                          vp->out_buffer_video_yuv[1],
+                                          vp->out_buffer_video_yuv[2],
+                                          decodeWidth,
+                                          decodeHeight);
+                }
+
+
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();

@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-void addRendererVideoFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight);
+void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
 void addRendererSubtitleFrame(jobject obj, image_t *img);
 int  rendererStarted(jobject obj);
 
@@ -73,6 +73,7 @@ private:
                     "uniform sampler2D tex_y;\n"
                     "uniform sampler2D tex_u;\n"
                     "uniform sampler2D tex_v;\n"
+                    "uniform sampler2D tex_png;\n"
                     "varying vec2 tc;\n"
                     "void main() {\n"
                     "vec4 c = vec4((texture2D(tex_y, tc).r - 16./255.) * 1.164);\n"
@@ -81,9 +82,10 @@ private:
                     "c += V * vec4(1.596, -0.813, 0, 0);\n"
                     "c += U * vec4(0, -0.392, 2.017, 0);\n"
                     "c.a = 1.0;\n"
-                    "gl_FragColor = c;\n"
+                    "vec4 color_png = texture2D(tex_png, tc);\n"
+  //                  "vec4 color_png = vec4(255,0,0,255);\n"
+                    "gl_FragColor = c + color_png;\n"
                     "}\n";
-
 
     GLfloat gTriangleVertices[6] = {0.0f, 0.5f, -0.5f, -0.5f,
                                     0.5f, -0.5f};
@@ -106,8 +108,8 @@ private:
 
     char *plane[3] = {NULL, NULL, NULL};
 
-    GLuint yTextureId, uTextureId, vTextureId;
-    int yHandle, uHandle, vHandle;
+    GLuint yTextureId, uTextureId, vTextureId, pngTextureId;
+    int yHandle, uHandle, vHandle , pngHandle;
     int videoWidth = 0;
     int videoHeight = 0;
     int mScreenWidth = 720;
@@ -125,6 +127,8 @@ private:
     Lock mLock;
     GlEngine *glEngine;
     bool isInitComplete;
+
+    image_t *img;
 
 public:
     GlEngine();
@@ -164,7 +168,7 @@ public:
 
     bool isDrawFrameInit;
 
-    void addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight);
+    void addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
     void addRendererFrame(image_t *img);
 
     bool isAddRendererFrameInit;
@@ -192,7 +196,6 @@ public:
     void signalRendererFinish();
 
     void setViewPort(int mSurfaceWidth,int mSurfaceHeight);
-
 
 
 };

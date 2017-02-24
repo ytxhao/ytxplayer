@@ -23,10 +23,12 @@ GlEngine::GlEngine() {
     yTextureId = 1025;
     uTextureId = 1025;
     vTextureId = 1025;
+    pngTextureId = 1025;
     gProgram = 0;
     yHandle = -1;
     uHandle = -1;
     vHandle = -1;
+    pngHandle = -1;
     isAddRendererFrameInit = false;
     isSetupGraphics = 0;
     isDrawFrameInit = false;
@@ -204,6 +206,14 @@ bool GlEngine::setupGraphics() {
         ALOGE("Could not get uniform location for tex_v");
     }
 
+
+    pngHandle = glGetUniformLocation(gProgram, "tex_png");
+    checkGlError("glGetUniformLocation pngHandle");
+    ALOGI("GLProgram pngHandle = %d\n", pngHandle);
+    if (pngHandle == -1) {
+        ALOGE("Could not get uniform location for pngHandle");
+    }
+
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
 
@@ -291,6 +301,29 @@ void GlEngine::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
+    if(pngTextureId == 1025){
+        glGenTextures(1, &pngTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures pngTextureId=%d\n", pngTextureId);
+    }else{
+        glDeleteTextures(1,&pngTextureId);
+        checkGlError("glDeleteTextures");
+
+        glGenTextures(1, &pngTextureId);
+        checkGlError("glGenTextures");
+        ALOGI("buildTextures pngTextureId=%d\n", pngTextureId);
+    }
+
+
+    glBindTexture(GL_TEXTURE_2D, pngTextureId);
+    checkGlError("glBindTexture");
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+
 }
 
 void GlEngine::drawFrameInit(int videoWidth, int videoHeight) {
@@ -351,6 +384,16 @@ void GlEngine::drawFrame() {
         checkGlError("glTexImage2D");
         glUniform1i(vHandle, 2);
 
+
+        if(img != NULL){
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, pngTextureId);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, videoWidth , videoHeight , 0,
+                         GL_RGB, GL_UNSIGNED_BYTE, img->buffer);
+            checkGlError("glTexImage2D");
+            glUniform1i(pngHandle, 3);
+        }
+
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glFinish();
 
@@ -386,10 +429,10 @@ void GlEngine::addRendererFrame(image_t *img){
 
 }
 
-void GlEngine::addRendererFrame(char *y, char *u, char *v, int videoWidth, int videoHeight) {
+void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight) {
     mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
-
+    this->img = img;
 //    plane[0] = y;
 //    plane[1] = u;
 //    plane[2] = v;
@@ -536,14 +579,14 @@ static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine
 
 
 
-void addRendererVideoFrame(jobject obj,char *y, char *u, char *v, int videoWidth, int videoHeight)
+void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight)
 {
     ALOGI("addRendererFrame IN\n");
 
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
 
-    getGlEngine(env,obj)->addRendererFrame(y,u,v,videoWidth,videoHeight);
+    getGlEngine(env,obj)->addRendererFrame(img,y,u,v,videoWidth,videoHeight);
 
     sVm->DetachCurrentThread();
     ALOGI("addRendererFrame OUT\n");
