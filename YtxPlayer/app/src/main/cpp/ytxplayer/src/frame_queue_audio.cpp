@@ -15,6 +15,7 @@ void FrameQueueAudio::frameQueueUnrefItem(Frame *vp) {
 
     if(vp->out_buffer_audio != NULL){
         free(vp->out_buffer_audio);
+        vp->out_buffer_audio = NULL;
     }
 
 

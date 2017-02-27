@@ -56,7 +56,7 @@ bool DecoderSubtitle::prepare()
         return 1;
     }
 
-    if (mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header){
+    if (mVideoStateInfo->streamSubtitle->dec_ctx != NULL && mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header){
         ass_process_codec_private(track,
                                   (char *) mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header,
                                   mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header_size);

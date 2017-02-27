@@ -72,6 +72,9 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mVideoRefreshController = NULL;
     mAudioRefreshController = NULL;
     isRelease = false;
+    mDecoderSubtitle = NULL;
+    mDecoderVideo = NULL;
+    mDecoderAudio = NULL;
     //sPlayer = this;
 }
 
@@ -253,7 +256,7 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     for (int i = 0; i < AVMEDIA_TYPE_NB; i++) {
         if (mPlayer->wanted_stream_spec[i] && mPlayer->mVideoStateInfo->st_index[i] == -1) {
             ALOGI("Stream specifier %s does not match any %s stream\n", mPlayer->wanted_stream_spec[(AVMediaType)i], av_get_media_type_string((AVMediaType)i));
-            mPlayer->mVideoStateInfo->st_index[i] = INT_MAX;
+            mPlayer->mVideoStateInfo->st_index[i] = -1;
         }
     }
 
@@ -264,23 +267,26 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",mPlayer->mVideoStateInfo->max_frame_duration);
     if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
         mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamAudio,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
+        mPlayer->mDecoderAudio = new DecoderAudio(mPlayer->mVideoStateInfo);
     }
 
     if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
         mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamVideo,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
+        mPlayer->mDecoderVideo = new DecoderVideo(mPlayer->mVideoStateInfo);
     }
 
     if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
         mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamSubtitle,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
+        mPlayer->mDecoderSubtitle = new DecoderSubtitle(mPlayer->mVideoStateInfo);
     }
 
     mPlayer->mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
     mPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
     mPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
 
-    mPlayer->mDecoderAudio = new DecoderAudio(mPlayer->mVideoStateInfo);
-    mPlayer->mDecoderSubtitle = new DecoderSubtitle(mPlayer->mVideoStateInfo);
-    mPlayer->mDecoderVideo = new DecoderVideo(mPlayer->mVideoStateInfo);
+
+
+
 
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
@@ -337,8 +343,13 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 
     mPlayer->decodeMovie(ptr);
 
+    if(mPlayer->mVideoStateInfo->pFormatCtx != NULL){
+        avformat_close_input(&mPlayer->mVideoStateInfo->pFormatCtx);
+    }
     if(mPlayer != NULL){
+
         delete mPlayer;
+
     }
 
     return 0;
@@ -394,11 +405,22 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     mVideoRefreshController->startAsync();
     mAudioRefreshController->startAsync();
 
-    mDecoderVideo->startAsync();
-    mDecoderAudio->startAsync();
+//    mDecoderVideo->startAsync();
+//    mDecoderAudio->startAsync();
 
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        mDecoderVideo->startAsync();
+    }
 
-    mDecoderSubtitle->startAsync();
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        mDecoderAudio->startAsync();
+    }
+
+    ALOGI("st_index[AVMEDIA_TYPE_SUBTITLE]=%d",mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
+        mDecoderSubtitle->startAsync();
+    }
+
 
     mCurrentState = MEDIA_PLAYER_STARTED;
     ALOGI("playing %ix%i\n", mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
@@ -471,28 +493,29 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     mVideoStateInfo->notifyAll();
     mVideoRefreshController->stop();
     mAudioRefreshController->stop();
-
-    mDecoderVideo->stop();
-    ALOGI("waiting on mDecoderVideo thread\n");
-    mDecoderAudio->stop();
-    ALOGI("waiting on mDecoderAudio thread\n");
-   // mDecoderVideo->mRunning = false;
-
-    //waits on end of video thread
-    ALOGI("waiting on video thread\n");
     int ret = -1;
-    if((ret = mDecoderVideo->wait()) != 0) {
-        ALOGI("Couldn't cancel video thread: %i", ret);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
+        mDecoderSubtitle->stop();
+        if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
+            ALOGI( "playing err\n");
+        }
     }
 
-    ALOGI("waiting on audio thread");
-    if((ret = mDecoderAudio->wait()) != 0) {
-        ALOGI( "Couldn't cancel audio thread: %i", ret);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        mDecoderVideo->stop();
+        ALOGI("waiting on mDecoderVideo thread\n");
+        if((ret = mDecoderVideo->wait()) != 0) {
+            ALOGI("Couldn't cancel video thread: %i", ret);
+        }
     }
 
-
-    if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
-        ALOGI( "playing err\n");
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+        mDecoderAudio->stop();
+        ALOGI("waiting on mDecoderAudio thread\n");
+        // mDecoderVideo->mRunning = false;
+        if((ret = mDecoderAudio->wait()) != 0) {
+            ALOGI( "Couldn't cancel audio thread: %i", ret);
+        }
     }
 
     finish();

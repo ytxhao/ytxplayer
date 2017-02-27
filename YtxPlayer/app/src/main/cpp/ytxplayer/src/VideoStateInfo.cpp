@@ -32,6 +32,7 @@ VideoStateInfo::VideoStateInfo(){
     audClk = (Clock *)malloc(sizeof(Clock));
     memset(st_index, -1, sizeof(st_index));
 
+    ALOGI("st_index sub=%d",st_index[AVMEDIA_TYPE_SUBTITLE]);
     max_frame_duration = 0.0;
     seekPos = 0;
     seekRel = 0;

@@ -16,6 +16,7 @@ void FrameQueueVideo::frameQueueUnrefItem(Frame *vp) {
     for (i = 0; i < 3; i++) {
         if (vp->out_buffer_video_yuv[i] != NULL) {
             free(vp->out_buffer_video_yuv[i]);
+            vp->out_buffer_video_yuv[i] = NULL;
         }
     }
 

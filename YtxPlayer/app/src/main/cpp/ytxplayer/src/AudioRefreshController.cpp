@@ -11,14 +11,14 @@
 #include <map>
 #include <unistd.h>
 
-static std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>   audioEnMap;
-//static AudioRefreshController* mAudioRefreshController;
+//static std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>   audioEnMap;
+static AudioRefreshController* mAudioRefreshController;
 AudioRefreshController::AudioRefreshController(VideoStateInfo* mVideoStateInfo)
 {
     ALOGI("AudioRefreshController()\n");
     this->mVideoStateInfo = mVideoStateInfo;
     mAudioEngine = new AudioEngine();
-  //  mAudioRefreshController = this;
+    mAudioRefreshController = this;
 }
 
 
@@ -42,7 +42,7 @@ bool AudioRefreshController::prepare() {
     mAudioEngine->createEngine();
     mAudioEngine->createBufferQueueAudioPlayer(mVideoStateInfo->streamAudio->dec_ctx->sample_rate,960,mVideoStateInfo->out_channel_nb);
     ALOGI("AudioRefreshController::prepare pthread_self:%lu,bqPlayerBufferQueue=%#x\n", (long)pthread_self(), mAudioEngine->bqPlayerBufferQueue);
-    audioEnMap.insert(std::pair<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>(mAudioEngine->bqPlayerBufferQueue, this));
+   // audioEnMap.insert(std::pair<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>(mAudioEngine->bqPlayerBufferQueue, this));
     mAudioEngine->RegisterCallback(bqPlayerCallback);
     return true;
 }
@@ -100,10 +100,11 @@ void AudioRefreshController::stop() {
 
 void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
-    AudioRefreshController* sAudioRefreshController = NULL;
+//    AudioRefreshController* sAudioRefreshController = NULL;
 
   //  ALOGI("AudioRefreshController::bqPlayerCallback pthread_self:%lu,bqPlayerBufferQueue=%#x\n", (long)pthread_self(), bq);
   //  ALOGI("AudioRefreshController::bqPlayerCallback pthread_self:%lu,getpid:%lu,gettid:%lu\n", (long)pthread_self(), (long)getpid(),(long)gettid());
+    /*
     std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>::iterator l_it;
     l_it = audioEnMap.find(bq);
     if(l_it == audioEnMap.end()){
@@ -113,13 +114,13 @@ void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, 
       //  ALOGI("AudioRefreshController::bqPlayerCallback we find");
         sAudioRefreshController = l_it->second;
     }
-
-    assert(bq == sAudioRefreshController->mAudioEngine->bqPlayerBufferQueue);
+*/
+    assert(bq == mAudioRefreshController->mAudioEngine->bqPlayerBufferQueue);
     assert(NULL == context);
 
-    sAudioRefreshController->audioFrameProcess();
-    if(*sAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
-        sAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
+    mAudioRefreshController->audioFrameProcess();
+    if(*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
+        mAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
 
     }
 

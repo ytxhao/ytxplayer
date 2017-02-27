@@ -149,6 +149,7 @@ void VideoRefreshController::process() {
                                           vp->out_buffer_video_yuv[2],
                                           decodeWidth,
                                           decodeHeight);
+                 //   mVideoStateInfo->frameQueueSubtitle->frameQueueNext();
                 }else{
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           NULL,
