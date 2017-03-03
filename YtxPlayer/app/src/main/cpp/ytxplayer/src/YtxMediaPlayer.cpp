@@ -138,73 +138,7 @@ int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
 
 
 int  YtxMediaPlayer::prepare() {
-/*
-    mCurrentState = MEDIA_PLAYER_PREPARING;
 
-    av_register_all();
-    avformat_network_init();
-    pFormatCtx = avformat_alloc_context();
-
-    ALOGI("prepare this->filePath=%s\n",this->filePath);
-
-    if(avformat_open_input(&pFormatCtx,this->filePath,NULL,NULL)!=0){
-        ALOGI("Couldn't open input stream.\n");
-        return -1;
-    }
-
-    if(avformat_find_stream_info(pFormatCtx,NULL)<0){
-        ALOGI("Couldn't find stream information.\n");
-        return -1;
-    }
-
-
-    for(int i=0; i<pFormatCtx->nb_streams; i++) {
-        AVStream *st = pFormatCtx->streams[i];
-        enum AVMediaType type = st->codecpar->codec_type;
-
-        if (type >= 0 && wanted_stream_spec[type] && mVideoStateInfo->st_index[type] == -1) {
-            if (avformat_match_stream_specifier(pFormatCtx, st, wanted_stream_spec[type]) > 0) {
-                mVideoStateInfo->st_index[type] = i;
-            }
-        }
-
-    }
-
-    for (int i = 0; i < AVMEDIA_TYPE_NB; i++) {
-        if (wanted_stream_spec[i] && mVideoStateInfo->st_index[i] == -1) {
-            ALOGI("Stream specifier %s does not match any %s stream\n", wanted_stream_spec[(AVMediaType)i], av_get_media_type_string((AVMediaType)i));
-            mVideoStateInfo->st_index[i] = INT_MAX;
-        }
-    }
-
-
-    mVideoStateInfo->pFormatCtx = pFormatCtx;
-
-    mVideoStateInfo->max_frame_duration = (mVideoStateInfo->pFormatCtx->iformat->flags & AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
-
-    ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",mVideoStateInfo->max_frame_duration);
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-        streamComponentOpen(mVideoStateInfo->streamAudio,mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
-    }
-
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-        streamComponentOpen(mVideoStateInfo->streamVideo,mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
-    }
-
-
-    mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
-    mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-    mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
-
-    mDecoderAudio = new DecoderAudio(mVideoStateInfo);
-    mDecoderVideo = new DecoderVideo(mVideoStateInfo);
-
-    mVideoRefreshController = new VideoRefreshController(mVideoStateInfo);
-
-    mAudioRefreshController = new AudioRefreshController(mVideoStateInfo);
-
-    mCurrentState = MEDIA_PLAYER_PREPARED;
-    */
     ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
@@ -224,6 +158,7 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
 
     YtxMediaPlayer* mPlayer = (YtxMediaPlayer *) ptr;
+    avfilter_register_all(); //添加滤镜
     av_register_all();
     avformat_network_init();
     mPlayer->mVideoStateInfo->pFormatCtx = avformat_alloc_context();
@@ -292,6 +227,10 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
 
+
+//    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = strcat(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
+//
+//    ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);

@@ -24,7 +24,7 @@
 #define MP4V2_PROJECT_repo_rev        493
 #define MP4V2_PROJECT_repo_date       "2012-05-20 15:16:54 -0700 (Sun, 20 May 2012)"
 #define MP4V2_PROJECT_repo_type       "stable"
-#define MP4V2_PROJECT_build           "Thu Feb 16 13:47:23 CST 2017"
+#define MP4V2_PROJECT_build           "Wed Mar  1 20:28:07 CST 2017"
 
 /*****************************************************************************/
 

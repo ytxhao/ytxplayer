@@ -10,6 +10,7 @@
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/frame_queue_subtitle.h"
 #include "ytxplayer/test.h"
+//ffplay -vf subtitles=test_file/x7_11.srt test_file/x7_11.mkv
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
    // isFirstFrame = true;

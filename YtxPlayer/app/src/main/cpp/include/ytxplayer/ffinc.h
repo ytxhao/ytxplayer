@@ -36,6 +36,9 @@ libLoader.loadLibrary("avfilter");
 #include "libswresample/swresample.h"
 #include <libavutil/opt.h>
 #include <libavutil/time.h>
+#include "libavfilter/avfilter.h"
+# include "libavfilter/buffersink.h"
+# include "libavfilter/buffersrc.h"
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25

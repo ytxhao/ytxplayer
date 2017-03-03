@@ -2,11 +2,11 @@ package com.ytx.ican.ytxplayer;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,8 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.VideoView;
 
 import com.ytx.ican.media.player.pragma.IMediaPlayer;
 import com.ytx.ican.media.player.pragma.YtxLog;
@@ -24,7 +22,6 @@ import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +31,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity2";
     private static final String FILE_NAME = "file_name";
 
     private YtxVideoView ytxVideoView;
@@ -45,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivDrag;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
     private boolean playNext = false;
@@ -163,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        YtxLog.d("MainActivity","#### #### onPause");
+        YtxLog.d("MainActivity2","#### #### onPause");
         ytxVideoView.onPause();
 
     }

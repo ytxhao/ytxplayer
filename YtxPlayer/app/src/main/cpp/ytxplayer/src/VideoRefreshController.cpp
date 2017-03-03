@@ -134,7 +134,6 @@ void VideoRefreshController::process() {
                         if (vp->pts >= sp->pts + ((float) sp->sub.start_display_time / 1000)) {
 //                            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
                             hasSubtitles = true;
-                        //    addRendererSubtitleFrame(mVideoStateInfo->GraphicRendererObj,sp->imageFrame);
                         }
                     }
                 }
@@ -149,7 +148,6 @@ void VideoRefreshController::process() {
                                           vp->out_buffer_video_yuv[2],
                                           decodeWidth,
                                           decodeHeight);
-                 //   mVideoStateInfo->frameQueueSubtitle->frameQueueNext();
                 }else{
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           NULL,
