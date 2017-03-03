@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivDrag;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"test_file/x7_11.mkv","video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
     private boolean playNext = false;
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ytxVideoView.setVideoPath(fileName);
             }
         }else{
-            ytxVideoView.setVideoPath(filePath+files[3]);
+            ytxVideoView.setVideoPath(filePath+files[0]);
         }
 
         ytxVideoView.start();

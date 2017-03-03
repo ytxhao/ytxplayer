@@ -107,6 +107,10 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
     int ret = avcodec_decode_subtitle2(mVideoStateInfo->streamSubtitle->dec_ctx, &sp->sub, &completed, &mPacket->pkt);
 
+    if(completed > 0 ){
+
+        ALOGI("sp-sub-format=%d",sp->sub.format);
+    }
     if (completed > 0  && sp->sub.format == 0) {
         if (sp->sub.pts != AV_NOPTS_VALUE) {
             pts = sp->sub.pts / (double) AV_TIME_BASE;

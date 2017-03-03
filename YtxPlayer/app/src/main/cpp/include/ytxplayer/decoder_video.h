@@ -6,6 +6,7 @@
 #define YTXPLAYER_DECODER_VIDEO_H
 #include "Decoder.h"
 #include "frame_queue.h"
+#include "ytxplayer/ffinc.h"
 #include <ytxplayer/VideoStateInfo.h>
 typedef void (*VideoDecodingHandler) (AVFrame*,double);
 
@@ -30,6 +31,13 @@ private:
     double						mVideoClock;
     AVRational timeBase ;
     AVRational frameRate;
+    AVFilterGraph *graph;
+    AVFilterContext *filt_out = NULL, *filt_in = NULL;
+    int last_w = 0;
+    int last_h = 0;
+    enum AVPixelFormat last_format = AV_PIX_FMT_NONE;
+    int last_serial = -1;
+    int last_vfilter_idx = 0;
 
 
 
@@ -44,7 +52,9 @@ private:
     bool curStats;
     bool firstInit ;
 
-
+    int configure_video_filters(AVFilterGraph *graph, const char *vfilters, AVFrame *frame);
+    int configure_filtergraph(AVFilterGraph *graph, const char *filtergraph,
+                              AVFilterContext *source_ctx, AVFilterContext *sink_ctx);
 
 
 

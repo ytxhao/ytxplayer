@@ -161,3 +161,17 @@ char* VideoStateInfo::join3(char *s1, char *s2)
 
     return result;
 }
+
+void VideoStateInfo::init_opts(void)
+{
+    av_dict_set(&sws_dict, "flags", "bicubic", 0);
+}
+
+void VideoStateInfo::uninit_opts(void)
+{
+    av_dict_free(&swr_opts);
+    av_dict_free(&sws_dict);
+    av_dict_free(&format_opts);
+    av_dict_free(&codec_opts);
+    av_dict_free(&resample_opts);
+}

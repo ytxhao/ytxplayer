@@ -39,6 +39,7 @@ add_library( # Sets the name of the library.
              src/MessageQueue.cpp
              src/MessageLoop.cpp
              src/AudioRefreshController.cpp
+             src/utils.cpp
              src/test.c
              )
 

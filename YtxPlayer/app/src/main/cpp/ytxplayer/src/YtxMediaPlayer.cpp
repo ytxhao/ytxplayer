@@ -6,6 +6,7 @@
 #define TAG "YTX-PLAYER-JNI"
 
 
+#include <ytxplayer/utils.h>
 #include "ytxplayer/ALog-priv.h"
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
@@ -227,10 +228,12 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
 
+    mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
+    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "subtitles=/storage/emulated/0/test_file/x7_11.srt";
+            //mPlayer->mVideoStateInfo->join3(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
+    ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
 
-//    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = strcat(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
-//
-//    ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
+    mPlayer->mVideoStateInfo->init_opts();
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
@@ -285,6 +288,9 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
     if(mPlayer->mVideoStateInfo->pFormatCtx != NULL){
         avformat_close_input(&mPlayer->mVideoStateInfo->pFormatCtx);
     }
+    mPlayer->mVideoStateInfo->uninit_opts();
+    av_freep(&mPlayer->mVideoStateInfo->vfilters_list);
+    avformat_network_deinit();
     if(mPlayer != NULL){
 
         delete mPlayer;

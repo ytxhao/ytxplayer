@@ -56,6 +56,11 @@ public:
     void updateVideoPts(double pts, int64_t pos, int serial);
     void syncClock2Slave(Clock *c, Clock *slave);
 
+    void init_opts(void);
+
+
+    void uninit_opts(void);
+
     AVFormatContext *pFormatCtx;
 
     InputStream *streamVideo;
@@ -135,7 +140,7 @@ public:
 
 
 
-    int vfilter_idx;
+    int vfilter_idx = 0;
     AVFilterContext *in_video_filter;   // the first filter in the video chain
     AVFilterContext *out_video_filter;  // the last filter in the video chain
     AVFilterContext *in_audio_filter;   // the first filter in the audio chain
@@ -144,8 +149,20 @@ public:
 
 
     const char **vfilters_list = NULL;
-    int nb_vfilters = 1;
+    int nb_vfilters = 0;
     char *afilters = NULL;
+
+    double frame_timer;
+    double frame_last_returned_time;
+    double frame_last_filter_delay;
+
+    int viddec_finished;
+
+
+    AVDictionary *sws_dict;
+    AVDictionary *swr_opts;
+    AVDictionary *format_opts, *codec_opts, *resample_opts;
+    int autorotate = 1;
 
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H
