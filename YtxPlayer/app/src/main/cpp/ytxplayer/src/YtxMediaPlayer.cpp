@@ -228,8 +228,10 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
 
+   // "movie=my_logo.png[wm];[in][wm]overlay=5:5[out]"
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
-    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "subtitles=/storage/emulated/0/test_file/x7_11.srt";
+  //  mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "subtitles=/storage/emulated/0/test_file/x7_11.srt";
+    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "movie=/storage/emulated/0/my_logo.png[wm];[in][wm]overlay=5:5[out]";
             //mPlayer->mVideoStateInfo->join3(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
     ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
 

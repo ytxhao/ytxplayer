@@ -289,8 +289,11 @@ void DecoderSubtitle::init(int frame_w, int frame_h) {
     ass_set_frame_size(ass_renderer, frame_w, frame_h);
 //    ass_set_fonts(ass_renderer, "/storage/emulated/0/tang_cn.ttf", "sans-serif",
 //                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
-    ass_set_fonts(ass_renderer, mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"tang_cn.ttf"), "sans-serif",
-                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
+//    ass_set_fonts(ass_renderer, NULL, "sans-serif",
+//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
+    ass_set_fonts(ass_renderer, NULL, NULL, 1, NULL, 1);
+//    ass_set_fonts(ass_renderer, mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"tang_cn.ttf"), "sans-serif",
+//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
 }
 
 

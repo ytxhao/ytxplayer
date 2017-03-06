@@ -19,11 +19,13 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              # Associated headers in the same location as their source
              # file are automatically included.
-             ffplay.c
+             ffmpeg.c
+             ffmpeg_opt.c
+             ffmpeg_filter.c
              cmdutils.c
              )
 
-
+include_directories(${PROJECT_SOURCE_DIR}/include)
 set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
 
 

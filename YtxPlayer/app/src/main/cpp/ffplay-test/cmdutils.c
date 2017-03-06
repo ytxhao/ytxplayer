@@ -30,7 +30,7 @@
    references to libraries that are not being built. */
 
 #include "config.h"
-//#include "compat/va_copy.h"
+#include "compat/va_copy.h"
 #include "libavformat/avformat.h"
 #include "libavfilter/avfilter.h"
 #include "libavdevice/avdevice.h"
@@ -44,7 +44,7 @@
 #include "libavutil/display.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/imgutils.h"
-//#include "libavutil/libm.h"
+#include "libavutil/libm.h"
 #include "libavutil/parseutils.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/eval.h"
@@ -55,7 +55,7 @@
 #include "libavutil/version.h"
 #include "cmdutils.h"
 #if CONFIG_NETWORK
-//#include "libavformat/network.h"
+#include "libavformat/network.h"
 #endif
 #if HAVE_SYS_RESOURCE_H
 #include <sys/time.h>
@@ -1088,14 +1088,14 @@ static int warned_cfg = 0;
 
 static void print_all_libs_info(int flags, int level)
 {
-//    PRINT_LIB_INFO(avutil,     AVUTIL,     flags, level);
-//    PRINT_LIB_INFO(avcodec,    AVCODEC,    flags, level);
-//    PRINT_LIB_INFO(avformat,   AVFORMAT,   flags, level);
-//    PRINT_LIB_INFO(avdevice,   AVDEVICE,   flags, level);
-//    PRINT_LIB_INFO(avfilter,   AVFILTER,   flags, level);
-//    PRINT_LIB_INFO(avresample, AVRESAMPLE, flags, level);
-//    PRINT_LIB_INFO(swscale,    SWSCALE,    flags, level);
-//    PRINT_LIB_INFO(swresample, SWRESAMPLE, flags, level);
+    PRINT_LIB_INFO(avutil,     AVUTIL,     flags, level);
+    PRINT_LIB_INFO(avcodec,    AVCODEC,    flags, level);
+    PRINT_LIB_INFO(avformat,   AVFORMAT,   flags, level);
+    PRINT_LIB_INFO(avdevice,   AVDEVICE,   flags, level);
+    PRINT_LIB_INFO(avfilter,   AVFILTER,   flags, level);
+ //   PRINT_LIB_INFO(avresample, AVRESAMPLE, flags, level);
+    PRINT_LIB_INFO(swscale,    SWSCALE,    flags, level);
+    PRINT_LIB_INFO(swresample, SWRESAMPLE, flags, level);
 //    PRINT_LIB_INFO(postproc,   POSTPROC,   flags, level);
 }
 
@@ -1170,10 +1170,10 @@ int show_buildconf(void *optctx, const char *opt, const char *arg)
 int show_license(void *optctx, const char *opt, const char *arg)
 {
 #if CONFIG_NONFREE
-//    printf(
-//    "This version of %s has nonfree parts compiled in.\n"
-//    "Therefore it is not legally redistributable.\n",
-//    program_name );
+    printf(
+    "This version of %s has nonfree parts compiled in.\n"
+    "Therefore it is not legally redistributable.\n",
+    program_name );
 #elif CONFIG_GPLV3
     printf(
     "%s is free software; you can redistribute it and/or modify\n"
@@ -1388,14 +1388,14 @@ static void print_codec(const AVCodec *c)
         }
         printf("\n");
     }
-//    PRINT_CODEC_SUPPORTED(c, pix_fmts, enum AVPixelFormat, "pixel formats",
-//                          AV_PIX_FMT_NONE, GET_PIX_FMT_NAME);
-//    PRINT_CODEC_SUPPORTED(c, supported_samplerates, int, "sample rates", 0,
-//                          GET_SAMPLE_RATE_NAME);
-//    PRINT_CODEC_SUPPORTED(c, sample_fmts, enum AVSampleFormat, "sample formats",
-//                          AV_SAMPLE_FMT_NONE, GET_SAMPLE_FMT_NAME);
-//    PRINT_CODEC_SUPPORTED(c, channel_layouts, uint64_t, "channel layouts",
-//                          0, GET_CH_LAYOUT_DESC);
+    PRINT_CODEC_SUPPORTED(c, pix_fmts, enum AVPixelFormat, "pixel formats",
+                          AV_PIX_FMT_NONE, GET_PIX_FMT_NAME);
+    PRINT_CODEC_SUPPORTED(c, supported_samplerates, int, "sample rates", 0,
+                          GET_SAMPLE_RATE_NAME);
+    PRINT_CODEC_SUPPORTED(c, sample_fmts, enum AVSampleFormat, "sample formats",
+                          AV_SAMPLE_FMT_NONE, GET_SAMPLE_FMT_NAME);
+    PRINT_CODEC_SUPPORTED(c, channel_layouts, uint64_t, "channel layouts",
+                          0, GET_CH_LAYOUT_DESC);
 
     if (c->priv_class) {
         show_help_children(c->priv_class,
@@ -1842,8 +1842,8 @@ static void show_help_filter(const char *name)
     printf("    Inputs:\n");
     count = avfilter_pad_count(f->inputs);
     for (i = 0; i < count; i++) {
-     //   printf("       #%d: %s (%s)\n", i, avfilter_pad_get_name(f->inputs, i),
-     //          media_type_string(avfilter_pad_get_type(f->inputs, i)));
+        printf("       #%d: %s (%s)\n", i, avfilter_pad_get_name(f->inputs, i),
+               media_type_string(avfilter_pad_get_type(f->inputs, i)));
     }
     if (f->flags & AVFILTER_FLAG_DYNAMIC_INPUTS)
         printf("        dynamic (depending on the options)\n");
@@ -1853,8 +1853,8 @@ static void show_help_filter(const char *name)
     printf("    Outputs:\n");
     count = avfilter_pad_count(f->outputs);
     for (i = 0; i < count; i++) {
-      //  printf("       #%d: %s (%s)\n", i, avfilter_pad_get_name(f->outputs, i),
-      //         media_type_string(avfilter_pad_get_type(f->outputs, i)));
+        printf("       #%d: %s (%s)\n", i, avfilter_pad_get_name(f->outputs, i),
+               media_type_string(avfilter_pad_get_type(f->outputs, i)));
     }
     if (f->flags & AVFILTER_FLAG_DYNAMIC_OUTPUTS)
         printf("        dynamic (depending on the options)\n");
@@ -1886,7 +1886,7 @@ int show_help(void *optctx, const char *opt, const char *arg)
         *par++ = 0;
 
     if (!*topic) {
-    //    show_help_default(topic, par);
+        show_help_default(topic, par);
     } else if (!strcmp(topic, "decoder")) {
         show_help_codec(par, 0);
     } else if (!strcmp(topic, "encoder")) {
@@ -1900,7 +1900,7 @@ int show_help(void *optctx, const char *opt, const char *arg)
         show_help_filter(par);
 #endif
     } else {
-     //   show_help_default(topic, par);
+        show_help_default(topic, par);
     }
 
     av_freep(&topic);

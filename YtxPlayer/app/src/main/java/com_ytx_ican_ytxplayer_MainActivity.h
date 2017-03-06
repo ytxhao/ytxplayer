@@ -12,7 +12,7 @@ extern "C" {
  * Method:    setCmd
  * Signature: (Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_com_ytx_ican_ytxplayer_MainActivity2_setCmd
+JNIEXPORT jint JNICALL Java_com_ytx_ican_ytxplayer_MainActivity_setCmd
   (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus

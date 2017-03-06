@@ -171,7 +171,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             last_format = (AVPixelFormat) mFrame->format;
             last_serial = mVideoStateInfo->pkt_serial_video;
             last_vfilter_idx = mVideoStateInfo->vfilter_idx;
-            frameRate = filt_out->inputs[0]->frame_rate;
+       //     frameRate = filt_out->inputs[0]->frame_rate;
         }
 
         ret = av_buffersrc_add_frame(filt_in, mFrame);
@@ -235,21 +235,26 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             vp->pos = av_frame_get_pkt_pos(mFrame);
 
 
-          //  av_image_copy(mFrameYuv->data, mFrameYuv->linesize, (const uint8_t **)mFrame->data, mFrame->linesize,
-          //                (AVPixelFormat) mFrame->format, vp->width, vp->height);
-
 
             av_image_fill_arrays(mFrameYuv->data, mFrameYuv->linesize,out_buffer_video,
                                  AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
                                  mVideoStateInfo->streamVideo->dec_ctx->height,1);
 
-            sws_scale(mConvertCtx,
-              (const unsigned char *const *) mFrame->data,
-                      mFrame->linesize,
-                      0,
-                      mVideoStateInfo->streamVideo->dec_ctx->height,
-                      mFrameYuv->data,
-                      mFrameYuv->linesize);
+            av_image_copy(mFrameYuv->data, mFrameYuv->linesize, (const uint8_t **)mFrame->data, mFrame->linesize,
+                          (AVPixelFormat) mFrame->format, vp->width, vp->height);
+
+
+//            av_image_fill_arrays(mFrameYuv->data, mFrameYuv->linesize,out_buffer_video,
+//                                 AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
+//                                 mVideoStateInfo->streamVideo->dec_ctx->height,1);
+//
+//            sws_scale(mConvertCtx,
+//              (const unsigned char *const *) mFrame->data,
+//                      mFrame->linesize,
+//                      0,
+//                      mVideoStateInfo->streamVideo->dec_ctx->height,
+//                      mFrameYuv->data,
+//                      mFrameYuv->linesize);
 
             size_y = mVideoStateInfo->streamVideo->dec_ctx->width *  mVideoStateInfo->streamVideo->dec_ctx->height;
 
@@ -418,46 +423,47 @@ int DecoderVideo::configure_video_filters(AVFilterGraph *graph, const char *vfil
 
 /* Note: this macro adds a filter before the lastly added filter, so the
  * processing order of the filters is in reverse */
-#define INSERT_FILT(name, arg) do {                                          \
-    AVFilterContext *filt_ctx;                                               \
-                                                                             \
-    ret = avfilter_graph_create_filter(&filt_ctx,                            \
-                                       avfilter_get_by_name(name),           \
-                                       "ffplay_" name, arg, NULL, graph);    \
-    if (ret < 0)                                                             \
-        goto fail;                                                           \
-                                                                             \
-    ret = avfilter_link(filt_ctx, 0, last_filter, 0);                        \
-    if (ret < 0)                                                             \
-        goto fail;                                                           \
-                                                                             \
-    last_filter = filt_ctx;                                                  \
-} while (0)
 
-        /* SDL YUV code is not handling odd width/height for some driver
-         * combinations, therefore we crop the picture to an even width/height. */
-        INSERT_FILT("crop", "floor(in_w/2)*2:floor(in_h/2)*2");
-
-        if (mVideoStateInfo->autorotate) {
-            double theta  = get_rotation(mVideoStateInfo->streamVideo->st);
-
-            ALOGI("fabs(theta - 90)=%f",fabs(theta - 90));
-            ALOGI("fabs(theta - 180)=%f",fabs(theta - 180));
-            ALOGI("fabs(theta - 270)=%f",fabs(theta - 270));
-            ALOGI("fabs(theta)=%f",fabs(theta));
-            if (fabs(theta - 90) < 1.0) {
-                INSERT_FILT("transpose", "clock");
-            } else if (fabs(theta - 180) < 1.0) {
-                INSERT_FILT("hflip", NULL);
-                INSERT_FILT("vflip", NULL);
-            } else if (fabs(theta - 270) < 1.0) {
-                INSERT_FILT("transpose", "cclock");
-            } else if (fabs(theta) > 1.0) {
-                char rotate_buf[64];
-                snprintf(rotate_buf, sizeof(rotate_buf), "%f*PI/180", theta);
-                INSERT_FILT("rotate", rotate_buf);
-            }
-        }
+//#define INSERT_FILT(name, arg) do {                                          \
+//    AVFilterContext *filt_ctx;                                               \
+//                                                                             \
+//    ret = avfilter_graph_create_filter(&filt_ctx,                            \
+//                                       avfilter_get_by_name(name),           \
+//                                       "ffplay_" name, arg, NULL, graph);    \
+//    if (ret < 0)                                                             \
+//        goto fail;                                                           \
+//                                                                             \
+//    ret = avfilter_link(filt_ctx, 0, last_filter, 0);                        \
+//    if (ret < 0)                                                             \
+//        goto fail;                                                           \
+//                                                                             \
+//    last_filter = filt_ctx;                                                  \
+//} while (0)
+//
+//        /* SDL YUV code is not handling odd width/height for some driver
+//         * combinations, therefore we crop the picture to an even width/height. */
+//        INSERT_FILT("crop", "floor(in_w/2)*2:floor(in_h/2)*2");
+//
+//        if (mVideoStateInfo->autorotate) {
+//            double theta  = get_rotation(mVideoStateInfo->streamVideo->st);
+//
+//            ALOGI("fabs(theta - 90)=%f",fabs(theta - 90));
+//            ALOGI("fabs(theta - 180)=%f",fabs(theta - 180));
+//            ALOGI("fabs(theta - 270)=%f",fabs(theta - 270));
+//            ALOGI("fabs(theta)=%f",fabs(theta));
+//            if (fabs(theta - 90) < 1.0) {
+//                INSERT_FILT("transpose", "clock");
+//            } else if (fabs(theta - 180) < 1.0) {
+//                INSERT_FILT("hflip", NULL);
+//                INSERT_FILT("vflip", NULL);
+//            } else if (fabs(theta - 270) < 1.0) {
+//                INSERT_FILT("transpose", "cclock");
+//            } else if (fabs(theta) > 1.0) {
+//                char rotate_buf[64];
+//                snprintf(rotate_buf, sizeof(rotate_buf), "%f*PI/180", theta);
+//                INSERT_FILT("rotate", rotate_buf);
+//            }
+//        }
 
         if ((ret = configure_filtergraph(graph, vfilters, filt_src, last_filter)) < 0){
             ALOGE("configure_filtergraph ret=%d",ret);
