@@ -18,6 +18,9 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+#define LOG_NDEBUG 0
+#define TAG "YTX-cmdutils-JNI"
+#include "ytxplayer/ALog-priv.h"
 
 #include <string.h>
 #include <stdint.h>
@@ -1047,7 +1050,7 @@ void print_error(const char *filename, int err)
 
     if (av_strerror(err, errbuf, sizeof(errbuf)) < 0)
         errbuf_ptr = strerror(AVUNERROR(err));
-    av_log(NULL, AV_LOG_ERROR, "%s: %s\n", filename, errbuf_ptr);
+    ALOGE( "%s: %s\n", filename, errbuf_ptr);
 }
 
 static int warned_cfg = 0;
@@ -1062,7 +1065,7 @@ static int warned_cfg = 0;
         const char *indent = flags & INDENT? "  " : "";                 \
         if (flags & SHOW_VERSION) {                                     \
             unsigned int version = libname##_version();                 \
-            av_log(NULL, level,                                         \
+            ALOGI(                                          \
                    "%slib%-11s %2d.%3d.%3d / %2d.%3d.%3d\n",            \
                    indent, #libname,                                    \
                    LIB##LIBNAME##_VERSION_MAJOR,                        \
@@ -1075,12 +1078,12 @@ static int warned_cfg = 0;
             const char *cfg = libname##_configuration();                \
             if (strcmp(FFMPEG_CONFIGURATION, cfg)) {                    \
                 if (!warned_cfg) {                                      \
-                    av_log(NULL, level,                                 \
+                    ALOGI(                                  \
                             "%sWARNING: library configuration mismatch\n", \
                             indent);                                    \
                     warned_cfg = 1;                                     \
                 }                                                       \
-                av_log(NULL, level, "%s%-11s configuration: %s\n",      \
+                ALOGI(  "%s%-11s configuration: %s\n",      \
                         indent, #libname, cfg);                         \
             }                                                           \
         }                                                               \
@@ -1103,14 +1106,14 @@ static void print_program_info(int flags, int level)
 {
     const char *indent = flags & INDENT? "  " : "";
 
-    av_log(NULL, level, "%s version " FFMPEG_VERSION, program_name);
+    ALOGI("%s version " FFMPEG_VERSION, program_name);
     if (flags & SHOW_COPYRIGHT)
-        av_log(NULL, level, " Copyright (c) %d-%d the FFmpeg developers",
+        ALOGI(  " Copyright (c) %d-%d the FFmpeg developers",
                program_birth_year, CONFIG_THIS_YEAR);
-    av_log(NULL, level, "\n");
-    av_log(NULL, level, "%sbuilt with %s\n", indent, CC_IDENT);
+    ALOGI("\n");
+    ALOGI("%sbuilt with %s\n", indent, CC_IDENT);
 
-    av_log(NULL, level, "%sconfiguration: " FFMPEG_CONFIGURATION "\n", indent);
+    ALOGI("%sconfiguration: " FFMPEG_CONFIGURATION "\n", indent);
 }
 
 static void print_buildconf(int flags, int level)
@@ -1132,9 +1135,9 @@ static void print_buildconf(int flags, int level)
     }
 
     splitconf = strtok(str, "~");
-    av_log(NULL, level, "\n%sconfiguration:\n", indent);
+    ALOGI(  "\n%sconfiguration:\n", indent);
     while (splitconf != NULL) {
-        av_log(NULL, level, "%s%s%s\n", indent, indent, splitconf);
+        ALOGI(  "%s%s%s\n", indent, indent, splitconf);
         splitconf = strtok(NULL, "~");
     }
 }

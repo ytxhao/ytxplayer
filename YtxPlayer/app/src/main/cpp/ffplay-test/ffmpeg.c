@@ -4412,7 +4412,7 @@ int main_ffmpeg(int argc, char **argv)
 }
 
 
-JNIEXPORT jint JNICALL Java_com_ytx_ican_ytxplayer_MainActivity_setCmd
+JNIEXPORT jint JNICALL Java_com_ytx_ican_ytxplayer_MainActivity2_setCmd
         (JNIEnv *env, jobject obj , jstring cmd){
     int argc = 1;
     int i = 0,j=0;

@@ -904,7 +904,7 @@ static int open_input_file(OptionsContext *o, const char *filename)
 
     if (o->format) {
         if (!(file_iformat = av_find_input_format(o->format))) {
-            av_log(NULL, AV_LOG_FATAL, "Unknown input format: '%s'\n", o->format);
+            ALOGE("Unknown input format: '%s'\n", o->format);
             exit_program(1);
         }
     }
@@ -1003,7 +1003,7 @@ static int open_input_file(OptionsContext *o, const char *filename)
        first frames to get it. (used in mpeg case for example) */
     ret = avformat_find_stream_info(ic, opts);
     if (ret < 0) {
-        av_log(NULL, AV_LOG_FATAL, "%s: could not find codec parameters\n", filename);
+        ALOGE( "%s: could not find codec parameters\n", filename);
         if (ic->nb_streams == 0) {
             avformat_close_input(&ic);
             exit_program(1);
@@ -1014,7 +1014,7 @@ static int open_input_file(OptionsContext *o, const char *filename)
         if (ic->duration>0) {
             o->start_time = o->start_time_eof + ic->duration;
         } else
-            av_log(NULL, AV_LOG_WARNING, "Cannot use -sseof, duration of %s not known\n", filename);
+            ALOGE( "Cannot use -sseof, duration of %s not known\n", filename);
     }
     timestamp = (o->start_time == AV_NOPTS_VALUE) ? 0 : o->start_time;
     /* add the stream start time */
@@ -1038,7 +1038,7 @@ static int open_input_file(OptionsContext *o, const char *filename)
         }
         ret = avformat_seek_file(ic, -1, INT64_MIN, seek_timestamp, seek_timestamp, 0);
         if (ret < 0) {
-            av_log(NULL, AV_LOG_WARNING, "%s: could not seek to position %0.3f\n",
+            ALOGE( "%s: could not seek to position %0.3f\n",
                    filename, (double)timestamp / AV_TIME_BASE);
         }
     }
@@ -1093,14 +1093,14 @@ static int open_input_file(OptionsContext *o, const char *filename)
 
 
         if (!(option->flags & AV_OPT_FLAG_DECODING_PARAM)) {
-            av_log(NULL, AV_LOG_ERROR, "Codec AVOption %s (%s) specified for "
+            ALOGE( "Codec AVOption %s (%s) specified for "
                    "input file #%d (%s) is not a decoding option.\n", e->key,
                    option->help ? option->help : "", nb_input_files - 1,
                    filename);
             exit_program(1);
         }
 
-        av_log(NULL, AV_LOG_WARNING, "Codec AVOption %s (%s) specified for "
+        ALOGI( "Codec AVOption %s (%s) specified for "
                "input file #%d (%s) has not been used for any stream. The most "
                "likely reason is either wrong type (e.g. a video option with "
                "no video streams) or that it is a private option of some decoder "
@@ -3034,7 +3034,7 @@ static int open_files(OptionGroupList *l, const char *inout,
             return ret;
         }
 
-        ALOGE("Opening an %s file: %s.\n", inout, g->arg);
+        ALOGI("Opening an %s file: %s.\n", inout, g->arg);
         ret = open_file(&o, g->arg);
         uninit_options(&o);
         if (ret < 0) {
@@ -3042,7 +3042,7 @@ static int open_files(OptionGroupList *l, const char *inout,
                    inout, g->arg);
             return ret;
         }
-        ALOGE("Successfully opened the file.\n");
+        ALOGI("Successfully opened the file.\n");
     }
 
     return 0;
@@ -3060,14 +3060,14 @@ int ffmpeg_parse_options(int argc, char **argv)
     ret = split_commandline(&octx, argc, argv, options, groups,
                             FF_ARRAY_ELEMS(groups));
     if (ret < 0) {
-        av_log(NULL, AV_LOG_FATAL, "Error splitting the argument list: ");
+        ALOGE("Error splitting the argument list: ");
         goto fail;
     }
 
     /* apply global options */
     ret = parse_optgroup(NULL, &octx.global_opts);
     if (ret < 0) {
-        av_log(NULL, AV_LOG_FATAL, "Error parsing global options: ");
+        ALOGE( "Error parsing global options: ");
         goto fail;
     }
 

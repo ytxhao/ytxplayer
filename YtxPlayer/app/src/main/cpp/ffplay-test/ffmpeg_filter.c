@@ -1053,7 +1053,7 @@ int configure_filtergraph(FilterGraph *fg)
         } else {
             num_inputs = "1";
         }
-        av_log(NULL, AV_LOG_ERROR, "Simple filtergraph '%s' was expected "
+        ALOGE( "Simple filtergraph '%s' was expected "
                "to have exactly 1 input and 1 output."
                " However, it had %s input(s) and %s output(s)."
                " Please adjust, or use a complex filtergraph (-filter_complex) instead.\n",
@@ -1083,7 +1083,7 @@ int configure_filtergraph(FilterGraph *fg)
         if (!ost->enc) {
             /* identical to the same check in ffmpeg.c, needed because
                complex filter graphs are initialized earlier */
-            av_log(NULL, AV_LOG_ERROR, "Encoder (codec %s) not found for output stream #%d:%d\n",
+            ALOGE("Encoder (codec %s) not found for output stream #%d:%d\n",
                      avcodec_get_name(ost->st->codec->codec_id), ost->file_index, ost->index);
             return AVERROR(EINVAL);
         }

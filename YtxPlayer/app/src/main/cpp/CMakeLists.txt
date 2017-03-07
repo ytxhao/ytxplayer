@@ -9,7 +9,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_subdirectory(gl-engine)
 add_subdirectory(ytxplayer)
-add_subdirectory(ffplay-test)
+#add_subdirectory(ffplay-test)
 
 
 
