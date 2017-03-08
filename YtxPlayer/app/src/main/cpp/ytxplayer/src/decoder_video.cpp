@@ -171,9 +171,9 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             last_format = (AVPixelFormat) mFrame->format;
             last_serial = mVideoStateInfo->pkt_serial_video;
             last_vfilter_idx = mVideoStateInfo->vfilter_idx;
-       //     frameRate = filt_out->inputs[0]->frame_rate;
+            frameRate = filt_out->inputs[0]->frame_rate;
         }
-
+        mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
         ret = av_buffersrc_add_frame(filt_in, mFrame);
         if (ret < 0){
 
@@ -187,6 +187,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
             ret = av_buffersink_get_frame_flags(filt_out, mFrame, 0);
             if (ret < 0) {
+                ALOGE("av_buffersink_get_frame_flags ERROR ret=%d",ret);
                 if (ret == AVERROR_EOF){
                     mVideoStateInfo->viddec_finished = mVideoStateInfo->pkt_serial_video;
                 }
@@ -205,7 +206,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             ///////////////////////////////////////////////////
             int size_y = 0;
             double duration;
-            mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
+        //    mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
             duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
             pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
 
@@ -381,6 +382,8 @@ int DecoderVideo::configure_video_filters(AVFilterGraph *graph, const char *vfil
         AVRational fr = av_guess_frame_rate(mVideoStateInfo->pFormatCtx, mVideoStateInfo->streamVideo->st, NULL);
         AVDictionaryEntry *e = NULL;
 
+        ALOGI("sizeof(buffersrc_args)=%d",sizeof(buffersrc_args));
+        memset(buffersrc_args,0,sizeof(buffersrc_args));
         while ((e = av_dict_get(mVideoStateInfo->sws_dict, "", e, AV_DICT_IGNORE_SUFFIX))) {
             if (!strcmp(e->key, "sws_flags")) {
                 av_strlcatf(sws_flags_str, sizeof(sws_flags_str), "%s=%s:", "flags", e->value);
@@ -402,12 +405,14 @@ int DecoderVideo::configure_video_filters(AVFilterGraph *graph, const char *vfil
         if (fr.num && fr.den)
             av_strlcatf(buffersrc_args, sizeof(buffersrc_args), ":frame_rate=%d/%d", fr.num, fr.den);
 
+        ALOGI("buffersrc_args=%s",buffersrc_args);
         if ((ret = avfilter_graph_create_filter(&filt_src,
                                                 avfilter_get_by_name("buffer"),
                                                 "ffplay_buffer", buffersrc_args, NULL,
                                                 graph)) < 0){
             goto fail;
         }
+
 
 
         ret = avfilter_graph_create_filter(&filt_out,
@@ -486,7 +491,7 @@ int DecoderVideo::configure_filtergraph(AVFilterGraph *graph, const char *filter
         int nb_filters = graph->nb_filters;
         AVFilterInOut *outputs = NULL, *inputs = NULL;
 
-        if (filtergraph) {
+        if (filtergraph != NULL) {
             outputs = avfilter_inout_alloc();
             inputs  = avfilter_inout_alloc();
             if (!outputs || !inputs) {

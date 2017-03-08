@@ -60,9 +60,11 @@ public:
 
 
     void uninit_opts(void);
-
+public:
     AVFormatContext *pFormatCtx;
-
+    AVDictionary *sws_dict;
+    AVFilterContext *in_video_filter;   // the first filter in the video chain
+    AVFilterContext *out_video_filter;  // the last filter in the video chain
     InputStream *streamVideo;
     InputStream *streamAudio;
     InputStream *streamSubtitle;
@@ -129,8 +131,8 @@ public:
  //   FILE *fp_yuv;
 //    FILE *fp_pcm;
 //    FILE *fp_pcm1;
-    char file_pcm[100];
-    char file_pcm1[100];
+//    char file_pcm[100];
+//    char file_pcm1[100];
     jobject VideoGlSurfaceViewObj;
     jobject GraphicRendererObj;
     char *mStorageDir;
@@ -141,11 +143,6 @@ public:
 
 
     int vfilter_idx = 0;
-    AVFilterContext *in_video_filter;   // the first filter in the video chain
-    AVFilterContext *out_video_filter;  // the last filter in the video chain
-    AVFilterContext *in_audio_filter;   // the first filter in the audio chain
-    AVFilterContext *out_audio_filter;  // the last filter in the audio chain
-    AVFilterGraph *agraph;              // audio filter graph
 
 
     const char **vfilters_list = NULL;
@@ -157,12 +154,6 @@ public:
     double frame_last_filter_delay;
 
     int viddec_finished;
-
-
-    AVDictionary *sws_dict;
-    AVDictionary *swr_opts;
-    AVDictionary *format_opts, *codec_opts, *resample_opts;
     int autorotate = 1;
-
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

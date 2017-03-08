@@ -9,23 +9,6 @@
 extern "C" {
 #endif
 
-
-/*
-libLoader.loadLibrary("gnustl_shared");
-libLoader.loadLibrary("mp4v2");
-libLoader.loadLibrary("faad");
-libLoader.loadLibrary("faac");
-libLoader.loadLibrary("rtmp");
-libLoader.loadLibrary("x264");
-libLoader.loadLibrary("avutil");
-libLoader.loadLibrary("swresample");
-libLoader.loadLibrary("swscale");
-libLoader.loadLibrary("postproc");
-libLoader.loadLibrary("avcodec");
-libLoader.loadLibrary("avformat");
-libLoader.loadLibrary("avdevice");
-libLoader.loadLibrary("avfilter");
-*/
 //#define __STDC_CONSTANT_MACROS
 
 #include "libavutil/avutil.h"
@@ -43,6 +26,7 @@ libLoader.loadLibrary("avfilter");
 #include <libavutil/mem.h>
 #include <libavutil/eval.h>
 #include <libavutil/display.h>
+#include "libavutil/dict.h"
 
 #define MAX_QUEUE_SIZE (15 * 1024 * 1024)
 #define MIN_FRAMES 25
