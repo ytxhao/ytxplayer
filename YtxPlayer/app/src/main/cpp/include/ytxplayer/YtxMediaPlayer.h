@@ -47,6 +47,7 @@ public:
 
     void disconnect();
 
+    int setSubtitles( char *url);
     int setDataSource(const char *url);
 
     int setDataSource(int fd, int64_t offset, int64_t length);
@@ -154,6 +155,7 @@ public:
 
     bool mRetransmitEndpointValid;
     const char *filePath;
+    char *subtitles=NULL;
     //AVFormatContext *pFormatCtx;
     int mAudioStreamIndex;
     int mVideoStreamIndex;

@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">YtxPlayer</string>
-    <string name="input_file_name">请输入文件名称</string>
+    <string name="input_file_name_video">请输入视频文件名称</string>
+    <string name="input_file_name_subtitles">请输入字幕文件名称</string>
     <string name="ok">确定</string>
+    <string name="add">添加</string>
+    <string name="play">播放</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

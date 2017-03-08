@@ -64,6 +64,9 @@ public interface IMediaPlayer {
     void setDataSource(String path)
             throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
 
+    void setSubtitles(String subtitles)
+            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
+
     String getDataSource();
 
     void prepareAsync() throws IllegalStateException;

@@ -1,4 +1,4 @@
-package com.ytx.ican.ytxplayer;
+package com.ytx.ican.ytxplayer.activity;
 
 
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.ytx.ican.media.player.pragma.YtxLog;
+import com.ytx.ican.ytxplayer.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

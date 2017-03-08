@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -204,6 +205,13 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         invalidate();
     }
 
+
+    private String subtitles;
+    public void setSubtitles(String url){
+        subtitles = url;
+
+    }
+
     @Override
     public void start() {
         YtxLog.d(TAG,"start isInPlaybackState()="+isInPlaybackState());
@@ -355,6 +363,10 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mCurrentBufferPercentage = 0;
 
         try {
+            if(!TextUtils.isEmpty(subtitles)){
+                mMediaPlayer.setSubtitles(subtitles);
+            }
+
             mMediaPlayer.setDataSource(mUri.toString());
         } catch (IOException e) {
             e.printStackTrace();

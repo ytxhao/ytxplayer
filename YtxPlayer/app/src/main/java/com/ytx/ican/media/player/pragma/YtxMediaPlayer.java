@@ -187,6 +187,12 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     }
 
     @Override
+    public void setSubtitles(String subtitles) throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+        _setSubtitles(subtitles);
+    }
+
+
+    @Override
     public String getDataSource() {
         return null;
     }
@@ -434,6 +440,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     private native void  _disconnect() ;
 
+    private native int  _setSubtitles(String url) ;
     private native int  _setDataSource(String url) ;
     private native int  _setDataSource(int fd, long offset, long length) ;
 

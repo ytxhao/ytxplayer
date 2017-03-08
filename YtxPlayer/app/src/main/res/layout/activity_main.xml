@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.ytx.ican.ytxplayer.MainActivity2">
+    tools:context="com.ytx.ican.ytxplayer.activity.MainActivity2">
 
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:gravity="center_vertical" >
 
         <LinearLayout
-            android:id="@+id/llEdit"
+            android:id="@+id/llEditVideo"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="45dp"
@@ -29,7 +29,7 @@
             android:padding="5dp"
             >
             <AutoCompleteTextView
-                android:id="@+id/actvFileName"
+                android:id="@+id/actvFileNameVedio"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -39,14 +39,15 @@
                 android:completionThreshold="1"
                 android:textColorHint="@color/black40"
                 android:dropDownHeight="wrap_content"
-                android:dropDownAnchor="@id/llEdit"
+                android:dropDownAnchor="@id/llEditVideo"
                 android:background="@null"
                 android:maxLines="1"
-                android:hint="@string/input_file_name"
+                android:dropDownVerticalOffset="-1dp"
+                android:hint="@string/input_file_name_video"
                 android:singleLine="true"
                 />
             <ImageView
-                android:id="@+id/ivDrag"
+                android:id="@+id/ivDragVideo"
                 android:layout_width="45dp"
                 android:layout_height="match_parent"
                 android:src="@mipmap/drag_down"
@@ -56,18 +57,91 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/bt"
+            android:id="@+id/btAddVideo"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:background="@drawable/btn_green_rectangle_style"
             android:textColor="@color/white"
             android:layout_marginEnd="10dp"
             android:textSize="12sp"
-            android:text="@string/ok"
+            android:text="@string/add"
             android:layout_marginRight="10dp" />
     </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+
+        <LinearLayout
+            android:id="@+id/llEditSub"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/edit_round_general"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:padding="5dp"
+            >
+            <AutoCompleteTextView
+                android:id="@+id/actvFileNameSub"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/black80"
+                android:padding="5dp"
+                android:completionThreshold="1"
+                android:textColorHint="@color/black40"
+                android:dropDownHeight="wrap_content"
+                android:dropDownAnchor="@id/llEditSub"
+                android:dropDownVerticalOffset="-1dp"
+                android:background="@null"
+                android:maxLines="1"
+                android:hint="@string/input_file_name_subtitles"
+                android:singleLine="true"
+                />
+            <ImageView
+                android:id="@+id/ivDragSub"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:src="@mipmap/drag_down"
+                android:scaleType="center"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btAddSub"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_green_rectangle_style"
+            android:textColor="@color/white"
+            android:layout_marginEnd="10dp"
+            android:textSize="12sp"
+            android:text="@string/add"
+            android:layout_marginRight="10dp" />
+    </LinearLayout>
+
+    
+    <Button
+        android:id="@+id/btPlay"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_green_rectangle_style"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="12sp"
+        android:text="@string/play"
+        android:layout_marginBottom="10dp"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

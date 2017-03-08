@@ -49,12 +49,21 @@ JNIEXPORT void JNICALL android_media_player_died
 JNIEXPORT void JNICALL android_media_player_disconnect
         (JNIEnv *, jobject);
 
+
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
  * Method:    setDataSource
  * Signature: (Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL android_media_player_setDataSource
+        (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_ytx_ican_media_player_YtxMediaPlayerTest
+ * Method:    setDataSource
+ * Signature: (Ljava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL android_media_player_setSubtitles
         (JNIEnv *, jobject, jstring);
 
 /*

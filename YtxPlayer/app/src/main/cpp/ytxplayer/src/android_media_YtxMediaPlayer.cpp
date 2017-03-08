@@ -354,6 +354,18 @@ JNIEXPORT jint JNICALL android_media_player_setDataSource
     return 0;
 }
 
+JNIEXPORT jint JNICALL android_media_player_setSubtitles
+        (JNIEnv *env, jobject obj, jstring url)
+{
+
+    char *subtitle = (char *) env->GetStringUTFChars(url, NULL);
+    ALOGI("subtitle=%s",subtitle);
+    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    ALOGI("setSubtitles mPlayer add 0x=%#x",(int)mPlayer);
+    mPlayer->setSubtitles(subtitle);
+    return 0;
+}
+
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayer
  * Method:    setDataSource
@@ -731,8 +743,9 @@ static JNINativeMethod gMethods[] = {
 
         {"_setGlSurface", "(Ljava/lang/Object;)V",         (void *)android_media_player_setGlSurface},
         {"_died", "()V",         (void *)android_media_player_died},
+        {"_setSubtitles", "(Ljava/lang/String;)I",         (void *)android_media_player_setSubtitles},
         {"_setDataSource", "(Ljava/lang/String;)I",         (void *)android_media_player_setDataSource},
- //       {"native_message_loop", "(IJJ)I",         (void *)android_media_player_setDataSource},
+        //       {"native_message_loop", "(IJJ)I",         (void *)android_media_player_setDataSource},
         {"_prepare", "()I",         (void *)android_media_player_prepare},
         {"_prepareAsync", "()I",         (void *)android_media_player_prepareAsync},
         {"_start", "()I",         (void *)android_media_player_start},

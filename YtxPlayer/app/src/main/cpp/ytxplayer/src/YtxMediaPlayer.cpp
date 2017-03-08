@@ -132,6 +132,14 @@ int  YtxMediaPlayer::setDataSource(const char *url) {
     return 0;
 }
 
+int  YtxMediaPlayer::setSubtitles(char *url) {
+
+    this->subtitles = url;
+    ALOGI("YtxMediaPlayer setSubtitles subtitles=%s\n",subtitles);
+    return 0;
+}
+
+
 int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
 
     return 0;
@@ -231,7 +239,14 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
    // "movie=my_logo.png[wm];[in][wm]overlay=5:5[out]"
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
   //  mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "subtitles=/storage/emulated/0/test_file/x7_11.srt";
-    mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "movie=/storage/emulated/0/my_logo.png[wm];[in][wm]overlay=5:5[out]";
+  //  mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "movie=/storage/emulated/0/my_logo.png[wm];[in][wm]overlay=5:5[out]";
+
+
+    ALOGD("mPlayer->subtitles=%s",mPlayer->subtitles);
+    if(mPlayer->subtitles != NULL){
+        mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = mPlayer->mVideoStateInfo->join3("subtitles=",mPlayer->subtitles);
+    }
+
             //mPlayer->mVideoStateInfo->join3(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
     ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
 
