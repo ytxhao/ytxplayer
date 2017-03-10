@@ -20,8 +20,9 @@ public:
     double time;
     double frame_timer=0.0;
     int64_t audio_callback_time;
-    VideoStateInfo* mVideoStateInfo;
-    AudioEngine *mAudioEngine;
+    VideoStateInfo* mVideoStateInfo = NULL;
+    AudioEngine *mAudioEngine = NULL;
+
     AudioRefreshController(VideoStateInfo* mVideoStateInfo);
     ~AudioRefreshController();
 
@@ -32,7 +33,7 @@ public:
     void                stop();
     static void         bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
     int                 audioFrameProcess();
-    Frame *audioDecodeFrame();
+    Frame               *audioDecodeFrame();
     void                enqueue(AVMessage *msg);
 };
 

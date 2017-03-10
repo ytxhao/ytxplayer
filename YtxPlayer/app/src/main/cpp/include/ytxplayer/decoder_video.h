@@ -17,14 +17,14 @@ public:
     ~DecoderVideo();
 
     VideoDecodingHandler		onDecode;
+    void stop();
+    int                         streamHasEnoughPackets();
 
     int isFinish;
 
     int frameQueueInitFinsh=0;
     struct SwsContext*	mConvertCtx = NULL;
     unsigned char *out_buffer_video;
-    void stop();
-    int                         streamHasEnoughPackets();
 private:
     AVFrame*					mFrame;
     AVFrame*                    mFrameYuv;

@@ -24,16 +24,34 @@ GlEngine::GlEngine() {
     uTextureId = 1025;
     vTextureId = 1025;
     pngTextureId = 1025;
+
     gProgram = 0;
     yHandle = -1;
     uHandle = -1;
     vHandle = -1;
     pngHandle = -1;
+
+    videoWidth = 0;
+    videoHeight = 0;
+    mScreenWidth = 720;
+    mScreenHeight = 1080;
+
     isAddRendererFrameInit = false;
     isSetupGraphics = 0;
     isDrawFrameInit = false;
     isFrameRendererFinish = false;
     img = NULL;
+
+
+    vertexShader = 0;
+    pixelShader = 0;
+
+    gvPositionHandle = 0;
+    gCoordHandle = 0;
+
+    glEngine = NULL;
+    isInitComplete = false;
+
 }
 
 GlEngine::~GlEngine() {
@@ -345,7 +363,7 @@ void GlEngine::drawFrame() {
         setAspectRatio();
 
 
-        ALOGI("drawFrame videoWidth=%d videoHeight=%d\n", videoWidth, videoHeight);
+     //   ALOGI("drawFrame videoWidth=%d videoHeight=%d\n", videoWidth, videoHeight);
 
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -443,16 +461,7 @@ image_t* GlEngine::gen_image(int width, int height) {
 void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight) {
     mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
-//    this->img = img;
-//    plane[0] = y;
-//    plane[1] = u;
-//    plane[2] = v;
-//    if(this->videoWidth !=videoWidth || this->videoHeight != videoHeight){
-//        this->videoWidth = videoWidth;
-//        this->videoHeight = videoHeight;
-//    }
 
-//    ALOGI(" debug plane[0]=%#x y=%#x videoWidth=%d videoHeight=%d",plane[0],y,videoWidth,videoHeight);
     if(img != NULL){
         memcpy(this->img->buffer, img->buffer, (size_t) (this->img->stride * this->img->height));
     }else{
@@ -466,15 +475,6 @@ void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int vide
 }
 
 void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
-//    if (!isAddRendererFrameInit) {
-//        isAddRendererFrameInit = true;
-//        this->videoWidth = videoWidth;
-//        this->videoHeight = videoHeight;
-//        ALOGI("addRendererFrameInit isAddRendererFrameInit");
-//        plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
-//        plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
-//        plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
-//    }
 
     if ((this->videoWidth == 0 && this->videoHeight == 0 && videoWidth != 0)
         || this->videoWidth != videoWidth || this->videoHeight != videoHeight) {
@@ -617,18 +617,6 @@ void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, i
     ALOGI("addRendererFrame OUT\n");
 
 }
-void addRendererSubtitleFrame(jobject obj, image_t *img){
-
-    ALOGI("addRendererSubtitleFrame IN\n");
-
-    JNIEnv *env = NULL;
-    sVm->AttachCurrentThread(&env, NULL);
-
-    getGlEngine(env,obj)->addRendererFrame(img);
-
-    sVm->DetachCurrentThread();
-    ALOGI("addRendererSubtitleFrame OUT\n");
-}
 
 int  rendererStarted(jobject obj){
     ALOGI("rendererCanStart IN\n");
@@ -745,9 +733,8 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     JNIEnv *env = NULL;
     jint result = -1;
     sVm = vm;
-    ALOGI("main renderer tid:%u,pid:%u\n", (unsigned) pthread_self(),
-          (unsigned) getpid());
-    ALOGI("ERROR renderer: sVm=%d\n", sVm);
+    ALOGI("main renderer tid:%u,pid:%u\n", (unsigned) pthread_self(), (unsigned) getpid());
+    ALOGI("INF renderer: sVm=%d\n", sVm);
     if (sVm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("ERROR renderer: GetEnv failed\n");
         goto bail;

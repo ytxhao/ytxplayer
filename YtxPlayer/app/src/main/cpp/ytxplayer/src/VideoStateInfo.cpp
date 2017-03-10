@@ -9,6 +9,47 @@
 #include "ytxplayer/VideoStateInfo.h"
 #include "ytxplayer/ALog-priv.h"
 VideoStateInfo::VideoStateInfo(){
+
+
+    pFormatCtx = NULL;
+    in_video_filter = NULL;   // the first filter in the video chain
+    out_video_filter = NULL;  // the last filter in the video chain
+    mCurrentState = NULL;
+    out_buffer_audio = NULL;
+    in_sample_fmt = AV_SAMPLE_FMT_S16;
+    out_sample_fmt = AV_SAMPLE_FMT_S16;
+    in_sample_rate = 0;
+    //输出采样率
+    out_sample_rate = 44100;
+    out_channel_nb = 0;
+    out_nb_samples = 0;
+    in_ch_layout = 0;
+    out_ch_layout = 0;
+    isFirstAudioFrame = true;
+
+    pkt_serial_audio = 0;
+    pkt_serial_video = 0;
+    pkt_serial_subtitle = 0;
+
+    VideoGlSurfaceViewObj = NULL;
+    GraphicRendererObj = NULL;
+    mStorageDir = NULL;
+    mVideoWidth = 0;
+    mVideoHeight = 0;
+    vfilter_idx = 0;
+
+
+    nb_vfilters = 0;
+    afilters = NULL;
+
+    frame_timer = 0.0;
+    frame_last_returned_time = 0.0;
+    frame_last_filter_delay = 0.0;
+
+    viddec_finished = 0;
+    autorotate = 1;
+
+
     frameQueueVideo = new FrameQueueVideo();
     frameQueueAudio = new FrameQueueAudio();
     frameQueueSubtitle = new FrameQueueSubtitle();
@@ -26,13 +67,13 @@ VideoStateInfo::VideoStateInfo(){
     flushPkt = (MAVPacket *)malloc(sizeof(MAVPacket));
     av_init_packet(&flushPkt->pkt);
     flushPkt->pkt.data = (uint8_t *)&flushPkt->pkt;
-    ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
+    //ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
     vidClk = (Clock *)malloc(sizeof(Clock));
     extClk = (Clock *)malloc(sizeof(Clock));
     audClk = (Clock *)malloc(sizeof(Clock));
     memset(st_index, -1, sizeof(st_index));
 
-    ALOGI("st_index sub=%d",st_index[AVMEDIA_TYPE_SUBTITLE]);
+    //ALOGI("st_index sub=%d",st_index[AVMEDIA_TYPE_SUBTITLE]);
     max_frame_duration = 0.0;
     seekPos = 0;
     seekRel = 0;

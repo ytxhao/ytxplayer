@@ -36,12 +36,14 @@ public:
     void blend_single(image_t * frame, ASS_Image *img);
     void write_png(char *fname, image_t *img);
 private:
-    int16_t*                    mSamples;
-    int                         mSamplesSize;
-    AVFrame*					mFrame;
+
     bool                        prepare();
     bool                        decode(void* ptr);
     bool                        process(MAVPacket *mPacket);
+
+    int16_t*                    mSamples;
+    int                         mSamplesSize;
+    AVFrame*					mFrame;
     AVRational tb;
     Frame *sp;
 
@@ -53,11 +55,11 @@ private:
     bool curStats;
 
     bool firstInit;
- //   bool                        isFirstAudioFrame;
+
     ASS_Library *ass_library;
     ASS_Renderer *ass_renderer;
-//    const int frame_w = 1280;
-//    const int frame_h = 720;
+    ASS_Track *track;
+
     char *font_provider_labels[5] = {
             [ASS_FONTPROVIDER_NONE]       = "None",
             [ASS_FONTPROVIDER_AUTODETECT] = "Autodetect",
@@ -65,9 +67,9 @@ private:
             [ASS_FONTPROVIDER_FONTCONFIG] = "Fontconfig",
             [ASS_FONTPROVIDER_DIRECTWRITE]= "DirectWrite",
     };
-    char subfile[100];
+    //char subfile[100];
    // long long now=2500;
-    ASS_Track *track;
+
 };
 
 #endif //YTXPLAYER_DECODER_AUDIO_H

@@ -30,12 +30,15 @@ public:
     struct SwrContext*	mConvertCtx;
 private:
 
-    int16_t*                    mSamples;
-    int                         mSamplesSize;
-    AVFrame*					mFrame;
+
     bool                        prepare();
     bool                        decode(void* ptr);
     bool                        process(MAVPacket *mPacket);
+
+    int16_t*                    mSamples;
+    int                         mSamplesSize;
+    AVFrame*					mFrame;
+
     AVRational tb;
     Frame *af;
 

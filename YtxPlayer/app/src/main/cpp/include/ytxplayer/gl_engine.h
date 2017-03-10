@@ -24,7 +24,6 @@ extern "C" {
 #endif
 
 void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
-void addRendererSubtitleFrame(jobject obj, image_t *img);
 int  rendererStarted(jobject obj);
 
 #ifdef __cplusplus

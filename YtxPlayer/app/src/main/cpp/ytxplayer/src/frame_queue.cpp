@@ -6,28 +6,6 @@
 #define TAG "YTX-FrameQueue-JNI"
 #include "ytxplayer/ALog-priv.h"
 
-
-
-//FrameQueue::~FrameQueue(){
-//    frameQueueDestroy();
-//}
-
-/*
-void FrameQueue::frameQueueUnrefItem(Frame *vp) {
-    int i;
-    //释放subtitle空间
-//    for(i=0;i<vp->sub.num_rects;i++){
-//        av_freep(&vp->subrects[i]->data[0]);
-//        av_freep(&vp->subrects[i]);
-//    }
-//    av_freep(&vp->subrects);
-    av_frame_unref(vp->frame);
-  //  avsubtitle_free(&vp->sub);
-
- //   free(vp->out_buffer_audio);
-
-}
-*/
 void FrameQueue::frameQueueReset(){
     pthread_mutex_lock(&mutex);
     rindex = 0;
@@ -38,34 +16,6 @@ void FrameQueue::frameQueueReset(){
     pthread_mutex_unlock(&mutex);
 }
 
-/*
-int FrameQueue::frameQueueInit(int max_size, int keep_last) {
-    int i = 0;
-    pthread_mutex_init(&mutex, NULL);
-    pthread_cond_init(&cond, NULL);
-    this->max_size = max_size;
-    this->keep_last = keep_last;
-    for (i = 0; i < max_size; i++) {
-        queue[i].frame = av_frame_alloc();
-        if (queue[i].frame == NULL) {
-            return AVERROR(ENOMEM);
-        }
-    }
-    return 1;
-}
-
-void FrameQueue::frameQueueDestroy() {
-    int i;
-    for(i=0;i<max_size;i++){
-        Frame *vp = &queue[i];
-        frameQueueUnrefItem(vp);
-        av_frame_free(&vp->frame);
-    }
-
-    pthread_mutex_destroy(&mutex);
-    pthread_cond_destroy(&cond);
-}
-*/
 void FrameQueue::frameQueueSignal() {
     pthread_mutex_lock(&mutex);
     pthread_cond_signal(&cond);

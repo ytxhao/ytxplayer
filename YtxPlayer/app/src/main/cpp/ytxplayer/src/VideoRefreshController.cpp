@@ -13,6 +13,15 @@
 
 VideoRefreshController::VideoRefreshController(VideoStateInfo* mVideoStateInfo)
 {
+
+    last_duration=0.0;
+    duration=0.0;
+    delay=0.0;
+    vp=NULL;
+    lastvp=NULL;
+    remaining_time = 0.0;
+    time=0.0;
+    frame_timer=0.0;
     this->mVideoStateInfo = mVideoStateInfo;
 }
 
@@ -49,8 +58,8 @@ void VideoRefreshController::process() {
         }
         remaining_time = REFRESH_RATE;
 
-        ALOGI("startPlayerRefresh mVideoStateInfo=%#x",mVideoStateInfo);
-        ALOGI("startPlayerRefresh frameQueueVideo=%#x",mVideoStateInfo->frameQueueVideo);
+       // ALOGI("startPlayerRefresh mVideoStateInfo=%#x",mVideoStateInfo);
+       // ALOGI("startPlayerRefresh frameQueueVideo=%#x",mVideoStateInfo->frameQueueVideo);
         if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 1) {
             // nothing to do, no picture to display in the queue
 

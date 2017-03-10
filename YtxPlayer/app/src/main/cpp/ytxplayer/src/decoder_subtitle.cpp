@@ -13,9 +13,19 @@
 //ffplay -vf subtitles=test_file/x7_11.srt test_file/x7_11.mkv
 DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
-   // isFirstFrame = true;
+
     firstInit = false;
-    sprintf(subfile,"%s/test.ass",mVideoStateInfo->mStorageDir);
+    mSamples = NULL;
+    mSamplesSize = 0;
+    mFrame = NULL;
+    sp = NULL;
+    next_pts = 0;
+    lastStats = false;
+    curStats = false;
+    ass_library = NULL;
+    ass_renderer = NULL;
+    track = NULL;
+    //sprintf(subfile,"%s/test.ass",mVideoStateInfo->mStorageDir);
     //fp_pcm = fopen(subfile,"wb+");
 
 }
@@ -36,6 +46,10 @@ DecoderSubtitle::~DecoderSubtitle()
         sws_freeContext(mConvertCtx);
     }
 
+    mFrame=NULL;
+    ass_renderer=NULL;
+    ass_library=NULL;
+    track=NULL;
     //avcodec_close(mVideoStateInfo->streamSubtitle->dec_ctx);
 }
 
@@ -174,8 +188,6 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         for (int i = 0; i < sp->sub.num_rects; i++){
             ALOGI("ttttt1 sp->sub.rects[%d]->type=%d, sp->sub.rects[%d]->ass=%s\n",i,sp->sub.rects[i]->type,i,sp->sub.rects[i]->ass);
 
-
-
             char *ass_line = sp->sub.rects[i]->ass;
             if (!ass_line){
                 break;
@@ -213,7 +225,6 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
 
 bool DecoderSubtitle::decode(void* ptr)
 {
-    int i;
     MAVPacket        pPacket;
 
     while(mRunning)
@@ -262,7 +273,7 @@ void DecoderSubtitle::printFontProviders(ASS_Library *ass_library) {
     ASS_DefaultFontProvider *providers;
     size_t providers_size = 0;
     ass_get_available_font_providers(ass_library, &providers, &providers_size);
-    ALOGI("test.c: Available font providers (%zu): ", providers_size);
+    ALOGI("Available font providers (%zu): ", providers_size);
     for (i = 0; i < providers_size; i++) {
         const char *separator = i > 0 ? ", ": "";
         ALOGI("%s'%s'", separator,  font_provider_labels[providers[i]]);
@@ -300,9 +311,10 @@ void DecoderSubtitle::init(int frame_w, int frame_h) {
 void DecoderSubtitle::msg_callback(int level, const char *fmt, va_list va, void *data) {
     if (level > 6)
         return;
-    ALOGI("libass: ");
-    vprintf(fmt, va);
-    ALOGI("\n");
+    char s[512]={0};
+    ALOGI("libass: fmt=%s",fmt);
+    vsnprintf(s,512, fmt, va);
+    ALOGI("msg_callback libass: %s\n",s);
 }
 
 image_t* DecoderSubtitle::gen_image(int width, int height) {

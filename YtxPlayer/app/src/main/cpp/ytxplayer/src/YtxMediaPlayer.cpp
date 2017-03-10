@@ -76,7 +76,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mDecoderSubtitle = NULL;
     mDecoderVideo = NULL;
     mDecoderAudio = NULL;
-
+    subtitles = NULL;
     //sPlayer = this;
 }
 
@@ -275,17 +275,7 @@ int  YtxMediaPlayer::start() {
 
     }
 
-//    if(mCurrentState == MEDIA_PLAYBACK_COMPLETE){
-//        goto START_PLAYER;
-//    }
-//
-//    if(mCurrentState != MEDIA_PLAYER_PREPARED){
-//        return -4;
-//    }
-//    START_PLAYER:
     pthread_create(&mPlayerThread, NULL, startPlayer, this);
-
-
 
     return 0;
 }

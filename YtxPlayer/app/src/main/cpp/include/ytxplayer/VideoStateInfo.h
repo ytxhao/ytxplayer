@@ -57,8 +57,6 @@ public:
     void syncClock2Slave(Clock *c, Clock *slave);
 
     void init_opts(void);
-
-
     void uninit_opts(void);
 public:
     AVFormatContext *pFormatCtx;
@@ -93,13 +91,10 @@ public:
 
     int eof;
 
-    int st_index[AVMEDIA_TYPE_NB];
+    int st_index[AVMEDIA_TYPE_NB]={0};
 
     int currentTime;
 
-
-
-//    unsigned char *out_buffer_video;
     unsigned char *out_buffer_audio;
 
     //视频帧率

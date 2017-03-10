@@ -11,11 +11,18 @@
 
 DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
 {
-   // isFirstFrame = true;
-   // this->mVideoStateInfo = mVideoStateInfo;
+    // isFirstFrame = true;
+    // this->mVideoStateInfo = mVideoStateInfo;
+    mSamples = NULL;
+    mSamplesSize = 0;
+    mFrame = NULL;
+    af = NULL;
+    next_pts = 0;
+    lastStats = false;
+    curStats = false;
     firstInit = false;
-    mVideoStateInfo->initClock(mVideoStateInfo->audClk,&mQueue->serial);
-    mVideoStateInfo->setClockSpeed(mVideoStateInfo->audClk,1);
+    mVideoStateInfo->initClock(mVideoStateInfo->audClk, &mQueue->serial);
+    mVideoStateInfo->setClockSpeed(mVideoStateInfo->audClk, 1);
 
 }
 
@@ -56,10 +63,6 @@ bool DecoderAudio::process(MAVPacket *mPacket)
     int	completed;
     int i=0;
     int j=0;
-//    ALOGI("DecoderAudio::process mPacket->isEnd=%d",mPacket->isEnd);
-//    if(mPacket->isEnd){
-//        return false;
-//    }
 
     curStats = mPacket->isEnd;
 //    ALOGI("DecoderAudio::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);

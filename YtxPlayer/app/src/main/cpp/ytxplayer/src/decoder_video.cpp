@@ -15,6 +15,24 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
 {
     ALOGI("ytxhao DecoderVideo::DecoderVideo\n");
     firstInit = false;
+
+    frameQueueInitFinsh = 0;
+    mConvertCtx = NULL;
+    out_buffer_video = NULL;
+
+    mFrame = NULL;
+    mFrameYuv = NULL;
+    mVideoClock = 0.0;
+
+    graph = NULL;
+    filt_out = NULL;
+    filt_in = NULL;
+    last_w = 0;
+    last_h = 0;
+    last_format = AV_PIX_FMT_NONE;
+    last_serial = -1;
+    last_vfilter_idx = 0;
+
     mVideoStateInfo->initClock(mVideoStateInfo->vidClk,&mQueue->serial);
     mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
@@ -23,8 +41,7 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     sprintf(file,"%s%lu.yuv",mVideoStateInfo->mStorageDir,pthread_self());
     ALOGI("ytxhao DecoderVideo file = %s",file);
    // mVideoStateInfo->fp_yuv = fopen(file,"wb+");
-    mFrame = NULL;
-    out_buffer_video = NULL;
+
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         ALOGE("mFrame == NULL");
@@ -55,6 +72,7 @@ DecoderVideo::~DecoderVideo()
 
     if(!mConvertCtx){
         sws_freeContext(mConvertCtx);
+        mConvertCtx = NULL;
     }
 
 }
@@ -145,8 +163,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 //        ALOGI("####T 0 mFrame=%#x \n",mFrame);
 
 
-
-
         if (   last_w != mFrame->width
             || last_h != mFrame->height
             || last_format != mFrame->format
@@ -176,18 +192,16 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
         ret = av_buffersrc_add_frame(filt_in, mFrame);
         if (ret < 0){
-
             ALOGE("av_buffersrc_add_frame return err");
             assert(ret >= 0);
         }
-
 
         while (ret >= 0) {
             mVideoStateInfo->frame_last_returned_time = av_gettime_relative() / 1000000.0;
 
             ret = av_buffersink_get_frame_flags(filt_out, mFrame, 0);
             if (ret < 0) {
-                ALOGE("av_buffersink_get_frame_flags ERROR ret=%d",ret);
+
                 if (ret == AVERROR_EOF){
                     mVideoStateInfo->viddec_finished = mVideoStateInfo->pkt_serial_video;
                 }
@@ -206,7 +220,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             ///////////////////////////////////////////////////
             int size_y = 0;
             double duration;
-        //    mFrame->pts = av_frame_get_best_effort_timestamp(mFrame);
+
             duration = (frameRate.num && frameRate.den ? av_q2d((AVRational){frameRate.den, frameRate.num}) : 0);
             pts = (mFrame->pts == AV_NOPTS_VALUE) ? NAN : mFrame->pts * av_q2d(timeBase);
 
@@ -224,8 +238,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
                 vp->allocated  = 0;
                 vp->reallocate = 0;
-              //  ALOGI("fef0=%#x mFrame=%#x \n",vp,mFrame);
-              //  ALOGI("####T vp->width=%d mFrame->width=%d \n",vp->width,mFrame->width);
                 vp->width = mFrame->width;
                 vp->height = mFrame->height;
             }
@@ -234,8 +246,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             vp->duration = duration;
             vp->serial = mVideoStateInfo->pkt_serial_video;
             vp->pos = av_frame_get_pkt_pos(mFrame);
-
-
 
             av_image_fill_arrays(mFrameYuv->data, mFrameYuv->linesize,out_buffer_video,
                                  AV_PIX_FMT_YUV420P, mVideoStateInfo->streamVideo->dec_ctx->width,
@@ -274,8 +284,6 @@ bool DecoderVideo::process(MAVPacket *mPacket)
         return true;
     }
 
-
-
     return true;
 }
 
@@ -283,10 +291,9 @@ bool DecoderVideo::decode(void* ptr)
 {
     MAVPacket        pPacket;
 
-    int i;
     ALOGI( "decoding video\n");
-  //  AVFrame *frame = av_frame_alloc();
-    timeBase =  mVideoStateInfo->streamVideo->st->time_base;//is->video_st->time_base;
+
+    timeBase =  mVideoStateInfo->streamVideo->st->time_base;
     frameRate = av_guess_frame_rate(mVideoStateInfo->pFormatCtx, mVideoStateInfo->streamVideo->st, NULL);
     graph = avfilter_graph_alloc();
     filt_out = NULL;
@@ -382,7 +389,6 @@ int DecoderVideo::configure_video_filters(AVFilterGraph *graph, const char *vfil
         AVRational fr = av_guess_frame_rate(mVideoStateInfo->pFormatCtx, mVideoStateInfo->streamVideo->st, NULL);
         AVDictionaryEntry *e = NULL;
 
-        ALOGI("sizeof(buffersrc_args)=%d",sizeof(buffersrc_args));
         memset(buffersrc_args,0,sizeof(buffersrc_args));
         while ((e = av_dict_get(mVideoStateInfo->sws_dict, "", e, AV_DICT_IGNORE_SUFFIX))) {
             if (!strcmp(e->key, "sws_flags")) {
@@ -425,50 +431,6 @@ int DecoderVideo::configure_video_filters(AVFilterGraph *graph, const char *vfil
             goto fail;
 
         last_filter = filt_out;
-
-/* Note: this macro adds a filter before the lastly added filter, so the
- * processing order of the filters is in reverse */
-
-//#define INSERT_FILT(name, arg) do {                                          \
-//    AVFilterContext *filt_ctx;                                               \
-//                                                                             \
-//    ret = avfilter_graph_create_filter(&filt_ctx,                            \
-//                                       avfilter_get_by_name(name),           \
-//                                       "ffplay_" name, arg, NULL, graph);    \
-//    if (ret < 0)                                                             \
-//        goto fail;                                                           \
-//                                                                             \
-//    ret = avfilter_link(filt_ctx, 0, last_filter, 0);                        \
-//    if (ret < 0)                                                             \
-//        goto fail;                                                           \
-//                                                                             \
-//    last_filter = filt_ctx;                                                  \
-//} while (0)
-//
-//        /* SDL YUV code is not handling odd width/height for some driver
-//         * combinations, therefore we crop the picture to an even width/height. */
-//        INSERT_FILT("crop", "floor(in_w/2)*2:floor(in_h/2)*2");
-//
-//        if (mVideoStateInfo->autorotate) {
-//            double theta  = get_rotation(mVideoStateInfo->streamVideo->st);
-//
-//            ALOGI("fabs(theta - 90)=%f",fabs(theta - 90));
-//            ALOGI("fabs(theta - 180)=%f",fabs(theta - 180));
-//            ALOGI("fabs(theta - 270)=%f",fabs(theta - 270));
-//            ALOGI("fabs(theta)=%f",fabs(theta));
-//            if (fabs(theta - 90) < 1.0) {
-//                INSERT_FILT("transpose", "clock");
-//            } else if (fabs(theta - 180) < 1.0) {
-//                INSERT_FILT("hflip", NULL);
-//                INSERT_FILT("vflip", NULL);
-//            } else if (fabs(theta - 270) < 1.0) {
-//                INSERT_FILT("transpose", "cclock");
-//            } else if (fabs(theta) > 1.0) {
-//                char rotate_buf[64];
-//                snprintf(rotate_buf, sizeof(rotate_buf), "%f*PI/180", theta);
-//                INSERT_FILT("rotate", rotate_buf);
-//            }
-//        }
 
         if ((ret = configure_filtergraph(graph, vfilters, filt_src, last_filter)) < 0){
             ALOGE("configure_filtergraph ret=%d",ret);
