@@ -62,9 +62,10 @@ public:
     void uninit_opts(void);
 public:
     AVFormatContext *pFormatCtx;
-    AVDictionary *sws_dict;
+
     AVFilterContext *in_video_filter;   // the first filter in the video chain
     AVFilterContext *out_video_filter;  // the last filter in the video chain
+    AVDictionary *sws_dict;
     InputStream *streamVideo;
     InputStream *streamAudio;
     InputStream *streamSubtitle;

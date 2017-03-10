@@ -39,6 +39,7 @@ VideoStateInfo::VideoStateInfo(){
     seekFlags = 0;
     eof =0;
     currentTime =0;
+    sws_dict = NULL;
 //    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
 //    fp_pcm = fopen(file_pcm,"wb+");
 //    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
@@ -164,6 +165,7 @@ char* VideoStateInfo::join3(char *s1, char *s2)
 
 void VideoStateInfo::init_opts(void)
 {
+    ALOGI("init_opts sws_dict=%#x\n",sws_dict);
     av_dict_set(&sws_dict, "flags", "bicubic", 0);
 }
 
