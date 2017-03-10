@@ -40,6 +40,7 @@ VideoStateInfo::VideoStateInfo(){
     eof =0;
     currentTime =0;
     sws_dict = NULL;
+    vfilters_list = NULL;
 //    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
 //    fp_pcm = fopen(file_pcm,"wb+");
 //    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
@@ -72,6 +73,10 @@ VideoStateInfo::~VideoStateInfo() {
     pthread_cond_destroy(&mCondition);
     pthread_mutex_destroy(&wait_mutex);
     pthread_cond_destroy(&continue_read_thread);
+
+    if(vfilters_list != NULL){
+        free(vfilters_list);
+    }
 }
 
 void VideoStateInfo::notify() {

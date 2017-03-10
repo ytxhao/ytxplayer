@@ -209,7 +209,6 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private String subtitles;
     public void setSubtitles(String url){
         subtitles = url;
-
     }
 
     @Override
@@ -649,6 +648,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void onDestroy(){
         stopPlayback();
+        subtitles = null;
 
     }
 

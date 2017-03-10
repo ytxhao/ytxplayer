@@ -33,6 +33,7 @@ GlEngine::GlEngine() {
     isSetupGraphics = 0;
     isDrawFrameInit = false;
     isFrameRendererFinish = false;
+    img = NULL;
 }
 
 GlEngine::~GlEngine() {
@@ -500,6 +501,10 @@ void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
 
         if(img == NULL){
             img = gen_image(videoWidth,videoHeight);
+        }else{
+            image_t *img_tmp = img;
+            img = gen_image(videoWidth,videoHeight);
+            free(img_tmp);
         }
 
     }

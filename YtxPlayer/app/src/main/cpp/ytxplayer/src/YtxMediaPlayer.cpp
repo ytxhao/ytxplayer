@@ -76,6 +76,7 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mDecoderSubtitle = NULL;
     mDecoderVideo = NULL;
     mDecoderAudio = NULL;
+
     //sPlayer = this;
 }
 
