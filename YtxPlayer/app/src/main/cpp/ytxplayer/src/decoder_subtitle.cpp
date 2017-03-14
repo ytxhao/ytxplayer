@@ -259,10 +259,10 @@ void DecoderSubtitle::stop() {
 
 int DecoderSubtitle::streamHasEnoughPackets(){
     int ret = 0;
-    ret = mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] < 0 ||
+    ret = mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] < 0 ||
           mQueue->mAbortRequest ||
-          (mVideoStateInfo->streamAudio->st->disposition & AV_DISPOSITION_ATTACHED_PIC) ||
-          mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamAudio->st->time_base) * mQueue->duration > 1.0);
+          (mVideoStateInfo->streamSubtitle->st->disposition & AV_DISPOSITION_ATTACHED_PIC) ||
+          mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamSubtitle->st->time_base) * mQueue->duration > 1.0);
 
     return ret;
 }
