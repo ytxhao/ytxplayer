@@ -33,8 +33,6 @@ DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVide
 DecoderSubtitle::~DecoderSubtitle()
 {
     // Free audio samples buffer
-
-
     ass_renderer_done(ass_renderer);
     ass_library_done(ass_library);
     ass_free_track(track);
@@ -126,6 +124,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         ALOGI("sp-sub-format=%d",sp->sub.format);
     }
     if (completed > 0  && sp->sub.format == 0) {
+        mVideoStateInfo->sub_format = 0;
         if (sp->sub.pts != AV_NOPTS_VALUE) {
             pts = sp->sub.pts / (double) AV_TIME_BASE;
         }
@@ -137,6 +136,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
             exit(1);
         }
 
+        ALOGI("sp->sub.num_rects=%d",sp->sub.num_rects);
         for (int i = 0; i < sp->sub.num_rects; i++)
         {
             int in_w = sp->sub.rects[i]->w;
@@ -145,7 +145,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
             int subh = mVideoStateInfo->streamSubtitle->dec_ctx->height ? mVideoStateInfo->streamSubtitle->dec_ctx->height : mVideoStateInfo->mVideoHeight;
             int out_w = mVideoStateInfo->mVideoWidth  ? in_w * mVideoStateInfo->mVideoWidth  / subw : in_w;
             int out_h = mVideoStateInfo->mVideoHeight ? in_h * mVideoStateInfo->mVideoHeight / subh : in_h;
-
+            ALOGI("in_w=%d in_h=%d subw=%d subh=%d out_w=%d out_h=%d sws_flags=%d",in_w,in_h,subw,subh,out_w,out_h,sws_flags);
             if (!(sp->subrects[i] = (AVSubtitleRect *) av_mallocz(sizeof(AVSubtitleRect))) ||
                 av_image_alloc(sp->subrects[i]->data, sp->subrects[i]->linesize, out_w, out_h, AV_PIX_FMT_YUVA420P, 16) < 0) {
                 ALOGI("Cannot allocate subtitle data\n");
@@ -168,14 +168,13 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
             sp->subrects[i]->x = sp->sub.rects[i]->x * out_w / in_w;
             sp->subrects[i]->y = sp->sub.rects[i]->y * out_h / in_h;
 
-
         }
         /* now we can update the picture count */
         mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
 
 
     }else if(completed > 0 && sp->sub.format == 1){
-
+        mVideoStateInfo->sub_format = 1;
         if (sp->sub.pts != AV_NOPTS_VALUE) {
             pts = sp->sub.pts / (double) AV_TIME_BASE;
         }

@@ -48,6 +48,7 @@ VideoStateInfo::VideoStateInfo(){
 
     viddec_finished = 0;
     autorotate = 1;
+    sub_format = -1;
 
 
     frameQueueVideo = new FrameQueueVideo();
@@ -87,10 +88,13 @@ VideoStateInfo::VideoStateInfo(){
 //    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
 //    fp_pcm1 = fopen(file_pcm1,"wb+");
 
+//      fp_yuv = fopen("/storage/emulated/0/subtitle.yuv","wb+");
+
 }
 VideoStateInfo::~VideoStateInfo() {
 //    fclose(fp_pcm);
 //    fclose(fp_pcm1);
+//    fclose(fp_yuv);
     avformat_close_input(&pFormatCtx);
     delete frameQueueVideo;
     delete frameQueueAudio;

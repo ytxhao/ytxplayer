@@ -124,7 +124,7 @@ public:
     int pkt_serial_video = 0;
     int pkt_serial_subtitle = 0;
     double max_frame_duration;
- //   FILE *fp_yuv;
+//    FILE *fp_yuv;
 //    FILE *fp_pcm;
 //    FILE *fp_pcm1;
 //    char file_pcm[100];
@@ -151,5 +151,7 @@ public:
 
     int viddec_finished;
     int autorotate = 1;
+
+    int sub_format = -1;
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

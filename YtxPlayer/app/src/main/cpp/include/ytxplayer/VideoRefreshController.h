@@ -8,6 +8,7 @@
 #include "frame_queue.h"
 #include "Thread.h"
 #include "VideoStateInfo.h"
+#include "ytxplayer/lock.h"
 class VideoRefreshController : public Thread
 {
 public:
@@ -16,6 +17,7 @@ public:
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;
+    Lock mLock;
     VideoStateInfo* mVideoStateInfo;
     VideoRefreshController(VideoStateInfo* mVideoStateInfo);
     ~VideoRefreshController(){};
@@ -28,6 +30,7 @@ public:
     double              vpDuration(Frame *vp, Frame *next_vp);
     double              computeTargetDelay(double delay);
     void write_png(char *fname, image_t *img);
+    void blend_subrect(uint8_t **data, int *linesize, const AVSubtitleRect *rect, int imgw, int imgh);
 };
 
 

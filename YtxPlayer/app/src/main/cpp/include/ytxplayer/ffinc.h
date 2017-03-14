@@ -97,6 +97,7 @@ typedef struct Frame {
      AVFrame *frame;
     //  AVFrame *frameYuv;
     char *out_buffer_video_yuv[3];
+    int linesize[AV_NUM_DATA_POINTERS];
     unsigned char *out_buffer_audio;
     int out_buffer_audio_size;
     image_t *imageFrame;

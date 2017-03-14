@@ -211,22 +211,22 @@ JNIEXPORT void JNICALL android_media_player_native_message_loop
 
 void android_media_player_notifyRenderFrame(jobject obj)
 {
-    ALOGI("android_media_player_notifyRenderFrame IN\n");
+   // ALOGI("android_media_player_notifyRenderFrame IN\n");
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
 //----------------------------------------------
 
     // 得到jclass
     jclass jclazz = env->GetObjectClass(obj);
-     ALOGI("android_media_player_notifyRenderFrame jclazz=%d\n",jclazz);
+  //   ALOGI("android_media_player_notifyRenderFrame jclazz=%d\n",jclazz);
     // 得到方法ID
     jmethodID jmtdId = env->GetMethodID(jclazz, "requestRender", "()V");
-     ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
+   //  ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
     // 调用方法
     env->CallVoidMethod(obj, jmtdId);
 
     sVm->DetachCurrentThread();
-    ALOGI("android_media_player_notifyRenderFrame OUT\n");
+  //  ALOGI("android_media_player_notifyRenderFrame OUT\n");
 
 }
 

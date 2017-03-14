@@ -37,13 +37,13 @@ Frame* FrameQueue::frameQueuePeekLast() {
 
 Frame* FrameQueue::frameQueuePeekWritable() {
     pthread_mutex_lock(&mutex);
-    ALOGI("frameQueuePeekWritable size=%d\n",size);
+  //  ALOGI("frameQueuePeekWritable size=%d\n",size);
     while(size >= max_size){
         pthread_cond_wait(&cond, &mutex);
     }
 
     pthread_mutex_unlock(&mutex);
-    ALOGI("frameQueuePeekWritable windex=%d\n",windex);
+   // ALOGI("frameQueuePeekWritable windex=%d\n",windex);
     return &queue[windex];
 }
 
@@ -54,7 +54,7 @@ Frame *FrameQueue::frameQueuePeekReadable() {
         pthread_cond_wait(&cond, &mutex);
     }
     pthread_mutex_unlock(&mutex);
-    ALOGI("frameQueuePeekReadable rindex=%d\n",rindex);
+  //  ALOGI("frameQueuePeekReadable rindex=%d\n",rindex);
     return &queue[(rindex + rindex_shown) % max_size];
 }
 

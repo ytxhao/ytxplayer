@@ -515,15 +515,15 @@ void GlEngine::setAspectRatio() {
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
     float heightScale = 0.0;
-    ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d f1=%f\n", mScreenHeight,mScreenWidth,f1);
-    ALOGI("setAspectRatio videoHeight=%d videoWidth=%d f2=%f\n", videoHeight,videoWidth,f2);
+ //   ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d f1=%f\n", mScreenHeight,mScreenWidth,f1);
+ //   ALOGI("setAspectRatio videoHeight=%d videoWidth=%d f2=%f\n", videoHeight,videoWidth,f2);
 
 
     if (f1 == f2) {
 
     } else if (f1 < f2) {
         widthScale = f1 / f2;
-        ALOGI("setAspectRatio widthScale=%f\n", widthScale);
+     //   ALOGI("setAspectRatio widthScale=%f\n", widthScale);
         vertice_buffer[0] = -widthScale;
         vertice_buffer[1] = -1.0f;
         vertice_buffer[2] = widthScale;
@@ -535,7 +535,7 @@ void GlEngine::setAspectRatio() {
         
     } else if(f1 > f2){
         heightScale = f2 / f1;
-        ALOGI("setAspectRatio heightScale=%f\n", heightScale);
+      //  ALOGI("setAspectRatio heightScale=%f\n", heightScale);
         vertice_buffer[0] = -1.0f;
         vertice_buffer[1] = -heightScale;
         vertice_buffer[2] = 1.0f;
@@ -606,7 +606,7 @@ static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine
 
 void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight)
 {
-    ALOGI("addRendererFrame IN\n");
+   // ALOGI("addRendererFrame IN\n");
 
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
@@ -614,7 +614,7 @@ void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, i
     getGlEngine(env,obj)->addRendererFrame(img,y,u,v,videoWidth,videoHeight);
 
     sVm->DetachCurrentThread();
-    ALOGI("addRendererFrame OUT\n");
+  //  ALOGI("addRendererFrame OUT\n");
 
 }
 
@@ -671,9 +671,9 @@ JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
 // onDrawFrame
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
         (JNIEnv *env, jobject obj){
-    ALOGI("native_1step_1opengl IN");
+  //  ALOGI("native_1step_1opengl IN");
     getGlEngine(env,obj)->drawFrame();
-    ALOGI("native_1step_1opengl OUT");
+ //   ALOGI("native_1step_1opengl OUT");
 }
 
 // onSurfaceCreated

@@ -107,13 +107,13 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         tb = (AVRational){1, mFrame->sample_rate};
 
         if (mFrame->pts != AV_NOPTS_VALUE){
-            ALOGI("DecoderAudio::process mFrame->pts != AV_NOPTS_VALUE");
+       //     ALOGI("DecoderAudio::process mFrame->pts != AV_NOPTS_VALUE");
             mFrame->pts = av_rescale_q(mFrame->pts, mVideoStateInfo->streamAudio->dec_ctx->time_base, tb);
         } else if (mFrame->pkt_pts != AV_NOPTS_VALUE){
-            ALOGI("DecoderAudio::process mFrame->pkt_pts != AV_NOPTS_VALUE");
+        //    ALOGI("DecoderAudio::process mFrame->pkt_pts != AV_NOPTS_VALUE");
             mFrame->pts = av_rescale_q(mFrame->pkt_pts, av_codec_get_pkt_timebase(mVideoStateInfo->streamAudio->dec_ctx), tb);
         } else if (next_pts != AV_NOPTS_VALUE){
-            ALOGI("DecoderAudio::process next_pts != AV_NOPTS_VALUE");
+        //    ALOGI("DecoderAudio::process next_pts != AV_NOPTS_VALUE");
             mFrame->pts = av_rescale_q(next_pts, next_pts_tb, tb);
         }
 
@@ -156,7 +156,7 @@ bool DecoderAudio::process(MAVPacket *mPacket)
         if(mVideoStateInfo->isFirstAudioFrame && mVideoStateInfo->frameQueueAudio->windex > 3){
             for(i=0;i<SAMPLE_QUEUE_SIZE;i++){
 
-                ALOGI("FrameQueue::process yuhaotest queue[%d].out_buffer_audio=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio);
+ //               ALOGI("FrameQueue::process yuhaotest queue[%d].out_buffer_audio=%#x",i,mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio);
 
 //                fwrite(mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio, 1,
 //                       (size_t) mVideoStateInfo->frameQueueAudio->queue[i].out_buffer_audio_size, mVideoStateInfo->fp_pcm);

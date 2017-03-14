@@ -129,9 +129,9 @@ void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, 
     assert(NULL == context);
 
     mAudioRefreshController->audioFrameProcess();
-    if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
-        mAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
-    }
+//    if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
+//        mAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
+//    }
 
 }
 
@@ -140,10 +140,20 @@ int AudioRefreshController::audioFrameProcess() {
     Frame *af;
     double audio_clock;
     SLuint32 size_buff = 0;
-    mAudioEngine->mLock.lock();
-    int64_t audio_callback_time = av_gettime_relative();
-    af = audioDecodeFrame();
-    ALOGI("AudioRefreshController::process  out_buffer_audio=%#x", af->out_buffer_audio);
+    int64_t audio_callback_time=0;
+    char *buf[128]={0};
+
+
+    if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
+        (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
+                                                      buf,
+                                                      128);
+
+    }else{
+        mAudioEngine->mLock.lock();
+        audio_callback_time = av_gettime_relative();
+        af = audioDecodeFrame();
+//    ALOGI("AudioRefreshController::process  out_buffer_audio=%#x", af->out_buffer_audio);
 //    /* update the audio clock with the pts */
 //    if (!isnan(af->pts))
 //        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;
@@ -156,19 +166,21 @@ int AudioRefreshController::audioFrameProcess() {
 //    int out_buffer_size = av_samples_get_buffer_size(NULL, mVideoStateInfo->out_channel_nb,
 //                                                     af->frame->nb_samples, mVideoStateInfo->out_sample_fmt,
 //                                                     1);
-    size_buff = (SLuint32) af->out_buffer_audio_size;
-    // fwrite(af->out_buffer_audio,1,size_buff,mVideoStateInfo->fp_pcm1);
-    (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
-                                                  af->out_buffer_audio,
-                                                  size_buff);
-    mAudioEngine->mLock.unlock();
+        size_buff = (SLuint32) af->out_buffer_audio_size;
+        // fwrite(af->out_buffer_audio,1,size_buff,mVideoStateInfo->fp_pcm1);
+        (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
+                                                      af->out_buffer_audio,
+                                                      size_buff);
+        mAudioEngine->mLock.unlock();
 
-    if (!isnan(audio_clock)) {
+        if (!isnan(audio_clock)) {
 
-        mVideoStateInfo->setClockAt(mVideoStateInfo->audClk, af->pts, af->serial,
-                                    audio_callback_time / 1000000.0);
-        mVideoStateInfo->syncClock2Slave(mVideoStateInfo->extClk, mVideoStateInfo->audClk);
+            mVideoStateInfo->setClockAt(mVideoStateInfo->audClk, af->pts, af->serial,
+                                        audio_callback_time / 1000000.0);
+            mVideoStateInfo->syncClock2Slave(mVideoStateInfo->extClk, mVideoStateInfo->audClk);
+        }
     }
+
 
 
     return ret;

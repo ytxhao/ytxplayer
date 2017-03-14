@@ -53,7 +53,7 @@ void VideoRefreshController::process() {
             return;
         }
         if (remaining_time > 0.0) {
-            ALOGI("startPlayerRefresh remaining_time=%lf  remaining_time*1000000=%lf\n",remaining_time,remaining_time * 1000000.0);
+         //   ALOGI("startPlayerRefresh remaining_time=%lf  remaining_time*1000000=%lf\n",remaining_time,remaining_time * 1000000.0);
             av_usleep((unsigned int) (remaining_time * 1000000.0));
         }
         remaining_time = REFRESH_RATE;
@@ -78,8 +78,8 @@ void VideoRefreshController::process() {
 
 
             time = av_gettime_relative() / 1000000.0; //获取ff系统时间,单位为秒
-            ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf,pFormatCtx->start_time=%lf,pFormatCtx->streams video start_time=%lf vp->pts=%lf\n",
-                  last_duration, time, frame_timer, frame_timer + delay,mVideoStateInfo->pFormatCtx->start_time,mVideoStateInfo->pFormatCtx->streams[mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]]->start_time,vp->pts);
+ //           ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf,pFormatCtx->start_time=%lf,pFormatCtx->streams video start_time=%lf vp->pts=%lf\n",
+ //                 last_duration, time, frame_timer, frame_timer + delay,mVideoStateInfo->pFormatCtx->start_time,mVideoStateInfo->pFormatCtx->streams[mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]]->start_time,vp->pts);
 
             if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                 remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -91,11 +91,12 @@ void VideoRefreshController::process() {
                 frame_timer = time;
             }
 
+            mLock.lock();
             if (!isnan(vp->pts)) {
                 mVideoStateInfo->currentTime = (int) (vp->pts * 1000);
                 mVideoStateInfo->updateVideoPts(vp->pts, vp->pos, vp->serial);
             }
-
+            mLock.unlock();
             /*
              * 添加subtitles
              */
@@ -123,6 +124,9 @@ void VideoRefreshController::process() {
                 }
             }
 
+
+
+
           //  display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
@@ -136,6 +140,7 @@ void VideoRefreshController::process() {
 //                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
 
                 bool hasSubtitles = false;
+                int i=0;
                 if(mVideoStateInfo->streamSubtitle->st){
                     if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
                         sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
@@ -143,6 +148,25 @@ void VideoRefreshController::process() {
                         if (vp->pts >= sp->pts + ((float) sp->sub.start_display_time / 1000)) {
 //                            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
                             hasSubtitles = true;
+
+                            if(mVideoStateInfo->sub_format == 0){
+                                uint8_t *data[4]={0};
+                                int linesize[4]={0};
+                                mLock.lock();
+                                data[0] = (uint8_t *) vp->out_buffer_video_yuv[0];
+                                data[1] = (uint8_t *) vp->out_buffer_video_yuv[1];
+                                data[2] = (uint8_t *) vp->out_buffer_video_yuv[2];
+
+                                linesize[0] = vp->linesize[0];
+                                linesize[1] = vp->linesize[1];
+                                linesize[2] = vp->linesize[2];
+
+
+                                for (i = 0; i < sp->sub.num_rects; i++){
+                                    blend_subrect(data, linesize, sp->subrects[i], decodeWidth, decodeHeight);
+                                }
+                                mLock.unlock();
+                            }
                         }
                     }
                 }
@@ -176,6 +200,50 @@ void VideoRefreshController::process() {
 
 }
 
+#define ALPHA_BLEND(a, oldp, newp, s)\
+((((oldp << s) * (255 - (a))) + (newp * (a))) / (255 << s))
+void VideoRefreshController::blend_subrect(uint8_t **data, int *linesize, const AVSubtitleRect *rect, int imgw, int imgh){
+    int x, y, Y, U, V, A;
+    uint8_t *lum, *cb, *cr;
+    int dstx, dsty, dstw, dsth;
+    const AVSubtitleRect *src = rect;
+
+    dstw = av_clip(rect->w, 0, imgw);
+    dsth = av_clip(rect->h, 0, imgh);
+    dstx = av_clip(rect->x, 0, imgw - dstw);
+    dsty = av_clip(rect->y, 0, imgh - dsth);
+    lum = data[0] + dstx + dsty * linesize[0];
+    cb  = data[1] + dstx/2 + (dsty >> 1) * linesize[1];
+    cr  = data[2] + dstx/2 + (dsty >> 1) * linesize[2];
+
+    for (y = 0; y<dsth; y++) {
+        for (x = 0; x<dstw; x++) {
+            Y = src->data[0][x + y*src->linesize[0]];
+            A = src->data[3][x + y*src->linesize[3]];
+            lum[0] = ALPHA_BLEND(A, lum[0], Y, 0);
+            lum++;
+        }
+        lum += linesize[0] - dstw;
+    }
+
+    for (y = 0; y<dsth/2; y++) {
+        for (x = 0; x<dstw/2; x++) {
+            U = src->data[1][x + y*src->linesize[1]];
+            V = src->data[2][x + y*src->linesize[2]];
+            A = src->data[3][2*x     +  2*y   *src->linesize[3]]
+                + src->data[3][2*x + 1 +  2*y   *src->linesize[3]]
+                + src->data[3][2*x + 1 + (2*y+1)*src->linesize[3]]
+                + src->data[3][2*x     + (2*y+1)*src->linesize[3]];
+            cb[0] = ALPHA_BLEND(A>>2, cb[0], U, 0);
+            cr[0] = ALPHA_BLEND(A>>2, cr[0], V, 0);
+            cb++;
+            cr++;
+        }
+        cb += linesize[1] - dstw/2;
+        cr += linesize[2] - dstw/2;
+    }
+
+}
 void VideoRefreshController::write_png(char *fname, image_t *img) {
 
     FILE *fp;
@@ -264,19 +332,19 @@ double  VideoRefreshController::computeTargetDelay(double delay){
                delay to compute the threshold. I still don't know
                if it is the best guess */
             sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
-            ALOGI("video: 000 delay=%0.3lf V-A=%lf sync_threshold=%lf max_frame_duration=%lf\n", delay, diff,sync_threshold,mVideoStateInfo->max_frame_duration);
+        //    ALOGI("video: 000 delay=%0.3lf V-A=%lf sync_threshold=%lf max_frame_duration=%lf\n", delay, diff,sync_threshold,mVideoStateInfo->max_frame_duration);
             if (!isnan(diff) && fabs(diff) < mVideoStateInfo->max_frame_duration) {
 
                 if (diff <= -sync_threshold) {
                     //如果音频播放比视频快
-                    ALOGI("video: 000 001");
+                //    ALOGI("video: 000 001");
                     delay = FFMAX(0, delay + diff);
                 } else if (diff >= sync_threshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD){
                     //如果视频比音频快
-                    ALOGI("video: 000 002");
+               //     ALOGI("video: 000 002");
                     delay = delay + diff;
                 } else if (diff >= sync_threshold){
-                    ALOGI("video: 000 003");
+                //    ALOGI("video: 000 003");
                     delay = 2 * delay;
                 }
 
@@ -292,7 +360,7 @@ double  VideoRefreshController::computeTargetDelay(double delay){
 
             }
 
-        ALOGI("video: 001 delay=%0.3lf V-A=%lf \n", delay, diff);
+   //     ALOGI("video: 001 delay=%0.3lf V-A=%lf \n", delay, diff);
 
         return delay;
 

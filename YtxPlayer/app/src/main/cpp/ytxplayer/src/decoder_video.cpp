@@ -124,7 +124,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
     // Decode video frame
 
     curStats = mPacket->isEnd;
-    ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
+  //  ALOGI("DecoderVideo::process mPacket->isEnd=%d curStats=%d lastStats=%d",mPacket->isEnd,curStats,lastStats);
 
     if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
         AVMessage msg;
@@ -269,6 +269,7 @@ bool DecoderVideo::process(MAVPacket *mPacket)
 
             size_y = mVideoStateInfo->streamVideo->dec_ctx->width *  mVideoStateInfo->streamVideo->dec_ctx->height;
 
+            memcpy(vp->linesize,mFrameYuv->linesize, sizeof(int)*AV_NUM_DATA_POINTERS);
             vp->out_buffer_video_yuv[0] = (char *) malloc(sizeof(char) * size_y);
             vp->out_buffer_video_yuv[1] = (char *) malloc(sizeof(char) * size_y / 4);
             vp->out_buffer_video_yuv[2] = (char *) malloc(sizeof(char) * size_y / 4);
@@ -325,7 +326,7 @@ bool DecoderVideo::decode(void* ptr)
             // Free the packet that was allocated by av_read_frame
             av_packet_unref(&pPacket.pkt);
         }
-        ALOGI( "DecoderVideo::decode mQueue->size()=%d\n",mQueue->size());
+      //  ALOGI( "DecoderVideo::decode mQueue->size()=%d\n",mQueue->size());
     }
 
     ALOGI("decoding video ended\n");

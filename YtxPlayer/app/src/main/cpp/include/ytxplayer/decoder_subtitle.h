@@ -67,7 +67,7 @@ private:
             [ASS_FONTPROVIDER_FONTCONFIG] = "Fontconfig",
             [ASS_FONTPROVIDER_DIRECTWRITE]= "DirectWrite",
     };
-    //char subfile[100];
+    char subfile[100]={0};
    // long long now=2500;
 
 };
