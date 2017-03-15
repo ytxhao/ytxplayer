@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivDragVideo;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"test_file/x7_11.mkv","video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"gqfc07.ts","test_file/x7_11.mkv","video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
     private String subtitles;
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 */
       //  ytxVideoView.setVideoPath("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/fileSequence0.ts");
 
-        ytxVideoView.setVideoPath(filePath+files[4]);
+        ytxVideoView.setVideoPath(filePath+files[5]);
         ytxVideoView.start();
 
         FileExplorerEvents.getBus().register(this);

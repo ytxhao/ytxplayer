@@ -248,7 +248,7 @@ bool DecoderSubtitle::decode(void* ptr)
 void DecoderSubtitle::stop() {
     mRunning = false;
     mQueue->abort();
-    mVideoStateInfo->frameQueueAudio->frameQueueReset();
+    mVideoStateInfo->frameQueueSubtitle->frameQueueReset();
     ALOGI("waiting on end of decoder thread\n");
     int ret = -1;
     if((ret = wait()) != 0) {

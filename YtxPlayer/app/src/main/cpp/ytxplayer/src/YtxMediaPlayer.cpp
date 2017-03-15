@@ -385,8 +385,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
        //       mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets(),mDecoderSubtitle->streamHasEnoughPackets());
 
         if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
-             ALOGI("v packets=%d a packets=%d s packets=%d v enough=%d  a enough=%d  s enough=%d\n", mDecoderVideo->packets(), mDecoderAudio->packets(),mDecoderSubtitle->packets(),
-                   mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets(),mDecoderSubtitle->streamHasEnoughPackets());
+   //          ALOGI("v packets=%d a packets=%d s packets=%d v enough=%d  a enough=%d  s enough=%d\n", mDecoderVideo->packets(), mDecoderAudio->packets(),mDecoderSubtitle->packets(),
+   //                mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets(),mDecoderSubtitle->streamHasEnoughPackets());
             if(mDecoderVideo->packets() + mDecoderAudio->packets() +mDecoderSubtitle->packets() > MAX_QUEUE_SIZE ||
                mDecoderVideo->streamHasEnoughPackets() &&
                mDecoderAudio->streamHasEnoughPackets() &&
@@ -406,8 +406,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
                 continue;
             }
         }else{
-            ALOGI("v packets=%d  a packets=%d v enough=%d  a enough=%d  \n", mDecoderVideo->packets(), mDecoderAudio->packets(),
-                  mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets());
+      //      ALOGI("v packets=%d  a packets=%d v enough=%d  a enough=%d  \n", mDecoderVideo->packets(), mDecoderAudio->packets(),
+      //            mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets());
             if(mDecoderVideo->packets() + mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
                mDecoderVideo->streamHasEnoughPackets() &&
                mDecoderAudio->streamHasEnoughPackets() ){
@@ -477,8 +477,9 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     int ret = -1;
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
         mDecoderSubtitle->stop();
-        if(mCurrentState == MEDIA_PLAYER_STATE_ERROR) {
-            ALOGI( "playing err\n");
+        ALOGI("waiting on mDecoderSubtitle thread\n");
+        if((ret = mDecoderSubtitle->wait()) != 0) {
+            ALOGI("Couldn't cancel subtitle thread: %i", ret);
         }
     }
 
