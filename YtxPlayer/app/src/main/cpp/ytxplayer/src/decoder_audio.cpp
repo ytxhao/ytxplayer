@@ -21,6 +21,7 @@ DecoderAudio::DecoderAudio(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     lastStats = false;
     curStats = false;
     firstInit = false;
+    mConvertCtx = NULL;
     mVideoStateInfo->initClock(mVideoStateInfo->audClk, &mQueue->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->audClk, 1);
 
@@ -32,6 +33,11 @@ DecoderAudio::~DecoderAudio()
     if(mFrame != NULL){
         av_frame_free(&mFrame);
     }
+
+    if(!mConvertCtx){
+        swr_free(&mConvertCtx);
+    }
+
     avcodec_close(mVideoStateInfo->streamAudio->dec_ctx);
 }
 

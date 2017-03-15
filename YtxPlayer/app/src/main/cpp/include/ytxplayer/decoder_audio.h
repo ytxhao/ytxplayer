@@ -27,7 +27,7 @@ public:
 
     void stop();
     int streamHasEnoughPackets();
-    struct SwrContext*	mConvertCtx;
+    struct SwrContext*	mConvertCtx = NULL;
 private:
 
 

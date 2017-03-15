@@ -74,7 +74,7 @@ DecoderVideo::~DecoderVideo()
         sws_freeContext(mConvertCtx);
         mConvertCtx = NULL;
     }
-
+    avcodec_close(mVideoStateInfo->streamVideo->dec_ctx);
 }
 
 bool DecoderVideo::prepare()

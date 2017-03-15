@@ -48,7 +48,7 @@ DecoderSubtitle::~DecoderSubtitle()
     ass_renderer=NULL;
     ass_library=NULL;
     track=NULL;
-    //avcodec_close(mVideoStateInfo->streamSubtitle->dec_ctx);
+    avcodec_close(mVideoStateInfo->streamSubtitle->dec_ctx);
 }
 
 bool DecoderSubtitle::prepare()
@@ -228,7 +228,7 @@ bool DecoderSubtitle::decode(void* ptr)
 
     while(mRunning)
     {
-        if(mQueue->get(&pPacket, true,&mVideoStateInfo->pkt_serial_audio) < 0)
+        if(mQueue->get(&pPacket, true,&mVideoStateInfo->pkt_serial_subtitle) < 0)
         {
             mRunning = false;
             return false;
