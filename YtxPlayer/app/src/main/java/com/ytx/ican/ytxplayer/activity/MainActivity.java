@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 */
       //  ytxVideoView.setVideoPath("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/fileSequence0.ts");
 
-        ytxVideoView.setVideoPath(filePath+files[0]);
+        ytxVideoView.setVideoPath(filePath+files[4]);
         ytxVideoView.start();
 
         FileExplorerEvents.getBus().register(this);

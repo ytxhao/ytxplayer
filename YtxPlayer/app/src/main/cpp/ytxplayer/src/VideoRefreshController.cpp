@@ -59,15 +59,13 @@ void VideoRefreshController::process() {
         remaining_time = REFRESH_RATE;
 
        // ALOGI("startPlayerRefresh mVideoStateInfo=%#x",mVideoStateInfo);
-       // ALOGI("startPlayerRefresh frameQueueVideo=%#x",mVideoStateInfo->frameQueueVideo);
+        ALOGI("startPlayerRefresh frameQueueNumRemaining=%d",mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining());
         if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 1) {
             // nothing to do, no picture to display in the queue
 
         } else {
 
 
-            //  ALOGI("startPlayerRefresh mDecoderVideo->frameQueue.size=%d\n",sPlayer->mDecoderVideo->frameQueue.size);
-            //  ALOGI("startPlayerRefresh frameQueueNumRemaining size=%d\n",sPlayer->mDecoderVideo->frameQueue.frameQueueNumRemaining());
             lastvp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             vp = mVideoStateInfo->frameQueueVideo->frameQueuePeek();
 
@@ -131,9 +129,9 @@ void VideoRefreshController::process() {
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
             int y_size = decodeWidth*decodeHeight;
-            Frame *vp;
-            vp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
-            if (vp->out_buffer_video_yuv[0] != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
+          //  Frame *vp;
+          //  lastvp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
+            if (lastvp->out_buffer_video_yuv[0] != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
 //                ALOGI("to getGlEngine()->addRendererFrame %lu decodeWidth=%d decodeHeight=%d",pthread_self(),decodeWidth,decodeHeight);
 //                fwrite(vp->frame->data[0],1,y_size,mVideoStateInfo->fp_yuv);    //Y
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
@@ -153,13 +151,13 @@ void VideoRefreshController::process() {
                                 uint8_t *data[4]={0};
                                 int linesize[4]={0};
                                 mLock.lock();
-                                data[0] = (uint8_t *) vp->out_buffer_video_yuv[0];
-                                data[1] = (uint8_t *) vp->out_buffer_video_yuv[1];
-                                data[2] = (uint8_t *) vp->out_buffer_video_yuv[2];
+                                data[0] = (uint8_t *) lastvp->out_buffer_video_yuv[0];
+                                data[1] = (uint8_t *) lastvp->out_buffer_video_yuv[1];
+                                data[2] = (uint8_t *) lastvp->out_buffer_video_yuv[2];
 
-                                linesize[0] = vp->linesize[0];
-                                linesize[1] = vp->linesize[1];
-                                linesize[2] = vp->linesize[2];
+                                linesize[0] = lastvp->linesize[0];
+                                linesize[1] = lastvp->linesize[1];
+                                linesize[2] = lastvp->linesize[2];
 
 
                                 for (i = 0; i < sp->sub.num_rects; i++){
@@ -176,17 +174,17 @@ void VideoRefreshController::process() {
                 if(hasSubtitles){
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           sp->imageFrame,
-                                          vp->out_buffer_video_yuv[0],
-                                          vp->out_buffer_video_yuv[1],
-                                          vp->out_buffer_video_yuv[2],
+                                          lastvp->out_buffer_video_yuv[0],
+                                          lastvp->out_buffer_video_yuv[1],
+                                          lastvp->out_buffer_video_yuv[2],
                                           decodeWidth,
                                           decodeHeight);
                 }else{
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           NULL,
-                                          vp->out_buffer_video_yuv[0],
-                                          vp->out_buffer_video_yuv[1],
-                                          vp->out_buffer_video_yuv[2],
+                                          lastvp->out_buffer_video_yuv[0],
+                                          lastvp->out_buffer_video_yuv[1],
+                                          lastvp->out_buffer_video_yuv[2],
                                           decodeWidth,
                                           decodeHeight);
                 }
