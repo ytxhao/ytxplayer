@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView ivDragVideo;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"gqfc07.ts","test_file/x7_11.mkv","video2.mp4","titanic.mkv","xszr.mp4","xszr2.mkv","out.avi","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"titanic.mkv","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
     private String subtitles;
@@ -103,11 +103,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Utils.CopyAssets(this,"video",filePath);
         Utils.CopyAssets(this,"fonts",getFilesDir);
-        Utils.CopyAssets(this,"ass",filePath);
 
         initView();
 
-        ytxVideoView.setVideoPath(filePath+files[5]);
+        ytxVideoView.setVideoPath(filePath+files[0]);
         ytxVideoView.start();
 
         FileExplorerEvents.getBus().register(this);
@@ -248,7 +247,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fileName = actvFileNameVideo.getText().toString().trim();
                 subtitles = actvFileNameSub.getText().toString().trim();
                 playNext = true;
-                ytxVideoView.onDestroy();
+
+                if(ytxVideoView.getYtxVideoViewCurrentState() == YtxVideoView.STATE_IDLE){
+                    if(!TextUtils.isEmpty(subtitles)){
+                        ytxVideoView.setSubtitles(subtitles);
+                    }
+                    ytxVideoView.setVideoPath(fileName);
+                    ytxVideoView.start();
+                }else{
+                    ytxVideoView.onDestroy();
+                }
                 break;
         }
     }

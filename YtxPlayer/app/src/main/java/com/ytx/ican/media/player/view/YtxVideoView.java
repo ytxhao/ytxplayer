@@ -39,13 +39,13 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     private static final String TAG = "YtxVideoView";
     // all possible internal states
-    private static final int STATE_ERROR              = -1;
-    private static final int STATE_IDLE               = 0;
-    private static final int STATE_PREPARING          = 1;
-    private static final int STATE_PREPARED           = 2;
-    private static final int STATE_PLAYING            = 3;
-    private static final int STATE_PAUSED             = 4;
-    private static final int STATE_PLAYBACK_COMPLETED = 5;
+    public static final int STATE_ERROR              = -1;
+    public static final int STATE_IDLE               = 0;
+    public static final int STATE_PREPARING          = 1;
+    public static final int STATE_PREPARED           = 2;
+    public static final int STATE_PLAYING            = 3;
+    public static final int STATE_PAUSED             = 4;
+    public static final int STATE_PLAYBACK_COMPLETED = 5;
 
     //-------------------------
     // Extend: Render
@@ -650,6 +650,10 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         stopPlayback();
         subtitles = null;
 
+    }
+
+    public int getYtxVideoViewCurrentState(){
+        return mCurrentState;
     }
 
 }

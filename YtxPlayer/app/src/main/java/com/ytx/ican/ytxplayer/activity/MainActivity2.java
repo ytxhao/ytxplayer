@@ -51,7 +51,6 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
 
         Utils.CopyAssets(this,"video",filePath);
         Utils.CopyAssets(this,"fonts",filePath);
-        Utils.CopyAssets(this,"ass",filePath);
 
         new Thread(new Runnable() {
             @Override
