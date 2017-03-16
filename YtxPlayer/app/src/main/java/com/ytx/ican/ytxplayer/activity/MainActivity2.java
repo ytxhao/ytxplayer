@@ -1,19 +1,12 @@
 package com.ytx.ican.ytxplayer.activity;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.ytxplayer.R;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import com.ytx.ican.ytxplayer.utils.Utils;
 
 public class MainActivity2 extends AppCompatActivity implements View.OnClickListener {
 
@@ -56,9 +49,9 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
         final String filePath = Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/";
 
-        CopyAssets(this,"video",filePath);
-        CopyAssets(this,"fonts",filePath);
-        CopyAssets(this,"ass",filePath);
+        Utils.CopyAssets(this,"video",filePath);
+        Utils.CopyAssets(this,"fonts",filePath);
+        Utils.CopyAssets(this,"ass",filePath);
 
         new Thread(new Runnable() {
             @Override
@@ -78,37 +71,4 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
 
     native int setCmd(String cmd);
 
-
-
-    /**
-     * 复制asset文件到指定目录
-     * @param oldPath  asset下的路径
-     * @param newPath  SD卡下保存路径
-     */
-    public static void CopyAssets(Context context, String oldPath, String newPath) {
-        try {
-            String fileNames[] = context.getAssets().list(oldPath);// 获取assets目录下的所有文件及目录名
-            if (fileNames.length > 0) {// 如果是目录
-                File file = new File(newPath);
-                file.mkdirs();// 如果文件夹不存在，则递归
-                for (String fileName : fileNames) {
-                    CopyAssets(context, oldPath + "/" + fileName, newPath + "/" + fileName);
-                }
-            } else {// 如果是文件
-                InputStream is = context.getAssets().open(oldPath);
-                FileOutputStream fos = new FileOutputStream(new File(newPath));
-                byte[] buffer = new byte[1024];
-                int byteCount = 0;
-                while ((byteCount = is.read(buffer)) != -1) {// 循环从输入流读取
-                    // buffer字节
-                    fos.write(buffer, 0, byteCount);// 将读取的输入流写入到输出流
-                }
-                fos.flush();// 刷新缓冲区
-                is.close();
-                fos.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

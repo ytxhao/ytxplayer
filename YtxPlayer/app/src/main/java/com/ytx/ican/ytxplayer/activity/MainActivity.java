@@ -1,14 +1,12 @@
 package com.ytx.ican.ytxplayer.activity;
 
-import android.content.Context;
+
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -27,14 +25,12 @@ import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.R;
 import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
-import com.ytx.ican.ytxplayer.fragment.FileListFragment;
 import com.ytx.ican.ytxplayer.utils.FontSearchConfig;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
+import com.ytx.ican.ytxplayer.utils.Utils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,18 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case YtxMediaPlayer.MEDIA_STOPPED:
                     if(playNext){
                         playNext = false;
-                        /*
-                        if(!TextUtils.isEmpty(fileName)){
-                            if(fileName.contains("rtmp://")){
-                                ytxVideoView.setVideoPath(fileName);
-                            }else{
-                                ytxVideoView.setVideoPath(filePath+fileName);
-                            }
-                        }else{
-                            ytxVideoView.setVideoPath(filePath+files[0]);
-                        }
-                        ytxVideoView.start();
-                        */
 
                         YtxLog.d(TAG,"subtitles="+subtitles);
                         if(!TextUtils.isEmpty(subtitles)){
@@ -114,32 +98,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
        //获取该程序的安装包路径
 
-        String getPackageResourcePath=getApplicationContext().getPackageResourcePath();
-
-       //获取程序默认数据库路径
-
         FontSearchConfig.setFontSearchPath(getFilesDir);
-        YtxLog.d(TAG,"getFilesDir="+getFilesDir+" getPackageResourcePath="+getPackageResourcePath+" test="+FontSearchConfig.getFontSearchPath());
+        YtxLog.d(TAG,"getFilesDir="+getFilesDir+" FontSearchPath="+FontSearchConfig.getFontSearchPath());
 
-        CopyAssets(this,"video",filePath);
-        CopyAssets(this,"fonts",getFilesDir);
-        CopyAssets(this,"ass",filePath);
+        Utils.CopyAssets(this,"video",filePath);
+        Utils.CopyAssets(this,"fonts",getFilesDir);
+        Utils.CopyAssets(this,"ass",filePath);
 
         initView();
-
-       // playVideo();
-/*
-        if(!TextUtils.isEmpty(fileName)){
-            if(!fileName.equals(files[4])){
-                ytxVideoView.setVideoPath(filePath+fileName);
-            }else{
-                ytxVideoView.setVideoPath(fileName);
-            }
-        }else{
-            ytxVideoView.setVideoPath(filePath+files[0]);
-        }
-*/
-      //  ytxVideoView.setVideoPath("http://devimages.apple.com.edgekey.net/streaming/examples/bipbop_4x3/gear1/fileSequence0.ts");
 
         ytxVideoView.setVideoPath(filePath+files[5]);
         ytxVideoView.start();
@@ -160,22 +126,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ivDragVideo.setOnClickListener(this);
         btAddVideo.setOnClickListener(this);
         btAddSub.setOnClickListener(this);
-   //     btAddVideo.setEnabled(false);
+
         btPlay.setOnClickListener(this);
         btPlay.setEnabled(false);
         actvFileNameVideo.addTextChangedListener(textWatcher);
         actvFileNameVideo.setHorizontallyScrolling(true);
         actvFileNameVideo.setOnClickListener(this);
-  //      actvFileNameVideo.setText(fileName);
 
         actvFileNameSub.addTextChangedListener(textWatcher);
         actvFileNameSub.setHorizontallyScrolling(true);
         actvFileNameSub.setOnClickListener(this);
-/*
-        for(int i=0;i<files.length;i++){
-            contacts.add(files[i]);
-        }
-*/
+
         adapter = new ArrayAdapter<>(this,R.layout.file_name_dropdow_item,contacts);
         actvFileNameVideo.setAdapter(adapter);
 
@@ -207,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        YtxLog.d("MainActivity2","#### #### onPause");
+        YtxLog.d(TAG,"#### #### onPause");
         ytxVideoView.onPause();
 
     }
@@ -238,37 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         YtxLog.d(TAG,"#### #### onConfigurationChanged");
     }
 
-    /**
-     * 复制asset文件到指定目录
-     * @param oldPath  asset下的路径
-     * @param newPath  SD卡下保存路径
-     */
-    public static void CopyAssets(Context context, String oldPath, String newPath) {
-        try {
-            String fileNames[] = context.getAssets().list(oldPath);// 获取assets目录下的所有文件及目录名
-            if (fileNames.length > 0) {// 如果是目录
-                File file = new File(newPath);
-                file.mkdirs();// 如果文件夹不存在，则递归
-                for (String fileName : fileNames) {
-                    CopyAssets(context, oldPath + "/" + fileName, newPath + "/" + fileName);
-                }
-            } else {// 如果是文件
-                InputStream is = context.getAssets().open(oldPath);
-                FileOutputStream fos = new FileOutputStream(new File(newPath));
-                byte[] buffer = new byte[1024];
-                int byteCount = 0;
-                while ((byteCount = is.read(buffer)) != -1) {// 循环从输入流读取
-                    // buffer字节
-                    fos.write(buffer, 0, byteCount);// 将读取的输入流写入到输出流
-                }
-                fos.flush();// 刷新缓冲区
-                is.close();
-                fos.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private TextWatcher textWatcher = new TextWatcher() {
 
