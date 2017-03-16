@@ -28,6 +28,7 @@ import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.R;
 import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
 import com.ytx.ican.ytxplayer.fragment.FileListFragment;
+import com.ytx.ican.ytxplayer.utils.FontSearchConfig;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
 
 import java.io.File;
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private static final String TAG = "MainActivity2";
+    private static final String TAG = "MainActivity";
     private static final String FILE_NAME = "file_name";
 
     private YtxVideoView ytxVideoView;
@@ -107,8 +108,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .getAbsolutePath() + "/" ;
 //        fileName = PreferenceUtil.getInstance().getString(FILE_NAME);
 
+        //获取当前程序路径
+
+        String getFilesDir=getApplicationContext().getFilesDir().getAbsolutePath();
+
+       //获取该程序的安装包路径
+
+        String getPackageResourcePath=getApplicationContext().getPackageResourcePath();
+
+       //获取程序默认数据库路径
+
+        FontSearchConfig.setFontSearchPath(getFilesDir);
+        YtxLog.d(TAG,"getFilesDir="+getFilesDir+" getPackageResourcePath="+getPackageResourcePath+" test="+FontSearchConfig.getFontSearchPath());
+
         CopyAssets(this,"video",filePath);
-        CopyAssets(this,"fonts",filePath);
+        CopyAssets(this,"fonts",getFilesDir);
         CopyAssets(this,"ass",filePath);
 
         initView();

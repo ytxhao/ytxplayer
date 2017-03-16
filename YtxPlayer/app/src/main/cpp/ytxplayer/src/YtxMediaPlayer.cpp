@@ -8,6 +8,7 @@
 
 #include <ytxplayer/utils.h>
 #include "ytxplayer/ALog-priv.h"
+
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
 #include "ytxplayer/gl_engine.h"
