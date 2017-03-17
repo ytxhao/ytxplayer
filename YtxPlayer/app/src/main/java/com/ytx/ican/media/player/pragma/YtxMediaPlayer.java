@@ -38,7 +38,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     public static final int MEDIA_ERROR = 100;
     public static final int MEDIA_INFO = 200;
     public static final int MEDIA_STOPPED  = 201;
-
+    protected static final int MEDIA_SET_VIDEO_SAR = 10001;
 
     private static final int MEDIA_PLAYER_STATE_ERROR        = 0;
     private static final int MEDIA_PLAYER_IDLE               = 1 << 0;
@@ -58,6 +58,12 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private int mNativeSurfaceTexture;  // accessed by native methods
     private int mListenerContext; // accessed by native methods
     private long mNativeMediaPlayer; // accessed by native methods
+
+
+    private int mVideoWidth;
+    private int mVideoHeight;
+    private int mVideoSarNum;
+    private int mVideoSarDen;
 
     public YtxMediaPlayer(){
         this(sLocalLibLoader);
@@ -374,18 +380,55 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     player.notifyOnCompletion();
                     break;
                 case MEDIA_BUFFERING_UPDATE:
+                    long bufferPosition = msg.arg1;
+                    if (bufferPosition < 0) {
+                        bufferPosition = 0;
+                    }
+
+                    long percent = 0;
+                    long duration = player.getDuration();
+                    if (duration > 0) {
+                        percent = bufferPosition * 100 / duration;
+                    }
+                    if (percent >= 100) {
+                        percent = 100;
+                    }
+
+                    // DebugLog.efmt(TAG, "Buffer (%d%%) %d/%d",  percent, bufferPosition, duration);
+                    player.notifyOnBufferingUpdate((int)percent);
                     break;
                 case MEDIA_SEEK_COMPLETE:
                     player.notifyOnSeekComplete();
                     break;
                 case MEDIA_SET_VIDEO_SIZE:
+                    player.mVideoWidth = msg.arg1;
+                    player.mVideoHeight = msg.arg2;
+                    player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
+                            player.mVideoSarNum, player.mVideoSarDen);
                     break;
                 case MEDIA_ERROR:
+                    YtxLog.e(TAG, "Error (" + msg.arg1 + "," + msg.arg2 + ")");
+                    if (!player.notifyOnError(msg.arg1, msg.arg2)) {
+                        player.notifyOnCompletion();
+                    }
+
                     break;
                 case MEDIA_INFO:
+                    switch (msg.arg1) {
+                        case MEDIA_INFO_VIDEO_RENDERING_START:
+                            YtxLog.i(TAG, "Info: MEDIA_INFO_VIDEO_RENDERING_START\n");
+                            break;
+                    }
+                    player.notifyOnInfo(msg.arg1, msg.arg2);
                     break;
                 case MEDIA_STOPPED:
                     player.notifyOnInfo(MEDIA_STOPPED,0);
+                    break;
+                case MEDIA_SET_VIDEO_SAR:
+                    player.mVideoSarNum = msg.arg1;
+                    player.mVideoSarDen = msg.arg2;
+                    player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,
+                            player.mVideoSarNum, player.mVideoSarDen);
                     break;
                 default:
                     YtxLog.e(TAG, "Unknown message type " + msg.what);

@@ -178,7 +178,13 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
     //   ALOGI("Couldn't open input stream.\n");
     if(avformat_open_input(&mPlayer->mVideoStateInfo->pFormatCtx,mPlayer->filePath,NULL,NULL)!=0){
         ALOGI("Couldn't open input stream.\n");
-        return 0;
+        AVMessage msg;
+        msg.what = FFP_MSG_ERROR;
+        msg.arg1 = MEDIA_ERROR_OPEN_STREAM;
+        mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
+        mPlayer->mCurrentState = MEDIA_PLAYER_STATE_ERROR;
+        avformat_network_deinit();
+        pthread_exit(NULL);
     }
 
     if(avformat_find_stream_info(mPlayer->mVideoStateInfo->pFormatCtx,NULL)<0){
@@ -515,6 +521,7 @@ int  YtxMediaPlayer::release() {
 int  YtxMediaPlayer::stop() {
     ALOGI("YtxMediaPlayer::stop()");
     mCurrentState = MEDIA_PLAYER_STOPPED;
+    mVideoStateInfo->mMessageLoop->stop();
     pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
    // playing = false;
     return 0;
@@ -664,7 +671,7 @@ int  YtxMediaPlayer::setListener(MediaPlayerListener* listener) {
 void  YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
-    mVideoStateInfo->mMessageLoop->stop();
+   // mVideoStateInfo->mMessageLoop->stop();
     isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");
 }

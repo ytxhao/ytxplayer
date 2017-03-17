@@ -268,6 +268,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     @Override
     public int getBufferPercentage() {
+        if (mMediaPlayer != null) {
+            return mCurrentBufferPercentage;
+        }
         return 0;
     }
 
@@ -456,6 +459,18 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         @Override
         public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
 
+            mVideoWidth = mp.getVideoWidth();
+            mVideoHeight = mp.getVideoHeight();
+//            mVideoSarNum = mp.getVideoSarNum();
+//            mVideoSarDen = mp.getVideoSarDen();
+//            if (mVideoWidth != 0 && mVideoHeight != 0) {
+//                if (mRenderView != null) {
+//                    mRenderView.setVideoSize(mVideoWidth, mVideoHeight);
+//                    mRenderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
+//                }
+//                // REMOVED: getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+//                requestLayout();
+//            }
         }
     };
 
@@ -524,7 +539,50 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             if(mOnInfoListener != null){
                 mOnInfoListener.onInfo(mp,what,extra);
             }
-            return false;
+
+            switch (what) {
+                case IMediaPlayer.MEDIA_INFO_VIDEO_TRACK_LAGGING:
+                    Log.d(TAG, "MEDIA_INFO_VIDEO_TRACK_LAGGING:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                    Log.d(TAG, "MEDIA_INFO_VIDEO_RENDERING_START:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                    Log.d(TAG, "MEDIA_INFO_BUFFERING_START:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                    Log.d(TAG, "MEDIA_INFO_BUFFERING_END:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
+                    Log.d(TAG, "MEDIA_INFO_NETWORK_BANDWIDTH: " + extra);
+                    break;
+                case IMediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
+                    Log.d(TAG, "MEDIA_INFO_BAD_INTERLEAVING:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+                    Log.d(TAG, "MEDIA_INFO_NOT_SEEKABLE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_METADATA_UPDATE:
+                    Log.d(TAG, "MEDIA_INFO_METADATA_UPDATE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_UNSUPPORTED_SUBTITLE:
+                    Log.d(TAG, "MEDIA_INFO_UNSUPPORTED_SUBTITLE:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_SUBTITLE_TIMED_OUT:
+                    Log.d(TAG, "MEDIA_INFO_SUBTITLE_TIMED_OUT:");
+                    break;
+                case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+               //     mVideoRotationDegree = arg2;
+                    Log.d(TAG, "MEDIA_INFO_VIDEO_ROTATION_CHANGED: " + extra);
+//                    if (mRenderView != null)
+//                        mRenderView.setVideoRotation(arg2);
+//                    break;
+                case IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+                    Log.d(TAG, "MEDIA_INFO_AUDIO_RENDERING_START:");
+                    break;
+            }
+
+            return true;
         }
     };
 
@@ -534,6 +592,12 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             Log.d(TAG, "Error: " + framework_err + "," + impl_err);
             mCurrentState = STATE_ERROR;
             mTargetState = STATE_ERROR;
+
+            if(mOnErrorListener != null){
+                if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
+                    return true;
+                }
+            }
 
             return false;
         }

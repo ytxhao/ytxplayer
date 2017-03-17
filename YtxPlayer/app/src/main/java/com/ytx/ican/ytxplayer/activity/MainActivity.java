@@ -151,6 +151,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         });
+
+        ytxVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer mp, int what, int extra) {
+                YtxLog.d(TAG,"setOnErrorListener onError what="+what);
+                return true;
+            }
+        });
+
+        ytxVideoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(IMediaPlayer mp) {
+                YtxLog.d(TAG,"setOnPreparedListener onPrepared");
+            }
+        });
+
+        ytxVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(IMediaPlayer mp) {
+                YtxLog.d(TAG,"setOnCompletionListener onCompletion");
+            }
+        });
     }
 
 
@@ -278,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         } else if (f.exists()) {
-            // VideoActivity.intentTo(this, f.getPath(), f.getName());
+
             YtxLog.d(TAG,"f.getPath()="+f.getPath()+" f.getName()="+f.getName());
 
             if(isAddSub){
