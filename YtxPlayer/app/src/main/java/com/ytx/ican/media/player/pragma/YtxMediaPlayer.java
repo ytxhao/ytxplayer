@@ -123,8 +123,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("iconv");
                     libLoader.loadLibrary("xml2");
 
-                    libLoader.loadLibrary("png");
-                    libLoader.loadLibrary("harfbuzz");
+                    libLoader.loadLibrary("png16");
+//                    libLoader.loadLibrary("harfbuzz");
                     libLoader.loadLibrary("freetype");
 
                     libLoader.loadLibrary("fontconfig");
