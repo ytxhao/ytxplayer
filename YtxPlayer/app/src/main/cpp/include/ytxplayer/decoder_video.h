@@ -38,6 +38,7 @@ private:
     enum AVPixelFormat last_format = AV_PIX_FMT_NONE;
     int last_serial = -1;
     int last_vfilter_idx = 0;
+    int ret_filters=0;
 
 
 

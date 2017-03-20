@@ -83,7 +83,7 @@ bool MessageLoop::process(AVMessage *msg) {
             break;
         case FFP_MSG_ERROR:
             //post_event();
-            listener->notify(MEDIA_ERROR, MEDIA_ERROR_OPEN_STREAM, 0);
+            listener->notify(MEDIA_ERROR, msg->arg1, 0);
             break;
         case FFP_MSG_PREPARED:
             //post_event();

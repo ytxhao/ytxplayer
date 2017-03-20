@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -33,7 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private static final String TAG = "MainActivity";
@@ -156,6 +155,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onError(IMediaPlayer mp, int what, int extra) {
                 YtxLog.d(TAG,"setOnErrorListener onError what="+what);
+                switch (what){
+                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM:
+                        getHelper().showMessage(R.string.file_open_failed);
+                        break;
+                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES:
+                        getHelper().showMessage(R.string.file_open_is_subtitle);
+                        break;
+
+                }
+
                 ytxVideoView.onDestroy();
                 return true;
             }
@@ -174,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 YtxLog.d(TAG,"setOnCompletionListener onCompletion");
             }
         });
+
+       // showLoading();
     }
 
 
