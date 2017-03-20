@@ -82,18 +82,18 @@ set_target_properties( # Specifies the target library.
                        ${LINK_DIR}/libpng16.so )
 
 
-#add_library( harfbuzz-lib
-#             SHARED
-#             IMPORTED )
+add_library( harfbuzz-lib
+             SHARED
+             IMPORTED )
 
-#set_target_properties( # Specifies the target library.
-#                       harfbuzz-lib
+set_target_properties( # Specifies the target library.
+                       harfbuzz-lib
 
                        # Specifies the parameter you want to define.
-#                      PROPERTIES IMPORTED_LOCATION
+                       PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-#                       ${LINK_DIR}/libharfbuzz.so )
+                       ${LINK_DIR}/libharfbuzz.so )
 
 add_library( freetype-lib
              SHARED
@@ -270,7 +270,7 @@ target_link_libraries( # Specifies the target library.
                        ${log-lib}
                        ${OpenSLES-lib}
                        png-lib
-#                       harfbuzz-lib
+                       harfbuzz-lib
                        freetype-lib
                        iconv-lib
                        xml2-lib
