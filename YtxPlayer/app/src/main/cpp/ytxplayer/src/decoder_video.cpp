@@ -34,9 +34,8 @@ DecoderVideo::DecoderVideo(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoState
     last_vfilter_idx = 0;
 
     mVideoStateInfo->initClock(mVideoStateInfo->vidClk,&mQueue->serial);
-    mVideoStateInfo->initClock(mVideoStateInfo->extClk,&mVideoStateInfo->extClk->serial);
     mVideoStateInfo->setClockSpeed(mVideoStateInfo->vidClk,1);
-    mVideoStateInfo->setClockSpeed(mVideoStateInfo->extClk,1);
+
 
     sprintf(file,"%s%lu.yuv",mVideoStateInfo->mStorageDir,pthread_self());
     ALOGI("ytxhao DecoderVideo file = %s",file);

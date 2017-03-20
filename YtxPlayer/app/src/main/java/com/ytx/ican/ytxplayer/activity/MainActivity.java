@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onError(IMediaPlayer mp, int what, int extra) {
                 YtxLog.d(TAG,"setOnErrorListener onError what="+what);
+                ytxVideoView.onDestroy();
                 return true;
             }
         });

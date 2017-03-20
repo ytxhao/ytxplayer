@@ -66,6 +66,7 @@ public:
     static void* prepareAsyncPlayer(void* ptr);
 
 
+    void packetEnoughWait();
     int stop();
 
     bool isRelease;

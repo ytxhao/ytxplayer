@@ -15,7 +15,7 @@ class AudioRefreshController : public Thread
 {
 public:
     double last_duration, duration, delay;
-    Frame *vp, *lastvp;
+    //Frame *vp, *lastvp;
     double remaining_time = 0.0;
     double time;
     double frame_timer=0.0;

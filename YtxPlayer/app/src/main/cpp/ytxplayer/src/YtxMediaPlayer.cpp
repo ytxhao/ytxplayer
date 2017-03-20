@@ -232,6 +232,26 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         mPlayer->mDecoderSubtitle = new DecoderSubtitle(mPlayer->mVideoStateInfo);
     }
 
+    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 ||
+            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0 ||
+            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0 ){
+        mPlayer->mVideoStateInfo->initClock(mPlayer->mVideoStateInfo->extClk,&mPlayer->mVideoStateInfo->extClk->serial);
+        mPlayer->mVideoStateInfo->setClockSpeed(mPlayer->mVideoStateInfo->extClk,1);
+    }
+
+
+    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 &&
+            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0 &&
+            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] < 0 ){
+        AVMessage msg;
+        msg.what = FFP_MSG_ERROR;
+        msg.arg1 = MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES;
+        mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
+        mPlayer->mCurrentState = MEDIA_PLAYER_STATE_ERROR;
+        avformat_network_deinit();
+        pthread_exit(NULL);
+    }
+
     mPlayer->mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
     mPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
     mPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
@@ -362,17 +382,19 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
     MAVPacket mPacket, *pPacket = &mPacket;
 
-    mVideoRefreshController->startAsync();
-    mAudioRefreshController->startAsync();
+
+
 
 //    mDecoderVideo->startAsync();
 //    mDecoderAudio->startAsync();
 
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        mVideoRefreshController->startAsync();
         mDecoderVideo->startAsync();
     }
 
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        mAudioRefreshController->startAsync();
         mDecoderAudio->startAsync();
     }
 
@@ -388,48 +410,29 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     while (mCurrentState != MEDIA_PLAYER_DECODED && mCurrentState != MEDIA_PLAYER_STOPPED &&
            mCurrentState != MEDIA_PLAYER_STATE_ERROR )
     {
-       // ALOGI("v packets=%d a packets=%d s packets=%d v enough=%d  a enough=%d  s enough=%d\n", mDecoderVideo->packets(), mDecoderAudio->packets(),mDecoderSubtitle->packets(),
-       //       mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets(),mDecoderSubtitle->streamHasEnoughPackets());
 
-        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
-   //          ALOGI("v packets=%d a packets=%d s packets=%d v enough=%d  a enough=%d  s enough=%d\n", mDecoderVideo->packets(), mDecoderAudio->packets(),mDecoderSubtitle->packets(),
-   //                mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets(),mDecoderSubtitle->streamHasEnoughPackets());
+        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 && mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >=0
+                && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
+
             if(mDecoderVideo->packets() + mDecoderAudio->packets() +mDecoderSubtitle->packets() > MAX_QUEUE_SIZE ||
                mDecoderVideo->streamHasEnoughPackets() &&
                mDecoderAudio->streamHasEnoughPackets() &&
                mDecoderSubtitle->streamHasEnoughPackets()){
-                /* wait 10 ms */
-                struct timeval now;
-                struct timespec outTime;
-                int timeout_ms = 10;
-                int nsec = 0;
-                pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
-                gettimeofday(&now, NULL);
-                nsec = now.tv_usec * 1000 + (timeout_ms % 1000) * 1000000;
-                outTime.tv_sec = now.tv_sec + nsec / 1000000000 + timeout_ms / 1000; //now.tv_sec + 5;
-                outTime.tv_nsec = nsec % 1000000000; //now.tv_usec * 1000;
-                pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex, &outTime);
-                pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
+                packetEnoughWait();
                 continue;
             }
-        }else{
-      //      ALOGI("v packets=%d  a packets=%d v enough=%d  a enough=%d  \n", mDecoderVideo->packets(), mDecoderAudio->packets(),
-      //            mDecoderVideo->streamHasEnoughPackets(),mDecoderAudio->streamHasEnoughPackets());
+        }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >=0
+                 && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
+
             if(mDecoderVideo->packets() + mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
                mDecoderVideo->streamHasEnoughPackets() &&
                mDecoderAudio->streamHasEnoughPackets() ){
-                /* wait 10 ms */
-                struct timeval now;
-                struct timespec outTime;
-                int timeout_ms = 10;
-                int nsec = 0;
-                pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
-                gettimeofday(&now, NULL);
-                nsec = now.tv_usec * 1000 + (timeout_ms % 1000) * 1000000;
-                outTime.tv_sec = now.tv_sec + nsec / 1000000000 + timeout_ms / 1000; //now.tv_sec + 5;
-                outTime.tv_nsec = nsec % 1000000000; //now.tv_usec * 1000;
-                pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex, &outTime);
-                pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
+                packetEnoughWait();
+                continue;
+            }
+        }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
+            if(mDecoderAudio->packets() > MAX_QUEUE_SIZE || mDecoderAudio->streamHasEnoughPackets() ){
+                packetEnoughWait();
                 continue;
             }
         }
@@ -479,8 +482,8 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     }
 
     mVideoStateInfo->notifyAll();
-    mVideoRefreshController->stop();
-    mAudioRefreshController->stop();
+
+
     int ret = -1;
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
         mDecoderSubtitle->stop();
@@ -491,6 +494,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     }
 
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+        mVideoRefreshController->stop();
         mDecoderVideo->stop();
         ALOGI("waiting on mDecoderVideo thread\n");
         if((ret = mDecoderVideo->wait()) != 0) {
@@ -499,6 +503,7 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     }
 
     if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+        mAudioRefreshController->stop();
         mDecoderAudio->stop();
         ALOGI("waiting on mDecoderAudio thread\n");
         // mDecoderVideo->mRunning = false;
@@ -512,6 +517,23 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
     ALOGI( "end of playing\n");
 }
 
+
+void YtxMediaPlayer::packetEnoughWait() {
+    /* wait 10 ms */
+    struct timeval now;
+    struct timespec outTime;
+    int timeout_ms = 10;
+    int nsec = 0;
+    pthread_mutex_lock(&mVideoStateInfo->wait_mutex);
+    gettimeofday(&now, NULL);
+    nsec = now.tv_usec * 1000 + (timeout_ms % 1000) * 1000000;
+    outTime.tv_sec = now.tv_sec + nsec / 1000000000 + timeout_ms / 1000; //now.tv_sec + 5;
+    outTime.tv_nsec = nsec % 1000000000; //now.tv_usec * 1000;
+    pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex, &outTime);
+    pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
+
+
+}
 int  YtxMediaPlayer::release() {
     ALOGI("YtxMediaPlayer::release()");
     isRelease = true;

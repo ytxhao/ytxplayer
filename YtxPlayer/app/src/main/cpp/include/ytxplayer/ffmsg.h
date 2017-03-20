@@ -49,7 +49,8 @@ enum media_event_type {
 
 
 enum media_error_type {
-    MEDIA_ERROR_OPEN_STREAM               = 0,        //Couldn't open input stream
+    MEDIA_ERROR_OPEN_STREAM                 = 0,        //Couldn't open input stream
+    MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES    = 1,
 
 };
 

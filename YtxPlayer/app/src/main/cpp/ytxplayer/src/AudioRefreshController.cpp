@@ -20,8 +20,8 @@ AudioRefreshController::AudioRefreshController(VideoStateInfo *mVideoStateInfo) 
     last_duration = 0;
     duration = 0;
     delay = 0;
-    vp = NULL;
-    lastvp = NULL;
+    //vp = NULL;
+    //lastvp = NULL;
     remaining_time = 0.0;
     time = 0.0;
     frame_timer = 0.0;
@@ -172,6 +172,10 @@ int AudioRefreshController::audioFrameProcess() {
                                                       af->out_buffer_audio,
                                                       size_buff);
         mAudioEngine->mLock.unlock();
+
+        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0){
+            mVideoStateInfo->currentTime = (int) (af->pts * 1000);
+        }
 
         if (!isnan(audio_clock)) {
 
