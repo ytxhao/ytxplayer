@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
+void resetRendererVideoFrame(jobject obj);
 int  rendererStarted(jobject obj);
 
 #ifdef __cplusplus
@@ -169,6 +170,7 @@ public:
 
     void addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
     void addRendererFrame(image_t *img);
+    void resetRendererFrame();
 
     bool isAddRendererFrameInit;
 

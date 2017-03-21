@@ -474,6 +474,31 @@ void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int vide
     mLock.unlock();
 }
 
+
+/**
+ * 清除数据为全黑色
+ */
+void GlEngine::resetRendererFrame() {
+    mLock.lock();
+    if(img != NULL){
+        memset(this->img->buffer,0,(size_t) (this->img->stride * this->img->height));
+    }
+
+    if(plane[0] != NULL){
+        memset(plane[0], 0, (size_t) (videoWidth * videoHeight));
+    }
+
+    if(plane[1] != NULL){
+        memset(plane[1], 128, (size_t) (videoWidth * videoHeight) / 4);
+    }
+
+    if(plane[2] != NULL){
+        memset(plane[2], 128, (size_t) (videoWidth * videoHeight) / 4);
+    }
+    mLock.unlock();
+
+}
+
 void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
 
     if ((this->videoWidth == 0 && this->videoHeight == 0 && videoWidth != 0)
@@ -615,6 +640,21 @@ void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, i
 
     sVm->DetachCurrentThread();
   //  ALOGI("addRendererFrame OUT\n");
+
+}
+
+
+void resetRendererVideoFrame(jobject obj)
+{
+    // ALOGI("resetRendererVideoFrame IN\n");
+
+    JNIEnv *env = NULL;
+    sVm->AttachCurrentThread(&env, NULL);
+
+    getGlEngine(env,obj)->resetRendererFrame();
+
+    sVm->DetachCurrentThread();
+    //  ALOGI("resetRendererVideoFrame OUT\n");
 
 }
 

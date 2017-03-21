@@ -53,13 +53,10 @@ void VideoRefreshController::process() {
             return;
         }
         if (remaining_time > 0.0) {
-         //   ALOGI("startPlayerRefresh remaining_time=%lf  remaining_time*1000000=%lf\n",remaining_time,remaining_time * 1000000.0);
             av_usleep((unsigned int) (remaining_time * 1000000.0));
         }
         remaining_time = REFRESH_RATE;
 
-       // ALOGI("startPlayerRefresh mVideoStateInfo=%#x",mVideoStateInfo);
-   //     ALOGI("startPlayerRefresh frameQueueNumRemaining=%d",mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining());
         if (mVideoStateInfo->frameQueueVideo->frameQueueNumRemaining() < 1) {
             // nothing to do, no picture to display in the queue
 
@@ -76,8 +73,6 @@ void VideoRefreshController::process() {
 
 
             time = av_gettime_relative() / 1000000.0; //获取ff系统时间,单位为秒
- //           ALOGI("startPlayerRefresh last_duration=%lf:time=%lf:frame_timer=%lf:frame_timer+delay=%lf,pFormatCtx->start_time=%lf,pFormatCtx->streams video start_time=%lf vp->pts=%lf\n",
- //                 last_duration, time, frame_timer, frame_timer + delay,mVideoStateInfo->pFormatCtx->start_time,mVideoStateInfo->pFormatCtx->streams[mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]]->start_time,vp->pts);
 
             if (time < frame_timer + delay) { //如果当前时间小于(frame_timer+delay)则不去frameQueue取下一帧直接刷新当前帧
                 remaining_time = FFMIN(frame_timer + delay - time, remaining_time); //显示下一帧还差多长时间
@@ -122,17 +117,12 @@ void VideoRefreshController::process() {
                 }
             }
 
-
-
-
-          //  display:
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
             int y_size = decodeWidth*decodeHeight;
           //  Frame *vp;
           //  lastvp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
             if (lastvp->out_buffer_video_yuv[0] != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
-//                ALOGI("to getGlEngine()->addRendererFrame %lu decodeWidth=%d decodeHeight=%d",pthread_self(),decodeWidth,decodeHeight);
 //                fwrite(vp->frame->data[0],1,y_size,mVideoStateInfo->fp_yuv);    //Y
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
 //                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
@@ -262,7 +252,7 @@ void VideoRefreshController::write_png(char *fname, image_t *img) {
 
     fp = fopen(fname, "wb");
     if (fp == NULL) {
-        printf("PNG Error opening %s for writing!\n", fname);
+        ALOGE("PNG Error opening %s for writing!\n", fname);
         return;
     }
 
@@ -304,6 +294,10 @@ void VideoRefreshController::refresh() {
     while(mRunning){
         process();
     }
+    //结束视频刷新
+    resetRendererVideoFrame(mVideoStateInfo->GraphicRendererObj);
+    android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+
 }
 
  double VideoRefreshController::vpDuration(Frame *vp, Frame *next_vp) {
@@ -330,35 +324,22 @@ double  VideoRefreshController::computeTargetDelay(double delay){
                delay to compute the threshold. I still don't know
                if it is the best guess */
             sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
-        //    ALOGI("video: 000 delay=%0.3lf V-A=%lf sync_threshold=%lf max_frame_duration=%lf\n", delay, diff,sync_threshold,mVideoStateInfo->max_frame_duration);
             if (!isnan(diff) && fabs(diff) < mVideoStateInfo->max_frame_duration) {
 
                 if (diff <= -sync_threshold) {
                     //如果音频播放比视频快
-                //    ALOGI("video: 000 001");
                     delay = FFMAX(0, delay + diff);
                 } else if (diff >= sync_threshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD){
                     //如果视频比音频快
-               //     ALOGI("video: 000 002");
                     delay = delay + diff;
                 } else if (diff >= sync_threshold){
-                //    ALOGI("video: 000 003");
+
                     delay = 2 * delay;
                 }
 
-//                if (diff <= -sync_threshold) {
-//                    //如果音频播放比视频快
-//                    ALOGI("video: 000 001");
-//                    delay = FFMAX(0, delay + diff);
-//                } else if (diff >= sync_threshold){
-//                    //如果视频比音频快
-//                    ALOGI("video: 000 002");
-//                    delay =  diff;
-//                }
-
             }
 
-   //     ALOGI("video: 001 delay=%0.3lf V-A=%lf \n", delay, diff);
+   //     ALOGI("video: delay=%0.3lf V-A=%lf \n", delay, diff);
 
         return delay;
 
