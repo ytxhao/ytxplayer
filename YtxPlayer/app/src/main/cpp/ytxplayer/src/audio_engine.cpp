@@ -237,3 +237,29 @@ void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize, int 
     (void) result;
 
 }
+
+
+
+void AudioEngine::setPlayingAudioPlayer(bool isPlaying){
+    SLresult result;
+
+    if (NULL != bqPlayerPlay) {
+
+        // set the player's state
+        result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, isPlaying ?
+                                                             SL_PLAYSTATE_PLAYING : SL_PLAYSTATE_PAUSED);
+        assert(SL_RESULT_SUCCESS == result);
+        (void)result;
+    }
+}
+
+
+void AudioEngine::setMuteAudioPlayer(bool isMute){
+    SLresult result;
+
+    if (NULL != bqPlayerVolume) {
+        result = (*bqPlayerVolume)->SetMute(bqPlayerVolume, isMute);
+        assert(SL_RESULT_SUCCESS == result);
+        (void)result;
+    }
+}

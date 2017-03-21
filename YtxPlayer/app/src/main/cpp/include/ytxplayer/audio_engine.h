@@ -100,6 +100,9 @@ public:
     // this callback handler is called every time a buffer finishes playing
     void RegisterCallback(slAndroidSimpleBufferQueueCallback callback);
 
+    void setPlayingAudioPlayer(bool isPlaying);
+    void setMuteAudioPlayer(bool isMute);
+
     AudioEngine();
 
     ~AudioEngine();

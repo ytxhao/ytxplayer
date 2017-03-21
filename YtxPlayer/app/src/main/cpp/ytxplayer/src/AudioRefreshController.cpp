@@ -69,10 +69,13 @@ bool AudioRefreshController::process(AVMessage *msg) {
 
     switch (msg->what) {
         case FFP_MSG_AUDIO_FIRST_FRAME:
+            mAudioEngine->setMuteAudioPlayer(true);
             (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             audioFrameProcess();
+            mAudioEngine->setMuteAudioPlayer(false);
             break;
         case FFP_MSG_COMPLETED:
+            mAudioEngine->setMuteAudioPlayer(true);
             (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             mVideoStateInfo->frameQueueAudio->frameQueueReset();
             break;
@@ -94,6 +97,8 @@ void AudioRefreshController::refresh() {
             }
         }
     }
+   // mAudioEngine->setPlayingAudioPlayer(false);
+    mAudioEngine->setMuteAudioPlayer(true);
     (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
 }
 
