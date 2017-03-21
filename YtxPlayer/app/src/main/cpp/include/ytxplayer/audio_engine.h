@@ -81,8 +81,8 @@ public:
     SLObjectItf recorderObject = NULL;
     SLRecordItf recorderRecord;
     SLAndroidSimpleBufferQueueItf recorderBufferQueue;
-    short sawtoothBuffer[SAWTOOTH_FRAMES]={0};
-    short recorderBuffer[RECORDER_FRAMES]={0};
+    short sawtoothBuffer[SAWTOOTH_FRAMES] = {0};
+    short recorderBuffer[RECORDER_FRAMES] = {0};
     unsigned recorderSize = 0;
 
     // pointer and size of the next player buffer to enqueue, and number of remaining buffers
@@ -101,6 +101,7 @@ public:
     void RegisterCallback(slAndroidSimpleBufferQueueCallback callback);
 
     void setPlayingAudioPlayer(bool isPlaying);
+
     void setMuteAudioPlayer(bool isMute);
 
     AudioEngine();

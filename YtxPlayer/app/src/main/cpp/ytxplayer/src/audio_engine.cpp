@@ -2,17 +2,14 @@
 // Created by Administrator on 2016/11/17.
 //
 
-#include <ytxplayer/audio_engine.h>
-
-
 #define LOG_NDEBUG 0
 #define TAG "AudioEngine"
 
+#include <ytxplayer/audio_engine.h>
 #include "ytxplayer/ALog-priv.h"
 
 
 AudioEngine::AudioEngine() {
-    ALOGI("AudioEngine()");
     engineObject = NULL;
     engineEngine = NULL;
 
@@ -65,9 +62,8 @@ AudioEngine::AudioEngine() {
 AudioEngine::~AudioEngine() {
     //释放资源
     // destroy buffer queue audio player object, and invalidate all associated interfaces
-    ALOGI("~AudioEngine()");
+
     if (bqPlayerObject != NULL) {
-        ALOGI("~AudioEngine bqPlayerObject");
         (*bqPlayerObject)->Destroy(bqPlayerObject);
         bqPlayerObject = NULL;
         bqPlayerPlay = NULL;
@@ -239,27 +235,27 @@ void AudioEngine::createBufferQueueAudioPlayer(int sampleRate, int bufSize, int 
 }
 
 
-
-void AudioEngine::setPlayingAudioPlayer(bool isPlaying){
+void AudioEngine::setPlayingAudioPlayer(bool isPlaying) {
     SLresult result;
 
     if (NULL != bqPlayerPlay) {
 
         // set the player's state
         result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, isPlaying ?
-                                                             SL_PLAYSTATE_PLAYING : SL_PLAYSTATE_PAUSED);
+                                                             SL_PLAYSTATE_PLAYING
+                                                                       : SL_PLAYSTATE_PAUSED);
         assert(SL_RESULT_SUCCESS == result);
-        (void)result;
+        (void) result;
     }
 }
 
 
-void AudioEngine::setMuteAudioPlayer(bool isMute){
+void AudioEngine::setMuteAudioPlayer(bool isMute) {
     SLresult result;
 
     if (NULL != bqPlayerVolume) {
         result = (*bqPlayerVolume)->SetMute(bqPlayerVolume, isMute);
         assert(SL_RESULT_SUCCESS == result);
-        (void)result;
+        (void) result;
     }
 }

@@ -4,6 +4,7 @@
 
 #define LOG_NDEBUG 0
 #define TAG "YTX-PLAYER-JNI"
+
 #include "ytxplayer/ALog-priv.h"
 #include <string>
 #include <ytxplayer/gl_engine.h>
@@ -23,7 +24,7 @@ static JavaVM *sVm;
 /*
  * Throw an exception with the specified class and an optional message.
  */
-int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
+int jniThrowException(JNIEnv *env, const char *className, const char *msg) {
     jclass exceptionClass = env->FindClass(className);
     if (exceptionClass == NULL) {
         ALOGE("Unable to find exception class %s", className);
@@ -31,53 +32,48 @@ int jniThrowException(JNIEnv* env, const char* className, const char* msg) {
     }
 
     if (env->ThrowNew(exceptionClass, msg) != JNI_OK) {
-        ALOGE("Failed throwing '%s' '%s'",className, msg);
+        ALOGE("Failed throwing '%s' '%s'", className, msg);
     }
     return 0;
 }
 
 
-JNIEnv* getJNIEnv() {
-    JNIEnv* env = NULL;
-    if (sVm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
+JNIEnv *getJNIEnv() {
+    JNIEnv *env = NULL;
+    if (sVm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("Failed to obtain JNIEnv");
         return NULL;
     }
     return env;
 }
 
-
-
-// ----------------------------------------------------------------------------
 struct fields_t {
-    jfieldID    context;
-    jfieldID    surface_texture;
-    jfieldID    native_player;
-    jmethodID   post_event;
+    jfieldID context;
+    jfieldID surface_texture;
+    jfieldID native_player;
+    jmethodID post_event;
 };
 static fields_t fields;
 
-// ----------------------------------------------------------------------------
-// ref-counted object for callbacks
-class JNIMediaPlayerListener: public MediaPlayerListener
-{
+class JNIMediaPlayerListener : public MediaPlayerListener {
 public:
-    JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobject weak_thiz);
+    JNIMediaPlayerListener(JNIEnv *env, jobject thiz, jobject weak_thiz);
+
     ~JNIMediaPlayerListener();
+
     // virtual void notify(int msg, int ext1, int ext2, const Parcel *obj = NULL);
     virtual void notify(int msg, int ext1, int ext2);
+
 private:
-    pthread_mutex_t     		mLock;
-    jclass      mClass;     // Reference to MediaPlayer class
-    jobject     mObject;    // Weak ref to MediaPlayer Java object to call on
+    pthread_mutex_t mLock;
+    jclass mClass;     // Reference to MediaPlayer class
+    jobject mObject;    // Weak ref to MediaPlayer Java object to call on
 };
 
-JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobject weak_thiz)
-{
+JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv *env, jobject thiz, jobject weak_thiz) {
 
     // Hold onto the MediaPlayer class for use in calling the static method
     // that posts events to the application thread.
-    ALOGE("JNIMediaPlayerListener IN");
     pthread_mutex_init(&mLock, NULL);
     jclass clazz = env->GetObjectClass(thiz);
     if (clazz == NULL) {
@@ -85,16 +81,14 @@ JNIMediaPlayerListener::JNIMediaPlayerListener(JNIEnv* env, jobject thiz, jobjec
         jniThrowException(env, "java/lang/Exception", NULL);
         return;
     }
-    mClass = (jclass)env->NewGlobalRef(clazz);
+    mClass = (jclass) env->NewGlobalRef(clazz);
 
     // We use a weak reference so the MediaPlayer object can be garbage collected.
     // The reference is only used as a proxy for callbacks.
-    mObject  = env->NewGlobalRef(weak_thiz);
-    ALOGE("JNIMediaPlayerListener OUT mClass=%x mObject=%x clazz=%x\n",mClass,mObject,clazz);
+    mObject = env->NewGlobalRef(weak_thiz);
 }
 
-JNIMediaPlayerListener::~JNIMediaPlayerListener()
-{
+JNIMediaPlayerListener::~JNIMediaPlayerListener() {
     // remove global references
     JNIEnv *env = getJNIEnv();
     env->DeleteGlobalRef(mObject);
@@ -102,56 +96,48 @@ JNIMediaPlayerListener::~JNIMediaPlayerListener()
     pthread_mutex_destroy(&mLock);
 }
 
-void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2)
-{
+void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2) {
 
     ALOGI("JNIMediaPlayerListener::notify IN\n");
     pthread_mutex_lock(&mLock);
     JNIEnv *env = NULL;
-    if(getpid() != gettid()){
+    if (getpid() != gettid()) {
         sVm->AttachCurrentThread(&env, NULL);
-    }else{
+    } else {
         env = getJNIEnv();
     }
 
-    ALOGI("notify pthread_self:%lu,getpid:%lu,gettid:%lu\n", (long)pthread_self(), (long)getpid(),(long)gettid());
-    ALOGI("JNIMediaPlayerListener::notify fields.post_event=%d mClass=%x\n",fields.post_event,mClass);
-    env->CallStaticVoidMethod(mClass,fields.post_event,mObject,msg, ext1, ext2, NULL);
+    env->CallStaticVoidMethod(mClass, fields.post_event, mObject, msg, ext1, ext2, NULL);
 
     if (env->ExceptionCheck()) {
         ALOGW("An exception occurred while notifying an event.");
         env->ExceptionClear();
     }
 
-    if(getpid() != gettid()){
+    if (getpid() != gettid()) {
         sVm->DetachCurrentThread();
     }
     pthread_mutex_unlock(&mLock);
     ALOGI("JNIMediaPlayerListener::notify OUT\n");
 }
 
-// ----------------------------------------------------------------------------
 
-static YtxMediaPlayer* getMediaPlayer(JNIEnv* env, jobject thiz)
-{
- //   Mutex::Autolock l(sLock);
-    YtxMediaPlayer* const p = (YtxMediaPlayer*)env->GetIntField(thiz, fields.context);
+static YtxMediaPlayer *getMediaPlayer(JNIEnv *env, jobject thiz) {
+
+    YtxMediaPlayer *const p = (YtxMediaPlayer *) env->GetIntField(thiz, fields.context);
     return (p);
 }
 
-static YtxMediaPlayer* setMediaPlayer(JNIEnv* env, jobject thiz, const YtxMediaPlayer* player)
-{
-    //Mutex::Autolock l(sLock);
-    YtxMediaPlayer* old = (YtxMediaPlayer*)env->GetIntField(thiz, fields.context);
-    env->SetIntField(thiz, fields.context, (int)player);
+static YtxMediaPlayer *setMediaPlayer(JNIEnv *env, jobject thiz, const YtxMediaPlayer *player) {
+
+    YtxMediaPlayer *old = (YtxMediaPlayer *) env->GetIntField(thiz, fields.context);
+    env->SetIntField(thiz, fields.context, (int) player);
     return old;
 }
 
 
-
 JNIEXPORT void JNICALL android_media_player_native_init
-        (JNIEnv *env, jclass mClazz)
-{
+        (JNIEnv *env, jclass mClazz) {
 
     jclass clazz;
     clazz = env->FindClass(JNIREG_CLASS);
@@ -167,7 +153,7 @@ JNIEXPORT void JNICALL android_media_player_native_init
     fields.post_event = env->GetStaticMethodID(clazz, "postEventFromNative",
                                                "(Ljava/lang/Object;IIILjava/lang/Object;)V");
 
-    ALOGI("android_media_player_native_init fields.post_event=%d",fields.post_event);
+
     if (fields.post_event == NULL) {
         return;
     }
@@ -177,56 +163,45 @@ JNIEXPORT void JNICALL android_media_player_native_init
         return;
     }
 
-    ALOGI("avcodec_version=%d;avcodec_configuration=%s", avcodec_version(),avcodec_configuration());
+    ALOGI("avcodec_version=%d;avcodec_configuration=%s", avcodec_version(),
+          avcodec_configuration());
 }
 
 JNIEXPORT void JNICALL android_media_player_native_setup
-        (JNIEnv *env, jobject obj, jobject ytxMediaPlayer_weak_this)
-{
+        (JNIEnv *env, jobject obj, jobject ytxMediaPlayer_weak_this) {
 
 
-    YtxMediaPlayer* mPlayer = new YtxMediaPlayer();
-    ALOGI("native_setup mPlayer add = 0x%#x",(int)mPlayer);
+    YtxMediaPlayer *mPlayer = new YtxMediaPlayer();
 
     // create new listener and give it to MediaPlayer
-    JNIMediaPlayerListener* listener = new JNIMediaPlayerListener(env, obj, ytxMediaPlayer_weak_this);
+    JNIMediaPlayerListener *listener = new JNIMediaPlayerListener(env, obj,
+                                                                  ytxMediaPlayer_weak_this);
     mPlayer->setListener(listener);
-    setMediaPlayer(env,obj,mPlayer);
+    setMediaPlayer(env, obj, mPlayer);
 
 }
 
 JNIEXPORT void JNICALL android_media_player_native_finalize
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
 }
 
 JNIEXPORT void JNICALL android_media_player_native_message_loop
-        (JNIEnv *env, jobject obj, jobject ytxMediaPlayer)
-{
+        (JNIEnv *env, jobject obj, jobject ytxMediaPlayer) {
 
 }
 
 
+void android_media_player_notifyRenderFrame(jobject obj) {
 
-void android_media_player_notifyRenderFrame(jobject obj)
-{
-   // ALOGI("android_media_player_notifyRenderFrame IN\n");
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
-//----------------------------------------------
 
-    // 得到jclass
     jclass jclazz = env->GetObjectClass(obj);
-  //   ALOGI("android_media_player_notifyRenderFrame jclazz=%d\n",jclazz);
-    // 得到方法ID
     jmethodID jmtdId = env->GetMethodID(jclazz, "requestRender", "()V");
-   //  ALOGI("android_media_player_notifyRenderFrame jmtdId=%d\n",jmtdId);
-    // 调用方法
     env->CallVoidMethod(obj, jmtdId);
 
     sVm->DetachCurrentThread();
-  //  ALOGI("android_media_player_notifyRenderFrame OUT\n");
 
 }
 
@@ -237,39 +212,31 @@ void android_media_player_notifyRenderFrame(jobject obj)
  * Signature: (Ljava/lang/Object;)V
  */
 JNIEXPORT void JNICALL android_media_player_setGlSurface
-        (JNIEnv *env, jobject obj, jobject mVideoGlSurfaceView)
-{
-    ALOGI("android_media_player_setGlSurface IN\n");
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
-    mPlayer->mVideoStateInfo->VideoGlSurfaceViewObj  = env->NewGlobalRef(mVideoGlSurfaceView);
+        (JNIEnv *env, jobject obj, jobject mVideoGlSurfaceView) {
 
-    // 得到jclass
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
+    mPlayer->mVideoStateInfo->VideoGlSurfaceViewObj = env->NewGlobalRef(mVideoGlSurfaceView);
+
     jclass jclazz = env->GetObjectClass(mVideoGlSurfaceView);
-    ALOGI("android_media_player_setGlSurface jclazz=%d\n",jclazz);
-    // 得到方法ID
-    jmethodID jmtdId = env->GetMethodID(jclazz, "getRenderer", "()Lcom/ytx/ican/media/player/render/GraphicRenderer;");
-    ALOGI("android_media_player_setGlSurface jmtdId=%d\n",jmtdId);
-    // 调用方法
+    jmethodID jmtdId = env->GetMethodID(jclazz, "getRenderer",
+                                        "()Lcom/ytx/ican/media/player/render/GraphicRenderer;");
     jobject GraphicRendererObj = env->CallObjectMethod(mVideoGlSurfaceView, jmtdId);
 
-    ALOGI("android_media_player_setGlSurface jmtdId=%d GraphicRendererObj=%#x\n",jmtdId,GraphicRendererObj);
     mPlayer->mVideoStateInfo->GraphicRendererObj = env->NewGlobalRef(GraphicRendererObj);
 
 
     /**
      * for test
      */
-    // 得到jclass
+
     jclass jclazz_player = env->GetObjectClass(obj);
-    ALOGI("android_media_player_setGlSurface jclazz_player=%d\n",jclazz_player);
-    // 得到方法ID
-    jmethodID jmtdId_player = env->GetMethodID(jclazz_player, "getStorageDirectory", "()Ljava/lang/String;");
-    ALOGI("android_media_player_setGlSurface jmtdId_player=%d\n",jmtdId_player);
-    // 调用方法
+    jmethodID jmtdId_player = env->GetMethodID(jclazz_player, "getStorageDirectory",
+                                               "()Ljava/lang/String;");
     jstring url = (jstring) env->CallObjectMethod(obj, jmtdId_player);
-    const char *storageDirectory = env->GetStringUTFChars(url,NULL);
+    const char *storageDirectory = env->GetStringUTFChars(url, NULL);
     mPlayer->mVideoStateInfo->mStorageDir = (char *) storageDirectory;
-    ALOGI("android_media_player_setGlSurface OUT storageDirectory=%s\n",mPlayer->mVideoStateInfo->mStorageDir);
+    ALOGI("android_media_player_setGlSurface OUT storageDirectory=%s\n",
+          mPlayer->mVideoStateInfo->mStorageDir);
 }
 
 
@@ -281,8 +248,7 @@ JNIEXPORT void JNICALL android_media_player_setGlSurface
  * Signature: ()V
  */
 JNIEXPORT void JNICALL android_media_player_died
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
 }
 
@@ -292,8 +258,7 @@ JNIEXPORT void JNICALL android_media_player_died
  * Signature: ()V
  */
 JNIEXPORT void JNICALL android_media_player_disconnect
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
 }
 
@@ -303,23 +268,21 @@ JNIEXPORT void JNICALL android_media_player_disconnect
  * Signature: (Ljava/lang/String;)I
  */
 JNIEXPORT jint JNICALL android_media_player_setDataSource
-        (JNIEnv *env, jobject obj, jstring url)
-{
+        (JNIEnv *env, jobject obj, jstring url) {
 
-    const char *file_path = env->GetStringUTFChars(url,NULL);
-    ALOGI("file_path=%s",file_path);
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    const char *file_path = env->GetStringUTFChars(url, NULL);
+    ALOGI("file_path=%s", file_path);
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->setDataSource(file_path);
     return 0;
 }
 
 JNIEXPORT jint JNICALL android_media_player_setSubtitles
-        (JNIEnv *env, jobject obj, jstring url)
-{
+        (JNIEnv *env, jobject obj, jstring url) {
 
     char *subtitle = (char *) env->GetStringUTFChars(url, NULL);
-    ALOGI("subtitle=%s",subtitle);
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    ALOGI("subtitle=%s", subtitle);
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->setSubtitles(subtitle);
     return 0;
 }
@@ -332,9 +295,8 @@ JNIEXPORT jint JNICALL android_media_player_setSubtitles
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_prepare
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->prepare();
     return 0;
 }
@@ -345,9 +307,8 @@ JNIEXPORT jint JNICALL android_media_player_prepare
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_prepareAsync
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->prepareAsync();
     return 0;
 }
@@ -358,9 +319,8 @@ JNIEXPORT jint JNICALL android_media_player_prepareAsync
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_start
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->start();
     return 0;
 }
@@ -371,11 +331,9 @@ JNIEXPORT jint JNICALL android_media_player_start
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_stop
-        (JNIEnv *env, jobject obj)
-{
-    ALOGI("android_media_player_stop");
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
 
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->stop();
 
     return 0;
@@ -387,11 +345,9 @@ JNIEXPORT jint JNICALL android_media_player_stop
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_release
-        (JNIEnv *env, jobject obj)
-{
-    ALOGI("android_media_player_release");
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
 
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->release();
 
     return 0;
@@ -403,10 +359,8 @@ JNIEXPORT jint JNICALL android_media_player_release
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_pause
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
-
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->pause();
     return 0;
 }
@@ -417,10 +371,9 @@ JNIEXPORT jint JNICALL android_media_player_pause
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_isPlaying
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     return mPlayer->isPlaying();
 }
 
@@ -430,10 +383,8 @@ JNIEXPORT jint JNICALL android_media_player_isPlaying
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getVideoWidth
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
-
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     return mPlayer->getVideoWidth();
 }
 
@@ -443,9 +394,8 @@ JNIEXPORT jint JNICALL android_media_player_getVideoWidth
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getVideoHeight
-        (JNIEnv *env, jobject obj)
-{
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+        (JNIEnv *env, jobject obj) {
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     return mPlayer->getVideoHeight();
 }
 
@@ -455,12 +405,11 @@ JNIEXPORT jint JNICALL android_media_player_getVideoHeight
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL android_media_player_seekTo
-        (JNIEnv *env, jobject obj, jint msec)
-{
+        (JNIEnv *env, jobject obj, jint msec) {
 
     // jlong <==> long long 使用%lld输出
-    ALOGI("android_media_player_seekTo msec=%d\n",msec);
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    ALOGI("android_media_player_seekTo msec=%d\n", msec);
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     mPlayer->seekTo(msec);
     return 0;
 }
@@ -471,13 +420,11 @@ JNIEXPORT jint JNICALL android_media_player_seekTo
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getCurrentPosition
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
     jint ret = 0;
-    ALOGI("android_media_player_getCurrentPosition IN\n");
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     ret = mPlayer->getCurrentPosition();
-    ALOGI("android_media_player_getCurrentPosition OUT ret=%d\n",ret);
+
     return ret;
 }
 
@@ -487,16 +434,14 @@ JNIEXPORT jint JNICALL android_media_player_getCurrentPosition
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getDuration
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     jint ret = 0;
-    ALOGI("android_media_player_getDuration IN\n");
-    YtxMediaPlayer* mPlayer =  getMediaPlayer(env,obj);
+
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
     ret = mPlayer->getDuration();
-    ALOGI("android_media_player_getDuration OUT ret=%d\n",ret);
+
     return ret;
-    return 0;
 }
 
 /*
@@ -505,8 +450,7 @@ JNIEXPORT jint JNICALL android_media_player_getDuration
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_reset
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -517,8 +461,7 @@ JNIEXPORT jint JNICALL android_media_player_reset
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL android_media_player_setLooping
-        (JNIEnv *env, jobject obj, jint loop)
-{
+        (JNIEnv *env, jobject obj, jint loop) {
 
     return 0;
 }
@@ -529,8 +472,7 @@ JNIEXPORT jint JNICALL android_media_player_setLooping
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_isLooping
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -541,8 +483,7 @@ JNIEXPORT jint JNICALL android_media_player_isLooping
  * Signature: (FF)I
  */
 JNIEXPORT jint JNICALL android_media_player_setVolume
-        (JNIEnv *env, jobject obj, jfloat leftVolume, jfloat rightVolume)
-{
+        (JNIEnv *env, jobject obj, jfloat leftVolume, jfloat rightVolume) {
 
     return 0;
 }
@@ -553,8 +494,7 @@ JNIEXPORT jint JNICALL android_media_player_setVolume
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL android_media_player_setAudioSessionId
-        (JNIEnv *env, jobject obj, jint sessionId)
-{
+        (JNIEnv *env, jobject obj, jint sessionId) {
 
     return 0;
 }
@@ -565,8 +505,7 @@ JNIEXPORT jint JNICALL android_media_player_setAudioSessionId
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getAudioSessionId
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -577,8 +516,7 @@ JNIEXPORT jint JNICALL android_media_player_getAudioSessionId
  * Signature: (F)I
  */
 JNIEXPORT jint JNICALL android_media_player_setAuxEffectSendLevel
-        (JNIEnv *env, jobject obj, jfloat level)
-{
+        (JNIEnv *env, jobject obj, jfloat level) {
 
     return 0;
 }
@@ -589,8 +527,7 @@ JNIEXPORT jint JNICALL android_media_player_setAuxEffectSendLevel
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL android_media_player_attachAuxEffect
-        (JNIEnv *env, jobject obj, jint effectId)
-{
+        (JNIEnv *env, jobject obj, jint effectId) {
 
     return 0;
 }
@@ -601,8 +538,7 @@ JNIEXPORT jint JNICALL android_media_player_attachAuxEffect
  * Signature: (Ljava/lang/String;J)I
  */
 JNIEXPORT jint JNICALL android_media_player_setRetransmitEndpoint
-        (JNIEnv *env, jobject obj, jstring addrString, jlong port)
-{
+        (JNIEnv *env, jobject obj, jstring addrString, jlong port) {
 
     return 0;
 }
@@ -613,8 +549,7 @@ JNIEXPORT jint JNICALL android_media_player_setRetransmitEndpoint
  * Signature: (Ljava/lang/String;ILjava/lang/String;)I
  */
 JNIEXPORT jint JNICALL android_media_player_updateProxyConfig
-        (JNIEnv *env, jobject obj, jstring host, jint port, jstring exclusionList)
-{
+        (JNIEnv *env, jobject obj, jstring host, jint port, jstring exclusionList) {
 
     return 0;
 }
@@ -625,8 +560,7 @@ JNIEXPORT jint JNICALL android_media_player_updateProxyConfig
  * Signature: ()V
  */
 JNIEXPORT void JNICALL android_media_player_clear_l
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
 }
 
@@ -636,8 +570,7 @@ JNIEXPORT void JNICALL android_media_player_clear_l
  * Signature: (I)I
  */
 JNIEXPORT jint JNICALL android_media_player_seekTo_l
-        (JNIEnv *env, jobject obj, jint msec)
-{
+        (JNIEnv *env, jobject obj, jint msec) {
 
     return 0;
 }
@@ -648,8 +581,7 @@ JNIEXPORT jint JNICALL android_media_player_seekTo_l
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_prepareAsync_l
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -660,8 +592,7 @@ JNIEXPORT jint JNICALL android_media_player_prepareAsync_l
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_getDuration_l
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -672,8 +603,7 @@ JNIEXPORT jint JNICALL android_media_player_getDuration_l
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL android_media_player_reset_l
-        (JNIEnv *env, jobject obj)
-{
+        (JNIEnv *env, jobject obj) {
 
     return 0;
 }
@@ -683,54 +613,49 @@ JNIEXPORT jint JNICALL android_media_player_reset_l
 
 static JNINativeMethod gMethods[] = {
 
-        {"native_init",      "()V",                              (void *)android_media_player_native_init},
-        {"native_setup",        "(Ljava/lang/Object;)V",         (void *)android_media_player_native_setup},
-        {"native_finalize",  "()V",                              (void *)android_media_player_native_finalize},
-        {"native_message_loop", "(Ljava/lang/Object;)V",         (void *)android_media_player_native_message_loop},
-
-
-        {"_setGlSurface", "(Ljava/lang/Object;)V",         (void *)android_media_player_setGlSurface},
-        {"_died", "()V",         (void *)android_media_player_died},
-        {"_setSubtitles", "(Ljava/lang/String;)I",         (void *)android_media_player_setSubtitles},
-        {"_setDataSource", "(Ljava/lang/String;)I",         (void *)android_media_player_setDataSource},
-        {"_prepare", "()I",         (void *)android_media_player_prepare},
-        {"_prepareAsync", "()I",         (void *)android_media_player_prepareAsync},
-        {"_start", "()I",         (void *)android_media_player_start},
-        {"_stop", "()I",         (void *)android_media_player_stop},
-        {"_release", "()I",         (void *)android_media_player_release},
-        {"_pause", "()I",         (void *)android_media_player_pause},
-        {"_isPlaying", "()I",         (void *)android_media_player_isPlaying},
-        {"_getVideoWidth", "()I",         (void *)android_media_player_getVideoWidth},
-        {"_getVideoHeight", "()I",         (void *)android_media_player_getVideoHeight},
-        {"_seekTo", "(I)I",         (void *)android_media_player_seekTo},
-        {"_getCurrentPosition", "()I",         (void *)android_media_player_getCurrentPosition},
-        {"_getDuration", "()I",         (void *)android_media_player_getDuration},
-        {"_reset", "()I",         (void *)android_media_player_reset},
-        {"_setLooping", "(I)I",         (void *)android_media_player_setLooping},
-        {"_isLooping", "()I",         (void *)android_media_player_isLooping},
-        {"_setVolume", "(FF)I",         (void *)android_media_player_setVolume},
-        {"_setAudioSessionId", "(I)I",         (void *)android_media_player_setAudioSessionId},
-        {"_getAudioSessionId", "()I",         (void *)android_media_player_getAudioSessionId},
-        {"_setAuxEffectSendLevel", "(F)I",         (void *)android_media_player_setAuxEffectSendLevel},
-        {"_attachAuxEffect", "(I)I",         (void *)android_media_player_attachAuxEffect},
-        {"_setRetransmitEndpoint", "(Ljava/lang/String;J)I",         (void *)android_media_player_setRetransmitEndpoint},
-        {"_updateProxyConfig", "(Ljava/lang/String;ILjava/lang/String;)I",         (void *)android_media_player_updateProxyConfig},
-        {"_clear_l", "()V",         (void *)android_media_player_clear_l},
-        {"_seekTo_l", "(I)I",         (void *)android_media_player_seekTo_l},
-        {"_prepareAsync_l", "()I",         (void *)android_media_player_prepareAsync_l},
-        {"_getDuration_l", "()I",         (void *)android_media_player_getDuration_l},
-        {"_reset_l", "()I",         (void *)android_media_player_reset_l}
-
+        {"native_init",            "()V",                                      (void *) android_media_player_native_init},
+        {"native_setup",           "(Ljava/lang/Object;)V",                    (void *) android_media_player_native_setup},
+        {"native_finalize",        "()V",                                      (void *) android_media_player_native_finalize},
+        {"native_message_loop",    "(Ljava/lang/Object;)V",                    (void *) android_media_player_native_message_loop},
+        {"_setGlSurface",          "(Ljava/lang/Object;)V",                    (void *) android_media_player_setGlSurface},
+        {"_died",                  "()V",                                      (void *) android_media_player_died},
+        {"_setSubtitles",          "(Ljava/lang/String;)I",                    (void *) android_media_player_setSubtitles},
+        {"_setDataSource",         "(Ljava/lang/String;)I",                    (void *) android_media_player_setDataSource},
+        {"_prepare",               "()I",                                      (void *) android_media_player_prepare},
+        {"_prepareAsync",          "()I",                                      (void *) android_media_player_prepareAsync},
+        {"_start",                 "()I",                                      (void *) android_media_player_start},
+        {"_stop",                  "()I",                                      (void *) android_media_player_stop},
+        {"_release",               "()I",                                      (void *) android_media_player_release},
+        {"_pause",                 "()I",                                      (void *) android_media_player_pause},
+        {"_isPlaying",             "()I",                                      (void *) android_media_player_isPlaying},
+        {"_getVideoWidth",         "()I",                                      (void *) android_media_player_getVideoWidth},
+        {"_getVideoHeight",        "()I",                                      (void *) android_media_player_getVideoHeight},
+        {"_seekTo",                "(I)I",                                     (void *) android_media_player_seekTo},
+        {"_getCurrentPosition",    "()I",                                      (void *) android_media_player_getCurrentPosition},
+        {"_getDuration",           "()I",                                      (void *) android_media_player_getDuration},
+        {"_reset",                 "()I",                                      (void *) android_media_player_reset},
+        {"_setLooping",            "(I)I",                                     (void *) android_media_player_setLooping},
+        {"_isLooping",             "()I",                                      (void *) android_media_player_isLooping},
+        {"_setVolume",             "(FF)I",                                    (void *) android_media_player_setVolume},
+        {"_setAudioSessionId",     "(I)I",                                     (void *) android_media_player_setAudioSessionId},
+        {"_getAudioSessionId",     "()I",                                      (void *) android_media_player_getAudioSessionId},
+        {"_setAuxEffectSendLevel", "(F)I",                                     (void *) android_media_player_setAuxEffectSendLevel},
+        {"_attachAuxEffect",       "(I)I",                                     (void *) android_media_player_attachAuxEffect},
+        {"_setRetransmitEndpoint", "(Ljava/lang/String;J)I",                   (void *) android_media_player_setRetransmitEndpoint},
+        {"_updateProxyConfig",     "(Ljava/lang/String;ILjava/lang/String;)I", (void *) android_media_player_updateProxyConfig},
+        {"_clear_l",               "()V",                                      (void *) android_media_player_clear_l},
+        {"_seekTo_l",              "(I)I",                                     (void *) android_media_player_seekTo_l},
+        {"_prepareAsync_l",        "()I",                                      (void *) android_media_player_prepareAsync_l},
+        {"_getDuration_l",         "()I",                                      (void *) android_media_player_getDuration_l},
+        {"_reset_l",               "()I",                                      (void *) android_media_player_reset_l}
 
 
 };
 
 
-
 // 注册native方法到java中
-static int registerNativeMethods(JNIEnv* env, const char* className,
-                                 JNINativeMethod* gMethods, int numMethods)
-{
+static int registerNativeMethods(JNIEnv *env, const char *className,
+                                 JNINativeMethod *gMethods, int numMethods) {
     jclass clazz;
     clazz = env->FindClass(className);
     if (clazz == NULL) {
@@ -744,22 +669,19 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 }
 
 
-int register_android_media_player_ytx(JNIEnv *env)
-{
+int register_android_media_player_ytx(JNIEnv *env) {
     // 调用注册方法
     return registerNativeMethods(env, JNIREG_CLASS,
                                  gMethods, NELEM(gMethods));
 }
 
 
-jint JNI_OnLoad(JavaVM* vm, void* reserved)
-{
-    JNIEnv* env = NULL;
+jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+    JNIEnv *env = NULL;
     jint result = -1;
     sVm = vm;
-    ALOGI("main tid:%u,pid:%u\n", (unsigned)pthread_self(), (unsigned)getpid());
-    ALOGI("INF: sVm=%d\n",sVm);
-    if (sVm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
+    ALOGI("INF: sVm=%d\n", sVm);
+    if (sVm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("ERROR: GetEnv failed\n");
         goto bail;
     }

@@ -62,13 +62,6 @@ JNIEXPORT jint JNICALL android_media_player_setDataSource
 JNIEXPORT jint JNICALL android_media_player_setSubtitles
         (JNIEnv *, jobject, jstring);
 
-/*
- * Class:     com_ytx_ican_media_player_YtxMediaPlayer
- * Method:    setDataSource
- * Signature: (IJJ)I
- */
-//JNIEXPORT jint JNICALL android_media_player_setDataSource
-//        (JNIEnv *, jobject, jint, jlong, jlong);
 
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayer
