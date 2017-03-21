@@ -162,7 +162,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES:
                         getHelper().showMessage(R.string.file_open_is_subtitle);
                         break;
-
+                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_SUBTITLES:
+                        getHelper().showMessage(R.string.file_open_error_subtitle);
+                        break;
                 }
 
                 ytxVideoView.onDestroy();
@@ -288,6 +290,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
                     ytxVideoView.setVideoPath(fileName);
                     ytxVideoView.start();
+                    playNext = false;
                 }else{
                     ytxVideoView.onDestroy();
                 }

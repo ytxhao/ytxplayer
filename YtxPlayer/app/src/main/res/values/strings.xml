@@ -8,6 +8,7 @@
     <string name="loading">加载中…</string>
     <string name="file_open_failed">文件打开失败</string>
     <string name="file_open_is_subtitle">您输入的是字幕文件</string>
+    <string name="file_open_error_subtitle">请输入正确的字幕文件</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

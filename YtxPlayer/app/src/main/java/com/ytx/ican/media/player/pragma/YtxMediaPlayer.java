@@ -55,6 +55,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     public static final int MEDIA_ERROR_OPEN_STREAM                 = 0;        //Couldn't open input stream
     public static final int MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES    = 1;
+    public static final int MEDIA_ERROR_OPEN_STREAM_SUBTITLES = 2;
 
     VideoGlSurfaceView glSurface;
     private EventHandler mEventHandler;

@@ -176,8 +176,16 @@ bool DecoderVideo::process(MAVPacket *mPacket)
             avfilter_graph_free(&graph);
             graph = avfilter_graph_alloc();
 
-            configure_video_filters(graph, mVideoStateInfo->vfilters_list ? mVideoStateInfo->vfilters_list[mVideoStateInfo->vfilter_idx] : NULL, mFrame);
+            ret = configure_video_filters(graph, mVideoStateInfo->vfilters_list ? mVideoStateInfo->vfilters_list[mVideoStateInfo->vfilter_idx] : NULL, mFrame);
 
+            if(ret < 0){
+                AVMessage msg;
+                msg.what = FFP_MSG_ERROR;
+                msg.arg1 = MEDIA_ERROR_OPEN_STREAM_SUBTITLES;
+                mVideoStateInfo->mMessageLoop->enqueue(&msg);
+                *mVideoStateInfo->mCurrentState = MEDIA_PLAYER_STATE_ERROR;
+                return true;
+            }
 
             filt_in  = mVideoStateInfo->in_video_filter;
             filt_out = mVideoStateInfo->out_video_filter;

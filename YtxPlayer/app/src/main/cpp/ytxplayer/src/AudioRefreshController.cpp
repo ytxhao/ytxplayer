@@ -94,12 +94,13 @@ void AudioRefreshController::refresh() {
             }
         }
     }
+    (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
 }
 
 void AudioRefreshController::stop() {
 
     int ret = -1;
-    (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+   // (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
     mVideoStateInfo->messageQueueAudio->abort();
     mRunning = false;
     if ((ret = wait()) != 0) {
