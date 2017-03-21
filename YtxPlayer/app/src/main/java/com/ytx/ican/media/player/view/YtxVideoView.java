@@ -3,7 +3,6 @@ package com.ytx.ican.media.player.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -75,7 +74,6 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private int mCurrentBufferPercentage;
     private IMediaPlayer.OnErrorListener mOnErrorListener;
     private IMediaPlayer.OnInfoListener mOnInfoListener;
-
     private boolean     mCanPause = true;
     private boolean     mCanSeekBack = true;
     private boolean     mCanSeekForward = true;
@@ -83,6 +81,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private Uri         mUri;
     private Map<String, String> mHeaders;
     private int         mSeekWhenPrepared;  // recording the seek position while preparing
+    private int  seekToSec=0;
+    private int  currentPosition=0;
+    private int  lastPosition=0;
     Context mContext;
     public YtxVideoView(Context context) {
         super(context);
@@ -245,15 +246,29 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     @Override
     public int getCurrentPosition() {
         if (isInPlaybackState()) {
-            return (int) mMediaPlayer.getCurrentPosition();
+            YtxLog.d(TAG,"seekToSec="+seekToSec+" mMediaPlayer.getCurrentPosition()="+mMediaPlayer.getCurrentPosition());
+
+            int ret = 0;
+            currentPosition = (int) mMediaPlayer.getCurrentPosition();
+            if(seekToSec != 0 && seekToSec > currentPosition && seekToSec < mMediaPlayer.getDuration()){
+                ret = seekToSec;
+            }else{
+                seekToSec = 0;
+                ret = currentPosition;
+
+            }
+
+            lastPosition = currentPosition;
+            return ret;
         }
         return 0;
     }
 
     @Override
     public void seekTo(int msec) {
-        YtxLog.d(TAG,"seekTo isInPlaybackState()="+isInPlaybackState());
+        YtxLog.d(TAG,"seekTo isInPlaybackState()="+isInPlaybackState()+" msec="+msec);
         if (isInPlaybackState()) {
+            seekToSec = msec;
             mMediaPlayer.seekTo(msec);
             mSeekWhenPrepared = 0;
         } else {
@@ -592,7 +607,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             Log.d(TAG, "Error: " + framework_err + "," + impl_err);
             mCurrentState = STATE_ERROR;
             mTargetState = STATE_ERROR;
-
+            onDestroy();
             if(mOnErrorListener != null){
                 if (mOnErrorListener.onError(mMediaPlayer, framework_err, impl_err)) {
                     return true;
@@ -713,6 +728,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     public void onDestroy(){
         stopPlayback();
         subtitles = null;
+        seekToSec = 0;
 
     }
 
