@@ -11,7 +11,6 @@ import android.view.SurfaceHolder;
 
 import com.ytx.ican.media.player.misc.IMediaDataSource;
 import com.ytx.ican.media.player.misc.ITrackInfo;
-import com.ytx.ican.media.player.render.GraphicRenderer;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
 
 import java.io.FileDescriptor;
@@ -167,7 +166,6 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     @Override
     public void setSurfaceView(VideoGlSurfaceView glSurface){
 
-        //glsurface.toTexture();
         this.glSurface = glSurface;
         _setGlSurface(this.glSurface);
     }
@@ -442,14 +440,6 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
         }
     }
 
-
-    /*
- * Called from native code when an interesting event happens. This method
- * just uses the EventHandler system to post the event back to the main app
- * thread. We use a weak reference to the original IjkMediaPlayer object so
- * that the native code is safe from the object disappearing from underneath
- * it. (This is the cookie passed to native_setup().)
- */
 
     public static void postEventFromNative(Object weakThiz, int what,
                                             int arg1, int arg2, Object obj) {

@@ -66,7 +66,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
 
         setEGLContextClientVersion(2);
         setEGLContextFactory(new ContextFactory());
-        setEGLConfigChooser(new CustomChooseConfig2.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
+        setEGLConfigChooser(new CustomChooseConfig.ComponentSizeChooser(8, 8, 8, 8, 0, 0));
         getHolder().setFormat(PixelFormat.RGBA_8888);
         getHolder().addCallback(this);
         renderer = new GraphicRenderer();
@@ -123,17 +123,7 @@ public class GraphicGLSurfaceView extends GLSurfaceView {
     public void onResume() {
         super.onResume();
         mIsResume = true;
-        YtxLog.d(TAG,"onResume yuhaoo isInitial="+isInitial);
-
-//        queue(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (!isInitial) {
-//                    isInitial = true;
-//                    initial();
-//                }
-//            }
-//        });
+        YtxLog.d(TAG,"onResume  isInitial="+isInitial);
     }
 
 

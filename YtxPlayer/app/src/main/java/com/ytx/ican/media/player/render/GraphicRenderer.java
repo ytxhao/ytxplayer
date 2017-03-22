@@ -2,9 +2,7 @@ package com.ytx.ican.media.player.render;
 
 import android.opengl.GLSurfaceView;
 
-import com.ytx.ican.media.player.gl2jni.GL2JNILib;
-import com.ytx.ican.media.player.pragma.YtxLog;
-import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
+import com.ytx.ican.media.player.pragma.YtxLog;;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;

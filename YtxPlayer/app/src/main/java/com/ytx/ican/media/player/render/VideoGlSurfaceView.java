@@ -3,12 +3,6 @@ package com.ytx.ican.media.player.render;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-
 /**
  * Created by Administrator on 2016/9/12.
  */
@@ -34,10 +28,6 @@ public class VideoGlSurfaceView extends GraphicGLSurfaceView {
     protected void release() {
         super.release();
     }
-
-
-
-
 
 
     public void requestRender(){
