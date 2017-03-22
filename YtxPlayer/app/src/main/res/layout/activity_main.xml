@@ -9,6 +9,7 @@
 
 
     <LinearLayout
+        android:id="@+id/llInputVideoPath"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -70,6 +71,7 @@
 
 
     <LinearLayout
+        android:id="@+id/llInputSubPath"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -129,24 +131,42 @@
             android:layout_marginRight="10dp" />
     </LinearLayout>
 
-    
-    <Button
-        android:id="@+id/btPlay"
+
+    <LinearLayout
+        android:id="@+id/llPlayFullScreen"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/btn_green_rectangle_style"
-        android:textColor="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textSize="12sp"
-        android:text="@string/play"
-        android:layout_marginBottom="10dp"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+        <Button
+            android:id="@+id/btPlay"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_green_rectangle_style"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:text="@string/play"
+            android:layout_marginRight="5dp"
+            />
+
+        <Button
+            android:id="@+id/btFullScreen"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_green_rectangle_style"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:text="@string/full_screen"
+            android:layout_marginLeft="5dp"
+            />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <com.ytx.ican.media.player.view.YtxVideoView
             android:id="@+id/ytxVideoView"
             android:layout_width="wrap_content"

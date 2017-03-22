@@ -2,6 +2,7 @@ package com.ytx.ican.ytxplayer.activity;
 
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,6 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Button btAddVideo ;
     private Button btAddSub ;
     private Button btPlay ;
+    private Button btFullScreen;
     private ImageView ivDragVideo;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
@@ -56,6 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean playNext = false;
     private boolean isAddVideo = false;
     private boolean isAddSub = false;
+    private boolean isFullScreen = false;
     Handler handler = new Handler(){
 
         @Override
@@ -119,12 +122,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         btAddVideo = (Button) findViewById(R.id.btAddVideo);
         btAddSub = (Button) findViewById(R.id.btAddSub);
         btPlay = (Button) findViewById(R.id.btPlay);
+        btFullScreen = (Button) findViewById(R.id.btFullScreen);
         ivDragVideo = (ImageView) findViewById(R.id.ivDragVideo);
 
         ivDragVideo.setOnClickListener(this);
         btAddVideo.setOnClickListener(this);
         btAddSub.setOnClickListener(this);
-
+        btFullScreen.setOnClickListener(this);
         btPlay.setOnClickListener(this);
         btPlay.setEnabled(false);
         actvFileNameVideo.addTextChangedListener(textWatcher);
@@ -232,9 +236,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         YtxLog.d(TAG,"#### #### onConfigurationChanged");
+        doConfigChanged(newConfig);
     }
 
+    private void doConfigChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setUpLandLandscapeLayout();
+        } else {
+            setupPortraitLayout();
+        }
+    }
 
+    private void setUpLandLandscapeLayout(){
+        isFullScreen = true;
+        findViewById(R.id.llInputSubPath).setVisibility(View.GONE);
+        findViewById(R.id.llInputVideoPath).setVisibility(View.GONE);
+        findViewById(R.id.llPlayFullScreen).setVisibility(View.GONE);
+
+    }
+
+    private void setupPortraitLayout(){
+        isFullScreen = false;
+        findViewById(R.id.llInputSubPath).setVisibility(View.VISIBLE);
+        findViewById(R.id.llInputVideoPath).setVisibility(View.VISIBLE);
+        findViewById(R.id.llPlayFullScreen).setVisibility(View.VISIBLE);
+    }
 
     private TextWatcher textWatcher = new TextWatcher() {
 
@@ -295,9 +321,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ytxVideoView.onDestroy();
                 }
                 break;
+            case R.id.btFullScreen:
+                enterFullScreen();
+                break;
         }
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (isFullScreen) {
+            quitFullScreen();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void enterFullScreen() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void quitFullScreen() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
 
     @Subscribe
     public void onClickFile(FileExplorerEvents.OnClickFile event) {

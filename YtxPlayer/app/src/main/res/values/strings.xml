@@ -5,6 +5,7 @@
     <string name="ok">确定</string>
     <string name="add">添加</string>
     <string name="play">播放</string>
+    <string name="full_screen">全屏</string>
     <string name="loading">加载中…</string>
     <string name="file_open_failed">文件打开失败</string>
     <string name="file_open_is_subtitle">您输入的是字幕文件</string>
