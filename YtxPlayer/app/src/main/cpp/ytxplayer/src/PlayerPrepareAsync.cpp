@@ -3,13 +3,13 @@
 //
 #define LOG_NDEBUG 0
 #define TAG "YTX-playerPrepareAsync-JNI"
+
 #include <ytxplayer/ALog-priv.h>
 #include "ytxplayer/PlayerPrepareAsync.h"
 
 void PlayerPrepareAsync::handleRun(void *ptr) {
-    if(!prepare())
-    {
-        ALOGI("Couldn't prepare VideoRefreshController\n");
+    if (!prepare()) {
+        ALOGE("Couldn't prepare VideoRefreshController\n");
         return;
     }
     process();
@@ -20,7 +20,6 @@ bool PlayerPrepareAsync::prepare() {
 }
 
 void PlayerPrepareAsync::process() {
-
 
 
 }

@@ -1,12 +1,14 @@
 //
 // Created by Administrator on 2016/10/13.
 //
-
-#include "ytxplayer/frame_queue.h"
 #define TAG "YTX-FrameQueue-JNI"
+
 #include "ytxplayer/ALog-priv.h"
 
-void FrameQueue::frameQueueReset(){
+#include "ytxplayer/frame_queue.h"
+
+
+void FrameQueue::frameQueueReset() {
     pthread_mutex_lock(&mutex);
     rindex = 0;
     windex = 0;
@@ -22,28 +24,26 @@ void FrameQueue::frameQueueSignal() {
     pthread_mutex_unlock(&mutex);
 }
 
-Frame* FrameQueue::frameQueuePeek() {
-    return &queue[(rindex+rindex_shown)%max_size];
+Frame *FrameQueue::frameQueuePeek() {
+    return &queue[(rindex + rindex_shown) % max_size];
 }
 
 
-Frame* FrameQueue::frameQueuePeekNext() {
-    return &queue[(rindex+rindex_shown+1)%max_size];
+Frame *FrameQueue::frameQueuePeekNext() {
+    return &queue[(rindex + rindex_shown + 1) % max_size];
 }
 
-Frame* FrameQueue::frameQueuePeekLast() {
+Frame *FrameQueue::frameQueuePeekLast() {
     return &queue[rindex];
 }
 
-Frame* FrameQueue::frameQueuePeekWritable() {
+Frame *FrameQueue::frameQueuePeekWritable() {
     pthread_mutex_lock(&mutex);
-  //  ALOGI("frameQueuePeekWritable size=%d\n",size);
-    while(size >= max_size){
+    while (size >= max_size) {
         pthread_cond_wait(&cond, &mutex);
     }
 
     pthread_mutex_unlock(&mutex);
-   // ALOGI("frameQueuePeekWritable windex=%d\n",windex);
     return &queue[windex];
 }
 
@@ -54,13 +54,12 @@ Frame *FrameQueue::frameQueuePeekReadable() {
         pthread_cond_wait(&cond, &mutex);
     }
     pthread_mutex_unlock(&mutex);
-  //  ALOGI("frameQueuePeekReadable rindex=%d\n",rindex);
     return &queue[(rindex + rindex_shown) % max_size];
 }
 
 void FrameQueue::frameQueuePush() {
 
-    if(++windex == max_size){
+    if (++windex == max_size) {
         windex = 0;
     }
     pthread_mutex_lock(&mutex);
@@ -71,13 +70,13 @@ void FrameQueue::frameQueuePush() {
 }
 
 void FrameQueue::frameQueueNext() {
-    if(keep_last && !rindex_shown){
+    if (keep_last && !rindex_shown) {
         rindex_shown = 1;
         return;
     }
 
     frameQueueUnrefItem(&queue[rindex]);
-    if(++rindex == max_size){
+    if (++rindex == max_size) {
         rindex = 0;
     }
     pthread_mutex_lock(&mutex);
@@ -92,9 +91,9 @@ int FrameQueue::frameQueueNumRemaining() {
 
 int64_t FrameQueue::frameQueueLastPos() {
     Frame *fp = &queue[rindex];
-    if(rindex_shown){
+    if (rindex_shown) {
         return fp->pos;
-    }else{
+    } else {
         return -1;
     }
 

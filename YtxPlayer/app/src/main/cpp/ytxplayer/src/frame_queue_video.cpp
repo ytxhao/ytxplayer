@@ -3,11 +3,11 @@
 //
 
 #include "ytxplayer/frame_queue_video.h"
+
 #define TAG "YTX-FrameQueueVideo-JNI"
 
 
-
-FrameQueueVideo::~FrameQueueVideo(){
+FrameQueueVideo::~FrameQueueVideo() {
     frameQueueDestroy();
 }
 
@@ -39,7 +39,7 @@ int FrameQueueVideo::frameQueueInit(int max_size, int keep_last) {
 
 void FrameQueueVideo::frameQueueDestroy() {
     int i;
-    for(i=0;i<max_size;i++){
+    for (i = 0; i < max_size; i++) {
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
     }

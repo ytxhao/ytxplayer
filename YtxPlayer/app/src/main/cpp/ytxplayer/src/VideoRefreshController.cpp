@@ -1,34 +1,34 @@
 //
 // Created by Administrator on 2016/11/30.
 //
+#define LOG_NDEBUG 0
+#define TAG "YTX-VideoRefreshThread-JNI"
+
+#include "ytxplayer/ALog-priv.h"
 
 #include <ytxplayer/gl_engine.h>
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
 #include <png.h>
 #include "ytxplayer/VideoRefreshController.h"
-#define LOG_NDEBUG 0
-#define TAG "YTX-VideoRefreshThread-JNI"
-#include "ytxplayer/ALog-priv.h"
 
-VideoRefreshController::VideoRefreshController(VideoStateInfo* mVideoStateInfo)
-{
 
-    last_duration=0.0;
-    duration=0.0;
-    delay=0.0;
-    vp=NULL;
-    lastvp=NULL;
+VideoRefreshController::VideoRefreshController(VideoStateInfo *mVideoStateInfo) {
+
+    last_duration = 0.0;
+    duration = 0.0;
+    delay = 0.0;
+    vp = NULL;
+    lastvp = NULL;
     remaining_time = 0.0;
-    time=0.0;
-    frame_timer=0.0;
+    time = 0.0;
+    frame_timer = 0.0;
     this->mVideoStateInfo = mVideoStateInfo;
 }
 
-void VideoRefreshController::handleRun(void* ptr){
-    if(!prepare())
-    {
-        ALOGI("Couldn't prepare VideoRefreshController\n");
+void VideoRefreshController::handleRun(void *ptr) {
+    if (!prepare()) {
+        ALOGE("Couldn't prepare VideoRefreshController\n");
         return;
     }
     refresh();
@@ -40,16 +40,18 @@ bool VideoRefreshController::prepare() {
 
 #define REFRESH_RATE 0.01
 #define AV_SYNC_THRESHOLD_MAX 0.1
+
 void VideoRefreshController::process() {
     Frame *sp, *sp2;
-    if(mVideoStateInfo != NULL) {
+    if (mVideoStateInfo != NULL) {
 
-        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED){
+        if (*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
             mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
 
         }
 
-        if(*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_STOPPED || *mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PLAYBACK_COMPLETE){
+        if (*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_STOPPED ||
+            *mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PLAYBACK_COMPLETE) {
             return;
         }
         if (remaining_time > 0.0) {
@@ -68,7 +70,7 @@ void VideoRefreshController::process() {
 
 
             last_duration = vpDuration(lastvp, vp);
-           // delay = last_duration;
+            // delay = last_duration;
             delay = computeTargetDelay(last_duration);
 
 
@@ -94,22 +96,23 @@ void VideoRefreshController::process() {
              * 添加subtitles
              */
 
-            if(mVideoStateInfo->streamSubtitle->st){
+            if (mVideoStateInfo->streamSubtitle->st) {
 
-                while(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
+                while (mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0) {
                     sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
 
-                    if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 1){
+                    if (mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 1) {
                         sp2 = mVideoStateInfo->frameQueueSubtitle->frameQueuePeekNext();
-                    }else{
+                    } else {
                         sp2 = NULL;
                     }
 
 
                     if (sp->serial != mVideoStateInfo->pkt_serial_subtitle
-                        || (mVideoStateInfo->vidClk->pts > (sp->pts + ((float) sp->sub.end_display_time / 1000)))
-                        || (sp2 && mVideoStateInfo->vidClk->pts > (sp2->pts + ((float) sp2->sub.start_display_time / 1000))))
-                    {
+                        || (mVideoStateInfo->vidClk->pts >
+                            (sp->pts + ((float) sp->sub.end_display_time / 1000)))
+                        || (sp2 && mVideoStateInfo->vidClk->pts >
+                                   (sp2->pts + ((float) sp2->sub.start_display_time / 1000)))) {
                         mVideoStateInfo->frameQueueSubtitle->frameQueueNext();
                     } else {
                         break;
@@ -119,27 +122,26 @@ void VideoRefreshController::process() {
 
             int decodeWidth = mVideoStateInfo->streamVideo->dec_ctx->width;
             int decodeHeight = mVideoStateInfo->streamVideo->dec_ctx->height;
-            int y_size = decodeWidth*decodeHeight;
-          //  Frame *vp;
-          //  lastvp = mVideoStateInfo->frameQueueVideo->frameQueuePeekLast();
-            if (lastvp->out_buffer_video_yuv[0] != NULL && *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
+            int y_size = decodeWidth * decodeHeight;
+            if (lastvp->out_buffer_video_yuv[0] != NULL &&
+                *mVideoStateInfo->mCurrentState != MEDIA_PLAYER_STOPPED) {
 //                fwrite(vp->frame->data[0],1,y_size,mVideoStateInfo->fp_yuv);    //Y
 //                fwrite(vp->frame->data[1],1,y_size/4,mVideoStateInfo->fp_yuv);  //U
 //                fwrite(vp->frame->data[2],1,y_size/4,mVideoStateInfo->fp_yuv);  //V
 
                 bool hasSubtitles = false;
-                int i=0;
-                if(mVideoStateInfo->streamSubtitle->st){
-                    if(mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0){
+                int i = 0;
+                if (mVideoStateInfo->streamSubtitle->st) {
+                    if (mVideoStateInfo->frameQueueSubtitle->frameQueueNumRemaining() > 0) {
                         sp = mVideoStateInfo->frameQueueSubtitle->frameQueuePeek();
 
                         if (vp->pts >= sp->pts + ((float) sp->sub.start_display_time / 1000)) {
-//                            write_png(mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
+//                            write_png(mVideoStateInfo->join(mVideoStateInfo->mStorageDir,"ass.png"), sp->imageFrame);
                             hasSubtitles = true;
 
-                            if(mVideoStateInfo->sub_format == 0){
-                                uint8_t *data[4]={0};
-                                int linesize[4]={0};
+                            if (mVideoStateInfo->sub_format == 0) {
+                                uint8_t *data[4] = {0};
+                                int linesize[4] = {0};
                                 mLock.lock();
                                 data[0] = (uint8_t *) lastvp->out_buffer_video_yuv[0];
                                 data[1] = (uint8_t *) lastvp->out_buffer_video_yuv[1];
@@ -150,8 +152,9 @@ void VideoRefreshController::process() {
                                 linesize[2] = lastvp->linesize[2];
 
 
-                                for (i = 0; i < sp->sub.num_rects; i++){
-                                    blend_subrect(data, linesize, sp->subrects[i], decodeWidth, decodeHeight);
+                                for (i = 0; i < sp->sub.num_rects; i++) {
+                                    blend_subrect(data, linesize, sp->subrects[i], decodeWidth,
+                                                  decodeHeight);
                                 }
                                 mLock.unlock();
                             }
@@ -161,7 +164,7 @@ void VideoRefreshController::process() {
 
 
                 android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-                if(hasSubtitles){
+                if (hasSubtitles) {
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           sp->imageFrame,
                                           lastvp->out_buffer_video_yuv[0],
@@ -169,7 +172,7 @@ void VideoRefreshController::process() {
                                           lastvp->out_buffer_video_yuv[2],
                                           decodeWidth,
                                           decodeHeight);
-                }else{
+                } else {
                     addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
                                           NULL,
                                           lastvp->out_buffer_video_yuv[0],
@@ -178,7 +181,6 @@ void VideoRefreshController::process() {
                                           decodeWidth,
                                           decodeHeight);
                 }
-
 
 
             }
@@ -190,7 +192,10 @@ void VideoRefreshController::process() {
 
 #define ALPHA_BLEND(a, oldp, newp, s)\
 ((((oldp << s) * (255 - (a))) + (newp * (a))) / (255 << s))
-void VideoRefreshController::blend_subrect(uint8_t **data, int *linesize, const AVSubtitleRect *rect, int imgw, int imgh){
+
+void
+VideoRefreshController::blend_subrect(uint8_t **data, int *linesize, const AVSubtitleRect *rect,
+                                      int imgw, int imgh) {
     int x, y, Y, U, V, A;
     uint8_t *lum, *cb, *cr;
     int dstx, dsty, dstw, dsth;
@@ -201,37 +206,38 @@ void VideoRefreshController::blend_subrect(uint8_t **data, int *linesize, const 
     dstx = av_clip(rect->x, 0, imgw - dstw);
     dsty = av_clip(rect->y, 0, imgh - dsth);
     lum = data[0] + dstx + dsty * linesize[0];
-    cb  = data[1] + dstx/2 + (dsty >> 1) * linesize[1];
-    cr  = data[2] + dstx/2 + (dsty >> 1) * linesize[2];
+    cb = data[1] + dstx / 2 + (dsty >> 1) * linesize[1];
+    cr = data[2] + dstx / 2 + (dsty >> 1) * linesize[2];
 
-    for (y = 0; y<dsth; y++) {
-        for (x = 0; x<dstw; x++) {
-            Y = src->data[0][x + y*src->linesize[0]];
-            A = src->data[3][x + y*src->linesize[3]];
+    for (y = 0; y < dsth; y++) {
+        for (x = 0; x < dstw; x++) {
+            Y = src->data[0][x + y * src->linesize[0]];
+            A = src->data[3][x + y * src->linesize[3]];
             lum[0] = ALPHA_BLEND(A, lum[0], Y, 0);
             lum++;
         }
         lum += linesize[0] - dstw;
     }
 
-    for (y = 0; y<dsth/2; y++) {
-        for (x = 0; x<dstw/2; x++) {
-            U = src->data[1][x + y*src->linesize[1]];
-            V = src->data[2][x + y*src->linesize[2]];
-            A = src->data[3][2*x     +  2*y   *src->linesize[3]]
-                + src->data[3][2*x + 1 +  2*y   *src->linesize[3]]
-                + src->data[3][2*x + 1 + (2*y+1)*src->linesize[3]]
-                + src->data[3][2*x     + (2*y+1)*src->linesize[3]];
-            cb[0] = ALPHA_BLEND(A>>2, cb[0], U, 0);
-            cr[0] = ALPHA_BLEND(A>>2, cr[0], V, 0);
+    for (y = 0; y < dsth / 2; y++) {
+        for (x = 0; x < dstw / 2; x++) {
+            U = src->data[1][x + y * src->linesize[1]];
+            V = src->data[2][x + y * src->linesize[2]];
+            A = src->data[3][2 * x + 2 * y * src->linesize[3]]
+                + src->data[3][2 * x + 1 + 2 * y * src->linesize[3]]
+                + src->data[3][2 * x + 1 + (2 * y + 1) * src->linesize[3]]
+                + src->data[3][2 * x + (2 * y + 1) * src->linesize[3]];
+            cb[0] = ALPHA_BLEND(A >> 2, cb[0], U, 0);
+            cr[0] = ALPHA_BLEND(A >> 2, cr[0], V, 0);
             cb++;
             cr++;
         }
-        cb += linesize[1] - dstw/2;
-        cr += linesize[2] - dstw/2;
+        cb += linesize[1] - dstw / 2;
+        cr += linesize[2] - dstw / 2;
     }
 
 }
+
 void VideoRefreshController::write_png(char *fname, image_t *img) {
 
     FILE *fp;
@@ -283,15 +289,15 @@ void VideoRefreshController::write_png(char *fname, image_t *img) {
 void VideoRefreshController::stop() {
     mRunning = false;
     int ret = -1;
-    if((ret = wait()) != 0) {
-        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+    if ((ret = wait()) != 0) {
+        ALOGE("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
 }
 
 void VideoRefreshController::refresh() {
 
-    while(mRunning){
+    while (mRunning) {
         process();
     }
     //结束视频刷新
@@ -300,7 +306,7 @@ void VideoRefreshController::refresh() {
 
 }
 
- double VideoRefreshController::vpDuration(Frame *vp, Frame *next_vp) {
+double VideoRefreshController::vpDuration(Frame *vp, Frame *next_vp) {
     if (vp->serial == next_vp->serial) {
         double duration = next_vp->pts - vp->pts;
         if (isnan(duration) || duration <= 0 || duration > mVideoStateInfo->max_frame_duration)
@@ -313,34 +319,35 @@ void VideoRefreshController::refresh() {
 }
 
 
-double  VideoRefreshController::computeTargetDelay(double delay){
-        double sync_threshold, diff = 0;
+double VideoRefreshController::computeTargetDelay(double delay) {
+    double sync_threshold, diff = 0;
 
-        /* update delay to follow master synchronisation source */
+    /* update delay to follow master synchronisation source */
 
-            diff = mVideoStateInfo->getClock(mVideoStateInfo->vidClk) - mVideoStateInfo->getClock(mVideoStateInfo->audClk);
+    diff = mVideoStateInfo->getClock(mVideoStateInfo->vidClk) -
+           mVideoStateInfo->getClock(mVideoStateInfo->audClk);
 
-            /* skip or repeat frame. We take into account the
-               delay to compute the threshold. I still don't know
-               if it is the best guess */
-            sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
-            if (!isnan(diff) && fabs(diff) < mVideoStateInfo->max_frame_duration) {
+    /* skip or repeat frame. We take into account the
+       delay to compute the threshold. I still don't know
+       if it is the best guess */
+    sync_threshold = FFMAX(AV_SYNC_THRESHOLD_MIN, FFMIN(AV_SYNC_THRESHOLD_MAX, delay));
+    if (!isnan(diff) && fabs(diff) < mVideoStateInfo->max_frame_duration) {
 
-                if (diff <= -sync_threshold) {
-                    //如果音频播放比视频快
-                    delay = FFMAX(0, delay + diff);
-                } else if (diff >= sync_threshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD){
-                    //如果视频比音频快
-                    delay = delay + diff;
-                } else if (diff >= sync_threshold){
+        if (diff <= -sync_threshold) {
+            //如果音频播放比视频快
+            delay = FFMAX(0, delay + diff);
+        } else if (diff >= sync_threshold && delay > AV_SYNC_FRAMEDUP_THRESHOLD) {
+            //如果视频比音频快
+            delay = delay + diff;
+        } else if (diff >= sync_threshold) {
 
-                    delay = 2 * delay;
-                }
+            delay = 2 * delay;
+        }
 
-            }
+    }
 
-   //     ALOGI("video: delay=%0.3lf V-A=%lf \n", delay, diff);
+    //     ALOGI("video: delay=%0.3lf V-A=%lf \n", delay, diff);
 
-        return delay;
+    return delay;
 
 }

@@ -19,8 +19,8 @@ MessageQueue::MessageQueue() {
 
     mRecycleCount = 0;
     mAllocCount = 0;
-    pthread_mutex_init(&mLock,NULL);
-    pthread_cond_init(&mCondition,NULL);
+    pthread_mutex_init(&mLock, NULL);
+    pthread_cond_init(&mCondition, NULL);
 }
 
 MessageQueue::~MessageQueue() {
@@ -41,7 +41,7 @@ void MessageQueue::flush() {
 
     pthread_mutex_lock(&mLock);
 
-    for(msg = mFirst; msg != NULL; msg = msg1) {
+    for (msg = mFirst; msg != NULL; msg = msg1) {
         msg1 = msg->next;
         free(msg);
 
@@ -58,7 +58,7 @@ int MessageQueue::put(AVMessage *msg) {
     AVMessage *msg1;
     pthread_mutex_lock(&mLock);
     msg1 = (AVMessage *) malloc(sizeof(AVMessage));
-    if(!msg1){
+    if (!msg1) {
         return -1;
     }
 
@@ -66,9 +66,9 @@ int MessageQueue::put(AVMessage *msg) {
     msg1->next = NULL;
 
 
-    if(!mLast){
+    if (!mLast) {
         mFirst = msg1;
-    }else{
+    } else {
         mLast->next = msg1;
     }
 
@@ -88,16 +88,16 @@ int MessageQueue::get(AVMessage *msg, bool block) {
     int ret;
 
     pthread_mutex_lock(&mLock);
-    for(;;){
-        if(mAbortRequest){
+    for (;;) {
+        if (mAbortRequest) {
             ret = -1;
             break;
         }
 
         msg1 = mFirst;
-        if(msg1){
+        if (msg1) {
             mFirst = msg1->next;
-            if(!mFirst){
+            if (!mFirst) {
                 mLast = NULL;
             }
 
@@ -107,10 +107,10 @@ int MessageQueue::get(AVMessage *msg, bool block) {
             free(msg1);
             ret = 1;
             break;
-        }else if(!block){
+        } else if (!block) {
             ret = 0;
             break;
-        }else{
+        } else {
             pthread_cond_wait(&mCondition, &mLock);
         }
 

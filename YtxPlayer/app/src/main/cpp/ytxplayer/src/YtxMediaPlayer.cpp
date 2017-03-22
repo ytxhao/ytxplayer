@@ -14,44 +14,42 @@
 #include "ytxplayer/gl_engine.h"
 #include "ytxplayer/ffmsg.h"
 
-void printferr(){
-    ALOGI( "AVERROR_BSF_NOT_FOUND=%d\n",AVERROR_BSF_NOT_FOUND);
-    ALOGI( "AVERROR_BUG=%d\n",AVERROR_BUG);
-    ALOGI( "AVERROR_BUFFER_TOO_SMALL=%d\n",AVERROR_BUFFER_TOO_SMALL);
-    ALOGI( "AVERROR_DECODER_NOT_FOUND=%d\n",AVERROR_DECODER_NOT_FOUND);
-    ALOGI( "AVERROR_DEMUXER_NOT_FOUND=%d\n",AVERROR_DEMUXER_NOT_FOUND);
-    ALOGI( "AVERROR_ENCODER_NOT_FOUND=%d\n",AVERROR_ENCODER_NOT_FOUND);
-    ALOGI( "AVERROR_EOF=%d\n",AVERROR_EOF);
-    ALOGI( "AVERROR_EXIT=%d\n",AVERROR_EXIT);
-    ALOGI( "AVERROR_EXTERNAL=%d\n",AVERROR_EXTERNAL);
-    ALOGI( "AVERROR_FILTER_NOT_FOUND=%d\n",AVERROR_FILTER_NOT_FOUND);
-    ALOGI( "AVERROR_INVALIDDATA=%d\n",AVERROR_INVALIDDATA);
-    ALOGI( "AVERROR_MUXER_NOT_FOUND=%d\n",AVERROR_MUXER_NOT_FOUND);
-    ALOGI( "AVERROR_OPTION_NOT_FOUND=%d\n",AVERROR_OPTION_NOT_FOUND);
-    ALOGI( "AVERROR_PATCHWELCOME=%d\n",AVERROR_PATCHWELCOME);
-    ALOGI( "AVERROR_PROTOCOL_NOT_FOUND=%d\n",AVERROR_PROTOCOL_NOT_FOUND);
-    ALOGI( "AVERROR_STREAM_NOT_FOUND=%d\n",AVERROR_STREAM_NOT_FOUND);
+void printferr() {
+    ALOGI("AVERROR_BSF_NOT_FOUND=%d\n", AVERROR_BSF_NOT_FOUND);
+    ALOGI("AVERROR_BUG=%d\n", AVERROR_BUG);
+    ALOGI("AVERROR_BUFFER_TOO_SMALL=%d\n", AVERROR_BUFFER_TOO_SMALL);
+    ALOGI("AVERROR_DECODER_NOT_FOUND=%d\n", AVERROR_DECODER_NOT_FOUND);
+    ALOGI("AVERROR_DEMUXER_NOT_FOUND=%d\n", AVERROR_DEMUXER_NOT_FOUND);
+    ALOGI("AVERROR_ENCODER_NOT_FOUND=%d\n", AVERROR_ENCODER_NOT_FOUND);
+    ALOGI("AVERROR_EOF=%d\n", AVERROR_EOF);
+    ALOGI("AVERROR_EXIT=%d\n", AVERROR_EXIT);
+    ALOGI("AVERROR_EXTERNAL=%d\n", AVERROR_EXTERNAL);
+    ALOGI("AVERROR_FILTER_NOT_FOUND=%d\n", AVERROR_FILTER_NOT_FOUND);
+    ALOGI("AVERROR_INVALIDDATA=%d\n", AVERROR_INVALIDDATA);
+    ALOGI("AVERROR_MUXER_NOT_FOUND=%d\n", AVERROR_MUXER_NOT_FOUND);
+    ALOGI("AVERROR_OPTION_NOT_FOUND=%d\n", AVERROR_OPTION_NOT_FOUND);
+    ALOGI("AVERROR_PATCHWELCOME=%d\n", AVERROR_PATCHWELCOME);
+    ALOGI("AVERROR_PROTOCOL_NOT_FOUND=%d\n", AVERROR_PROTOCOL_NOT_FOUND);
+    ALOGI("AVERROR_STREAM_NOT_FOUND=%d\n", AVERROR_STREAM_NOT_FOUND);
 /**
  * This is semantically identical to AVERROR_BUG
  * it has been introduced in Libav after our AVERROR_BUG and with a modified value.
  */
-    ALOGI( "AVERROR_BUG2=%d\n",AVERROR_BUG2);
-    ALOGI( "AVERROR_UNKNOWN=%d\n",AVERROR_UNKNOWN);
-    ALOGI( "AVERROR_EXPERIMENTAL=%d\n",AVERROR_EXPERIMENTAL);
-    ALOGI( "AVERROR_INPUT_CHANGED=%d\n",AVERROR_INPUT_CHANGED);
-    ALOGI( "AVERROR_OUTPUT_CHANGED=%d\n",AVERROR_OUTPUT_CHANGED);
+    ALOGI("AVERROR_BUG2=%d\n", AVERROR_BUG2);
+    ALOGI("AVERROR_UNKNOWN=%d\n", AVERROR_UNKNOWN);
+    ALOGI("AVERROR_EXPERIMENTAL=%d\n", AVERROR_EXPERIMENTAL);
+    ALOGI("AVERROR_INPUT_CHANGED=%d\n", AVERROR_INPUT_CHANGED);
+    ALOGI("AVERROR_OUTPUT_CHANGED=%d\n", AVERROR_OUTPUT_CHANGED);
 /* HTTP & RTSP errors */
-    ALOGI( "AVERROR_HTTP_BAD_REQUEST=%d\n",AVERROR_HTTP_BAD_REQUEST);
-    ALOGI( "AVERROR_HTTP_UNAUTHORIZED=%d\n",AVERROR_HTTP_UNAUTHORIZED);
-    ALOGI( "AVERROR_HTTP_FORBIDDEN=%d\n",AVERROR_HTTP_FORBIDDEN);
-    ALOGI( "AVERROR_HTTP_NOT_FOUND=%d\n",AVERROR_HTTP_NOT_FOUND);
-    ALOGI( "AVERROR_HTTP_OTHER_4XX=%d\n",AVERROR_HTTP_OTHER_4XX);
-    ALOGI( "AVERROR_HTTP_SERVER_ERROR=%d\n",AVERROR_HTTP_SERVER_ERROR);
+    ALOGI("AVERROR_HTTP_BAD_REQUEST=%d\n", AVERROR_HTTP_BAD_REQUEST);
+    ALOGI("AVERROR_HTTP_UNAUTHORIZED=%d\n", AVERROR_HTTP_UNAUTHORIZED);
+    ALOGI("AVERROR_HTTP_FORBIDDEN=%d\n", AVERROR_HTTP_FORBIDDEN);
+    ALOGI("AVERROR_HTTP_NOT_FOUND=%d\n", AVERROR_HTTP_NOT_FOUND);
+    ALOGI("AVERROR_HTTP_OTHER_4XX=%d\n", AVERROR_HTTP_OTHER_4XX);
+    ALOGI("AVERROR_HTTP_SERVER_ERROR=%d\n", AVERROR_HTTP_SERVER_ERROR);
 }
 
-//static YtxMediaPlayer* sPlayer = NULL;
-
-YtxMediaPlayer::YtxMediaPlayer(){
+YtxMediaPlayer::YtxMediaPlayer() {
     wanted_stream_spec[AVMEDIA_TYPE_VIDEO] = "vst";
     wanted_stream_spec[AVMEDIA_TYPE_AUDIO] = "ast";
     wanted_stream_spec[AVMEDIA_TYPE_SUBTITLE] = "sst";
@@ -78,41 +76,38 @@ YtxMediaPlayer::YtxMediaPlayer(){
     mDecoderVideo = NULL;
     mDecoderAudio = NULL;
     subtitles = NULL;
-    //sPlayer = this;
 }
 
 YtxMediaPlayer::~YtxMediaPlayer() {
 
+    //  AudioEngine::releaseAudioEngine();
+    //  GlEngine::releaseGlEngine();
 
-  //  AudioEngine::releaseAudioEngine();
-  //  GlEngine::releaseGlEngine();
-
-    if(mDecoderSubtitle){
+    if (mDecoderSubtitle) {
         delete mDecoderSubtitle;
     }
 
-    if(mDecoderVideo){
+    if (mDecoderVideo) {
         delete mDecoderVideo;
     }
 
-    if(mDecoderAudio){
+    if (mDecoderAudio) {
         delete mDecoderAudio;
     }
 
-    if(mVideoRefreshController){
+    if (mVideoRefreshController) {
         delete mVideoRefreshController;
     }
 
-    if(mAudioRefreshController){
+    if (mAudioRefreshController) {
         delete mAudioRefreshController;
     }
 
-    ALOGI("~YtxMediaPlayer mVideoStateInfo = %#x",mVideoStateInfo);
     delete mVideoStateInfo;
 
 
-    if(mListener != NULL){
-        mListener->notify(MEDIA_STOPPED,0,0);
+    if (mListener != NULL) {
+        mListener->notify(MEDIA_STOPPED, 0, 0);
     }
 
 }
@@ -122,62 +117,60 @@ void YtxMediaPlayer::died() {
 }
 
 
-void  YtxMediaPlayer::disconnect() {
+void YtxMediaPlayer::disconnect() {
 
 }
 
-int  YtxMediaPlayer::setDataSource(const char *url) {
+int YtxMediaPlayer::setDataSource(const char *url) {
 
     this->filePath = url;
-    ALOGI("YtxMediaPlayer setDataSource filePath=%s\n",filePath);
+    ALOGI("YtxMediaPlayer setDataSource filePath=%s\n", filePath);
     mCurrentState = MEDIA_PLAYER_INITIALIZED;
     return 0;
 }
 
-int  YtxMediaPlayer::setSubtitles(char *url) {
+int YtxMediaPlayer::setSubtitles(char *url) {
 
     this->subtitles = url;
-    ALOGI("YtxMediaPlayer setSubtitles subtitles=%s\n",subtitles);
+    ALOGI("YtxMediaPlayer setSubtitles subtitles=%s\n", subtitles);
     return 0;
 }
 
 
-int  YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
+int YtxMediaPlayer::setDataSource(int fd, int64_t offset, int64_t length) {
 
     return 0;
 }
 
 
-int  YtxMediaPlayer::prepare() {
+int YtxMediaPlayer::prepare() {
 
-    ALOGI("YtxMediaPlayer::prepare OUT\n");
     return 0;
 
 }
 
 
-
-
-int  YtxMediaPlayer::prepareAsync() {
+int YtxMediaPlayer::prepareAsync() {
 
     mCurrentState = MEDIA_PLAYER_PREPARING;
     pthread_create(&mPlayerPrepareAsyncThread, NULL, prepareAsyncPlayer, this);
     return 0;
 }
 
-void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
+void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
 
 
-    YtxMediaPlayer* mPlayer = (YtxMediaPlayer *) ptr;
+    YtxMediaPlayer *mPlayer = (YtxMediaPlayer *) ptr;
     avfilter_register_all(); //添加滤镜
     av_register_all();
     avformat_network_init();
     mPlayer->mVideoStateInfo->pFormatCtx = avformat_alloc_context();
 
-    ALOGI("prepareAsyncPlayer prepare this->filePath=%s\n",mPlayer->filePath);
+    ALOGI("prepareAsyncPlayer prepare this->filePath=%s\n", mPlayer->filePath);
     //   ALOGI("Couldn't open input stream.\n");
-    if(avformat_open_input(&mPlayer->mVideoStateInfo->pFormatCtx,mPlayer->filePath,NULL,NULL)!=0){
-        ALOGI("Couldn't open input stream.\n");
+    if (avformat_open_input(&mPlayer->mVideoStateInfo->pFormatCtx, mPlayer->filePath, NULL, NULL) !=
+        0) {
+        ALOGE("Couldn't open input stream.\n");
         AVMessage msg;
         msg.what = FFP_MSG_ERROR;
         msg.arg1 = MEDIA_ERROR_OPEN_STREAM;
@@ -187,18 +180,20 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         pthread_exit(NULL);
     }
 
-    if(avformat_find_stream_info(mPlayer->mVideoStateInfo->pFormatCtx,NULL)<0){
-        ALOGI("Couldn't find stream information.\n");
+    if (avformat_find_stream_info(mPlayer->mVideoStateInfo->pFormatCtx, NULL) < 0) {
+        ALOGE("Couldn't find stream information.\n");
         return 0;
     }
 
 
-    for(int i=0; i<mPlayer->mVideoStateInfo->pFormatCtx->nb_streams; i++) {
+    for (int i = 0; i < mPlayer->mVideoStateInfo->pFormatCtx->nb_streams; i++) {
         AVStream *st = mPlayer->mVideoStateInfo->pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
 
-        if (type >= 0 && mPlayer->wanted_stream_spec[type] && mPlayer->mVideoStateInfo->st_index[type] == -1) {
-            if (avformat_match_stream_specifier(mPlayer->mVideoStateInfo->pFormatCtx, st, mPlayer->wanted_stream_spec[type]) > 0) {
+        if (type >= 0 && mPlayer->wanted_stream_spec[type] &&
+            mPlayer->mVideoStateInfo->st_index[type] == -1) {
+            if (avformat_match_stream_specifier(mPlayer->mVideoStateInfo->pFormatCtx, st,
+                                                mPlayer->wanted_stream_spec[type]) > 0) {
                 mPlayer->mVideoStateInfo->st_index[type] = i;
             }
         }
@@ -207,42 +202,50 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 
     for (int i = 0; i < AVMEDIA_TYPE_NB; i++) {
         if (mPlayer->wanted_stream_spec[i] && mPlayer->mVideoStateInfo->st_index[i] == -1) {
-            ALOGI("Stream specifier %s does not match any %s stream\n", mPlayer->wanted_stream_spec[(AVMediaType)i], av_get_media_type_string((AVMediaType)i));
+            ALOGI("Stream specifier %s does not match any %s stream\n",
+                  mPlayer->wanted_stream_spec[(AVMediaType) i],
+                  av_get_media_type_string((AVMediaType) i));
             mPlayer->mVideoStateInfo->st_index[i] = -1;
         }
     }
 
 
     //mPlayer->mVideoStateInfo->pFormatCtx = mPlayer->pFormatCtx;
-    mPlayer->mVideoStateInfo->max_frame_duration = (mPlayer->mVideoStateInfo->pFormatCtx->iformat->flags & AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
+    mPlayer->mVideoStateInfo->max_frame_duration = (mPlayer->mVideoStateInfo->pFormatCtx->iformat->flags &
+                                                    AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
 
-    ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",mPlayer->mVideoStateInfo->max_frame_duration);
-    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
-        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamAudio,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
+    ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",
+          mPlayer->mVideoStateInfo->max_frame_duration);
+    if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamAudio,
+                                     mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
         mPlayer->mDecoderAudio = new DecoderAudio(mPlayer->mVideoStateInfo);
     }
 
-    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
-        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamVideo,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
+    if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
+        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamVideo,
+                                     mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
         mPlayer->mDecoderVideo = new DecoderVideo(mPlayer->mVideoStateInfo);
     }
 
-    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
-        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamSubtitle,mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
+    if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0) {
+        mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamSubtitle,
+                                     mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
         mPlayer->mDecoderSubtitle = new DecoderSubtitle(mPlayer->mVideoStateInfo);
     }
 
-    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 ||
-            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0 ||
-            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0 ){
-        mPlayer->mVideoStateInfo->initClock(mPlayer->mVideoStateInfo->extClk,&mPlayer->mVideoStateInfo->extClk->serial);
-        mPlayer->mVideoStateInfo->setClockSpeed(mPlayer->mVideoStateInfo->extClk,1);
+    if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 ||
+        mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0 ||
+        mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+        mPlayer->mVideoStateInfo->initClock(mPlayer->mVideoStateInfo->extClk,
+                                            &mPlayer->mVideoStateInfo->extClk->serial);
+        mPlayer->mVideoStateInfo->setClockSpeed(mPlayer->mVideoStateInfo->extClk, 1);
     }
 
 
-    if(mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 &&
-            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0 &&
-            mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] < 0 ){
+    if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 &&
+        mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0 &&
+        mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] < 0) {
         AVMessage msg;
         msg.what = FFP_MSG_ERROR;
         msg.arg1 = MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES;
@@ -252,31 +255,28 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
         pthread_exit(NULL);
     }
 
-    mPlayer->mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE,0);
-    mPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE,1);
-    mPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE,1);
-
-
-
+    mPlayer->mVideoStateInfo->frameQueueSubtitle->frameQueueInit(SUBPICTURE_QUEUE_SIZE, 0);
+    mPlayer->mVideoStateInfo->frameQueueVideo->frameQueueInit(VIDEO_PICTURE_QUEUE_SIZE, 1);
+    mPlayer->mVideoStateInfo->frameQueueAudio->frameQueueInit(SAMPLE_QUEUE_SIZE, 1);
 
 
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
 
-   // "movie=my_logo.png[wm];[in][wm]overlay=5:5[out]"
-    mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
-  //  mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "subtitles=/storage/emulated/0/test_file/x7_11.srt";
-  //  mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = "movie=/storage/emulated/0/my_logo.png[wm];[in][wm]overlay=5:5[out]";
+    mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(
+            mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
 
 
-    ALOGD("mPlayer->subtitles=%s",mPlayer->subtitles);
-    if(mPlayer->subtitles != NULL){
-        mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1] = mPlayer->mVideoStateInfo->join3("subtitles=",mPlayer->subtitles);
+    ALOGI("mPlayer->subtitles=%s", mPlayer->subtitles);
+    if (mPlayer->subtitles != NULL) {
+        mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters -
+                                                1] = mPlayer->mVideoStateInfo->join(
+                "subtitles=", mPlayer->subtitles);
     }
 
-            //mPlayer->mVideoStateInfo->join3(mPlayer->mVideoStateInfo->mStorageDir,"test_file/x7_11.srt");
-    ALOGI("vfilters_list = %s",mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
+    ALOGI("vfilters_list = %s",
+          mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
 
     mPlayer->mVideoStateInfo->init_opts();
     AVMessage msg;
@@ -287,18 +287,17 @@ void* YtxMediaPlayer::prepareAsyncPlayer(void* ptr){
 }
 
 
-
 int YtxMediaPlayer::resume() {
     mCurrentState = MEDIA_PLAYER_STARTED;
     mVideoStateInfo->notifyAll();
     return 0;
 }
 
-int  YtxMediaPlayer::start() {
-    ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n",mCurrentState);
+int YtxMediaPlayer::start() {
+    ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n", mCurrentState);
 
-    if(mCurrentState == MEDIA_PLAYER_PAUSED){
-        return  resume();
+    if (mCurrentState == MEDIA_PLAYER_PAUSED) {
+        return resume();
 
     }
 
@@ -307,29 +306,26 @@ int  YtxMediaPlayer::start() {
     return 0;
 }
 
-void* YtxMediaPlayer::startPlayer(void* ptr)
-{
+void *YtxMediaPlayer::startPlayer(void *ptr) {
     ALOGI("starting main player thread\n");
-    YtxMediaPlayer* mPlayer = (YtxMediaPlayer *) ptr;
+    YtxMediaPlayer *mPlayer = (YtxMediaPlayer *) ptr;
     printferr();
     //等待surface render初始化完成
 
-    do{
+    do {
         usleep(50);
-    }while(rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
+    } while (rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
 
     mPlayer->decodeMovie(ptr);
 
-    if(mPlayer->mVideoStateInfo->pFormatCtx != NULL){
+    if (mPlayer->mVideoStateInfo->pFormatCtx != NULL) {
         avformat_close_input(&mPlayer->mVideoStateInfo->pFormatCtx);
     }
     mPlayer->mVideoStateInfo->uninit_opts();
     av_freep(&mPlayer->mVideoStateInfo->vfilters_list);
     avformat_network_deinit();
-    if(mPlayer != NULL){
-
+    if (mPlayer != NULL) {
         delete mPlayer;
-
     }
 
     return 0;
@@ -338,17 +334,23 @@ void* YtxMediaPlayer::startPlayer(void* ptr)
 void YtxMediaPlayer::checkSeekRequest() {
 
     int ret;
-    if(mVideoStateInfo != NULL){
-        if(mVideoStateInfo->seekReq){
+    if (mVideoStateInfo != NULL) {
+        if (mVideoStateInfo->seekReq) {
             int64_t seek_target = mVideoStateInfo->seekPos;
-            int64_t seek_min    = mVideoStateInfo->seekRel > 0 ? seek_target - mVideoStateInfo->seekRel + 2: INT64_MIN;
-            int64_t seek_max    = mVideoStateInfo->seekRel < 0 ? seek_target - mVideoStateInfo->seekRel - 2: INT64_MAX;
-            ALOGI("checkSeekRequest seek_target=%lld seek_min=%lld seek_max=%lld mVideoStateInfo->seekFlags=%d\n",seek_target,seek_min,seek_max,mVideoStateInfo->seekFlags);
-            ret = avformat_seek_file(mVideoStateInfo->pFormatCtx, -1, seek_min, seek_target, seek_max, mVideoStateInfo->seekFlags);
-            ALOGI("while seeking ret = %d\n",ret);
-            if(ret<0){
-                ALOGI("%s: error while seeking\n",filePath);
-            }else {
+            int64_t seek_min =
+                    mVideoStateInfo->seekRel > 0 ? seek_target - mVideoStateInfo->seekRel + 2
+                                                 : INT64_MIN;
+            int64_t seek_max =
+                    mVideoStateInfo->seekRel < 0 ? seek_target - mVideoStateInfo->seekRel - 2
+                                                 : INT64_MAX;
+            ALOGI("checkSeekRequest seek_target=%lld seek_min=%lld seek_max=%lld mVideoStateInfo->seekFlags=%d\n",
+                  seek_target, seek_min, seek_max, mVideoStateInfo->seekFlags);
+            ret = avformat_seek_file(mVideoStateInfo->pFormatCtx, -1, seek_min, seek_target,
+                                     seek_max, mVideoStateInfo->seekFlags);
+            ALOGI("avformat_seek_file ret = %d\n", ret);
+            if (ret < 0) {
+                ALOGE("%s: error while seeking\n", filePath);
+            } else {
                 if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
                     mDecoderAudio->flush();
                     mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
@@ -356,14 +358,14 @@ void YtxMediaPlayer::checkSeekRequest() {
 
                 if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
                     mDecoderVideo->flush();
-                    ALOGI("12mVideoStateInfo->flushPkt->pkt.data = %#x \n",mVideoStateInfo->flushPkt->pkt.data);
                     mDecoderVideo->enqueue(mVideoStateInfo->flushPkt);
                 }
                 if (mVideoStateInfo->seekFlags & AVSEEK_FLAG_BYTE) {
-                   // set_clock(&is->extclk, NAN, 0);
+                    // set_clock(&is->extclk, NAN, 0);
                 } else {
-                   // set_clock(&is->extclk, seek_target / (double)AV_TIME_BASE, 0);
-                    mVideoStateInfo->setClock(mVideoStateInfo->extClk,seek_target / (double)AV_TIME_BASE,0);
+                    // set_clock(&is->extclk, seek_target / (double)AV_TIME_BASE, 0);
+                    mVideoStateInfo->setClock(mVideoStateInfo->extClk,
+                                              seek_target / (double) AV_TIME_BASE, 0);
                 }
             }
 
@@ -376,62 +378,54 @@ void YtxMediaPlayer::checkSeekRequest() {
 }
 
 
-void YtxMediaPlayer::decodeMovie(void* ptr)
-{
-   // AVPacket mPacket, *pPacket = &mPacket;
+void YtxMediaPlayer::decodeMovie(void *ptr) {
 
     MAVPacket mPacket, *pPacket = &mPacket;
 
 
-
-
-//    mDecoderVideo->startAsync();
-//    mDecoderAudio->startAsync();
-
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
         mVideoRefreshController->startAsync();
         mDecoderVideo->startAsync();
     }
 
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
         mAudioRefreshController->startAsync();
         mDecoderAudio->startAsync();
     }
 
-    ALOGI("st_index[AVMEDIA_TYPE_SUBTITLE]=%d",mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]);
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0) {
         mDecoderSubtitle->startAsync();
     }
 
-
     mCurrentState = MEDIA_PLAYER_STARTED;
-    ALOGI("playing %ix%i\n", mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
 
     while (mCurrentState != MEDIA_PLAYER_DECODED && mCurrentState != MEDIA_PLAYER_STOPPED &&
-           mCurrentState != MEDIA_PLAYER_STATE_ERROR )
-    {
+           mCurrentState != MEDIA_PLAYER_STATE_ERROR) {
 
-        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 && mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >=0
-                && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
+        if (mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0 &&
+            mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0
+            && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
 
-            if(mDecoderVideo->packets() + mDecoderAudio->packets() +mDecoderSubtitle->packets() > MAX_QUEUE_SIZE ||
-               mDecoderVideo->streamHasEnoughPackets() &&
-               mDecoderAudio->streamHasEnoughPackets() &&
-               mDecoderSubtitle->streamHasEnoughPackets()){
+            if (mDecoderVideo->packets() + mDecoderAudio->packets() + mDecoderSubtitle->packets() >
+                MAX_QUEUE_SIZE ||
+                mDecoderVideo->streamHasEnoughPackets() &&
+                mDecoderAudio->streamHasEnoughPackets() &&
+                mDecoderSubtitle->streamHasEnoughPackets()) {
                 packetEnoughWait();
                 continue;
             }
-        }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >=0
-                 && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
+        } else if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0
+                   && mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
 
-            if(mDecoderVideo->packets() + mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
-               mDecoderVideo->streamHasEnoughPackets() &&
-               mDecoderAudio->streamHasEnoughPackets() ){
+            if (mDecoderVideo->packets() + mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
+                mDecoderVideo->streamHasEnoughPackets() &&
+                mDecoderAudio->streamHasEnoughPackets()) {
                 packetEnoughWait();
                 continue;
             }
-        }else if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >=0){
-            if(mDecoderAudio->packets() > MAX_QUEUE_SIZE || mDecoderAudio->streamHasEnoughPackets() ){
+        } else if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+            if (mDecoderAudio->packets() > MAX_QUEUE_SIZE ||
+                mDecoderAudio->streamHasEnoughPackets()) {
                 packetEnoughWait();
                 continue;
             }
@@ -441,23 +435,23 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
         checkSeekRequest();
 
         int ret = av_read_frame(mVideoStateInfo->pFormatCtx, &pPacket->pkt);
-    //    ALOGI("decodeMovie ret out=%d\n",ret);
 
-        if(ret < 0) {
+        if (ret < 0) {
 
-            if(ret == AVERROR_EOF || avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof){
+            if (ret == AVERROR_EOF ||
+                avio_feof(mVideoStateInfo->pFormatCtx->pb) && !mVideoStateInfo->eof) {
 
-                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+                if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
                     mDecoderVideo->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]);
                 }
-                if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+                if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
                     mDecoderAudio->enqueueNullPacket(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
                 }
                 mVideoStateInfo->eof = 1;
 
             }
 
-            if (mVideoStateInfo->pFormatCtx->pb && mVideoStateInfo->pFormatCtx->pb->error){
+            if (mVideoStateInfo->pFormatCtx->pb && mVideoStateInfo->pFormatCtx->pb->error) {
                 break;
             }
 
@@ -466,17 +460,17 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
             pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
 
             continue;
-        }else{
+        } else {
             mVideoStateInfo->eof = 0;
         }
 
         if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO]) {
             mDecoderVideo->enqueue(pPacket);
-        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]){
+        } else if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]) {
             mDecoderAudio->enqueue(pPacket);
-        }else if(pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]){
+        } else if (pPacket->pkt.stream_index == mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE]) {
             mDecoderSubtitle->enqueue(pPacket);
-        }else{
+        } else {
             av_packet_unref(&pPacket->pkt);
         }
     }
@@ -485,36 +479,35 @@ void YtxMediaPlayer::decodeMovie(void* ptr)
 
 
     int ret = -1;
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0){
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] >= 0) {
         mDecoderSubtitle->stop();
         ALOGI("waiting on mDecoderSubtitle thread\n");
-        if((ret = mDecoderSubtitle->wait()) != 0) {
-            ALOGI("Couldn't cancel subtitle thread: %i", ret);
+        if ((ret = mDecoderSubtitle->wait()) != 0) {
+            ALOGE("Couldn't cancel subtitle thread: %i", ret);
         }
     }
 
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0){
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
         mVideoRefreshController->stop();
         mDecoderVideo->stop();
         ALOGI("waiting on mDecoderVideo thread\n");
-        if((ret = mDecoderVideo->wait()) != 0) {
-            ALOGI("Couldn't cancel video thread: %i", ret);
+        if ((ret = mDecoderVideo->wait()) != 0) {
+            ALOGE("Couldn't cancel video thread: %i", ret);
         }
     }
 
-    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+    if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
         mAudioRefreshController->stop();
         mDecoderAudio->stop();
         ALOGI("waiting on mDecoderAudio thread\n");
-        // mDecoderVideo->mRunning = false;
-        if((ret = mDecoderAudio->wait()) != 0) {
-            ALOGI( "Couldn't cancel audio thread: %i", ret);
+        if ((ret = mDecoderAudio->wait()) != 0) {
+            ALOGE("Couldn't cancel audio thread: %i", ret);
         }
     }
 
     finish();
 
-    ALOGI( "end of playing\n");
+    ALOGI("end of playing\n");
 }
 
 
@@ -529,28 +522,30 @@ void YtxMediaPlayer::packetEnoughWait() {
     nsec = now.tv_usec * 1000 + (timeout_ms % 1000) * 1000000;
     outTime.tv_sec = now.tv_sec + nsec / 1000000000 + timeout_ms / 1000; //now.tv_sec + 5;
     outTime.tv_nsec = nsec % 1000000000; //now.tv_usec * 1000;
-    pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex, &outTime);
+    pthread_cond_timedwait(&mVideoStateInfo->continue_read_thread, &mVideoStateInfo->wait_mutex,
+                           &outTime);
     pthread_mutex_unlock(&mVideoStateInfo->wait_mutex);
 
 
 }
-int  YtxMediaPlayer::release() {
-    ALOGI("YtxMediaPlayer::release()");
+
+int YtxMediaPlayer::release() {
+    ALOGI("YtxMediaPlayer::release");
     isRelease = true;
     return 0;
 }
 
-int  YtxMediaPlayer::stop() {
-    ALOGI("YtxMediaPlayer::stop()");
+int YtxMediaPlayer::stop() {
+    ALOGI("YtxMediaPlayer::stop");
     mCurrentState = MEDIA_PLAYER_STOPPED;
     mVideoStateInfo->mMessageLoop->stop();
     pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
-   // playing = false;
+    // playing = false;
     return 0;
 }
 
-int  YtxMediaPlayer::pause() {
-    ALOGI("YtxMediaPlayer::pause()");
+int YtxMediaPlayer::pause() {
+    ALOGI("YtxMediaPlayer::pause");
     mCurrentState = MEDIA_PLAYER_PAUSED;
     return 0;
 }
@@ -560,40 +555,42 @@ bool YtxMediaPlayer::isPlaying() {
     return mCurrentState == MEDIA_PLAYER_STARTED || mCurrentState == MEDIA_PLAYER_DECODED;
 }
 
-int  YtxMediaPlayer::getVideoWidth() {
+int YtxMediaPlayer::getVideoWidth() {
 
     return mVideoStateInfo->mVideoWidth;
 }
 
-int  YtxMediaPlayer::getVideoHeight() {
+int YtxMediaPlayer::getVideoHeight() {
 
     return mVideoStateInfo->mVideoHeight;
 }
 
-int  YtxMediaPlayer::seekTo(int msec) {
+int YtxMediaPlayer::seekTo(int msec) {
 
-        mVideoStateInfo->seekPos = (int64_t) (((double)msec / getDuration()) * mVideoStateInfo->pFormatCtx->duration);
-        mVideoStateInfo->seekRel = 0;
-        mVideoStateInfo->seekReq = true;
-        pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
-        ALOGI("seekTo seekPos=%lld seekRel=%lld msec=%d\n",mVideoStateInfo->seekPos,mVideoStateInfo->seekRel,msec);
-    //}
+    mVideoStateInfo->seekPos = (int64_t) (((double) msec / getDuration()) *
+                                          mVideoStateInfo->pFormatCtx->duration);
+    mVideoStateInfo->seekRel = 0;
+    mVideoStateInfo->seekReq = true;
+    pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
+    ALOGI("seekTo seekPos=%lld seekRel=%lld msec=%d\n", mVideoStateInfo->seekPos,
+          mVideoStateInfo->seekRel, msec);
+
     return 0;
 }
 
-int  YtxMediaPlayer::getCurrentPosition() {
+int YtxMediaPlayer::getCurrentPosition() {
     return mVideoStateInfo->currentTime;
 }
 
-int  YtxMediaPlayer::getDuration() {
+int YtxMediaPlayer::getDuration() {
     int64_t ts;
     int ns, hh, mm, ss;
-    int tns, thh, tmm, tss,tms;
+    int tns, thh, tmm, tss, tms;
     ts = mVideoStateInfo->pFormatCtx->duration;
-    tns  = ts / 1000000LL; //总共有多少秒
-    thh  = tns / 3600;
-    tmm  = (tns % 3600) / 60;
-    tss  = (tns % 60);
+    tns = ts / 1000000LL; //总共有多少秒
+    thh = tns / 3600;
+    tmm = (tns % 3600) / 60;
+    tss = (tns % 60);
 
     tms = ts / 1000LL; //总共有多少毫秒
 //    frac = x / cur_stream->width;
@@ -605,48 +602,48 @@ int  YtxMediaPlayer::getDuration() {
     return tms;
 }
 
-int  YtxMediaPlayer::reset() {
+int YtxMediaPlayer::reset() {
 
     return 0;
 }
 
-//    int        setAudioStreamType(audio_stream_type_t type);
-int   YtxMediaPlayer::setLooping(int loop) {
+
+int YtxMediaPlayer::setLooping(int loop) {
 
     return 0;
 }
 
-bool  YtxMediaPlayer::isLooping() {
+bool YtxMediaPlayer::isLooping() {
 
     return 0;
 }
 
-int   YtxMediaPlayer::setVolume(float leftVolume, float rightVolume) {
+int YtxMediaPlayer::setVolume(float leftVolume, float rightVolume) {
 
     return 0;
 }
 
-int   YtxMediaPlayer::setAudioSessionId(int sessionId) {
+int YtxMediaPlayer::setAudioSessionId(int sessionId) {
 
     return 0;
 }
 
-int   YtxMediaPlayer::getAudioSessionId() {
+int YtxMediaPlayer::getAudioSessionId() {
 
     return 0;
 }
 
-int   YtxMediaPlayer::setAuxEffectSendLevel(float level) {
+int YtxMediaPlayer::setAuxEffectSendLevel(float level) {
 
     return 0;
 }
 
-int   YtxMediaPlayer::attachAuxEffect(int effectId) {
+int YtxMediaPlayer::attachAuxEffect(int effectId) {
 
     return 0;
 }
 
-int   YtxMediaPlayer::setRetransmitEndpoint(const char *addrString, uint16_t port) {
+int YtxMediaPlayer::setRetransmitEndpoint(const char *addrString, uint16_t port) {
 
     return 0;
 }
@@ -662,27 +659,27 @@ void YtxMediaPlayer::clear_l() {
 
 }
 
-int  YtxMediaPlayer::seekTo_l(int msec) {
+int YtxMediaPlayer::seekTo_l(int msec) {
 
     return 0;
 }
 
-int  YtxMediaPlayer::prepareAsync_l() {
+int YtxMediaPlayer::prepareAsync_l() {
 
     return 0;
 }
 
-int  YtxMediaPlayer::getDuration_l(int *msec) {
+int YtxMediaPlayer::getDuration_l(int *msec) {
 
     return 0;
 }
 
-int  YtxMediaPlayer::reset_l() {
+int YtxMediaPlayer::reset_l() {
 
     return 0;
 }
 
-int  YtxMediaPlayer::setListener(MediaPlayerListener* listener) {
+int YtxMediaPlayer::setListener(MediaPlayerListener *listener) {
 
     mListener = listener;
     mVideoStateInfo->mMessageLoop->setMsgListener(mListener);
@@ -690,96 +687,94 @@ int  YtxMediaPlayer::setListener(MediaPlayerListener* listener) {
     return 0;
 }
 
-void  YtxMediaPlayer::finish() {
+void YtxMediaPlayer::finish() {
 
     ALOGI("YtxMediaPlayer::finish IN");
-   // mVideoStateInfo->mMessageLoop->stop();
+    // mVideoStateInfo->mMessageLoop->stop();
     isFinish = 1;
     ALOGI("YtxMediaPlayer::finish OUT");
 }
 
 
-int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index)
-{
+int YtxMediaPlayer::streamComponentOpen(InputStream *is, int stream_index) {
 
     if (stream_index < 0 || stream_index > mVideoStateInfo->pFormatCtx->nb_streams) {
         return -1;
     }
 
-
     is->dec_ctx = avcodec_alloc_context3(NULL);
-    avcodec_parameters_to_context(is->dec_ctx, mVideoStateInfo->pFormatCtx->streams[stream_index]->codecpar);
+    avcodec_parameters_to_context(is->dec_ctx,
+                                  mVideoStateInfo->pFormatCtx->streams[stream_index]->codecpar);
 
-    av_codec_set_pkt_timebase(is->dec_ctx, mVideoStateInfo->pFormatCtx->streams[stream_index]->time_base);
+    av_codec_set_pkt_timebase(is->dec_ctx,
+                              mVideoStateInfo->pFormatCtx->streams[stream_index]->time_base);
     is->st = mVideoStateInfo->pFormatCtx->streams[stream_index];
-    AVCodec* codec = avcodec_find_decoder(is->dec_ctx->codec_id);
+    AVCodec *codec = avcodec_find_decoder(is->dec_ctx->codec_id);
     if (codec == NULL) {
         return -1;
     }
 
-    ALOGI("streamVideo.dec_ctx->codec_id=%d\n",is->dec_ctx->codec_id);
+    ALOGI("streamVideo.dec_ctx->codec_id=%d\n", is->dec_ctx->codec_id);
 
     is->dec_ctx->codec_id = codec->id;
 
-
-
     // Open codec
-    if (avcodec_open2(is->dec_ctx, codec,NULL) < 0) {
+    if (avcodec_open2(is->dec_ctx, codec, NULL) < 0) {
         return -1;
     }
 
 
-    switch (is->dec_ctx->codec_type){
-        case AVMEDIA_TYPE_AUDIO:
-            {
-                //解压缩数据
-                mFrameAudio = av_frame_alloc();
-                //frame->16bit 44100 PCM 统一音频采样格式与采样率
-                //重采样设置参数-------------start
-                //输入的采样格式
-                mVideoStateInfo->in_sample_fmt = is->dec_ctx->sample_fmt;
-                //输出采样格式16bit PCM
-                mVideoStateInfo->out_sample_fmt = AV_SAMPLE_FMT_S16;
-                //输入采样率
-                mVideoStateInfo->in_sample_rate = is->dec_ctx->sample_rate;
-                //输出采样率
-                //out_sample_rate = 44100;
-                mVideoStateInfo->out_sample_rate = mVideoStateInfo->in_sample_rate;
-                //获取输入的声道布局
-                //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
-                //av_get_default_channel_layout(codecCtx->channels);
-                mVideoStateInfo->out_nb_samples=is->dec_ctx->frame_size;
+    switch (is->dec_ctx->codec_type) {
+        case AVMEDIA_TYPE_AUDIO: {
+            //解压缩数据
+            mFrameAudio = av_frame_alloc();
+            //frame->16bit 44100 PCM 统一音频采样格式与采样率
+            //重采样设置参数-------------start
+            //输入的采样格式
+            mVideoStateInfo->in_sample_fmt = is->dec_ctx->sample_fmt;
+            //输出采样格式16bit PCM
+            mVideoStateInfo->out_sample_fmt = AV_SAMPLE_FMT_S16;
+            //输入采样率
+            mVideoStateInfo->in_sample_rate = is->dec_ctx->sample_rate;
+            //输出采样率
+            //out_sample_rate = 44100;
+            mVideoStateInfo->out_sample_rate = mVideoStateInfo->in_sample_rate;
+            //获取输入的声道布局
+            //根据声道个数获取默认的声道布局（2个声道，默认立体声stereo）
+            //av_get_default_channel_layout(codecCtx->channels);
+            mVideoStateInfo->out_nb_samples = is->dec_ctx->frame_size;
 
-                mVideoStateInfo->in_ch_layout = is->dec_ctx->channel_layout;
-                //输出的声道布局（立体声）
-                mVideoStateInfo->out_ch_layout = AV_CH_LAYOUT_STEREO;
+            mVideoStateInfo->in_ch_layout = is->dec_ctx->channel_layout;
+            //输出的声道布局（立体声）
+            mVideoStateInfo->out_ch_layout = AV_CH_LAYOUT_STEREO;
 
-                //输出的声道个数
-                mVideoStateInfo->out_channel_nb = av_get_channel_layout_nb_channels(mVideoStateInfo->out_ch_layout);
+            //输出的声道个数
+            mVideoStateInfo->out_channel_nb = av_get_channel_layout_nb_channels(
+                    mVideoStateInfo->out_ch_layout);
 
-                //重采样设置参数-------------end
+            //重采样设置参数-------------end
 
-                ALOGI("### in_sample_rate=%d\n",mVideoStateInfo->in_sample_rate);
-                ALOGI("### in_sample_fmt=%d\n",mVideoStateInfo->in_sample_fmt);
-                ALOGI("### out_nb_samples=%d\n",mVideoStateInfo->out_nb_samples);
-                ALOGI("### out_sample_rate=%d\n",mVideoStateInfo->out_sample_rate);
-                ALOGI("### out_sample_fmt=%d\n",mVideoStateInfo->out_sample_fmt);
-                ALOGI("### out_channel_nb=%d\n",mVideoStateInfo->out_channel_nb);
+            ALOGI("### in_sample_rate=%d\n", mVideoStateInfo->in_sample_rate);
+            ALOGI("### in_sample_fmt=%d\n", mVideoStateInfo->in_sample_fmt);
+            ALOGI("### out_nb_samples=%d\n", mVideoStateInfo->out_nb_samples);
+            ALOGI("### out_sample_rate=%d\n", mVideoStateInfo->out_sample_rate);
+            ALOGI("### out_sample_fmt=%d\n", mVideoStateInfo->out_sample_fmt);
+            ALOGI("### out_channel_nb=%d\n", mVideoStateInfo->out_channel_nb);
 
-                ALOGI("### in_ch_layout=%d\n",mVideoStateInfo->in_ch_layout);
-                ALOGI("### out_ch_layout=%d\n",mVideoStateInfo->out_ch_layout);
-            }
+            ALOGI("### in_ch_layout=%d\n", mVideoStateInfo->in_ch_layout);
+            ALOGI("### out_ch_layout=%d\n", mVideoStateInfo->out_ch_layout);
+        }
             break;
         case AVMEDIA_TYPE_VIDEO:
 
             mVideoStateInfo->mVideoWidth = is->dec_ctx->width;
             mVideoStateInfo->mVideoHeight = is->dec_ctx->height;
-            mDuration =  mVideoStateInfo->pFormatCtx->duration;
+            mDuration = mVideoStateInfo->pFormatCtx->duration;
 
             mFrameVideo = av_frame_alloc();
             mYuvFrame = av_frame_alloc();
 
-            if (mFrameVideo == NULL || mYuvFrame ==NULL) {
+            if (mFrameVideo == NULL || mYuvFrame == NULL) {
                 return -1;
             }
 

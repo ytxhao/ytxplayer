@@ -23,42 +23,18 @@
 extern "C" {
 #endif
 
-void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
+void addRendererVideoFrame(jobject obj, image_t *img, char *y, char *u, char *v, int videoWidth,
+                           int videoHeight);
 void resetRendererVideoFrame(jobject obj);
-int  rendererStarted(jobject obj);
+int rendererStarted(jobject obj);
 
 #ifdef __cplusplus
 }
 #endif
 
-typedef void (*notifyRendererFrame) ();
 class GlEngine {
 
 private:
-//    char* gFragmentShader =
-//            "precision mediump float;\n"
-//                    "uniform sampler2D tex_y;\n"
-//                    "uniform sampler2D tex_u;\n"
-//                    "uniform sampler2D tex_v;\n"
-//                    "varying vec2 tc;\n"
-//                    "void main() {\n"
-//                    "vec3 yuv;\n"
-//                    "vec3 rgb;\n"
-//                    "yuv.x = texture2D(tex_y, tc).r;\n"
-//                    "yuv.y = texture2D(tex_u, tc).r - 0.5;\n"
-//                    "yuv.z = texture2D(tex_v, tc).r - 0.5;\n"
-//                    "rgb = mat3(1,       1,         1,0,       -0.39465,  2.03211,1.13983, -0.58060,  0) * yuv;\n"
-//                    "gl_FragColor = vec4(rgb, 1);\n"
-//                    "}\n";
-
-
-//    Y’ = 0.257*R' + 0.504*G' + 0.098*B' + 16
-//    Cb' = -0.148*R' - 0.291*G' + 0.439*B' + 128
-//    Cr' = 0.439*R' - 0.368*G' - 0.071*B' + 128
-//    R' = 1.164*(Y’-16) + 1.596*(Cr'-128)
-//    G' = 1.164*(Y’-16) - 0.813*(Cr'-128) - 0.392*(Cb'-128)
-//    B' = 1.164*(Y’-16) + 2.017*(Cb'-128)
-
     char *gVertexShader =
             "attribute vec4 vPosition;\n"
                     "attribute vec2 a_texCoord;\n"
@@ -83,7 +59,6 @@ private:
                     "c += U * vec4(0, -0.392, 2.017, 0);\n"
                     "c.a = 1.0;\n"
                     "vec4 color_png = texture2D(tex_png, tc);\n"
-  //                  "vec4 color_png = vec4(255,0,0,255);\n"
                     "gl_FragColor = c + color_png;\n"
                     "}\n";
 
@@ -109,7 +84,7 @@ private:
     char *plane[3] = {NULL, NULL, NULL};
 
     GLuint yTextureId, uTextureId, vTextureId, pngTextureId;
-    int yHandle, uHandle, vHandle , pngHandle;
+    int yHandle, uHandle, vHandle, pngHandle;
     int videoWidth = 0;
     int videoHeight = 0;
     int mScreenWidth = 720;
@@ -121,8 +96,8 @@ private:
     GLuint gProgram;
     GLuint gvPositionHandle;
     GLuint gCoordHandle;
-    Lock   mRendererLock;
-    bool   isFrameRendererFinish;
+    Lock mRendererLock;
+    bool isFrameRendererFinish;
 
     Lock mLock;
     GlEngine *glEngine;
@@ -135,10 +110,11 @@ public:
     ~GlEngine();
 
 public:
-     image_t* gen_image(int width, int height);
-     void releaseGlEngine();
+    image_t *gen_image(int width, int height);
 
-     bool glEngineInitComplete() {
+    void releaseGlEngine();
+
+    bool glEngineInitComplete() {
         return GlEngine::isInitComplete;
     }
 
@@ -146,8 +122,8 @@ public:
         GlEngine::isInitComplete = isComplete;
     }
 
-    notifyRendererFrame notifyRendererCallback = NULL;
     void notifyRenderer();
+
     void printGLString(const char *name, GLenum s);
 
     void checkGlError(const char *op);
@@ -168,8 +144,8 @@ public:
 
     bool isDrawFrameInit;
 
-    void addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight);
-    void addRendererFrame(image_t *img);
+    void addRendererFrame(image_t *img, char *y, char *u, char *v, int videoWidth, int videoHeight);
+
     void resetRendererFrame();
 
     bool isAddRendererFrameInit;
@@ -196,7 +172,7 @@ public:
 
     void signalRendererFinish();
 
-    void setViewPort(int mSurfaceWidth,int mSurfaceHeight);
+    void setViewPort(int mSurfaceWidth, int mSurfaceHeight);
 
 
 };

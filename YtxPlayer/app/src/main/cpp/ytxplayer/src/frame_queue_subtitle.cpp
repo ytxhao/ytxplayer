@@ -1,24 +1,24 @@
 //
 // Created by Administrator on 2016/10/13.
 //
-
-#include "ytxplayer/frame_queue_subtitle.h"
 #define TAG "YTX-FrameQueueSubtitle-JNI"
+
 #include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/frame_queue_subtitle.h"
 
 
-FrameQueueSubtitle::~FrameQueueSubtitle(){
+FrameQueueSubtitle::~FrameQueueSubtitle() {
     frameQueueDestroy();
 }
 
 void FrameQueueSubtitle::frameQueueUnrefItem(Frame *vp) {
 
 
-    if(vp->imageFrame != NULL && vp->imageFrame->buffer != NULL){
-            free(vp->imageFrame->buffer);
-            vp->imageFrame->buffer = NULL;
-            free(vp->imageFrame);
-            vp->imageFrame = NULL;
+    if (vp->imageFrame != NULL && vp->imageFrame->buffer != NULL) {
+        free(vp->imageFrame->buffer);
+        vp->imageFrame->buffer = NULL;
+        free(vp->imageFrame);
+        vp->imageFrame = NULL;
     }
 
 
@@ -38,7 +38,7 @@ int FrameQueueSubtitle::frameQueueInit(int max_size, int keep_last) {
 
 void FrameQueueSubtitle::frameQueueDestroy() {
     int i;
-    for(i=0;i<max_size;i++){
+    for (i = 0; i < max_size; i++) {
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
     }

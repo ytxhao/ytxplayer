@@ -1,12 +1,10 @@
 //
 // Created by Administrator on 2017/1/3.
 //
-
-#include "ytxplayer/AudioRefreshController.h"
-
 #define LOG_NDEBUG 0
 #define TAG "YTX-AudioRefreshController-JNI"
 
+#include "ytxplayer/AudioRefreshController.h"
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/ffmsg.h"
 #include <map>
@@ -16,12 +14,10 @@
 static AudioRefreshController *mAudioRefreshController;
 
 AudioRefreshController::AudioRefreshController(VideoStateInfo *mVideoStateInfo) {
-    ALOGI("AudioRefreshController()\n");
+
     last_duration = 0;
     duration = 0;
     delay = 0;
-    //vp = NULL;
-    //lastvp = NULL;
     remaining_time = 0.0;
     time = 0.0;
     frame_timer = 0.0;
@@ -34,7 +30,7 @@ AudioRefreshController::AudioRefreshController(VideoStateInfo *mVideoStateInfo) 
 
 
 AudioRefreshController::~AudioRefreshController() {
-    ALOGI("~AudioRefreshController\n");
+
     delete mAudioEngine;
     mAudioRefreshController = NULL;
 
@@ -61,7 +57,6 @@ bool AudioRefreshController::prepare() {
 
 bool AudioRefreshController::process(AVMessage *msg) {
 
-    ALOGI("AudioRefreshController::process in");
     bool ret = true;
     if (msg->what == FFP_MSG_CANCEL) {
         ret = false;
@@ -80,7 +75,7 @@ bool AudioRefreshController::process(AVMessage *msg) {
             mVideoStateInfo->frameQueueAudio->frameQueueReset();
             break;
     }
-    ALOGI("AudioRefreshController::process out");
+
     return ret;
 
 
@@ -97,7 +92,7 @@ void AudioRefreshController::refresh() {
             }
         }
     }
-   // mAudioEngine->setPlayingAudioPlayer(false);
+    // mAudioEngine->setPlayingAudioPlayer(false);
     mAudioEngine->setMuteAudioPlayer(true);
     (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
 }
@@ -105,11 +100,11 @@ void AudioRefreshController::refresh() {
 void AudioRefreshController::stop() {
 
     int ret = -1;
-   // (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+    // (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
     mVideoStateInfo->messageQueueAudio->abort();
     mRunning = false;
     if ((ret = wait()) != 0) {
-        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+        ALOGE("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
 }
@@ -118,8 +113,6 @@ void AudioRefreshController::stop() {
 void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context) {
 //    AudioRefreshController* sAudioRefreshController = NULL;
 
-    //  ALOGI("AudioRefreshController::bqPlayerCallback pthread_self:%lu,bqPlayerBufferQueue=%#x\n", (long)pthread_self(), bq);
-    //  ALOGI("AudioRefreshController::bqPlayerCallback pthread_self:%lu,getpid:%lu,gettid:%lu\n", (long)pthread_self(), (long)getpid(),(long)gettid());
     /*
     std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>::iterator l_it;
     l_it = audioEnMap.find(bq);
@@ -146,8 +139,8 @@ int AudioRefreshController::audioFrameProcess() {
     Frame *af;
     double audio_clock;
     SLuint32 size_buff = 0;
-    int64_t audio_callback_time=0;
-    char *buf[128]={0};
+    int64_t audio_callback_time = 0;
+    char *buf[128] = {0};
 
 
     if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
@@ -155,7 +148,7 @@ int AudioRefreshController::audioFrameProcess() {
                                                       buf,
                                                       128);
 
-    }else{
+    } else {
         mAudioEngine->mLock.lock();
         audio_callback_time = av_gettime_relative();
         af = audioDecodeFrame();
@@ -179,7 +172,7 @@ int AudioRefreshController::audioFrameProcess() {
                                                       size_buff);
         mAudioEngine->mLock.unlock();
 
-        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0){
+        if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] < 0) {
             mVideoStateInfo->currentTime = (int) (af->pts * 1000);
         }
 
@@ -190,7 +183,6 @@ int AudioRefreshController::audioFrameProcess() {
             mVideoStateInfo->syncClock2Slave(mVideoStateInfo->extClk, mVideoStateInfo->audClk);
         }
     }
-
 
 
     return ret;

@@ -19,7 +19,6 @@
 static JavaVM *sVm;
 
 GlEngine::GlEngine() {
-    ALOGI("GlEngine");
     yTextureId = 1025;
     uTextureId = 1025;
     vTextureId = 1025;
@@ -56,20 +55,19 @@ GlEngine::GlEngine() {
 
 GlEngine::~GlEngine() {
 
-    ALOGI("~GlEngine gProgram=%d pixelShader=%d vertexShader=%d\n",gProgram,pixelShader,vertexShader);
     int i = 0;
     isAddRendererFrameInit = false;
 
 
-    if(vertexShader){
+    if (vertexShader) {
         glDeleteShader(vertexShader);
     }
 
-    if(pixelShader){
+    if (pixelShader) {
         glDeleteShader(pixelShader);
     }
 
-    if(gProgram){
+    if (gProgram) {
         glDeleteProgram(gProgram);
     }
 
@@ -170,7 +168,7 @@ bool GlEngine::setupGraphics() {
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
 
-    if(gProgram){
+    if (gProgram) {
         glDeleteProgram(gProgram);
     }
 
@@ -244,16 +242,14 @@ void GlEngine::setVideoWidthAndHeight(int videoWidth, int videoHeight) {
 }
 
 void GlEngine::buildTextures() {
-    // building texture for Y data
 
-
-    if(yTextureId == 1025){
+    if (yTextureId == 1025) {
         glGenTextures(1, &yTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");
         ALOGI("buildTextures yTextureId=%d\n", yTextureId);
 
-    }else{
-        glDeleteTextures(1,&yTextureId);
+    } else {
+        glDeleteTextures(1, &yTextureId);
         checkGlError("glDeleteTextures");
         glGenTextures(1, &yTextureId);
         checkGlError("glGenTextures");
@@ -272,12 +268,12 @@ void GlEngine::buildTextures() {
 
     // building texture for U data
 
-    if(uTextureId == 1025){
+    if (uTextureId == 1025) {
         glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");
         ALOGI("buildTextures uTextureId=%d\n", uTextureId);
-    }else{
-        glDeleteTextures(1,&uTextureId);
+    } else {
+        glDeleteTextures(1, &uTextureId);
         checkGlError("glDeleteTextures");
         glGenTextures(1, &uTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");
@@ -294,13 +290,12 @@ void GlEngine::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
-
-    if(vTextureId == 1025){
+    if (vTextureId == 1025) {
         glGenTextures(1, &vTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");
         ALOGI("buildTextures vTextureId=%d\n", vTextureId);
-    }else{
-        glDeleteTextures(1,&vTextureId);
+    } else {
+        glDeleteTextures(1, &vTextureId);
         checkGlError("glDeleteTextures");
 
         glGenTextures(1, &vTextureId);
@@ -318,12 +313,12 @@ void GlEngine::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 
-    if(pngTextureId == 1025){
+    if (pngTextureId == 1025) {
         glGenTextures(1, &pngTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");
         ALOGI("buildTextures pngTextureId=%d\n", pngTextureId);
-    }else{
-        glDeleteTextures(1,&pngTextureId);
+    } else {
+        glDeleteTextures(1, &pngTextureId);
         checkGlError("glDeleteTextures");
 
         glGenTextures(1, &pngTextureId);
@@ -359,12 +354,7 @@ void GlEngine::drawFrame() {
     if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL && videoWidth != 0 &&
         videoHeight != 0) {
 
-     //   drawFrameInit(videoWidth, videoHeight);
         setAspectRatio();
-
-
-     //   ALOGI("drawFrame videoWidth=%d videoHeight=%d\n", videoWidth, videoHeight);
-
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -402,10 +392,10 @@ void GlEngine::drawFrame() {
         glUniform1i(vHandle, 2);
 
 
-        if(img != NULL){
+        if (img != NULL) {
             glActiveTexture(GL_TEXTURE3);
             glBindTexture(GL_TEXTURE_2D, pngTextureId);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, videoWidth , videoHeight , 0,
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, videoWidth, videoHeight, 0,
                          GL_RGB, GL_UNSIGNED_BYTE, img->buffer);
             checkGlError("glTexImage2D");
             glUniform1i(pngHandle, 3);
@@ -440,14 +430,7 @@ void GlEngine::waitRendererFinish() {
 }
 
 
-void GlEngine::addRendererFrame(image_t *img){
-
-
-
-}
-
-
-image_t* GlEngine::gen_image(int width, int height) {
+image_t *GlEngine::gen_image(int width, int height) {
 
     image_t *img = (image_t *) malloc(sizeof(image_t));
     img->width = width;
@@ -458,14 +441,15 @@ image_t* GlEngine::gen_image(int width, int height) {
     return img;
 }
 
-void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight) {
+void GlEngine::addRendererFrame(image_t *img, char *y, char *u, char *v, int videoWidth,
+                                int videoHeight) {
     mLock.lock();
     addRendererFrameInit(videoWidth, videoHeight);
 
-    if(img != NULL){
+    if (img != NULL) {
         memcpy(this->img->buffer, img->buffer, (size_t) (this->img->stride * this->img->height));
-    }else{
-        memset(this->img->buffer,0,(size_t) (this->img->stride * this->img->height));
+    } else {
+        memset(this->img->buffer, 0, (size_t) (this->img->stride * this->img->height));
     }
 
     memcpy(plane[0], y, (size_t) (videoWidth * videoHeight));
@@ -480,19 +464,19 @@ void GlEngine::addRendererFrame(image_t *img,char *y, char *u, char *v, int vide
  */
 void GlEngine::resetRendererFrame() {
     mLock.lock();
-    if(img != NULL){
-        memset(this->img->buffer,0,(size_t) (this->img->stride * this->img->height));
+    if (img != NULL) {
+        memset(this->img->buffer, 0, (size_t) (this->img->stride * this->img->height));
     }
 
-    if(plane[0] != NULL){
+    if (plane[0] != NULL) {
         memset(plane[0], 0, (size_t) (videoWidth * videoHeight));
     }
 
-    if(plane[1] != NULL){
+    if (plane[1] != NULL) {
         memset(plane[1], 128, (size_t) (videoWidth * videoHeight) / 4);
     }
 
-    if(plane[2] != NULL){
+    if (plane[2] != NULL) {
         memset(plane[2], 128, (size_t) (videoWidth * videoHeight) / 4);
     }
     mLock.unlock();
@@ -506,12 +490,12 @@ void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
         this->videoWidth = videoWidth;
         this->videoHeight = videoHeight;
         ALOGI("addRendererFrameInit isAddRendererFrameInit");
-        if(plane[0]==NULL){
+        if (plane[0] == NULL) {
             plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
             plane[1] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
             plane[2] = (char *) malloc(sizeof(char) * videoWidth * videoHeight / 4);
-        }else{
-            char* plane_tmp[3];
+        } else {
+            char *plane_tmp[3];
             plane_tmp[0] = plane[0];
             plane_tmp[1] = plane[1];
             plane_tmp[2] = plane[2];
@@ -524,11 +508,11 @@ void GlEngine::addRendererFrameInit(int videoWidth, int videoHeight) {
             free(plane_tmp[2]);
         }
 
-        if(img == NULL){
-            img = gen_image(videoWidth,videoHeight);
-        }else{
+        if (img == NULL) {
+            img = gen_image(videoWidth, videoHeight);
+        } else {
             image_t *img_tmp = img;
-            img = gen_image(videoWidth,videoHeight);
+            img = gen_image(videoWidth, videoHeight);
             free(img_tmp);
         }
 
@@ -540,15 +524,11 @@ void GlEngine::setAspectRatio() {
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
     float heightScale = 0.0;
- //   ALOGI("setAspectRatio mScreenHeight=%d mScreenWidth=%d f1=%f\n", mScreenHeight,mScreenWidth,f1);
- //   ALOGI("setAspectRatio videoHeight=%d videoWidth=%d f2=%f\n", videoHeight,videoWidth,f2);
-
 
     if (f1 == f2) {
 
     } else if (f1 < f2) {
         widthScale = f1 / f2;
-     //   ALOGI("setAspectRatio widthScale=%f\n", widthScale);
         vertice_buffer[0] = -widthScale;
         vertice_buffer[1] = -1.0f;
         vertice_buffer[2] = widthScale;
@@ -557,10 +537,9 @@ void GlEngine::setAspectRatio() {
         vertice_buffer[5] = 1.0f;
         vertice_buffer[6] = widthScale;
         vertice_buffer[7] = 1.0f;
-        
-    } else if(f1 > f2){
+
+    } else if (f1 > f2) {
         heightScale = f2 / f1;
-      //  ALOGI("setAspectRatio heightScale=%f\n", heightScale);
         vertice_buffer[0] = -1.0f;
         vertice_buffer[1] = -heightScale;
         vertice_buffer[2] = 1.0f;
@@ -586,20 +565,20 @@ void GlEngine::releaseGlEngine() {
     }
 }
 
-void GlEngine::setScreenWidth(int mScreenWidth){
+void GlEngine::setScreenWidth(int mScreenWidth) {
     this->mScreenWidth = mScreenWidth;
 }
 
-void GlEngine::setScreenHeight(int mScreenHeight){
+void GlEngine::setScreenHeight(int mScreenHeight) {
     this->mScreenHeight = mScreenHeight;
 }
 
-int GlEngine::getScreenWidth(){
-    return  this->mScreenWidth ;
+int GlEngine::getScreenWidth() {
+    return this->mScreenWidth;
 }
 
-int GlEngine::getScreenHeight(){
-    return  this->mScreenHeight;
+int GlEngine::getScreenHeight() {
+    return this->mScreenHeight;
 }
 
 void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
@@ -608,73 +587,61 @@ void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
 }
 
 
-
-
 static jfieldID context;
 
-static GlEngine* getGlEngine(JNIEnv* env, jobject thiz)
-{
-    //   Mutex::Autolock l(sLock);
-    GlEngine* const p = (GlEngine*)env->GetIntField(thiz, context);
+static GlEngine *getGlEngine(JNIEnv *env, jobject thiz) {
+    GlEngine *const p = (GlEngine *) env->GetIntField(thiz, context);
     return (p);
 }
 
-static GlEngine* setGlEngine(JNIEnv* env, jobject thiz, const GlEngine* glEngine)
-{
-    //Mutex::Autolock l(sLock);
-    GlEngine* old = (GlEngine*)env->GetIntField(thiz, context);
-    env->SetIntField(thiz, context, (int)glEngine);
+static GlEngine *setGlEngine(JNIEnv *env, jobject thiz, const GlEngine *glEngine) {
+    GlEngine *old = (GlEngine *) env->GetIntField(thiz, context);
+    env->SetIntField(thiz, context, (int) glEngine);
     return old;
 }
 
 
-
-void addRendererVideoFrame(jobject obj,image_t *img,char *y, char *u, char *v, int videoWidth, int videoHeight)
-{
-   // ALOGI("addRendererFrame IN\n");
+void addRendererVideoFrame(jobject obj, image_t *img, char *y, char *u, char *v, int videoWidth,
+                           int videoHeight) {
 
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
 
-    getGlEngine(env,obj)->addRendererFrame(img,y,u,v,videoWidth,videoHeight);
+    getGlEngine(env, obj)->addRendererFrame(img, y, u, v, videoWidth, videoHeight);
 
     sVm->DetachCurrentThread();
-  //  ALOGI("addRendererFrame OUT\n");
 
 }
 
 
-void resetRendererVideoFrame(jobject obj)
-{
-    // ALOGI("resetRendererVideoFrame IN\n");
+void resetRendererVideoFrame(jobject obj) {
 
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
 
-    getGlEngine(env,obj)->resetRendererFrame();
+    getGlEngine(env, obj)->resetRendererFrame();
 
     sVm->DetachCurrentThread();
-    //  ALOGI("resetRendererVideoFrame OUT\n");
 
 }
 
-int  rendererStarted(jobject obj){
+int rendererStarted(jobject obj) {
     ALOGI("rendererCanStart IN\n");
 
     int ret = -1;
     JNIEnv *env = NULL;
     sVm->AttachCurrentThread(&env, NULL);
 
-    ret = getGlEngine(env,obj)->isSetupGraphics;
+    ret = getGlEngine(env, obj)->isSetupGraphics;
 
     sVm->DetachCurrentThread();
-    ALOGI("rendererCanStart OUT ret=%d\n",ret);
+    ALOGI("rendererCanStart OUT ret=%d\n", ret);
     return ret;
 }
 
 
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
-        (JNIEnv *env, jclass clazz){
+        (JNIEnv *env, jclass clazz) {
     ALOGI("native_1init_1opengl IN");
     context = env->GetFieldID(clazz, "mNativeRenderContext", "I");
     if (context == NULL) {
@@ -685,11 +652,11 @@ JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_init_opengl
 
 
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_opengl
-        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj){
+        (JNIEnv *env, jobject obj, jobject GraphicRenderer_obj) {
     ALOGI("native_1constructor_1opengl IN");
 
-    GlEngine* mGlEngine = new GlEngine();
-    setGlEngine(env,obj,mGlEngine);
+    GlEngine *mGlEngine = new GlEngine();
+    setGlEngine(env, obj, mGlEngine);
 
     ALOGI("native_1constructor_1opengl OUT");
 
@@ -698,30 +665,30 @@ JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_constructor_o
 
 // onSurfaceChanged
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_resize_opengl
-        (JNIEnv *env, jobject obj, jint width, jint height){
+        (JNIEnv *env, jobject obj, jint width, jint height) {
     ALOGI("native_1resize_1opengl IN");
 
-    getGlEngine(env,obj)->setScreenHeight(height);
-    getGlEngine(env,obj)->setScreenWidth(width);
-    getGlEngine(env,obj)->setViewPort(width,height);
+    getGlEngine(env, obj)->setScreenHeight(height);
+    getGlEngine(env, obj)->setScreenWidth(width);
+    getGlEngine(env, obj)->setViewPort(width, height);
 
-    getGlEngine(env,obj)->buildTextures();
+    getGlEngine(env, obj)->buildTextures();
     ALOGI("native_1resize_1opengl OUT");
 }
 // onDrawFrame
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_step_opengl
-        (JNIEnv *env, jobject obj){
-  //  ALOGI("native_1step_1opengl IN");
-    getGlEngine(env,obj)->drawFrame();
- //   ALOGI("native_1step_1opengl OUT");
+        (JNIEnv *env, jobject obj) {
+
+    getGlEngine(env, obj)->drawFrame();
+
 }
 
 // onSurfaceCreated
 JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
-        (JNIEnv *env, jobject obj){
+        (JNIEnv *env, jobject obj) {
 
     ALOGI("native_1init_1opengl IN");
-    getGlEngine(env,obj)->setupGraphics();
+    getGlEngine(env, obj)->setupGraphics();
     ALOGI("native_1init_1opengl OUT");
 
 }
@@ -732,22 +699,18 @@ JNIEXPORT void JNICALL android_media_player_GraphicRenderer_native_create_opengl
 
 static JNINativeMethod gMethods[] = {
 
-        {"native_init_opengl",      "()V",                      (void *)android_media_player_GraphicRenderer_native_init_opengl},
-        {"native_resize_opengl",        "(II)V",                (void *)android_media_player_GraphicRenderer_native_resize_opengl},
-        {"native_step_opengl",  "()V",                          (void *)android_media_player_GraphicRenderer_native_step_opengl},
-        {"native_create_opengl", "()V",                         (void *)android_media_player_GraphicRenderer_native_create_opengl},
-        {"native_constructor_opengl", "(Ljava/lang/Object;)V",  (void *)android_media_player_GraphicRenderer_native_constructor_opengl}
+        {"native_init_opengl",        "()V",                   (void *) android_media_player_GraphicRenderer_native_init_opengl},
+        {"native_resize_opengl",      "(II)V",                 (void *) android_media_player_GraphicRenderer_native_resize_opengl},
+        {"native_step_opengl",        "()V",                   (void *) android_media_player_GraphicRenderer_native_step_opengl},
+        {"native_create_opengl",      "()V",                   (void *) android_media_player_GraphicRenderer_native_create_opengl},
+        {"native_constructor_opengl", "(Ljava/lang/Object;)V", (void *) android_media_player_GraphicRenderer_native_constructor_opengl}
 
 };
 
 
-
-
-
 // 注册native方法到java中
-static int registerNativeMethods(JNIEnv* env, const char* className,
-                                 JNINativeMethod* gMethods, int numMethods)
-{
+static int registerNativeMethods(JNIEnv *env, const char *className,
+                                 JNINativeMethod *gMethods, int numMethods) {
     jclass clazz;
     clazz = env->FindClass(className);
     if (clazz == NULL) {
@@ -761,26 +724,23 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 }
 
 
-int register_android_media_player_renderer(JNIEnv *env)
-{
+int register_android_media_player_renderer(JNIEnv *env) {
     // 调用注册方法
     return registerNativeMethods(env, JNIREG_RENDERER_CLASS,
                                  gMethods, NELEM(gMethods));
 }
 
 
-jint JNI_OnLoad(JavaVM* vm, void* reserved) {
+jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
     jint result = -1;
     sVm = vm;
-    ALOGI("main renderer tid:%u,pid:%u\n", (unsigned) pthread_self(), (unsigned) getpid());
-    ALOGI("INF renderer: sVm=%d\n", sVm);
+
     if (sVm->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
         ALOGE("ERROR renderer: GetEnv failed\n");
         goto bail;
     }
     assert(env != NULL);
-
 
     if (register_android_media_player_renderer(env) < 0) {
         ALOGE("ERROR: mediaPlayer renderer native registration failed\n");

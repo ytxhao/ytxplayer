@@ -1,18 +1,16 @@
 //
 // Created by Administrator on 2016/9/22.
 //
+#define TAG "FFMpegSubtitleDecoder"
 
-#include <android/log.h>
+#include "ytxplayer/ALog-priv.h"
+
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/ffmsg.h>
 #include "ytxplayer/decoder_subtitle.h"
-#define TAG "FFMpegSubtitleDecoder"
-#include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/frame_queue_subtitle.h"
-#include "ytxplayer/test.h"
-//ffplay -vf subtitles=test_file/x7_11.srt test_file/x7_11.mkv
-DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVideoStateInfo)
-{
+
+DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo) : IDecoder(mVideoStateInfo) {
 
     firstInit = false;
     mSamples = NULL;
@@ -25,36 +23,31 @@ DecoderSubtitle::DecoderSubtitle(VideoStateInfo *mVideoStateInfo):IDecoder(mVide
     ass_library = NULL;
     ass_renderer = NULL;
     track = NULL;
-    //sprintf(subfile,"%s/test.ass",mVideoStateInfo->mStorageDir);
-    //fp_pcm = fopen(subfile,"wb+");
 
 }
 
-DecoderSubtitle::~DecoderSubtitle()
-{
+DecoderSubtitle::~DecoderSubtitle() {
     // Free audio samples buffer
     ass_renderer_done(ass_renderer);
     ass_library_done(ass_library);
     ass_free_track(track);
 
-    if(mFrame != NULL){
+    if (mFrame != NULL) {
         av_frame_free(&mFrame);
     }
-    if(!mConvertCtx){
+    if (!mConvertCtx) {
         sws_freeContext(mConvertCtx);
     }
 
-    mFrame=NULL;
-    ass_renderer=NULL;
-    ass_library=NULL;
-    track=NULL;
+    mFrame = NULL;
+    ass_renderer = NULL;
+    ass_library = NULL;
+    track = NULL;
     avcodec_close(mVideoStateInfo->streamSubtitle->dec_ctx);
 }
 
-bool DecoderSubtitle::prepare()
-{
+bool DecoderSubtitle::prepare() {
 
-    ALOGI("DecoderSubtitle::prepare\n");
     mFrame = av_frame_alloc();
     if (mFrame == NULL) {
         return false;
@@ -69,45 +62,42 @@ bool DecoderSubtitle::prepare()
         return 1;
     }
 
-    if (mVideoStateInfo->streamSubtitle->dec_ctx != NULL && mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header){
+    if (mVideoStateInfo->streamSubtitle->dec_ctx != NULL &&
+        mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header) {
         ass_process_codec_private(track,
                                   (char *) mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header,
                                   mVideoStateInfo->streamSubtitle->dec_ctx->subtitle_header_size);
     }
 
- //   track = ass_read_file(ass_library,subfile , NULL);
-//    char *argv[]={"ass_test","/storage/emulated/0/ass1.png","/storage/emulated/0/test.ass","25"};
-//    main_test(4,argv);
     return true;
 }
 
-bool DecoderSubtitle::process(MAVPacket *mPacket)
-{
+bool DecoderSubtitle::process(MAVPacket *mPacket) {
     double pts = 0;
     int size = mSamplesSize;
-    int	completed;
+    int completed;
     curStats = mPacket->isEnd;
-    if(curStats != lastStats && curStats && mPacket->pkt.data == NULL){
+    if (curStats != lastStats && curStats && mPacket->pkt.data == NULL) {
         lastStats = curStats;
         return true;
     }
     lastStats = curStats;
 
-    if(mQueue->size() == 0){
+    if (mQueue->size() == 0) {
         pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
     }
 
-    if(mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data){
+    if (mPacket->pkt.data == mVideoStateInfo->flushPkt->pkt.data) {
         avcodec_flush_buffers(mVideoStateInfo->streamSubtitle->dec_ctx);
         return true;
     }
 
-    if(mVideoStateInfo->pkt_serial_subtitle != mQueue->serial){
+    if (mVideoStateInfo->pkt_serial_subtitle != mQueue->serial) {
         return true;
     }
 
 
-    if(mPacket->pkt.size == 0 && mPacket->pkt.data == NULL){
+    if (mPacket->pkt.size == 0 && mPacket->pkt.data == NULL) {
         return true;
     }
 
@@ -116,14 +106,10 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
     }
 
 
+    int ret = avcodec_decode_subtitle2(mVideoStateInfo->streamSubtitle->dec_ctx, &sp->sub,
+                                       &completed, &mPacket->pkt);
 
-    int ret = avcodec_decode_subtitle2(mVideoStateInfo->streamSubtitle->dec_ctx, &sp->sub, &completed, &mPacket->pkt);
-
-    if(completed > 0 ){
-
-        ALOGI("sp-sub-format=%d",sp->sub.format);
-    }
-    if (completed > 0  && sp->sub.format == 0) {
+    if (completed > 0 && sp->sub.format == 0) {
         mVideoStateInfo->sub_format = 0;
         if (sp->sub.pts != AV_NOPTS_VALUE) {
             pts = sp->sub.pts / (double) AV_TIME_BASE;
@@ -131,32 +117,38 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         sp->pts = pts;
         sp->serial = mVideoStateInfo->pkt_serial_subtitle;
 
-        if (!(sp->subrects = (AVSubtitleRect **) av_mallocz_array(sp->sub.num_rects, sizeof(AVSubtitleRect*)))) {
-            ALOGI("Cannot allocate subrects\n");
+        if (!(sp->subrects = (AVSubtitleRect **) av_mallocz_array(sp->sub.num_rects,
+                                                                  sizeof(AVSubtitleRect *)))) {
+            ALOGE("Cannot allocate subrects\n");
             exit(1);
         }
 
-        ALOGI("sp->sub.num_rects=%d",sp->sub.num_rects);
-        for (int i = 0; i < sp->sub.num_rects; i++)
-        {
+        for (int i = 0; i < sp->sub.num_rects; i++) {
             int in_w = sp->sub.rects[i]->w;
             int in_h = sp->sub.rects[i]->h;
-            int subw = mVideoStateInfo->streamSubtitle->dec_ctx->width  ? mVideoStateInfo->streamSubtitle->dec_ctx->width  : mVideoStateInfo->mVideoWidth;
-            int subh = mVideoStateInfo->streamSubtitle->dec_ctx->height ? mVideoStateInfo->streamSubtitle->dec_ctx->height : mVideoStateInfo->mVideoHeight;
-            int out_w = mVideoStateInfo->mVideoWidth  ? in_w * mVideoStateInfo->mVideoWidth  / subw : in_w;
-            int out_h = mVideoStateInfo->mVideoHeight ? in_h * mVideoStateInfo->mVideoHeight / subh : in_h;
-            ALOGI("in_w=%d in_h=%d subw=%d subh=%d out_w=%d out_h=%d sws_flags=%d",in_w,in_h,subw,subh,out_w,out_h,sws_flags);
+            int subw = mVideoStateInfo->streamSubtitle->dec_ctx->width
+                       ? mVideoStateInfo->streamSubtitle->dec_ctx->width
+                       : mVideoStateInfo->mVideoWidth;
+            int subh = mVideoStateInfo->streamSubtitle->dec_ctx->height
+                       ? mVideoStateInfo->streamSubtitle->dec_ctx->height
+                       : mVideoStateInfo->mVideoHeight;
+            int out_w = mVideoStateInfo->mVideoWidth ? in_w * mVideoStateInfo->mVideoWidth / subw
+                                                     : in_w;
+            int out_h = mVideoStateInfo->mVideoHeight ? in_h * mVideoStateInfo->mVideoHeight / subh
+                                                      : in_h;
+
             if (!(sp->subrects[i] = (AVSubtitleRect *) av_mallocz(sizeof(AVSubtitleRect))) ||
-                av_image_alloc(sp->subrects[i]->data, sp->subrects[i]->linesize, out_w, out_h, AV_PIX_FMT_YUVA420P, 16) < 0) {
-                ALOGI("Cannot allocate subtitle data\n");
+                av_image_alloc(sp->subrects[i]->data, sp->subrects[i]->linesize, out_w, out_h,
+                               AV_PIX_FMT_YUVA420P, 16) < 0) {
+                ALOGE("Cannot allocate subtitle data\n");
                 exit(1);
             }
 
             mConvertCtx = sws_getCachedContext(mConvertCtx,
-                                                       in_w, in_h, AV_PIX_FMT_PAL8, out_w, out_h,
-                                                       AV_PIX_FMT_YUVA420P, sws_flags, NULL, NULL, NULL);
+                                               in_w, in_h, AV_PIX_FMT_PAL8, out_w, out_h,
+                                               AV_PIX_FMT_YUVA420P, sws_flags, NULL, NULL, NULL);
             if (!mConvertCtx) {
-                ALOGI("Cannot initialize the sub conversion context\n");
+                ALOGE("Cannot initialize the sub conversion context\n");
                 exit(1);
             }
             sws_scale(mConvertCtx,
@@ -173,7 +165,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
 
 
-    }else if(completed > 0 && sp->sub.format == 1){
+    } else if (completed > 0 && sp->sub.format == 1) {
         mVideoStateInfo->sub_format = 1;
         if (sp->sub.pts != AV_NOPTS_VALUE) {
             pts = sp->sub.pts / (double) AV_TIME_BASE;
@@ -182,22 +174,14 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
         sp->serial = mVideoStateInfo->pkt_serial_subtitle;
 
         const int64_t start_time = av_rescale_q(sp->sub.pts, AV_TIME_BASE_Q, av_make_q(1, 1000));
-        const int64_t duration   = sp->sub.end_display_time;
+        const int64_t duration = sp->sub.end_display_time;
 
-        for (int i = 0; i < sp->sub.num_rects; i++){
-            ALOGI("ttttt1 sp->sub.rects[%d]->type=%d, sp->sub.rects[%d]->ass=%s\n",i,sp->sub.rects[i]->type,i,sp->sub.rects[i]->ass);
+        for (int i = 0; i < sp->sub.num_rects; i++) {
 
             char *ass_line = sp->sub.rects[i]->ass;
-            if (!ass_line){
+            if (!ass_line) {
                 break;
             }
-//            if (LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57,25,100)){
-//                ass_process_data(track,ass_line, strlen(ass_line));
-//            } else {
-//                ass_process_chunk(track, ass_line, strlen(ass_line),
-//                                  start_time, duration);
-//            }
-
 
             ass_process_data(track, ass_line, strlen(ass_line));
 
@@ -205,36 +189,28 @@ bool DecoderSubtitle::process(MAVPacket *mPacket)
             ASS_Image *img = ass_render_frame(ass_renderer, track, start_time, NULL);
             sp->imageFrame = gen_image(mVideoStateInfo->mVideoWidth, mVideoStateInfo->mVideoHeight);
             blend(sp->imageFrame, img);
-//            x++;
-//            sprintf(subpng,"%s/test%d.png",mVideoStateInfo->mStorageDir,x);
-//            write_png(subpng, sp->imageFrame);
-//            free(sp->imageFrame->buffer);
-//            free(sp->imageFrame);
+
             ass_flush_events(track);
             mVideoStateInfo->frameQueueSubtitle->frameQueuePush();
         }
 
 
-    }else if(completed){
-         avsubtitle_free(&sp->sub);
+    } else if (completed) {
+        avsubtitle_free(&sp->sub);
     }
 
     return true;
 }
 
-bool DecoderSubtitle::decode(void* ptr)
-{
-    MAVPacket        pPacket;
+bool DecoderSubtitle::decode(void *ptr) {
+    MAVPacket pPacket;
 
-    while(mRunning)
-    {
-        if(mQueue->get(&pPacket, true,&mVideoStateInfo->pkt_serial_subtitle) < 0)
-        {
+    while (mRunning) {
+        if (mQueue->get(&pPacket, true, &mVideoStateInfo->pkt_serial_subtitle) < 0) {
             mRunning = false;
             return false;
         }
-        if(!process(&pPacket))
-        {
+        if (!process(&pPacket)) {
             mRunning = false;
             return false;
         }
@@ -251,18 +227,20 @@ void DecoderSubtitle::stop() {
     mVideoStateInfo->frameQueueSubtitle->frameQueueReset();
     ALOGI("waiting on end of decoder thread\n");
     int ret = -1;
-    if((ret = wait()) != 0) {
-        ALOGI("Couldn't cancel IDecoder: %i\n", ret);
+    if ((ret = wait()) != 0) {
+        ALOGE("Couldn't cancel IDecoder: %i\n", ret);
         return;
     }
 }
 
-int DecoderSubtitle::streamHasEnoughPackets(){
+int DecoderSubtitle::streamHasEnoughPackets() {
     int ret = 0;
     ret = mVideoStateInfo->st_index[AVMEDIA_TYPE_SUBTITLE] < 0 ||
           mQueue->mAbortRequest ||
           (mVideoStateInfo->streamSubtitle->st->disposition & AV_DISPOSITION_ATTACHED_PIC) ||
-          mQueue->size() > MIN_FRAMES && (!mQueue->duration || av_q2d(mVideoStateInfo->streamSubtitle->st->time_base) * mQueue->duration > 1.0);
+          mQueue->size() > MIN_FRAMES && (!mQueue->duration ||
+                                          av_q2d(mVideoStateInfo->streamSubtitle->st->time_base) *
+                                          mQueue->duration > 1.0);
 
     return ret;
 }
@@ -274,17 +252,16 @@ void DecoderSubtitle::printFontProviders(ASS_Library *ass_library) {
     ass_get_available_font_providers(ass_library, &providers, &providers_size);
     ALOGI("Available font providers (%zu): ", providers_size);
     for (i = 0; i < providers_size; i++) {
-        const char *separator = i > 0 ? ", ": "";
-        ALOGI("%s'%s'", separator,  font_provider_labels[providers[i]]);
+        const char *separator = i > 0 ? ", " : "";
+        ALOGI("%s'%s'", separator, font_provider_labels[providers[i]]);
     }
-    ALOGI(".\n");
     free(providers);
 }
 
 void DecoderSubtitle::init(int frame_w, int frame_h) {
     ass_library = ass_library_init();
     if (!ass_library) {
-        ALOGI("ass_library_init failed!\n");
+        ALOGE("ass_library_init failed!\n");
         exit(1);
     }
 
@@ -292,31 +269,25 @@ void DecoderSubtitle::init(int frame_w, int frame_h) {
 
     ass_renderer = ass_renderer_init(ass_library);
     if (!ass_renderer) {
-        ALOGI("ass_renderer_init failed!\n");
+        ALOGE("ass_renderer_init failed!\n");
         exit(1);
     }
 
     ass_set_frame_size(ass_renderer, frame_w, frame_h);
-//    ass_set_fonts(ass_renderer, "/storage/emulated/0/tang_cn.ttf", "sans-serif",
-//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
-//    ass_set_fonts(ass_renderer, NULL, "sans-serif",
-//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
     ass_set_fonts(ass_renderer, NULL, NULL, 1, NULL, 1);
-//    ass_set_fonts(ass_renderer, mVideoStateInfo->join3(mVideoStateInfo->mStorageDir,"tang_cn.ttf"), "sans-serif",
-//                  ASS_FONTPROVIDER_AUTODETECT, NULL, 1);
 }
 
 
 void DecoderSubtitle::msg_callback(int level, const char *fmt, va_list va, void *data) {
     if (level > 6)
         return;
-    char s[512]={0};
-    ALOGI("libass: fmt=%s",fmt);
-    vsnprintf(s,512, fmt, va);
-    ALOGI("msg_callback libass: %s\n",s);
+    char s[512] = {0};
+    ALOGI("libass: fmt=%s", fmt);
+    vsnprintf(s, 512, fmt, va);
+    ALOGI("msg_callback libass: %s\n", s);
 }
 
-image_t* DecoderSubtitle::gen_image(int width, int height) {
+image_t *DecoderSubtitle::gen_image(int width, int height) {
 
     image_t *img = (image_t *) malloc(sizeof(image_t));
     img->width = width;
@@ -324,8 +295,7 @@ image_t* DecoderSubtitle::gen_image(int width, int height) {
     img->stride = width * 3;
     img->buffer = (unsigned char *) calloc(1, height * width * 3);
     memset(img->buffer, 0, img->stride * img->height);
-    //for (int i = 0; i < height * width * 3; ++i)
-    // img->buffer[i] = (i/3/50) % 100;
+
     return img;
 }
 
@@ -336,7 +306,6 @@ void DecoderSubtitle::blend(image_t *frame, ASS_Image *img) {
         ++cnt;
         img = img->next;
     }
-    ALOGI("%d images blended\n", cnt);
 }
 
 void DecoderSubtitle::blend_single(image_t *frame, ASS_Image *img) {
@@ -384,7 +353,7 @@ void DecoderSubtitle::write_png(char *fname, image_t *img) {
 
     fp = fopen(fname, "wb");
     if (fp == NULL) {
-        printf("PNG Error opening %s for writing!\n", fname);
+        ALOGE("PNG Error opening %s for writing!\n", fname);
         return;
     }
 

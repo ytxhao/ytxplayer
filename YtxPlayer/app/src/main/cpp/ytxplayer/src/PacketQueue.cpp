@@ -7,8 +7,7 @@
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/packetqueue.h"
 
-PacketQueue::PacketQueue(VideoStateInfo *mVideoStateInfo)
-{
+PacketQueue::PacketQueue(VideoStateInfo *mVideoStateInfo) {
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
     mFirst = NULL;
@@ -20,28 +19,25 @@ PacketQueue::PacketQueue(VideoStateInfo *mVideoStateInfo)
     this->serial = 0;
 }
 
-PacketQueue::~PacketQueue()
-{
+PacketQueue::~PacketQueue() {
     flush();
     pthread_mutex_destroy(&mLock);
     pthread_cond_destroy(&mCondition);
 }
 
-int PacketQueue::size()
-{
+int PacketQueue::size() {
     pthread_mutex_lock(&mLock);
     int size = mNbPackets;
     pthread_mutex_unlock(&mLock);
     return size;
 }
 
-void PacketQueue::flush()
-{
+void PacketQueue::flush() {
     MAVPacketList *pkt, *pkt1;
 
     pthread_mutex_lock(&mLock);
 
-    for(pkt = mFirst; pkt != NULL; pkt = pkt1) {
+    for (pkt = mFirst; pkt != NULL; pkt = pkt1) {
         pkt1 = pkt->next;
         av_packet_unref(&pkt->mPkt.pkt);
         av_freep(&pkt);
@@ -64,15 +60,11 @@ int PacketQueue::putNullPacket(int stream_index) {
     return put(pkt);
 }
 
-int PacketQueue::put(MAVPacket* mPkt)
-{
+int PacketQueue::put(MAVPacket *mPkt) {
 
     MAVPacketList *pkt1;
     pthread_mutex_lock(&mLock);
-//    if(mPkt == mVideoStateInfo->flushPkt){
-//        ALOGI("PacketQueue0 mVideoStateInfo->flushPkt->pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,mPkt->pkt.data);
-//
-//    }
+
 //    /* duplicate the packet */
 //    if (av_dup_packet(&mPkt->pkt) < 0)
 //        return -1;
@@ -83,8 +75,7 @@ int PacketQueue::put(MAVPacket* mPkt)
     pkt1->mPkt = *mPkt;
     pkt1->next = NULL;
 
-    if(mPkt == mVideoStateInfo->flushPkt){
-        ALOGI("PacketQueue1 mVideoStateInfo->flushPkt->pkt.data=%#x pkt1->mPkt.pkt.data=%#x mPkt->pkt.data=%#x\n",mVideoStateInfo->flushPkt->pkt.data,pkt1->mPkt.pkt.data,mPkt->pkt.data);
+    if (mPkt == mVideoStateInfo->flushPkt) {
         this->serial++;  //如果当前加入的是flush包,则包队列的序列号加一
     }
     pkt1->serial = this->serial;//将入队列的包序列号赋值为该包队列的序列号
@@ -109,14 +100,13 @@ int PacketQueue::put(MAVPacket* mPkt)
 }
 
 /* return < 0 if aborted, 0 if no packet and > 0 if packet.  */
-int PacketQueue::get(MAVPacket *mPkt, bool block,int *serial)
-{
+int PacketQueue::get(MAVPacket *mPkt, bool block, int *serial) {
     MAVPacketList *pkt1;
     int ret;
 
     pthread_mutex_lock(&mLock);
 
-    for(;;) {
+    for (;;) {
         if (mAbortRequest) {
             ret = -1;
             break;
@@ -151,8 +141,7 @@ int PacketQueue::get(MAVPacket *mPkt, bool block,int *serial)
 
 }
 
-void PacketQueue::abort()
-{
+void PacketQueue::abort() {
     pthread_mutex_lock(&mLock);
     mAbortRequest = true;
     pthread_cond_signal(&mCondition);

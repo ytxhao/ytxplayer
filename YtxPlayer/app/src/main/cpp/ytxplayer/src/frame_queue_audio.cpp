@@ -1,19 +1,19 @@
 //
 // Created by Administrator on 2016/10/13.
 //
-
-#include "ytxplayer/frame_queue_audio.h"
 #define TAG "YTX-FrameQueueAudio-JNI"
+
 #include "ytxplayer/ALog-priv.h"
+#include "ytxplayer/frame_queue_audio.h"
 
 
-FrameQueueAudio::~FrameQueueAudio(){
+FrameQueueAudio::~FrameQueueAudio() {
     frameQueueDestroy();
 }
 
 void FrameQueueAudio::frameQueueUnrefItem(Frame *vp) {
 
-    if(vp->out_buffer_audio != NULL){
+    if (vp->out_buffer_audio != NULL) {
         free(vp->out_buffer_audio);
         vp->out_buffer_audio = NULL;
     }
@@ -37,7 +37,7 @@ int FrameQueueAudio::frameQueueInit(int max_size, int keep_last) {
 
 void FrameQueueAudio::frameQueueDestroy() {
     int i;
-    for(i=0;i<max_size;i++){
+    for (i = 0; i < max_size; i++) {
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
     }

@@ -43,7 +43,7 @@ class VideoStateInfo{
 public:
     VideoStateInfo();
     ~VideoStateInfo();
-    char* join3(char *s1, char *s2);
+    char* join(char *s1, char *s2);
     void notify();
     void notifyAll();
     void waitOnNotify(int mCurrentState);

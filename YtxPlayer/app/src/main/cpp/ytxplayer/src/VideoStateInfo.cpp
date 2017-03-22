@@ -8,8 +8,8 @@
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
 #include "ytxplayer/VideoStateInfo.h"
 #include "ytxplayer/ALog-priv.h"
-VideoStateInfo::VideoStateInfo(){
 
+VideoStateInfo::VideoStateInfo() {
 
     pFormatCtx = NULL;
     in_video_filter = NULL;   // the first filter in the video chain
@@ -62,39 +62,31 @@ VideoStateInfo::VideoStateInfo(){
     mMessageLoop = new MessageLoop();
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
-    pthread_mutex_init(&wait_mutex,NULL);
-    pthread_cond_init(&continue_read_thread,NULL);
+    pthread_mutex_init(&wait_mutex, NULL);
+    pthread_cond_init(&continue_read_thread, NULL);
     seekReq = false;
-    flushPkt = (MAVPacket *)malloc(sizeof(MAVPacket));
+    flushPkt = (MAVPacket *) malloc(sizeof(MAVPacket));
     av_init_packet(&flushPkt->pkt);
-    flushPkt->pkt.data = (uint8_t *)&flushPkt->pkt;
-    //ALOGI("VideoStateInfo flushPkt->pkt.data= %#x\n",flushPkt->pkt.data);
-    vidClk = (Clock *)malloc(sizeof(Clock));
-    extClk = (Clock *)malloc(sizeof(Clock));
-    audClk = (Clock *)malloc(sizeof(Clock));
+    flushPkt->pkt.data = (uint8_t *) &flushPkt->pkt;
+
+    vidClk = (Clock *) malloc(sizeof(Clock));
+    extClk = (Clock *) malloc(sizeof(Clock));
+    audClk = (Clock *) malloc(sizeof(Clock));
     memset(st_index, -1, sizeof(st_index));
 
-    //ALOGI("st_index sub=%d",st_index[AVMEDIA_TYPE_SUBTITLE]);
     max_frame_duration = 0.0;
     seekPos = 0;
     seekRel = 0;
     seekFlags = 0;
-    eof =0;
-    currentTime =0;
+    eof = 0;
+    currentTime = 0;
     sws_dict = NULL;
     vfilters_list = NULL;
-//    sprintf(file_pcm,"/storage/emulated/0/ytx.pcm");
-//    fp_pcm = fopen(file_pcm,"wb+");
-//    sprintf(file_pcm1,"/storage/emulated/0/ytx1.pcm");
-//    fp_pcm1 = fopen(file_pcm1,"wb+");
-
-//      fp_yuv = fopen("/storage/emulated/0/subtitle.yuv","wb+");
 
 }
+
 VideoStateInfo::~VideoStateInfo() {
-//    fclose(fp_pcm);
-//    fclose(fp_pcm1);
-//    fclose(fp_yuv);
+
     avformat_close_input(&pFormatCtx);
     delete frameQueueVideo;
     delete frameQueueAudio;
@@ -106,10 +98,6 @@ VideoStateInfo::~VideoStateInfo() {
     delete messageQueueVideo;
     delete mMessageLoop;
 
-//    JNIEnv *env = getJNIEnv();
-//    env->DeleteGlobalRef(VideoGlSurfaceViewObj);
-//    env->DeleteGlobalRef(GraphicRendererObj);
-
     free(flushPkt);
     free(vidClk);
     free(extClk);
@@ -119,7 +107,7 @@ VideoStateInfo::~VideoStateInfo() {
     pthread_mutex_destroy(&wait_mutex);
     pthread_cond_destroy(&continue_read_thread);
 
-    if(vfilters_list != NULL){
+    if (vfilters_list != NULL) {
         free(vfilters_list);
     }
 }
@@ -137,10 +125,9 @@ void VideoStateInfo::notifyAll() {
     pthread_mutex_unlock(&mLock);
 }
 
-void VideoStateInfo::waitOnNotify(int mCurrentState)
-{
+void VideoStateInfo::waitOnNotify(int mCurrentState) {
     pthread_mutex_lock(&mLock);
-    while (*this->mCurrentState == mCurrentState){
+    while (*this->mCurrentState == mCurrentState) {
         pthread_cond_wait(&mCondition, &mLock);
     }
 
@@ -160,6 +147,7 @@ double VideoStateInfo::getClock(Clock *c) {
     }
 
 }
+
 void VideoStateInfo::setClock(Clock *c, double pts, int serial) {
 
     double time = av_gettime_relative() / 1000000.0;
@@ -173,6 +161,7 @@ void VideoStateInfo::setClockAt(Clock *c, double pts, int serial, double time) {
     c->pts_drift = c->pts - time;
     c->serial = serial;
 }
+
 void VideoStateInfo::setClockSpeed(Clock *c, double speed) {
 
     setClock(c, getClock(c), c->serial);
@@ -201,11 +190,10 @@ void VideoStateInfo::syncClock2Slave(Clock *c, Clock *slave) {
 }
 
 
-char* VideoStateInfo::join3(char *s1, char *s2)
-{
+char *VideoStateInfo::join(char *s1, char *s2) {
     char *result = (char *) malloc(strlen(s1) + strlen(s2) + 1);//+1 for the zero-terminator
     //in real code you would check for errors in malloc here
-    if (result == NULL) exit (1);
+    if (result == NULL) exit(1);
 
     strcpy(result, s1);
     strcat(result, s2);
@@ -213,13 +201,11 @@ char* VideoStateInfo::join3(char *s1, char *s2)
     return result;
 }
 
-void VideoStateInfo::init_opts(void)
-{
-    ALOGI("init_opts sws_dict=%#x\n",sws_dict);
+void VideoStateInfo::init_opts(void) {
+    ALOGI("init_opts sws_dict=%#x\n", sws_dict);
     av_dict_set(&sws_dict, "flags", "bicubic", 0);
 }
 
-void VideoStateInfo::uninit_opts(void)
-{
+void VideoStateInfo::uninit_opts(void) {
     av_dict_free(&sws_dict);
 }
