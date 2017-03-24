@@ -71,7 +71,12 @@ void VideoRefreshController::process() {
 
             last_duration = vpDuration(lastvp, vp);
             // delay = last_duration;
-            delay = computeTargetDelay(last_duration);
+            if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+                delay = computeTargetDelay(last_duration);
+            }else{
+                delay = last_duration;
+            }
+
 
 
             time = av_gettime_relative() / 1000000.0; //获取ff系统时间,单位为秒
