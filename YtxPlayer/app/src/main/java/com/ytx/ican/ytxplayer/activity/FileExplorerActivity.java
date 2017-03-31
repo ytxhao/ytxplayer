@@ -1,11 +1,13 @@
 package com.ytx.ican.ytxplayer.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.squareup.otto.Subscribe;
 import com.ytx.ican.media.player.pragma.YtxLog;
@@ -16,14 +18,14 @@ import com.ytx.ican.ytxplayer.fragment.FileListFragment;
 import java.io.File;
 import java.io.IOException;
 
-public class FileExplorerActivity extends BaseActivity implements FileListFragment.OnFragmentInteractionListener{
+public class FileExplorerActivity extends SimpleBarRootActivity implements FileListFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "FileExplorerActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    //    setContentView(R.layout.activity_file_explorer);
-
+        setContentView(R.layout.activity_file_explorer);
+        addMenu(R.id.videoSettings, R.drawable.ic_setting);
         String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
 
@@ -53,6 +55,14 @@ public class FileExplorerActivity extends BaseActivity implements FileListFragme
         if (addToBackStack)
             transaction.addToBackStack(null);
         transaction.commit();
+
+    }
+
+    @Override
+    public void onMenuItemClick(View item) {
+        super.onMenuItemClick(item);
+        Intent intent = new Intent(this,SettingActivity.class);
+        startActivity(intent);
 
     }
 

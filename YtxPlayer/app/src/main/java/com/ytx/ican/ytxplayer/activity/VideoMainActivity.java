@@ -24,6 +24,7 @@ import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.R;
+import com.ytx.ican.ytxplayer.constants.ConstKey;
 import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
 import com.ytx.ican.ytxplayer.utils.FontSearchConfig;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
@@ -33,10 +34,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class VideoMainActivity extends BaseActivity implements View.OnClickListener {
 
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "VideoMainActivity";
     private static final String FILE_NAME = "file_name";
 
     private YtxVideoView ytxVideoView;
@@ -51,7 +52,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private ImageView ivDragVideo;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"titanic.mkv","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"titanic.mkv","gqfc.ts","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
     private String filePath;
     private String fileName;
     private String subtitles;
@@ -144,6 +145,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
         ytxMediaController = new YtxMediaController(this);
+        boolean isHardDecode = PreferenceUtil.getInstance().getBoolean(ConstKey.IS_HARD_DECODE, false);
+        isHardDecode = false;
+        YtxLog.d(TAG,"isHardDecode="+isHardDecode);
+        ytxVideoView.setHardDecode(isHardDecode);
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
 
@@ -171,7 +176,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         break;
                 }
 
-                ytxVideoView.onDestroy();
+            //    ytxVideoView.onDestroy();
                 return true;
             }
         });
@@ -311,6 +316,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 playNext = true;
 
                 if(ytxVideoView.getYtxVideoViewCurrentState() == YtxVideoView.STATE_IDLE){
+                    ytxVideoView.onDestroy();
                     if(!TextUtils.isEmpty(subtitles)){
                         ytxVideoView.setSubtitles(subtitles);
                     }

@@ -34,6 +34,7 @@
 
     <color name="gray_bg">#e8e8e8</color>
     <color name="gray_bg_2">#FF8E8E8E</color>
+    <color name="line_color">@color/black20</color>
 
     <color name="btn_green">#219d58</color>
     <color name="green">#3ec033</color>
@@ -53,5 +54,11 @@
     <color name="button_green_style_normal_state_color_dialog">#ff23ca7a</color>
     <color name="button_green_style_pressed_state_color_dialog">#ff29aa6c</color>
     <color name="button_green_style_disable_state_color_dialog">#8023ca7a</color>
+
+
+    <color name="color_FF242424">#FF242424</color>
+    <color name="color_FFD8D8D8">#FFD8D8D8</color>
+    <color name="color_B2242424">#B2242424</color>
+    <color name="color_587F7F7F">#587F7F7F</color>
 
 </resources>

@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        multiDexEnabled true
 
         ndk {
             abiFilters 'armeabi-v7a'
@@ -35,7 +35,6 @@ android {
             debuggable true
         }
     }
-
 
     //-------------------------------------------
     externalNativeBuild {

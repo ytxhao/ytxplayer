@@ -9,7 +9,28 @@
 </declare-styleable>
 
 
-
+<declare-styleable name="LabelLayout">
+    <attr name="layout_icon" format="reference"/>
+    <attr name="layout_title" format="string"/>
+    <attr name="layout_subTitle" format="string"/>
+    <attr name="layout_description" format="string"/>
+    <attr name="layout_padding" format="boolean"/>
+    <attr name="description_view_class" format="string"/>
+    <attr name="layout_line_top" format="boolean"/>
+    <attr name="layout_line_bottom" format="boolean"/>
+    <attr name="layout_lineType" format="enum">
+        <enum name="no_padding" value="0"/>
+        <enum name="left_padding" value="1" />
+        <enum name="right_padding" value="2" />
+        <enum name="both_padding" value="3" />
+    </attr>
+    <attr name="layout_indicatorType" format="enum">
+        <enum name="none" value="0"/>
+        <enum name="arrows" value="1" />
+        <enum name="layout_switch" value="2" />
+    </attr>
+    <attr name="layout_dividerColor" format="color"/>
+</declare-styleable>
 
 
 </resources>

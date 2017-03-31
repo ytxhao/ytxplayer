@@ -20,13 +20,17 @@ import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.ytx.ican.media.player.pragma.AndroidMediaPlayer;
 import com.ytx.ican.media.player.pragma.IMediaPlayer;
 import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.GraphicGLSurfaceView;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
+import com.ytx.ican.ytxplayer.setting.Settings;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -46,6 +50,9 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     public static final int STATE_PAUSED             = 4;
     public static final int STATE_PLAYBACK_COMPLETED = 5;
 
+
+    public static final int PLAYER_AndroidMediaPlayer = 0;
+    public static final int PLAYER_YtxMediaPlayer = 1;
     //-------------------------
     // Extend: Render
     //-------------------------
@@ -84,7 +91,37 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     private int  seekToSec=0;
     private int  currentPosition=0;
     private int  lastPosition=0;
-    Context mContext;
+    private List<Integer> mAllRenders = new ArrayList<Integer>();
+    private Settings mSettings;
+    private IRenderView mRenderView;
+    private int mCurrentRenderIndex = 0;
+    private int mCurrentRender = RENDER_NONE;
+    private IRenderView.ISurfaceHolder mSurfaceHolder = null;
+    private static final int[] s_allAspectRatio = {
+            IRenderView.AR_ASPECT_FIT_PARENT,
+            IRenderView.AR_ASPECT_FILL_PARENT,
+            IRenderView.AR_ASPECT_WRAP_CONTENT,
+            // IRenderView.AR_MATCH_PARENT,
+            IRenderView.AR_16_9_FIT_PARENT,
+            IRenderView.AR_4_3_FIT_PARENT};
+    private int mCurrentAspectRatioIndex = 0;
+    private int mCurrentAspectRatio = s_allAspectRatio[0];
+
+    private int mVideoSarNum;
+    private int mVideoSarDen;
+    private int mVideoRotationDegree;
+
+    private boolean isHardDecode = false;
+
+
+    public boolean isHardDecode() {
+        return isHardDecode;
+    }
+
+    public void setHardDecode(boolean hardDecode) {
+        isHardDecode = hardDecode;
+    }
+
     public YtxVideoView(Context context) {
         super(context);
         initVideoView(context);
@@ -109,11 +146,18 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void initVideoView(Context context){
         mAppContext = context.getApplicationContext();
+        mSettings = new Settings(mAppContext);
+
         mVideoWidth = 0;
         mVideoHeight = 0;
 
-        initRenders();
-        initSurface(context);
+
+//        if(isHardDecode){
+//            initRenders();
+//        }else{
+            initSurface(context);
+//        }
+
 
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -156,6 +200,17 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
     }
 
     private void initRenders() {
+        mAllRenders.clear();
+        if (mSettings.getEnableSurfaceView())
+            mAllRenders.add(RENDER_SURFACE_VIEW);
+        if (mSettings.getEnableTextureView() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            mAllRenders.add(RENDER_TEXTURE_VIEW);
+        if (mSettings.getEnableNoView())
+            mAllRenders.add(RENDER_NONE);
+
+        if (mAllRenders.isEmpty())
+            mAllRenders.add(RENDER_SURFACE_VIEW);
+        mCurrentRender = mAllRenders.get(mCurrentRenderIndex);
 
         setRender(RENDER_SURFACE_VIEW);
     }
@@ -164,7 +219,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
         switch (render) {
             case RENDER_NONE: {
-
+                setRenderView(null);
             }
             break;
             case RENDER_TEXTURE_VIEW: {
@@ -174,6 +229,8 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
             case RENDER_SURFACE_VIEW: {
                 //使用surface进行render
+                SurfaceRenderView renderView = new SurfaceRenderView(getContext());
+                setRenderView(renderView);
             }
             break;
 
@@ -184,10 +241,100 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             break;
         }
     }
-//
-//    public void setRenderView(IRenderView renderView){
-//
-//    }
+
+    public void setRenderView(IRenderView renderView) {
+        if (mRenderView != null) {
+            if (mMediaPlayer != null)
+                mMediaPlayer.setDisplay(null);
+
+            View renderUIView = mRenderView.getView();
+            mRenderView.removeRenderCallback(mSHCallback);
+            mRenderView = null;
+            removeView(renderUIView);
+        }
+
+        if (renderView == null)
+            return;
+
+        mRenderView = renderView;
+        renderView.setAspectRatio(mCurrentAspectRatio);
+        if (mVideoWidth > 0 && mVideoHeight > 0)
+            renderView.setVideoSize(mVideoWidth, mVideoHeight);
+        if (mVideoSarNum > 0 && mVideoSarDen > 0)
+            renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
+
+        View renderUIView = mRenderView.getView();
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER);
+        renderUIView.setLayoutParams(lp);
+        addView(renderUIView);
+
+        mRenderView.addRenderCallback(mSHCallback);
+        mRenderView.setVideoRotation(mVideoRotationDegree);
+    }
+
+    private void bindSurfaceHolder(IMediaPlayer mp, IRenderView.ISurfaceHolder holder) {
+        if (mp == null)
+            return;
+
+        if (holder == null) {
+            mp.setDisplay(null);
+            return;
+        }
+
+        holder.bindToMediaPlayer(mp);
+    }
+
+    IRenderView.IRenderCallback mSHCallback = new IRenderView.IRenderCallback() {
+        @Override
+        public void onSurfaceChanged(@NonNull IRenderView.ISurfaceHolder holder, int format, int w, int h) {
+            if (holder.getRenderView() != mRenderView) {
+                Log.e(TAG, "onSurfaceChanged: unmatched render callback\n");
+                return;
+            }
+
+            mSurfaceWidth = w;
+            mSurfaceHeight = h;
+            boolean isValidState = (mTargetState == STATE_PLAYING);
+            boolean hasValidSize = !mRenderView.shouldWaitForResize() || (mVideoWidth == w && mVideoHeight == h);
+            if (mMediaPlayer != null && isValidState && hasValidSize) {
+                if (mSeekWhenPrepared != 0) {
+                    seekTo(mSeekWhenPrepared);
+                }
+                start();
+            }
+        }
+
+        @Override
+        public void onSurfaceCreated(@NonNull IRenderView.ISurfaceHolder holder, int width, int height) {
+            if (holder.getRenderView() != mRenderView) {
+                Log.e(TAG, "onSurfaceCreated: unmatched render callback\n");
+                return;
+            }
+
+            mSurfaceHolder = holder;
+            if (mMediaPlayer != null)
+                bindSurfaceHolder(mMediaPlayer, holder);
+            else
+                openVideo();
+        }
+
+        @Override
+        public void onSurfaceDestroyed(@NonNull IRenderView.ISurfaceHolder holder) {
+            if (holder.getRenderView() != mRenderView) {
+                Log.e(TAG, "onSurfaceDestroyed: unmatched render callback\n");
+                return;
+            }
+
+            // after we return from this we can't use the surface any more
+            mSurfaceHolder = null;
+            // REMOVED: if (mMediaController != null) mMediaController.hide();
+            // REMOVED: release(true);
+            releaseWithoutStop();
+        }
+    };
 
     public void setVideoPath(String path) {
         setVideoURI(Uri.parse(path));
@@ -359,8 +506,15 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
 //        AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
 //        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        if(isHardDecode){
+            mMediaPlayer = createPlayer(PLAYER_AndroidMediaPlayer);
+            bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
+        }else{
+             mMediaPlayer = new YtxMediaPlayer();
+            mMediaPlayer.setSurfaceView(mGlSurface);
+        }
 
-        mMediaPlayer = new YtxMediaPlayer();
+
 
         // TODO: create SubtitleController in MediaPlayer, but we need
         // a context for the subtitle renderers
@@ -369,7 +523,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         //set player listener
 
 
-        mMediaPlayer.setSurfaceView(mGlSurface);
+       // mMediaPlayer.setSurfaceView(mGlSurface);
 
         mMediaPlayer.setOnPreparedListener(mPreparedListener);
         mMediaPlayer.setOnVideoSizeChangedListener(mSizeChangedListener);
@@ -388,6 +542,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         mMediaPlayer.prepareAsync();
         // we don't set the target state here either, but preserve the
         // target state that was there before.
@@ -398,6 +553,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
 
     public void stopPlayback() {
+        YtxLog.d(TAG,"stopPlayback ....");
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
@@ -476,16 +632,16 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
             mVideoWidth = mp.getVideoWidth();
             mVideoHeight = mp.getVideoHeight();
-//            mVideoSarNum = mp.getVideoSarNum();
-//            mVideoSarDen = mp.getVideoSarDen();
-//            if (mVideoWidth != 0 && mVideoHeight != 0) {
-//                if (mRenderView != null) {
-//                    mRenderView.setVideoSize(mVideoWidth, mVideoHeight);
-//                    mRenderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
-//                }
-//                // REMOVED: getHolder().setFixedSize(mVideoWidth, mVideoHeight);
-//                requestLayout();
-//            }
+            mVideoSarNum = mp.getVideoSarNum();
+            mVideoSarDen = mp.getVideoSarDen();
+            if (mVideoWidth != 0 && mVideoHeight != 0) {
+                if (mRenderView != null) {
+                    mRenderView.setVideoSize(mVideoWidth, mVideoHeight);
+                    mRenderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
+                }
+                // REMOVED: getHolder().setFixedSize(mVideoWidth, mVideoHeight);
+                requestLayout();
+            }
         }
     };
 
@@ -587,11 +743,11 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                     Log.d(TAG, "MEDIA_INFO_SUBTITLE_TIMED_OUT:");
                     break;
                 case IMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
-               //     mVideoRotationDegree = arg2;
+                    mVideoRotationDegree = extra;
                     Log.d(TAG, "MEDIA_INFO_VIDEO_ROTATION_CHANGED: " + extra);
-//                    if (mRenderView != null)
-//                        mRenderView.setVideoRotation(arg2);
-//                    break;
+                    if (mRenderView != null)
+                        mRenderView.setVideoRotation(extra);
+                    break;
                 case IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
                     Log.d(TAG, "MEDIA_INFO_AUDIO_RENDERING_START:");
                     break;
@@ -736,4 +892,29 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         return mCurrentState;
     }
 
+
+
+    public IMediaPlayer createPlayer(int playerType) {
+        IMediaPlayer mediaPlayer = null;
+
+        switch (playerType) {
+
+            case PLAYER_AndroidMediaPlayer: {
+                AndroidMediaPlayer androidMediaPlayer = new AndroidMediaPlayer();
+                mediaPlayer = androidMediaPlayer;
+            }
+            break;
+            case PLAYER_YtxMediaPlayer:
+            default: {
+                YtxMediaPlayer ytxMediaPlayer = null;
+                if (mUri != null) {
+                    ytxMediaPlayer = new YtxMediaPlayer();
+                }
+                mediaPlayer = ytxMediaPlayer;
+            }
+            break;
+        }
+
+        return mediaPlayer;
+    }
 }
