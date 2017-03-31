@@ -135,10 +135,10 @@ void AudioEngine::createEngine() {
 }
 
 
-void AudioEngine::RegisterCallback(slAndroidSimpleBufferQueueCallback callback) {
+void AudioEngine::RegisterCallback(slAndroidSimpleBufferQueueCallback callback, void *pContext) {
     SLresult result;
     // register callback on the buffer queue
-    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, callback, NULL);
+    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, callback, pContext);
     assert(SL_RESULT_SUCCESS == result);
     (void) result;
 

@@ -472,7 +472,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         @Override
         public void onSurfaceCreated(@NonNull SurfaceHolder holder) {
                if(mMediaPlayer == null){
-                 //  openVideo();
+                   openVideo();
                }
 
         }
@@ -485,7 +485,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         @Override
         public void onSurfaceDestroyed(@NonNull SurfaceHolder holder) {
             YtxLog.d(TAG,"onSurfaceDestroyed");
-            //releaseWithoutStop();
+            releaseWithoutStop();
         }
     };
 

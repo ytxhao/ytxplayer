@@ -7,11 +7,6 @@
 #include "ytxplayer/AudioRefreshController.h"
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/ffmsg.h"
-#include <map>
-#include <unistd.h>
-
-//static std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>   audioEnMap;
-static AudioRefreshController *mAudioRefreshController;
 
 AudioRefreshController::AudioRefreshController(VideoStateInfo *mVideoStateInfo) {
 
@@ -25,14 +20,12 @@ AudioRefreshController::AudioRefreshController(VideoStateInfo *mVideoStateInfo) 
 
     this->mVideoStateInfo = mVideoStateInfo;
     mAudioEngine = new AudioEngine();
-    mAudioRefreshController = this;
 }
 
 
 AudioRefreshController::~AudioRefreshController() {
 
     delete mAudioEngine;
-    mAudioRefreshController = NULL;
 
 }
 
@@ -50,8 +43,8 @@ bool AudioRefreshController::prepare() {
                                                960, mVideoStateInfo->out_channel_nb);
     ALOGI("AudioRefreshController::prepare pthread_self:%lu,bqPlayerBufferQueue=%#x\n",
           (long) pthread_self(), mAudioEngine->bqPlayerBufferQueue);
-    // audioEnMap.insert(std::pair<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>(mAudioEngine->bqPlayerBufferQueue, this));
-    mAudioEngine->RegisterCallback(bqPlayerCallback);
+
+    mAudioEngine->RegisterCallback(bqPlayerCallback, this);
     return true;
 }
 
@@ -111,26 +104,13 @@ void AudioRefreshController::stop() {
 
 
 void AudioRefreshController::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context) {
-//    AudioRefreshController* sAudioRefreshController = NULL;
+    AudioRefreshController* sAudioRefreshController = NULL;
 
-    /*
-    std::map<SLAndroidSimpleBufferQueueItf,AudioRefreshController*>::iterator l_it;
-    l_it = audioEnMap.find(bq);
-    if(l_it == audioEnMap.end()){
-        ALOGI("AudioRefreshController::bqPlayerCallback we do not find");
+    assert(context != NULL);
+    sAudioRefreshController = (AudioRefreshController *) context;
+    assert(bq == sAudioRefreshController->mAudioEngine->bqPlayerBufferQueue);
 
-    } else {
-      //  ALOGI("AudioRefreshController::bqPlayerCallback we find");
-        sAudioRefreshController = l_it->second;
-    }
-*/
-    assert(bq == mAudioRefreshController->mAudioEngine->bqPlayerBufferQueue);
-    assert(NULL == context);
-
-    mAudioRefreshController->audioFrameProcess();
-//    if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
-//        mAudioRefreshController->mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
-//    }
+    sAudioRefreshController->audioFrameProcess();
 
 }
 
@@ -143,7 +123,7 @@ int AudioRefreshController::audioFrameProcess() {
     char *buf[128] = {0};
 
 
-    if (*mAudioRefreshController->mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
+    if (*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
         (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,
                                                       buf,
                                                       128);
@@ -152,7 +132,7 @@ int AudioRefreshController::audioFrameProcess() {
         mAudioEngine->mLock.lock();
         audio_callback_time = av_gettime_relative();
         af = audioDecodeFrame();
-//    ALOGI("AudioRefreshController::process  out_buffer_audio=%#x", af->out_buffer_audio);
+
 //    /* update the audio clock with the pts */
 //    if (!isnan(af->pts))
 //        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;

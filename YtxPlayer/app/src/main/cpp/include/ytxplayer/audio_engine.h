@@ -98,7 +98,7 @@ public:
     void createBufferQueueAudioPlayer(int sampleRate, int bufSize, int channel);
 
     // this callback handler is called every time a buffer finishes playing
-    void RegisterCallback(slAndroidSimpleBufferQueueCallback callback);
+    void RegisterCallback(slAndroidSimpleBufferQueueCallback callback, void *pContext);
 
     void setPlayingAudioPlayer(bool isPlaying);
 

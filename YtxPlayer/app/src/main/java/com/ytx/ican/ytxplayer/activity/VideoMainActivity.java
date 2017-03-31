@@ -60,30 +60,7 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
     private boolean isAddVideo = false;
     private boolean isAddSub = false;
     private boolean isFullScreen = false;
-    Handler handler = new Handler(){
 
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case YtxMediaPlayer.MEDIA_STOPPED:
-                    if(playNext){
-                        playNext = false;
-
-                        YtxLog.d(TAG,"subtitles="+subtitles);
-                        if(!TextUtils.isEmpty(subtitles)){
-                            ytxVideoView.setSubtitles(subtitles);
-                        }
-                        ytxVideoView.setVideoPath(fileName);
-                        ytxVideoView.start();
-                    }
-
-                    break;
-                default:
-                    return;
-            }
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +70,6 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
 
         filePath = Environment.getExternalStorageDirectory()
                 .getAbsolutePath() + "/" ;
-//        fileName = PreferenceUtil.getInstance().getString(FILE_NAME);
 
         //获取当前程序路径
 
@@ -152,50 +128,49 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
 
-        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-                handler.sendEmptyMessage(what);
-                return false;
-            }
-        });
+//        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
+//            @Override
+//            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+//
+//                return false;
+//            }
+//        });
 
-        ytxVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(IMediaPlayer mp, int what, int extra) {
-                YtxLog.d(TAG,"setOnErrorListener onError what="+what);
-                switch (what){
-                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM:
-                        getHelper().showMessage(R.string.file_open_failed);
-                        break;
-                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES:
-                        getHelper().showMessage(R.string.file_open_is_subtitle);
-                        break;
-                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_SUBTITLES:
-                        getHelper().showMessage(R.string.file_open_error_subtitle);
-                        break;
-                }
+//        ytxVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+//            @Override
+//            public boolean onError(IMediaPlayer mp, int what, int extra) {
+//                YtxLog.d(TAG,"setOnErrorListener onError what="+what);
+//                switch (what){
+//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM:
+//                        getHelper().showMessage(R.string.file_open_failed);
+//                        break;
+//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES:
+//                        getHelper().showMessage(R.string.file_open_is_subtitle);
+//                        break;
+//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_SUBTITLES:
+//                        getHelper().showMessage(R.string.file_open_error_subtitle);
+//                        break;
+//                }
+//
+//
+//                return true;
+//            }
+//        });
 
-            //    ytxVideoView.onDestroy();
-                return true;
-            }
-        });
+//        ytxVideoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(IMediaPlayer mp) {
+//                YtxLog.d(TAG,"setOnPreparedListener onPrepared");
+//            }
+//        });
+//
+//        ytxVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(IMediaPlayer mp) {
+//                YtxLog.d(TAG,"setOnCompletionListener onCompletion");
+//            }
+//        });
 
-        ytxVideoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(IMediaPlayer mp) {
-                YtxLog.d(TAG,"setOnPreparedListener onPrepared");
-            }
-        });
-
-        ytxVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(IMediaPlayer mp) {
-                YtxLog.d(TAG,"setOnCompletionListener onCompletion");
-            }
-        });
-
-       // showLoading();
     }
 
 
@@ -313,19 +288,14 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
                 PreferenceUtil.getInstance().putString(FILE_NAME,actvFileNameVideo.getText().toString().trim());
                 fileName = actvFileNameVideo.getText().toString().trim();
                 subtitles = actvFileNameSub.getText().toString().trim();
-                playNext = true;
-
-                if(ytxVideoView.getYtxVideoViewCurrentState() == YtxVideoView.STATE_IDLE){
-                    ytxVideoView.onDestroy();
-                    if(!TextUtils.isEmpty(subtitles)){
-                        ytxVideoView.setSubtitles(subtitles);
-                    }
-                    ytxVideoView.setVideoPath(fileName);
-                    ytxVideoView.start();
-                    playNext = false;
-                }else{
-                    ytxVideoView.onDestroy();
+                if(!TextUtils.isEmpty(subtitles)){
+                    ytxVideoView.setSubtitles(subtitles);
                 }
+
+                ytxVideoView.onDestroy();
+                ytxVideoView.setVideoPath(fileName);
+                ytxVideoView.start();
+
                 break;
             case R.id.btFullScreen:
                 enterFullScreen();
