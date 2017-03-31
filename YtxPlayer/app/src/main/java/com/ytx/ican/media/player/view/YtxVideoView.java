@@ -516,7 +516,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                 //removeAllViews();
                 addView(mGlSurface);
             }
-             mMediaPlayer = new YtxMediaPlayer();
+            mMediaPlayer = new YtxMediaPlayer();
             mMediaPlayer.setSurfaceView(mGlSurface);
         }
 
@@ -890,6 +890,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void onDestroy(){
         stopPlayback();
+        removeAllViews();
         subtitles = null;
         seekToSec = 0;
 
