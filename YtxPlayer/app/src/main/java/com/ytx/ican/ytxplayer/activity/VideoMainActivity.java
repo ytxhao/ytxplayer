@@ -121,10 +121,6 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
 
 
         ytxMediaController = new YtxMediaController(this);
-        boolean isHardDecode = PreferenceUtil.getInstance().getBoolean(ConstKey.IS_HARD_DECODE, false);
-        isHardDecode = false;
-        YtxLog.d(TAG,"isHardDecode="+isHardDecode);
-        ytxVideoView.setHardDecode(isHardDecode);
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
 

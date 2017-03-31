@@ -26,7 +26,9 @@ import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.render.GraphicGLSurfaceView;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
+import com.ytx.ican.ytxplayer.constants.ConstKey;
 import com.ytx.ican.ytxplayer.setting.Settings;
+import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -151,13 +153,8 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mVideoWidth = 0;
         mVideoHeight = 0;
 
-
-//        if(isHardDecode){
-//            initRenders();
-//        }else{
-            initSurface(context);
-//        }
-
+        initRenders();
+        initSurface(context);
 
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -176,7 +173,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER);
         mGlSurface.setLayoutParams(lp);
-        addView(mGlSurface);
+        //addView(mGlSurface);
         mGlSurface.setSurfaceCallback(mSurfaceCallback);
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -269,8 +266,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER);
         renderUIView.setLayoutParams(lp);
-        addView(renderUIView);
-
+        //addView(renderUIView);
         mRenderView.addRenderCallback(mSHCallback);
         mRenderView.setVideoRotation(mVideoRotationDegree);
     }
@@ -506,10 +502,20 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
 //        AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
 //        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        isHardDecode = PreferenceUtil.getInstance().getBoolean(ConstKey.IS_HARD_DECODE, false);
         if(isHardDecode){
+            if(mRenderView != null){
+                //removeAllViews();
+                addView(mRenderView.getView());
+            }
             mMediaPlayer = createPlayer(PLAYER_AndroidMediaPlayer);
             bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
+
         }else{
+            if(mGlSurface != null){
+                //removeAllViews();
+                addView(mGlSurface);
+            }
              mMediaPlayer = new YtxMediaPlayer();
             mMediaPlayer.setSurfaceView(mGlSurface);
         }
