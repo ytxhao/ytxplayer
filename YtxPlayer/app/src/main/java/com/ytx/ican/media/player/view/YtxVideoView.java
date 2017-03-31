@@ -885,6 +885,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         if(mGlSurface != null){
             mGlSurface.onPause();
         }
+        removeAllViews();
     }
 
     public void onDestroy(){
