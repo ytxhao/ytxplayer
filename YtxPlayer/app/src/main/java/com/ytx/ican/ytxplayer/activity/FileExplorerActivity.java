@@ -18,14 +18,13 @@ import com.ytx.ican.ytxplayer.fragment.FileListFragment;
 import java.io.File;
 import java.io.IOException;
 
-public class FileExplorerActivity extends SimpleBarRootActivity implements FileListFragment.OnFragmentInteractionListener{
+public class FileExplorerActivity extends BaseActivity implements FileListFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "FileExplorerActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_explorer);
-        addMenu(R.id.videoSettings, R.drawable.ic_setting);
         String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
 
@@ -58,13 +57,6 @@ public class FileExplorerActivity extends SimpleBarRootActivity implements FileL
 
     }
 
-    @Override
-    public void onMenuItemClick(View item) {
-        super.onMenuItemClick(item);
-        Intent intent = new Intent(this,SettingActivity.class);
-        startActivity(intent);
-
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

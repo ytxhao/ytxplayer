@@ -34,7 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class VideoMainActivity extends BaseActivity implements View.OnClickListener {
+public class VideoMainActivity extends SimpleBarRootActivity implements View.OnClickListener {
 
 
     private static final String TAG = "VideoMainActivity";
@@ -66,6 +66,7 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         YtxLog.d(TAG,"#### #### onCreate");
         setContentView(R.layout.activity_main);
+        addMenu(R.id.videoSettings, R.drawable.ic_setting);
         PreferenceUtil.initInstance(getApplicationContext(), PreferenceUtil.MODE_ENCRYPT_ALL);
 
         filePath = Environment.getExternalStorageDirectory()
@@ -124,51 +125,15 @@ public class VideoMainActivity extends BaseActivity implements View.OnClickListe
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();
 
-//        ytxVideoView.setOnInfoListener(new IMediaPlayer.OnInfoListener() {
-//            @Override
-//            public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-//
-//                return false;
-//            }
-//        });
-
-//        ytxVideoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
-//            @Override
-//            public boolean onError(IMediaPlayer mp, int what, int extra) {
-//                YtxLog.d(TAG,"setOnErrorListener onError what="+what);
-//                switch (what){
-//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM:
-//                        getHelper().showMessage(R.string.file_open_failed);
-//                        break;
-//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES:
-//                        getHelper().showMessage(R.string.file_open_is_subtitle);
-//                        break;
-//                    case YtxMediaPlayer.MEDIA_ERROR_OPEN_STREAM_SUBTITLES:
-//                        getHelper().showMessage(R.string.file_open_error_subtitle);
-//                        break;
-//                }
-//
-//
-//                return true;
-//            }
-//        });
-
-//        ytxVideoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(IMediaPlayer mp) {
-//                YtxLog.d(TAG,"setOnPreparedListener onPrepared");
-//            }
-//        });
-//
-//        ytxVideoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(IMediaPlayer mp) {
-//                YtxLog.d(TAG,"setOnCompletionListener onCompletion");
-//            }
-//        });
-
     }
 
+    @Override
+    public void onMenuItemClick(View item) {
+        super.onMenuItemClick(item);
+        Intent intent = new Intent(this,SettingActivity.class);
+        startActivity(intent);
+
+    }
 
     @Override
     protected void onResume() {
