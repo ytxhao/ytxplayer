@@ -55,6 +55,8 @@ public:
     int times=0;
     Lock mLock;
 
+    EGLint surfaceWidth, surfaceHeight;
+
 };
 
 #endif //MEDIACODECTEST_GLTHREAD_H

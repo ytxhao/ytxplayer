@@ -7,6 +7,146 @@
 #include <ytxplayer/GlslFilter.h>
 #include "ytxplayer/GLThread.h"
 
+static void printGLString(const char *name, GLenum s) {
+    const char *v = (const char *) glGetString(s);
+    ALOGI("GL %s = %s\n", name, v);
+}
+
+static void checkGlError(const char* op) {
+    for (GLint error = glGetError(); error; error
+                                                    = glGetError()) {
+        ALOGI("after %s() glError (0x%x)\n", op, error);
+    }
+}
+
+auto gVertexShader =
+        "attribute vec4 vPosition;\n"
+                "void main() {\n"
+                "  gl_Position = vPosition;\n"
+                "}\n";
+
+auto gFragmentShader =
+        "precision mediump float;\n"
+                "void main() {\n"
+                "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+                "}\n";
+
+GLuint loadShader(GLenum shaderType, const char* pSource) {
+    GLuint shader = glCreateShader(shaderType);
+    if (shader) {
+        glShaderSource(shader, 1, &pSource, NULL);
+        glCompileShader(shader);
+        GLint compiled = 0;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+        if (!compiled) {
+            GLint infoLen = 0;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+            if (infoLen) {
+                char* buf = (char*) malloc(infoLen);
+                if (buf) {
+                    glGetShaderInfoLog(shader, infoLen, NULL, buf);
+                    ALOGE("Could not compile shader %d:\n%s\n",
+                         shaderType, buf);
+                    free(buf);
+                }
+                glDeleteShader(shader);
+                shader = 0;
+            }
+        }
+    }
+    return shader;
+}
+
+
+GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
+    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
+    if (!vertexShader) {
+        return 0;
+    }
+
+    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
+    if (!pixelShader) {
+        return 0;
+    }
+
+    GLuint program = glCreateProgram();
+    if (program) {
+        glAttachShader(program, vertexShader);
+        checkGlError("glAttachShader");
+        glAttachShader(program, pixelShader);
+        checkGlError("glAttachShader");
+        glLinkProgram(program);
+        GLint linkStatus = GL_FALSE;
+        glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+        if (linkStatus != GL_TRUE) {
+            GLint bufLength = 0;
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
+            if (bufLength) {
+                char* buf = (char*) malloc(bufLength);
+                if (buf) {
+                    glGetProgramInfoLog(program, bufLength, NULL, buf);
+                    ALOGE("Could not link program:\n%s\n", buf);
+                    free(buf);
+                }
+            }
+            glDeleteProgram(program);
+            program = 0;
+        }
+    }
+    return program;
+}
+
+GLuint gProgram;
+GLuint gvPositionHandle;
+
+bool setupGraphics(int w, int h) {
+    printGLString("Version", GL_VERSION);
+    printGLString("Vendor", GL_VENDOR);
+    printGLString("Renderer", GL_RENDERER);
+    printGLString("Extensions", GL_EXTENSIONS);
+
+    ALOGI("setupGraphics(%d, %d)", w, h);
+    gProgram = createProgram(gVertexShader, gFragmentShader);
+    if (!gProgram) {
+        ALOGE("Could not create program.");
+        return false;
+    }
+    gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
+    checkGlError("glGetAttribLocation");
+    ALOGI("glGetAttribLocation(\"vPosition\") = %d\n",
+         gvPositionHandle);
+
+    glViewport(0, 0, w, h);
+    checkGlError("glViewport");
+    return true;
+}
+
+
+const GLfloat gTriangleVertices[] = { 0.0f, 0.5f, -0.5f, -0.5f,
+                                      0.5f, -0.5f };
+
+void renderFrame() {
+    static float grey;
+    grey += 0.01f;
+    if (grey > 1.0f) {
+        grey = 0.0f;
+    }
+    glClearColor(grey, grey, grey, 1.0f);
+    checkGlError("glClearColor");
+    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    checkGlError("glClear");
+
+    glUseProgram(gProgram);
+    checkGlError("glUseProgram");
+
+    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+    checkGlError("glVertexAttribPointer");
+    glEnableVertexAttribArray(gvPositionHandle);
+    checkGlError("glEnableVertexAttribArray");
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    checkGlError("glDrawArrays");
+}
+
 
 GLThread::GLThread(VideoStateInfo *mVideoStateInfo) {
 
@@ -84,9 +224,10 @@ bool GLThread::process(AVMessage *msg) {
 bool GLThread::prepare() {
 
     initEGL(mVideoStateInfo->mVideoWidth,mVideoStateInfo->mVideoHeight);
-    glslFilter = new GlslFilter();
-    glslFilter->initial();
-    glslFilter->buildTextures();
+//    glslFilter = new GlslFilter();
+//    glslFilter->initial();
+//    glslFilter->buildTextures();
+    setupGraphics(surfaceWidth, surfaceHeight);
     return true;
 }
 
@@ -252,7 +393,7 @@ void GLThread::initEGL(int width, int height) {
                 break;
         }
     }
-    EGLint w, h;
+
     eglCtx = eglCreateContext(eglDisp, eglConf, EGL_NO_CONTEXT, ctxAttr);
     if(eglCtx == EGL_NO_CONTEXT)
     {
@@ -264,9 +405,9 @@ void GLThread::initEGL(int width, int height) {
         }
     }
 
-    eglQuerySurface(eglDisp, eglSurface, EGL_WIDTH, &w);
-    eglQuerySurface(eglDisp, eglSurface, EGL_HEIGHT, &h);
-    ALOGI("ytxhao eglQuerySurface w=%d h=%d",w,h);
+    eglQuerySurface(eglDisp, eglSurface, EGL_WIDTH, &surfaceWidth);
+    eglQuerySurface(eglDisp, eglSurface, EGL_HEIGHT, &surfaceHeight);
+    ALOGI("ytxhao eglQuerySurface w=%d h=%d",surfaceWidth,surfaceHeight);
     if(!eglMakeCurrent(eglDisp, eglSurface, eglSurface, eglCtx))
     {
         ALOGI("MakeCurrent failed");
@@ -285,12 +426,12 @@ void GLThread::drawGL(GlslFilter *filter,VMessageData *vData ) {
     // clear screen
 //    glDisable(GL_DITHER);
 //    glDisable(GL_SCISSOR_TEST);
-    glClearColor(0,0,1,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+//    glClearColor(0,0,1,1);
+//    glClear(GL_COLOR_BUFFER_BIT);
     //调用eglSwapBuffers会去触发queuebuffer，dequeuebuffer，
     //queuebuffer将画好的buffer交给surfaceflinger处理，
     //dequeuebuffer新创建一个buffer用来画图
-
+    renderFrame();
     eglSwapBuffers(eglDisp, eglSurface);
 
 }
