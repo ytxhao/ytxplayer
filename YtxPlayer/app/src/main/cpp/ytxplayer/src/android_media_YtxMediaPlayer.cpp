@@ -211,19 +211,32 @@ void android_media_player_notifyRenderFrame(jobject obj) {
  * Method:    _setGlSurface
  * Signature: (Ljava/lang/Object;)V
  */
-JNIEXPORT void JNICALL android_media_player_setGlSurface
-        (JNIEnv *env, jobject obj, jobject mVideoGlSurfaceView) {
+JNIEXPORT void JNICALL android_media_player_setSurface
+        (JNIEnv *env, jobject obj, jobject surface) {
 
+//    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
+//    mPlayer->mVideoStateInfo->VideoGlSurfaceViewObj = env->NewGlobalRef(mVideoGlSurfaceView);
+//
+//    jclass jclazz = env->GetObjectClass(mVideoGlSurfaceView);
+//    jmethodID jmtdId = env->GetMethodID(jclazz, "getRenderer",
+//                                        "()Lcom/ytx/ican/media/player/render/GraphicRenderer;");
+//    jobject GraphicRendererObj = env->CallObjectMethod(mVideoGlSurfaceView, jmtdId);
+//
+//    mPlayer->mVideoStateInfo->GraphicRendererObj = env->NewGlobalRef(GraphicRendererObj);
+
+
+    if(surface == NULL){
+        ALOGI("android_media_player_setSurface surface == NULL");
+        return;
+    }
     YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
-    mPlayer->mVideoStateInfo->VideoGlSurfaceViewObj = env->NewGlobalRef(mVideoGlSurfaceView);
-
-    jclass jclazz = env->GetObjectClass(mVideoGlSurfaceView);
-    jmethodID jmtdId = env->GetMethodID(jclazz, "getRenderer",
-                                        "()Lcom/ytx/ican/media/player/render/GraphicRenderer;");
-    jobject GraphicRendererObj = env->CallObjectMethod(mVideoGlSurfaceView, jmtdId);
-
-    mPlayer->mVideoStateInfo->GraphicRendererObj = env->NewGlobalRef(GraphicRendererObj);
-
+    if (mPlayer->mVideoStateInfo->window) {
+        ANativeWindow_release(mPlayer->mVideoStateInfo->window);
+        mPlayer->mVideoStateInfo->window = NULL;
+    }
+    //ANativeWindow_fromSurface(env, mVideoGlSurfaceView);
+    mPlayer->mVideoStateInfo->window = ANativeWindow_fromSurface(env, surface);
+    ALOGI("ytxhao android_media_player_setSurface surface window =%#x",mPlayer->mVideoStateInfo->window);
 
     /**
      * for test
@@ -617,7 +630,7 @@ static JNINativeMethod gMethods[] = {
         {"native_setup",           "(Ljava/lang/Object;)V",                    (void *) android_media_player_native_setup},
         {"native_finalize",        "()V",                                      (void *) android_media_player_native_finalize},
         {"native_message_loop",    "(Ljava/lang/Object;)V",                    (void *) android_media_player_native_message_loop},
-        {"_setGlSurface",          "(Ljava/lang/Object;)V",                    (void *) android_media_player_setGlSurface},
+        {"_setSurface",            "(Ljava/lang/Object;)V",                    (void *) android_media_player_setSurface},
         {"_died",                  "()V",                                      (void *) android_media_player_died},
         {"_setSubtitles",          "(Ljava/lang/String;)I",                    (void *) android_media_player_setSubtitles},
         {"_setDataSource",         "(Ljava/lang/String;)I",                    (void *) android_media_player_setDataSource},

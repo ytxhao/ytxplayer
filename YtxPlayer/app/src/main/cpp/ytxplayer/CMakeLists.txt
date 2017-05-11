@@ -40,6 +40,8 @@ add_library( # Sets the name of the library.
              src/MessageLoop.cpp
              src/AudioRefreshController.cpp
              src/utils.cpp
+             src/GLThread.cpp
+             src/GlslFilter.cpp
              src/test.c
              )
 
@@ -266,7 +268,7 @@ target_link_libraries( # Specifies the target library.
 
                        # Links the target library to the log library
                        # included in the NDK.
-
+                       android
                        ${log-lib}
                        ${OpenSLES-lib}
                        png-lib

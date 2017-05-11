@@ -15,6 +15,9 @@
 #include "MessageQueue.h"
 #include <ytxplayer/MessageLoop.h>
 #include "jni.h"
+
+#include <android/native_window_jni.h>
+
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
     MEDIA_PLAYER_IDLE               = 1 << 0,
@@ -119,6 +122,8 @@ public:
 
     MessageQueue *messageQueueAudio;
     MessageQueue *messageQueueVideo;
+    MessageQueue *messageQueueGL;
+
 
     int pkt_serial_audio = 0;
     int pkt_serial_video = 0;
@@ -129,8 +134,8 @@ public:
 //    FILE *fp_pcm1;
 //    char file_pcm[100];
 //    char file_pcm1[100];
-    jobject VideoGlSurfaceViewObj;
-    jobject GraphicRendererObj;
+/*    jobject VideoGlSurfaceViewObj;
+    jobject GraphicRendererObj;*/
     char *mStorageDir;
 
     int mVideoWidth =0;
@@ -153,5 +158,7 @@ public:
     int autorotate = 1;
 
     int sub_format = -1;
+
+    ANativeWindow* window;
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

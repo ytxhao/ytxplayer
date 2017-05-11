@@ -10,6 +10,7 @@
 #include <ytxplayer/VideoStateInfo.h>
 #include <ytxplayer/android_media_YtxMediaPlayer.h>
 #include <png.h>
+#include <ytxplayer/GLThread.h>
 #include "ytxplayer/VideoRefreshController.h"
 
 
@@ -168,24 +169,43 @@ void VideoRefreshController::process() {
                 }
 
 
-                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-                if (hasSubtitles) {
-                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
-                                          sp->imageFrame,
-                                          lastvp->out_buffer_video_yuv[0],
-                                          lastvp->out_buffer_video_yuv[1],
-                                          lastvp->out_buffer_video_yuv[2],
-                                          decodeWidth,
-                                          decodeHeight);
-                } else {
-                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
-                                          NULL,
-                                          lastvp->out_buffer_video_yuv[0],
-                                          lastvp->out_buffer_video_yuv[1],
-                                          lastvp->out_buffer_video_yuv[2],
-                                          decodeWidth,
-                                          decodeHeight);
-                }
+
+                AVMessage msg;
+                VMessageData *vData = (VMessageData *) malloc(sizeof(VMessageData));
+                memset(&msg,0, sizeof(AVMessage));
+                memset(vData,0, sizeof(VMessageData));
+                vData->img = NULL;
+                vData->y = lastvp->out_buffer_video_yuv[0];
+                vData->u = lastvp->out_buffer_video_yuv[1];
+                vData->v = lastvp->out_buffer_video_yuv[2];
+                vData->videoWidth = decodeWidth;
+                vData->videoHeight = decodeHeight;
+                msg.what = GL_MSG_RENDERER;
+                msg.arg1 = decodeWidth;
+                msg.arg2 = decodeHeight;
+                msg.priv_data = vData;
+
+                mVideoStateInfo->messageQueueGL->put(&msg);
+               // ALOGI("ytxhao test gl y=%#x u=%#x videoWidth=%d decodeHeight=%d",lastvp->out_buffer_video_yuv[0],lastvp->out_buffer_video_yuv[1],
+               //       decodeWidth,decodeHeight);
+//                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+//                if (hasSubtitles) {
+//                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
+//                                          sp->imageFrame,
+//                                          lastvp->out_buffer_video_yuv[0],
+//                                          lastvp->out_buffer_video_yuv[1],
+//                                          lastvp->out_buffer_video_yuv[2],
+//                                          decodeWidth,
+//                                          decodeHeight);
+//                } else {
+//                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
+//                                          NULL,
+//                                          lastvp->out_buffer_video_yuv[0],
+//                                          lastvp->out_buffer_video_yuv[1],
+//                                          lastvp->out_buffer_video_yuv[2],
+//                                          decodeWidth,
+//                                          decodeHeight);
+//                }
 
 
             }
@@ -306,8 +326,8 @@ void VideoRefreshController::refresh() {
         process();
     }
     //结束视频刷新
-    resetRendererVideoFrame(mVideoStateInfo->GraphicRendererObj);
-    android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
+//    resetRendererVideoFrame(mVideoStateInfo->GraphicRendererObj);
+//    android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
 
 }
 

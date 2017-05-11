@@ -7,6 +7,7 @@
 
 
 #include <ytxplayer/utils.h>
+#include <ytxplayer/GLThread.h>
 #include "ytxplayer/ALog-priv.h"
 
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
@@ -71,6 +72,7 @@ YtxMediaPlayer::YtxMediaPlayer() {
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mVideoRefreshController = NULL;
     mAudioRefreshController = NULL;
+    mGLThread = NULL;
     isRelease = false;
     mDecoderSubtitle = NULL;
     mDecoderVideo = NULL;
@@ -101,6 +103,10 @@ YtxMediaPlayer::~YtxMediaPlayer() {
 
     if (mAudioRefreshController) {
         delete mAudioRefreshController;
+    }
+
+    if(mGLThread){
+        delete mGLThread;
     }
 
     delete mVideoStateInfo;
@@ -263,7 +269,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
-
+    mPlayer->mGLThread = new GLThread(mPlayer->mVideoStateInfo);
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(
             mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
 
@@ -312,9 +318,11 @@ void *YtxMediaPlayer::startPlayer(void *ptr) {
     printferr();
     //等待surface render初始化完成
 
-    do {
-        usleep(50);
-    } while (rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
+//    mPlayer->mGLThread->startAsync();
+//    do {
+//        usleep(50);
+//    } while (rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
+
 
     mPlayer->decodeMovie(ptr);
 
@@ -386,6 +394,7 @@ void YtxMediaPlayer::decodeMovie(void *ptr) {
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
         mVideoRefreshController->startAsync();
         mDecoderVideo->startAsync();
+        mGLThread->startAsync();
     }
 
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {

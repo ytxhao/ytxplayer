@@ -6,13 +6,28 @@
 #define YTXPLAYER_MESSAGEQUEUE_H
 
 #include <pthread.h>
+#include "ffinc.h"
 
 typedef struct AVMessage {
     int what;
     int arg1;
     int arg2;
+    void *priv_data;
     struct AVMessage *next;
 } AVMessage;
+
+
+typedef struct VMessageData{
+
+    image_t *img;
+    char *y;
+    char *u;
+    char *v;
+    int videoWidth;
+    int videoHeight;
+
+}VMessageData;
+
 
 class MessageQueue{
 private:

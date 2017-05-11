@@ -74,7 +74,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     private IMediaController mMediaController;
     private IMediaPlayer mMediaPlayer = null;
-    public VideoGlSurfaceView mGlSurface = null;
+    //public VideoGlSurfaceView mGlSurface = null;
     private int mCurrentState = STATE_IDLE;
     private int mTargetState  = STATE_IDLE;
 
@@ -154,7 +154,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mVideoHeight = 0;
 
         initRenders();
-        initSurface(context);
+       // initSurface(context);
 
         setFocusable(true);
         setFocusableInTouchMode(true);
@@ -163,6 +163,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         mTargetState  = STATE_IDLE;
     }
 
+    /*
     private void initSurface(Context context) {
         mGlSurface = new VideoGlSurfaceView(context);
 
@@ -187,7 +188,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             layOutPortrait();
         }
     }
-
+*/
     private void layOutPortrait() {
 
     }
@@ -254,21 +255,21 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             return;
 
         mRenderView = renderView;
-        renderView.setAspectRatio(mCurrentAspectRatio);
-        if (mVideoWidth > 0 && mVideoHeight > 0)
-            renderView.setVideoSize(mVideoWidth, mVideoHeight);
-        if (mVideoSarNum > 0 && mVideoSarDen > 0)
-            renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
+//        renderView.setAspectRatio(mCurrentAspectRatio);
+//        if (mVideoWidth > 0 && mVideoHeight > 0)
+//            renderView.setVideoSize(mVideoWidth, mVideoHeight);
+//        if (mVideoSarNum > 0 && mVideoSarDen > 0)
+//            renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
 
         View renderUIView = mRenderView.getView();
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT,
                 Gravity.CENTER);
         renderUIView.setLayoutParams(lp);
-        //addView(renderUIView);
+        addView(renderUIView);
         mRenderView.addRenderCallback(mSHCallback);
-        mRenderView.setVideoRotation(mVideoRotationDegree);
+//        mRenderView.setVideoRotation(mVideoRotationDegree);
     }
 
     private void bindSurfaceHolder(IMediaPlayer mp, IRenderView.ISurfaceHolder holder) {
@@ -503,21 +504,16 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 //        AudioManager am = (AudioManager) mAppContext.getSystemService(Context.AUDIO_SERVICE);
 //        am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         isHardDecode = PreferenceUtil.getInstance().getBoolean(ConstKey.IS_HARD_DECODE, false);
+        //isHardDecode = true;
+        YtxLog.d(TAG,"ytxhaoo isHardDecode="+isHardDecode);
         if(isHardDecode){
-            if(mRenderView != null){
-                //removeAllViews();
-                addView(mRenderView.getView());
-            }
             mMediaPlayer = createPlayer(PLAYER_AndroidMediaPlayer);
             bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
 
         }else{
-            if(mGlSurface != null){
-                //removeAllViews();
-                addView(mGlSurface);
-            }
-            mMediaPlayer = new YtxMediaPlayer();
-            mMediaPlayer.setSurfaceView(mGlSurface);
+
+            mMediaPlayer = createPlayer(PLAYER_YtxMediaPlayer);
+            bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
         }
 
 
@@ -875,22 +871,22 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void onResume(){
         start();
-        if(mGlSurface != null){
-            mGlSurface.onResume();
-        }
+//        if(mGlSurface != null){
+//            mGlSurface.onResume();
+//        }
     }
 
     public void onPause(){
         pause();
-        if(mGlSurface != null){
-            mGlSurface.onPause();
-        }
-        removeAllViews();
+//        if(mGlSurface != null){
+//            mGlSurface.onPause();
+//        }
+//        removeAllViews();
     }
 
     public void onDestroy(){
         stopPlayback();
-        removeAllViews();
+//        removeAllViews();
         subtitles = null;
         seekToSec = 0;
 

@@ -31,8 +31,8 @@ VideoStateInfo::VideoStateInfo() {
     pkt_serial_video = 0;
     pkt_serial_subtitle = 0;
 
-    VideoGlSurfaceViewObj = NULL;
-    GraphicRendererObj = NULL;
+//    VideoGlSurfaceViewObj = NULL;
+//    GraphicRendererObj = NULL;
     mStorageDir = NULL;
     mVideoWidth = 0;
     mVideoHeight = 0;
@@ -59,6 +59,7 @@ VideoStateInfo::VideoStateInfo() {
     streamSubtitle = new InputStream();
     messageQueueAudio = new MessageQueue();
     messageQueueVideo = new MessageQueue();
+    messageQueueGL = new MessageQueue();
     mMessageLoop = new MessageLoop();
     pthread_mutex_init(&mLock, NULL);
     pthread_cond_init(&mCondition, NULL);
@@ -82,6 +83,7 @@ VideoStateInfo::VideoStateInfo() {
     currentTime = 0;
     sws_dict = NULL;
     vfilters_list = NULL;
+    window = NULL;
 
 }
 

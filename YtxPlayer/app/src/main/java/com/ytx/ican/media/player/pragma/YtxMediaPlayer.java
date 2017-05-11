@@ -163,17 +163,25 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
         }
     }
 
-    @Override
-    public void setSurfaceView(VideoGlSurfaceView glSurface){
-
-        this.glSurface = glSurface;
-        _setGlSurface(this.glSurface);
-    }
+//    @Override
+//    public void setSurfaceView(VideoGlSurfaceView glSurface){
+//
+//        this.glSurface = glSurface;
+//        _setGlSurface(this.glSurface);
+//    }
 
 
     @Override
     public void setDisplay(SurfaceHolder sh) {
 
+       // mSurfaceHolder = sh;
+        Surface surface;
+        if (sh != null) {
+            surface = sh.getSurface();
+        } else {
+            surface = null;
+        }
+        _setSurface(surface);
     }
 
     @Override
@@ -350,7 +358,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void setSurface(Surface surface) {
-
+        _setSurface(surface);
     }
 
     @Override
@@ -472,7 +480,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private native void native_message_loop(Object YtxMediaPlayer_this);
 
 
-    private native void _setGlSurface(Object glSurface);
+    private native void _setSurface(Object surface);
 
     private native void _died();
 

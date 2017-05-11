@@ -23,11 +23,13 @@
 #include <GLES2/gl2ext.h>
 #include <ytxplayer/VideoRefreshController.h>
 #include <ytxplayer/AudioRefreshController.h>
+#include <ytxplayer/GLThread.h>
 #include "audio_engine.h"
 #include "VideoStateInfo.h"
 #include "PlayerPrepareAsync.h"
 #include "MessageLoop.h"
 #include "MediaPlayerListener.h"
+
 
 // ----------------------------------------------------------------------------
 
@@ -62,6 +64,7 @@ public:
 
     VideoRefreshController *mVideoRefreshController;
     AudioRefreshController *mAudioRefreshController;
+    GLThread *mGLThread;
     static void* startPlayer(void* ptr);
     static void* prepareAsyncPlayer(void* ptr);
 

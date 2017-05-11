@@ -23,10 +23,10 @@ JNIEnv* getJNIEnv();
 
 /*
  * Class:     com_ytx_ican_media_player_YtxMediaPlayer
- * Method:    _setGlSurface
+ * Method:    _setSurface
  * Signature: (Ljava/lang/Object;)V
  */
-JNIEXPORT void JNICALL android_media_player_setGlSurface
+JNIEXPORT void JNICALL android_media_player_setSurface
         (JNIEnv *, jobject, jobject);
 
 /*
