@@ -419,17 +419,8 @@ void GLThread::drawGL(GlslFilter *filter,VMessageData *vData ) {
 
     filter->process(vData);
     filter->drawFrame();
-
-    // clear screen
-//    glDisable(GL_DITHER);
-//    glDisable(GL_SCISSOR_TEST);
-//    glClearColor(0,0,1,1);
-//    glClear(GL_COLOR_BUFFER_BIT);
-    //调用eglSwapBuffers会去触发queuebuffer，dequeuebuffer，
-    //queuebuffer将画好的buffer交给surfaceflinger处理，
-    //dequeuebuffer新创建一个buffer用来画图
-//    renderFrame();
     eglSwapBuffers(eglDisp, eglSurface);
+    mVideoStateInfo->frameQueueVideo->frameQueueNext();
 
 }
 

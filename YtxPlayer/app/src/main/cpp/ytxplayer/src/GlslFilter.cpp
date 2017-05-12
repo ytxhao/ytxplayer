@@ -87,7 +87,7 @@ void GlslFilter::initial() {
 
     isInitialed = true;
 
-    //fp_yuv = fopen("/storage/emulated/0/ytx.yuv","wb+");
+    fp_yuv = fopen("/storage/emulated/0/ytx1.yuv","wb+");
     createProgram(getVertexShaderString(), getFragmentShaderString());
     glUseProgram(shaderProgram);
     checkGlError("glUseProgram");
@@ -243,6 +243,11 @@ void GlslFilter::renderBackground() {
 
 void GlslFilter::process(VMessageData *vData ) {
    // ALOGI("ytxhao test gl y=%#x u=%#x videoWidth=%d decodeHeight=%d",vData->y,vData->u,vData->videoWidth,vData->videoHeight);
+
+//    fwrite(vData->y,1,videoWidth*videoHeight,fp_yuv);    //Y
+//    fwrite(vData->u,1,videoWidth*videoHeight/4,fp_yuv);  //U
+//    fwrite(vData->v,1,videoWidth*videoHeight/4,fp_yuv);  //V
+
     addRendererFrame(vData);
 }
 

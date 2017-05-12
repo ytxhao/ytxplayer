@@ -186,30 +186,10 @@ void VideoRefreshController::process() {
                 msg.priv_data = vData;
 
                 mVideoStateInfo->messageQueueGL->put(&msg);
-               // ALOGI("ytxhao test gl y=%#x u=%#x videoWidth=%d decodeHeight=%d",lastvp->out_buffer_video_yuv[0],lastvp->out_buffer_video_yuv[1],
-               //       decodeWidth,decodeHeight);
-//                android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
-//                if (hasSubtitles) {
-//                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
-//                                          sp->imageFrame,
-//                                          lastvp->out_buffer_video_yuv[0],
-//                                          lastvp->out_buffer_video_yuv[1],
-//                                          lastvp->out_buffer_video_yuv[2],
-//                                          decodeWidth,
-//                                          decodeHeight);
-//                } else {
-//                    addRendererVideoFrame(mVideoStateInfo->GraphicRendererObj,
-//                                          NULL,
-//                                          lastvp->out_buffer_video_yuv[0],
-//                                          lastvp->out_buffer_video_yuv[1],
-//                                          lastvp->out_buffer_video_yuv[2],
-//                                          decodeWidth,
-//                                          decodeHeight);
-//                }
 
 
             }
-            mVideoStateInfo->frameQueueVideo->frameQueueNext();
+//            mVideoStateInfo->frameQueueVideo->frameQueueNext();
         }
     }
 
