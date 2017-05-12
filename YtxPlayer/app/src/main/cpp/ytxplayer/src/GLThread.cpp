@@ -201,11 +201,11 @@ void GLThread::refresh() {
 
 bool GLThread::process(AVMessage *msg) {
     bool ret = true;
-//
-//    if (msg->what == GL_MSG_CANCEL) {
-//        deInitEGL();
-//        ret = false;
-//    }
+
+    if (msg->what == GL_MSG_CANCEL) {
+        deInitEGL();
+        ret = false;
+    }
 
     switch (msg->what) {
         case GL_MSG_RENDERER:
@@ -223,11 +223,14 @@ bool GLThread::process(AVMessage *msg) {
 
 bool GLThread::prepare() {
 
-    initEGL(mVideoStateInfo->mVideoWidth,mVideoStateInfo->mVideoHeight);
-//    glslFilter = new GlslFilter();
-//    glslFilter->initial();
-//    glslFilter->buildTextures();
-    setupGraphics(surfaceWidth, surfaceHeight);
+    initEGL();
+    glslFilter = new GlslFilter();
+    glslFilter->initial();
+    glslFilter->setScreenWidth(surfaceWidth);
+    glslFilter->setScreenHeight(surfaceHeight);
+    glslFilter->setViewPort(surfaceWidth,surfaceHeight);
+    glslFilter->buildTextures();
+//    setupGraphics(surfaceWidth, surfaceHeight);
     return true;
 }
 
@@ -303,7 +306,7 @@ void GLThread::SnapshotBmpRGBA(GLvoid * pData, int width, int height,  char * fi
 
 }
 
-void GLThread::initEGL(int width, int height) {
+void GLThread::initEGL() {
 
     // EGL config attributes
     const EGLint confAttr[] =
@@ -323,13 +326,7 @@ void GLThread::initEGL(int width, int height) {
             EGL_CONTEXT_CLIENT_VERSION, 2,// very important!
             EGL_NONE
     };
-    // surface attributes
-    // the surface size is set to the input frame size
-    const EGLint surfaceAttr[] = {
-            EGL_WIDTH,width,
-            EGL_HEIGHT,height,
-            EGL_NONE
-    };
+
     EGLint eglMajVers, eglMinVers;
     EGLint numConfigs;
 
@@ -362,7 +359,7 @@ void GLThread::initEGL(int width, int height) {
     ALOGI("ytxhaoo eglCreateWindowSurface eglSurface=%#x",eglSurface);
     if(eglSurface == EGL_NO_SURFACE)
     {
-       // ALOGI("ytxhaoo eglCreateWindowSurface eglGetError=%#x",eglGetError());
+
         EGLint err = eglGetError();
         ALOGI("ytxhaoo eglCreateWindowSurface err=%#x",err);
         switch(err)
@@ -420,8 +417,8 @@ void GLThread::drawGL(GlslFilter *filter,VMessageData *vData ) {
 
 
 
-//    filter->process(vData);
-//    filter->drawFrame();
+    filter->process(vData);
+    filter->drawFrame();
 
     // clear screen
 //    glDisable(GL_DITHER);
@@ -431,7 +428,7 @@ void GLThread::drawGL(GlslFilter *filter,VMessageData *vData ) {
     //调用eglSwapBuffers会去触发queuebuffer，dequeuebuffer，
     //queuebuffer将画好的buffer交给surfaceflinger处理，
     //dequeuebuffer新创建一个buffer用来画图
-    renderFrame();
+//    renderFrame();
     eglSwapBuffers(eglDisp, eglSurface);
 
 }

@@ -57,8 +57,12 @@ public:
     void renderBackground();
     void process(VMessageData *vData);
     void addRendererFrame(VMessageData *vData);
-    void addRendererFrameInit(int videoWidth, int videoHeight);
+    void addRendererFrameInit(VMessageData *vData);
     GLuint createTexture();
+    void setViewPort(int mSurfaceWidth, int mSurfaceHeight);
+    void setScreenWidth(int mScreenWidth);
+
+    void setScreenHeight(int mScreenHeight);
     void buildTextures();
     void drawFrame();
     FILE *fp_yuv;
@@ -82,7 +86,8 @@ public:
     int videoHeight = 0;
     GLuint yTextureId, uTextureId, vTextureId, pngTextureId;
     int yHandle, uHandle, vHandle, pngHandle;
-
+    int mScreenWidth;
+    int mScreenHeight;
 
     GLfloat posVertices[8] = {
             -1.0f, -1.0f,

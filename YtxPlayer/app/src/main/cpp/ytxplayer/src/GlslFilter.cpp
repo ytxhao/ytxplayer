@@ -58,6 +58,8 @@ GlslFilter::GlslFilter() {
 
     videoWidth = 0;
     videoHeight = 0;
+    mScreenWidth = 0;
+    mScreenHeight = 0;
 
 }
 
@@ -85,8 +87,10 @@ void GlslFilter::initial() {
 
     isInitialed = true;
 
-    fp_yuv = fopen("/storage/emulated/0/ytx.yuv","wb+");
+    //fp_yuv = fopen("/storage/emulated/0/ytx.yuv","wb+");
     createProgram(getVertexShaderString(), getFragmentShaderString());
+    glUseProgram(shaderProgram);
+    checkGlError("glUseProgram");
 
 }
 
@@ -171,16 +175,6 @@ GLuint GlslFilter::createProgram(const char *pVertexSource, const char *pFragmen
         }
     }
 
-    // Bind attributes and uniforms
-//    texSamplerHandle = glGetUniformLocation(shaderProgram, "inputImageTexture");
-//    texCoordHandle = glGetAttribLocation(shaderProgram, "a_texcoord");
-//    posCoordHandle = glGetAttribLocation(shaderProgram, "a_position");
-
-
-
-    /*
- * get handle for "vPosition" and "a_texCoord"
- */
 
     ret = glGetAttribLocation(shaderProgram, "a_position");
     if (ret == -1) {
@@ -204,17 +198,17 @@ GLuint GlslFilter::createProgram(const char *pVertexSource, const char *pFragmen
     yHandle = glGetUniformLocation(shaderProgram, "tex_y");
     checkGlError("glGetUniformLocation tex_y");
     ALOGI("GLProgram yHandle = %d\n", yHandle);
-
     if (yHandle == -1) {
         ALOGE("Could not get uniform location for tex_y");
     }
+
     uHandle = glGetUniformLocation(shaderProgram, "tex_u");
     checkGlError("glGetUniformLocation tex_u");
     ALOGI("GLProgram uHandle = %d\n", uHandle);
-
     if (uHandle == -1) {
         ALOGE("Could not get uniform location for tex_u");
     }
+
     vHandle = glGetUniformLocation(shaderProgram, "tex_v");
     checkGlError("glGetUniformLocation tex_v");
     ALOGI("GLProgram vHandle = %d\n", vHandle);
@@ -232,6 +226,14 @@ GLuint GlslFilter::createProgram(const char *pVertexSource, const char *pFragmen
 
     return shaderProgram;
 
+}
+
+void GlslFilter::setScreenWidth(int mScreenWidth) {
+    this->mScreenWidth = mScreenWidth;
+}
+
+void GlslFilter::setScreenHeight(int mScreenHeight) {
+    this->mScreenHeight = mScreenHeight;
 }
 
 void GlslFilter::renderBackground() {
@@ -255,17 +257,17 @@ void GlslFilter::drawFrame() {
 //        fwrite(plane[1],1,videoWidth*videoHeight/4,fp_yuv);  //U
 //        fwrite(plane[2],1,videoWidth*videoHeight/4,fp_yuv);  //V
 
-       // setAspectRatio();
+        setAspectRatio();
 
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glVertexAttribPointer(posCoordHandle, 2, GL_FLOAT, false, 8, posVertices);
-        checkGlError("glVertexAttribPointer mPositionHandle");
+        checkGlError("glVertexAttribPointer posCoordHandle");
         glEnableVertexAttribArray(posCoordHandle);
 
         glVertexAttribPointer(texCoordHandle, 2, GL_FLOAT, false, 8, texVertices);
-        checkGlError("glVertexAttribPointer maTextureHandle");
+        checkGlError("glVertexAttribPointer texCoordHandle");
         glEnableVertexAttribArray(texCoordHandle);
 
         // bind textures
@@ -315,7 +317,7 @@ void GlslFilter::drawFrame() {
 
 void GlslFilter::setAspectRatio(){
 
-    float f1 = (float) videoHeight / videoWidth;
+    float f1 = (float) mScreenHeight / mScreenWidth;
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
     float heightScale = 0.0;
@@ -348,7 +350,7 @@ void GlslFilter::setAspectRatio(){
 void GlslFilter::addRendererFrame(VMessageData *vData){
 
     mLock.lock();
-    addRendererFrameInit(vData->videoWidth, vData->videoHeight);
+    addRendererFrameInit(vData);
 
     if (vData->img != NULL) {
         memcpy(img->buffer, img->buffer, (size_t) (img->stride * img->height));
@@ -362,11 +364,11 @@ void GlslFilter::addRendererFrame(VMessageData *vData){
     mLock.unlock();
 }
 
-void GlslFilter::addRendererFrameInit(int videoWidth, int videoHeight){
-    if ((this->videoWidth == 0 && this->videoHeight == 0 && videoWidth != 0)
-        || this->videoWidth != videoWidth || this->videoHeight != videoHeight) {
-        this->videoWidth = videoWidth;
-        this->videoHeight = videoHeight;
+void GlslFilter::addRendererFrameInit(VMessageData *vData){
+    if ((this->videoWidth == 0 && this->videoHeight == 0 && vData->videoWidth != 0)
+        || this->videoWidth != vData->videoWidth || this->videoHeight != vData->videoHeight) {
+        this->videoWidth = vData->videoWidth;
+        this->videoHeight = vData->videoHeight;
         ALOGI("addRendererFrameInit isAddRendererFrameInit");
         if (plane[0] == NULL) {
             plane[0] = (char *) malloc(sizeof(char) * videoWidth * videoHeight);
@@ -414,10 +416,13 @@ GLuint GlslFilter::createTexture() {
     return texture;
 }
 
+void GlslFilter::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
+    glViewport(0, 0, mSurfaceWidth, mSurfaceHeight);
+    checkGlError("glViewport");
+}
 
 void GlslFilter::buildTextures() {
-    glViewport(0, 0, 1920, 1080);
-    checkGlError("glViewport");
+
     if (yTextureId == 1025) {
         glGenTextures(1, &yTextureId);  //参数1:用来生成纹理的数量. 参数2:存储纹理索引的第一个元素指针
         checkGlError("glGenTextures");

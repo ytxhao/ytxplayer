@@ -32,7 +32,7 @@ public:
 
     void stop();
 
-    void initEGL(int width, int height);
+    void initEGL();
     void drawGL(GlslFilter *filter,VMessageData *vData );
     void deInitEGL();
     void enqueue(AVMessage *msg);
