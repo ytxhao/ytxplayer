@@ -72,7 +72,7 @@ YtxMediaPlayer::YtxMediaPlayer() {
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mVideoRefreshController = NULL;
     mAudioRefreshController = NULL;
-    mGLThread = NULL;
+    //mGLThread = NULL;
     isRelease = false;
     mDecoderSubtitle = NULL;
     mDecoderVideo = NULL;
@@ -105,9 +105,9 @@ YtxMediaPlayer::~YtxMediaPlayer() {
         delete mAudioRefreshController;
     }
 
-    if(mGLThread){
-        delete mGLThread;
-    }
+//    if(mGLThread){
+//        delete mGLThread;
+//    }
 
     delete mVideoStateInfo;
 
@@ -269,7 +269,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
-    mPlayer->mGLThread = new GLThread(mPlayer->mVideoStateInfo);
+    //mPlayer->mGLThread = new GLThread(mPlayer->mVideoStateInfo);
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(
             mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
 
@@ -394,7 +394,7 @@ void YtxMediaPlayer::decodeMovie(void *ptr) {
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
         mVideoRefreshController->startAsync();
         mDecoderVideo->startAsync();
-        mGLThread->startAsync();
+        //mGLThread->startAsync();
     }
 
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {

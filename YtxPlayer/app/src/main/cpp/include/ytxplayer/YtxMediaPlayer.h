@@ -64,7 +64,7 @@ public:
 
     VideoRefreshController *mVideoRefreshController;
     AudioRefreshController *mAudioRefreshController;
-    GLThread *mGLThread;
+    //GLThread *mGLThread;
     static void* startPlayer(void* ptr);
     static void* prepareAsyncPlayer(void* ptr);
 

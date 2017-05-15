@@ -25,6 +25,7 @@ VideoRefreshController::VideoRefreshController(VideoStateInfo *mVideoStateInfo) 
     time = 0.0;
     frame_timer = 0.0;
     this->mVideoStateInfo = mVideoStateInfo;
+    glslFilter = new GlslFilter(mVideoStateInfo);
 }
 
 void VideoRefreshController::handleRun(void *ptr) {
@@ -36,6 +37,12 @@ void VideoRefreshController::handleRun(void *ptr) {
 }
 
 bool VideoRefreshController::prepare() {
+    glslFilter->initEGL();
+    glslFilter->initial();
+//    glslFilter->setScreenWidth(surfaceWidth);
+//    glslFilter->setScreenHeight(surfaceHeight);
+//    glslFilter->setViewPort(surfaceWidth,surfaceHeight);
+    glslFilter->buildTextures();
     return true;
 }
 
@@ -170,9 +177,9 @@ void VideoRefreshController::process() {
 
 
 
-                AVMessage msg;
+                //AVMessage msg;
                 VMessageData *vData = (VMessageData *) malloc(sizeof(VMessageData));
-                memset(&msg,0, sizeof(AVMessage));
+                //memset(&msg,0, sizeof(AVMessage));
                 memset(vData,0, sizeof(VMessageData));
                 vData->img = NULL;
                 vData->y = lastvp->out_buffer_video_yuv[0];
@@ -180,19 +187,28 @@ void VideoRefreshController::process() {
                 vData->v = lastvp->out_buffer_video_yuv[2];
                 vData->videoWidth = decodeWidth;
                 vData->videoHeight = decodeHeight;
-                msg.what = GL_MSG_RENDERER;
-                msg.arg1 = decodeWidth;
-                msg.arg2 = decodeHeight;
-                msg.priv_data = vData;
+//                msg.what = GL_MSG_RENDERER;
+//                msg.arg1 = decodeWidth;
+//                msg.arg2 = decodeHeight;
+//                msg.priv_data = vData;
 
-                mVideoStateInfo->messageQueueGL->put(&msg);
+              //  mVideoStateInfo->messageQueueGL->put(&msg);
+                drawGL(glslFilter,vData);
 
 
             }
-//            mVideoStateInfo->frameQueueVideo->frameQueueNext();
+            mVideoStateInfo->frameQueueVideo->frameQueueNext();
         }
     }
 
+}
+
+
+void VideoRefreshController::drawGL(GlslFilter *filter,VMessageData *vData ){
+
+    filter->process(vData);
+    filter->drawFrame();
+    filter->swapBuffers();
 }
 
 #define ALPHA_BLEND(a, oldp, newp, s)\

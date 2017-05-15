@@ -36,7 +36,8 @@ static const char gFragmentShader[]=
 
 
 
-GlslFilter::GlslFilter() {
+GlslFilter::GlslFilter(VideoStateInfo *mVideoStateInfo) {
+    this->mVideoStateInfo = mVideoStateInfo;
     isInitialed = false;
 
 
@@ -91,6 +92,8 @@ void GlslFilter::initial() {
     createProgram(getVertexShaderString(), getFragmentShaderString());
     glUseProgram(shaderProgram);
     checkGlError("glUseProgram");
+
+    setViewPort(mScreenWidth,mScreenWidth);
 
 }
 
@@ -249,6 +252,12 @@ void GlslFilter::process(VMessageData *vData ) {
 //    fwrite(vData->v,1,videoWidth*videoHeight/4,fp_yuv);  //V
 
     addRendererFrame(vData);
+}
+
+void GlslFilter::swapBuffers(){
+
+    eglSwapBuffers(eglDisp, eglSurface);
+
 }
 
 void GlslFilter::drawFrame() {
@@ -520,5 +529,128 @@ void GlslFilter::buildTextures() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+}
+
+
+void GlslFilter::initEGL() {
+
+    // EGL config attributes
+    const EGLint confAttr[] =
+            {
+                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,// very important!
+                    EGL_SURFACE_TYPE,EGL_PBUFFER_BIT,//EGL_WINDOW_BIT EGL_PBUFFER_BIT we will create a pixelbuffer surface
+                    EGL_RED_SIZE,   8,
+                    EGL_GREEN_SIZE, 8,
+                    EGL_BLUE_SIZE,  8,
+                    EGL_ALPHA_SIZE, 8,// if you need the alpha channel
+                    EGL_DEPTH_SIZE, 8,// if you need the depth buffer
+                    EGL_STENCIL_SIZE,8,
+                    EGL_NONE
+            };
+    // EGL context attributes
+    const EGLint ctxAttr[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,// very important!
+            EGL_NONE
+    };
+
+    EGLint eglMajVers, eglMinVers;
+    EGLint numConfigs;
+
+    eglDisp = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if(eglDisp == EGL_NO_DISPLAY)
+    {
+        //Unable to open connection to local windowing system
+        ALOGI("Unable to open connection to local windowing system");
+    }
+    if(!eglInitialize(eglDisp, &eglMajVers, &eglMinVers))
+    {
+        // Unable to initialize EGL. Handle and recover
+        ALOGI("Unable to initialize EGL");
+    }
+    ALOGI("EGL init with version %d.%d", eglMajVers, eglMinVers);
+    // choose the first config, i.e. best config
+    if(!eglChooseConfig(eglDisp, confAttr, &eglConf, 1, &numConfigs))
+    {
+        ALOGI("some config is wrong");
+    }
+    else
+    {
+        ALOGI("all configs is OK");
+    }
+    // create a pixelbuffer surface
+    //eglSurface = eglCreatePbufferSurface(eglDisp, eglConf, surfaceAttr);
+    //EGLNativeWindowType window = android_createDisplaySurface();
+    ALOGI("ytxhaoo eglCreateWindowSurface mVideoStateInfo->window=%#x",mVideoStateInfo->window);
+    eglSurface = eglCreateWindowSurface(eglDisp, eglConf, mVideoStateInfo->window, NULL);
+    ALOGI("ytxhaoo eglCreateWindowSurface eglSurface=%#x",eglSurface);
+    if(eglSurface == EGL_NO_SURFACE)
+    {
+
+        EGLint err = eglGetError();
+        ALOGI("ytxhaoo eglCreateWindowSurface err=%#x",err);
+        switch(err)
+        {
+            case EGL_BAD_ALLOC:
+                // Not enough resources available. Handle and recover
+                ALOGE("Not enough resources available");
+                break;
+            case EGL_BAD_CONFIG:
+                // Verify that provided EGLConfig is valid
+                ALOGE("provided EGLConfig is invalid");
+                break;
+            case EGL_BAD_PARAMETER:
+                // Verify that the EGL_WIDTH and EGL_HEIGHT are
+                // non-negative values
+                ALOGE("provided EGL_WIDTH and EGL_HEIGHT is invalid");
+                break;
+            case EGL_BAD_MATCH:
+                // Check window and EGLConfig attributes to determine
+                // compatibility and pbuffer-texture parameters
+                ALOGE("Check window and EGLConfig attributes");
+                break;
+            case EGL_BAD_SURFACE:
+                ALOGE("Check surface and EGLConfig attributes");
+                break;
+            case EGL_BAD_ATTRIBUTE:
+                ALOGE("Check EGLConfig attributes bad");
+                break;
+        }
+    }
+
+    eglCtx = eglCreateContext(eglDisp, eglConf, EGL_NO_CONTEXT, ctxAttr);
+    if(eglCtx == EGL_NO_CONTEXT)
+    {
+        EGLint error = eglGetError();
+        if(error == EGL_BAD_CONFIG)
+        {
+            // Handle error and recover
+            ALOGI("EGL_BAD_CONFIG");
+        }
+    }
+
+    eglQuerySurface(eglDisp, eglSurface, EGL_WIDTH, &mScreenWidth);
+    eglQuerySurface(eglDisp, eglSurface, EGL_HEIGHT, &mScreenHeight);
+    ALOGI("ytxhao eglQuerySurface w=%d h=%d",mScreenWidth,mScreenHeight);
+    if(!eglMakeCurrent(eglDisp, eglSurface, eglSurface, eglCtx))
+    {
+        ALOGI("MakeCurrent failed");
+    }
+    ALOGI("initialize success!");
+
+}
+
+
+
+void GlslFilter::deInitEGL() {
+
+
+    eglMakeCurrent(eglDisp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(eglDisp, eglCtx);
+    eglDestroySurface(eglDisp, eglSurface);
+    eglTerminate(eglDisp);
+
+    eglDisp = EGL_NO_DISPLAY;
+    eglSurface = EGL_NO_SURFACE;
+    eglCtx = EGL_NO_CONTEXT;
 }
 

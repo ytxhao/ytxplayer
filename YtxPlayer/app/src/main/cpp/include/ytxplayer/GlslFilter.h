@@ -23,6 +23,7 @@
 #include <png.h>
 #include "MessageQueue.h"
 #include "lock.h"
+#include "VideoStateInfo.h"
 // ----------------------------------------------------------------------------
 // for native window JNI
 #include <android/native_window_jni.h>
@@ -44,9 +45,23 @@ class GlslFilter {
 
 private:
     GLuint createProgram(const char *pVertexSource, const char *pFragmentSource);
+    GLfloat posVertices[8] = {
+            -1.0f, -1.0f,
+            1.0f, -1.0f,
+            -1.0f, 1.0f,
+            1.0f, 1.0f,
+    };
+
+    GLfloat texVertices[8] = {
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+
+    };
 
 public:
-    GlslFilter();
+    GlslFilter(VideoStateInfo *mVideoStateInfo);
 
     ~GlslFilter();
 
@@ -65,6 +80,7 @@ public:
     void setScreenHeight(int mScreenHeight);
     void buildTextures();
     void drawFrame();
+    void swapBuffers();
     FILE *fp_yuv;
     void setAspectRatio();
 
@@ -88,21 +104,15 @@ public:
     int yHandle, uHandle, vHandle, pngHandle;
     int mScreenWidth;
     int mScreenHeight;
+    VideoStateInfo *mVideoStateInfo = NULL;
 
-    GLfloat posVertices[8] = {
-            -1.0f, -1.0f,
-            1.0f, -1.0f,
-            -1.0f, 1.0f,
-            1.0f, 1.0f,
-    };
+    EGLConfig eglConf;
+    EGLSurface eglSurface;
+    EGLContext eglCtx;
+    EGLDisplay eglDisp;
 
-    GLfloat texVertices[8] = {
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-
-    };
+    void initEGL();
+    void deInitEGL();
 
 };
 

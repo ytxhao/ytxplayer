@@ -224,7 +224,7 @@ bool GLThread::process(AVMessage *msg) {
 bool GLThread::prepare() {
 
     initEGL();
-    glslFilter = new GlslFilter();
+    glslFilter = new GlslFilter(mVideoStateInfo);
     glslFilter->initial();
     glslFilter->setScreenWidth(surfaceWidth);
     glslFilter->setScreenHeight(surfaceHeight);

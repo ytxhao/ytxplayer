@@ -9,6 +9,7 @@
 #include "Thread.h"
 #include "VideoStateInfo.h"
 #include "ytxplayer/lock.h"
+#include "GlslFilter.h"
 class VideoRefreshController : public Thread
 {
 public:
@@ -18,6 +19,7 @@ public:
     double time;
     double frame_timer=0.0;
     Lock mLock;
+    GlslFilter *glslFilter=NULL;
     VideoStateInfo* mVideoStateInfo;
     VideoRefreshController(VideoStateInfo* mVideoStateInfo);
     ~VideoRefreshController(){};
@@ -26,6 +28,7 @@ public:
     bool                prepare();
     void                refresh();
     void                process();
+    void                drawGL(GlslFilter *filter,VMessageData *vData);
     void                stop();
     double              vpDuration(Frame *vp, Frame *next_vp);
     double              computeTargetDelay(double delay);
