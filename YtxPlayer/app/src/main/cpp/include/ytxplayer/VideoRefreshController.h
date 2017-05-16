@@ -22,7 +22,7 @@ public:
     GlslFilter *glslFilter=NULL;
     VideoStateInfo* mVideoStateInfo;
     VideoRefreshController(VideoStateInfo* mVideoStateInfo);
-    ~VideoRefreshController(){};
+    ~VideoRefreshController();
 
     void				handleRun(void* ptr);
     bool                prepare();

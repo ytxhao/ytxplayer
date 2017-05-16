@@ -28,6 +28,14 @@ VideoRefreshController::VideoRefreshController(VideoStateInfo *mVideoStateInfo) 
     glslFilter = new GlslFilter(mVideoStateInfo);
 }
 
+VideoRefreshController::~VideoRefreshController(){
+
+    if(glslFilter != NULL){
+        delete glslFilter;
+    }
+
+}
+
 void VideoRefreshController::handleRun(void *ptr) {
     if (!prepare()) {
         ALOGE("Couldn't prepare VideoRefreshController\n");
@@ -321,6 +329,8 @@ void VideoRefreshController::refresh() {
     while (mRunning) {
         process();
     }
+
+    glslFilter->deInitEGL();
     //结束视频刷新
 //    resetRendererVideoFrame(mVideoStateInfo->GraphicRendererObj);
 //    android_media_player_notifyRenderFrame(mVideoStateInfo->VideoGlSurfaceViewObj);
