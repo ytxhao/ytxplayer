@@ -69,6 +69,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     private int mVideoHeight;
     private int mVideoSarNum;
     private int mVideoSarDen;
+    private boolean mScreenOnWhilePlaying;
+    private SurfaceHolder mSurfaceHolder;
 
     public YtxMediaPlayer(){
         this(sLocalLibLoader);
@@ -174,7 +176,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     @Override
     public void setDisplay(SurfaceHolder sh) {
 
-       // mSurfaceHolder = sh;
+        mSurfaceHolder = sh;
         Surface surface;
         if (sh != null) {
             surface = sh.getSurface();
@@ -182,6 +184,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
             surface = null;
         }
         _setSurface(surface);
+        updateSurfaceScreenOn();
     }
 
     @Override
@@ -245,7 +248,20 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
 
     @Override
     public void setScreenOnWhilePlaying(boolean screenOn) {
+        if (mScreenOnWhilePlaying != screenOn) {
+            if (screenOn && mSurfaceHolder == null) {
+                YtxLog.w(TAG,
+                        "setScreenOnWhilePlaying(true) is ineffective without a SurfaceHolder");
+            }
+            mScreenOnWhilePlaying = screenOn;
+            updateSurfaceScreenOn();
+        }
+    }
 
+    private void updateSurfaceScreenOn() {
+        if (mSurfaceHolder != null) {
+            mSurfaceHolder.setKeepScreenOn(mScreenOnWhilePlaying);
+        }
     }
 
     @Override

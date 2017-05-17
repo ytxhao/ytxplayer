@@ -543,6 +543,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             e.printStackTrace();
         }
 
+        mMediaPlayer.setScreenOnWhilePlaying(true);
         mMediaPlayer.prepareAsync();
         // we don't set the target state here either, but preserve the
         // target state that was there before.
