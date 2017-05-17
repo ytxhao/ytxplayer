@@ -6,6 +6,7 @@
 #define TAG "YTX-GlslFilter-JNI"
 #include <ytxplayer/ALog-priv.h>
 #include <ytxplayer/GlslFilter.h>
+#include <ytxplayer/ffmsg.h>
 
 static const char gVertexShader[]=
                 "attribute vec4 a_position;\n"
@@ -262,7 +263,6 @@ void GlslFilter::swapBuffers(){
 
 void GlslFilter::drawFrame() {
 
-
     mLock.lock();
     if (plane[0] != NULL && plane[1] != NULL && plane[2] != NULL && videoWidth != 0 &&
         videoHeight != 0) {
@@ -270,6 +270,11 @@ void GlslFilter::drawFrame() {
 //        fwrite(plane[0],1,videoWidth*videoHeight,fp_yuv);    //Y
 //        fwrite(plane[1],1,videoWidth*videoHeight/4,fp_yuv);  //U
 //        fwrite(plane[2],1,videoWidth*videoHeight/4,fp_yuv);  //V
+
+        eglQuerySurface(eglDisp, eglSurface, EGL_WIDTH, &mScreenWidth);
+        eglQuerySurface(eglDisp, eglSurface, EGL_HEIGHT, &mScreenHeight);
+ //       ALOGI("ytxhao test eglQuerySurface w=%d h=%d",mScreenWidth,mScreenHeight);
+        setViewPort(mScreenWidth,mScreenHeight);
 
         setAspectRatio();
 
@@ -330,7 +335,6 @@ void GlslFilter::drawFrame() {
 }
 
 void GlslFilter::setAspectRatio(){
-
     float f1 = (float) mScreenHeight / mScreenWidth;
     float f2 = (float) videoHeight / videoWidth;
     float widthScale = 0.0;
@@ -580,6 +584,10 @@ void GlslFilter::initEGL() {
     // create a pixelbuffer surface
     //eglSurface = eglCreatePbufferSurface(eglDisp, eglConf, surfaceAttr);
     //EGLNativeWindowType window = android_createDisplaySurface();
+
+    int32_t format =  ANativeWindow_getFormat(mVideoStateInfo->window);
+    ALOGI("ytxhao test egl format=%d mVideoWidth=%d mVideoHeight=%d",format,mVideoStateInfo->mVideoWidth,mVideoStateInfo->mVideoHeight);
+    ANativeWindow_setBuffersGeometry(mVideoStateInfo->window,mVideoStateInfo->mVideoWidth,mVideoStateInfo->mVideoHeight,format);
     ALOGI("ytxhaoo eglCreateWindowSurface mVideoStateInfo->window=%#x",mVideoStateInfo->window);
     eglSurface = eglCreateWindowSurface(eglDisp, eglConf, mVideoStateInfo->window, NULL);
     ALOGI("ytxhaoo eglCreateWindowSurface eglSurface=%#x",eglSurface);

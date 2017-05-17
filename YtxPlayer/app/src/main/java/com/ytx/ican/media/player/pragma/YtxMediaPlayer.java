@@ -413,6 +413,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     player.notifyOnSeekComplete();
                     break;
                 case MEDIA_SET_VIDEO_SIZE:
+                    YtxLog.d(TAG,"handleMessage MEDIA_SET_VIDEO_SIZE w="+msg.arg1+" h="+msg.arg2);
                     player.mVideoWidth = msg.arg1;
                     player.mVideoHeight = msg.arg2;
                     player.notifyOnVideoSizeChanged(player.mVideoWidth, player.mVideoHeight,

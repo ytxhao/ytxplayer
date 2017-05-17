@@ -255,11 +255,11 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
             return;
 
         mRenderView = renderView;
-//        renderView.setAspectRatio(mCurrentAspectRatio);
-//        if (mVideoWidth > 0 && mVideoHeight > 0)
-//            renderView.setVideoSize(mVideoWidth, mVideoHeight);
-//        if (mVideoSarNum > 0 && mVideoSarDen > 0)
-//            renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
+        renderView.setAspectRatio(mCurrentAspectRatio); //当前长宽比
+        if (mVideoWidth > 0 && mVideoHeight > 0)
+            renderView.setVideoSize(mVideoWidth, mVideoHeight);
+        if (mVideoSarNum > 0 && mVideoSarDen > 0)
+            renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
 
         View renderUIView = mRenderView.getView();
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
@@ -294,13 +294,14 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
             mSurfaceWidth = w;
             mSurfaceHeight = h;
+            YtxLog.d(TAG,"ytxhao test onSurfaceChanged width="+mSurfaceWidth+" height="+mSurfaceHeight);
             boolean isValidState = (mTargetState == STATE_PLAYING);
             boolean hasValidSize = !mRenderView.shouldWaitForResize() || (mVideoWidth == w && mVideoHeight == h);
             if (mMediaPlayer != null && isValidState && hasValidSize) {
                 if (mSeekWhenPrepared != 0) {
                     seekTo(mSeekWhenPrepared);
                 }
-                start();
+                //start();
             }
         }
 
@@ -311,6 +312,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                 return;
             }
 
+            YtxLog.d(TAG,"ytxhao test onSurfaceCreated width="+width+" height="+height);
             mSurfaceHolder = holder;
             if (mMediaPlayer != null)
                 bindSurfaceHolder(mMediaPlayer, holder);
@@ -508,15 +510,11 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
         YtxLog.d(TAG,"ytxhaoo isHardDecode="+isHardDecode);
         if(isHardDecode){
             mMediaPlayer = createPlayer(PLAYER_AndroidMediaPlayer);
-            bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
-
         }else{
-
             mMediaPlayer = createPlayer(PLAYER_YtxMediaPlayer);
-            bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
         }
 
-
+        bindSurfaceHolder(mMediaPlayer, mSurfaceHolder);
 
         // TODO: create SubtitleController in MediaPlayer, but we need
         // a context for the subtitle renderers

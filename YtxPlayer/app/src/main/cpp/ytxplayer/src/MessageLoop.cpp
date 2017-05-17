@@ -93,7 +93,8 @@ bool MessageLoop::process(AVMessage *msg) {
 
             break;
         case FFP_MSG_VIDEO_SIZE_CHANGED:
-
+            ALOGI("MessageLoop::process FFP_MSG_VIDEO_SIZE_CHANGED w=%d h=%d",msg->arg1,msg->arg2);
+            listener->notify(MEDIA_SET_VIDEO_SIZE, msg->arg1, msg->arg2);
             break;
         case FFP_MSG_SAR_CHANGED:
 

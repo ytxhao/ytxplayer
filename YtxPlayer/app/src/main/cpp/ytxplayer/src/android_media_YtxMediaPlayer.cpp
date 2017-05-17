@@ -236,6 +236,7 @@ JNIEXPORT void JNICALL android_media_player_setSurface
     }
     //ANativeWindow_fromSurface(env, mVideoGlSurfaceView);
     mPlayer->mVideoStateInfo->window = ANativeWindow_fromSurface(env, surface);
+    ANativeWindow_acquire(mPlayer->mVideoStateInfo->window);
     ALOGI("ytxhao android_media_player_setSurface surface window =%#x",mPlayer->mVideoStateInfo->window);
 
     /**

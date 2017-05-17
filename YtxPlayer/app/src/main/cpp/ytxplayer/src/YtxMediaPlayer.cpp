@@ -12,7 +12,6 @@
 
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
-#include "ytxplayer/gl_engine.h"
 #include "ytxplayer/ffmsg.h"
 
 void printferr() {
@@ -269,7 +268,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
     mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
-    //mPlayer->mGLThread = new GLThread(mPlayer->mVideoStateInfo);
+
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(
             mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
 
@@ -285,6 +284,13 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
           mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters - 1]);
 
     mPlayer->mVideoStateInfo->init_opts();
+
+    AVMessage msgVideoSize;
+    msgVideoSize.what = FFP_MSG_VIDEO_SIZE_CHANGED;
+    msgVideoSize.arg1 = mPlayer->mVideoStateInfo->mVideoWidth;
+    msgVideoSize.arg2 = mPlayer->mVideoStateInfo->mVideoHeight;
+    mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msgVideoSize);
+
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
@@ -322,7 +328,6 @@ void *YtxMediaPlayer::startPlayer(void *ptr) {
 //    do {
 //        usleep(50);
 //    } while (rendererStarted(mPlayer->mVideoStateInfo->GraphicRendererObj) != 1);
-
 
     mPlayer->decodeMovie(ptr);
 
