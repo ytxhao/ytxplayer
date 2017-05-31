@@ -104,6 +104,8 @@ public:
 
     void setMuteAudioPlayer(bool isMute);
 
+    void setPauseAudioPlayer(bool isPause);
+
     AudioEngine();
 
     ~AudioEngine();

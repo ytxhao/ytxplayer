@@ -4,6 +4,7 @@
 #define LOG_NDEBUG 0
 #define TAG "YTX-AudioRefreshController-JNI"
 
+#include <unistd.h>
 #include "ytxplayer/AudioRefreshController.h"
 #include "ytxplayer/ALog-priv.h"
 #include "ytxplayer/ffmsg.h"
@@ -49,22 +50,32 @@ bool AudioRefreshController::prepare() {
 }
 
 bool AudioRefreshController::process(AVMessage *msg) {
-
+    SLresult result;
     bool ret = true;
     if (msg->what == FFP_MSG_CANCEL) {
         ret = false;
     }
 
+   // ALOGI("AudioRefreshController msg->what=%d",msg->what);
     switch (msg->what) {
         case FFP_MSG_AUDIO_FIRST_FRAME:
             mAudioEngine->setMuteAudioPlayer(true);
-            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
-            audioFrameProcess();
+           // mAudioEngine->setPauseAudioPlayer(true);
+           // result = (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+            SLAndroidSimpleBufferQueueState recQueueState;
+            result = (*mAudioEngine->bqPlayerBufferQueue)->GetState(mAudioEngine->bqPlayerBufferQueue, &recQueueState);
+           // ALOGI("AudioRefreshController QueueState.count=%d QueueState.index=%d",recQueueState.count,recQueueState.index);
+            if(recQueueState.index == 0){
+                result = (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+                audioFrameProcess();
+            }
+
+            //mAudioEngine->setPauseAudioPlayer(false);
             mAudioEngine->setMuteAudioPlayer(false);
             break;
         case FFP_MSG_COMPLETED:
             mAudioEngine->setMuteAudioPlayer(true);
-            (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
+            result = (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             mVideoStateInfo->frameQueueAudio->frameQueueReset();
             break;
     }
@@ -122,6 +133,9 @@ int AudioRefreshController::audioFrameProcess() {
     int64_t audio_callback_time = 0;
     char *buf[128] = {0};
 
+//    if (*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
+//        mVideoStateInfo->waitOnNotify(MEDIA_PLAYER_PAUSED);
+//    }
 
     if (*mVideoStateInfo->mCurrentState == MEDIA_PLAYER_PAUSED) {
         (*mAudioEngine->bqPlayerBufferQueue)->Enqueue(mAudioEngine->bqPlayerBufferQueue,

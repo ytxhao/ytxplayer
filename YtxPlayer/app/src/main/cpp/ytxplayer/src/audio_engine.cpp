@@ -259,3 +259,17 @@ void AudioEngine::setMuteAudioPlayer(bool isMute) {
         (void) result;
     }
 }
+
+
+void AudioEngine::setPauseAudioPlayer(bool isPause) {
+    SLresult result;
+
+    if (NULL != bqPlayerPlay) {
+
+        // set the player's state
+        result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, isPause ?
+                                                               SL_PLAYSTATE_PAUSED : SL_PLAYSTATE_PLAYING);
+        assert(SL_RESULT_SUCCESS == result);
+        (void)result;
+    }
+}
