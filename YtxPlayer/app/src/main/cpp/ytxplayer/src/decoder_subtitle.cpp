@@ -183,6 +183,7 @@ bool DecoderSubtitle::process(MAVPacket *mPacket) {
                 break;
             }
 
+            ALOGI("ass_line=%s",ass_line);
             ass_process_data(track, ass_line, strlen(ass_line));
 
             track->events->Start = start_time;

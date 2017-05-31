@@ -371,7 +371,7 @@ void GlslFilter::addRendererFrame(VMessageData *vData){
     addRendererFrameInit(vData);
 
     if (vData->img != NULL) {
-        memcpy(img->buffer, img->buffer, (size_t) (img->stride * img->height));
+        memcpy(img->buffer, vData->img->buffer, (size_t) (img->stride * img->height));
     } else {
         memset(img->buffer, 0, (size_t) (img->stride * img->height));
     }

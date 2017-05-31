@@ -26,12 +26,18 @@ VideoRefreshController::VideoRefreshController(VideoStateInfo *mVideoStateInfo) 
     frame_timer = 0.0;
     this->mVideoStateInfo = mVideoStateInfo;
     glslFilter = new GlslFilter(mVideoStateInfo);
+    vData = (VMessageData *) malloc(sizeof(VMessageData));
 }
 
 VideoRefreshController::~VideoRefreshController(){
 
+
     if(glslFilter != NULL){
         delete glslFilter;
+    }
+
+    if(vData != NULL){
+        free(vData);
     }
 
 }
@@ -186,10 +192,17 @@ void VideoRefreshController::process() {
 
 
                 //AVMessage msg;
-                VMessageData *vData = (VMessageData *) malloc(sizeof(VMessageData));
+                //VMessageData *vData = (VMessageData *) malloc(sizeof(VMessageData));
                 //memset(&msg,0, sizeof(AVMessage));
                 memset(vData,0, sizeof(VMessageData));
-                vData->img = NULL;
+                if(hasSubtitles){
+                    vData->img = sp->imageFrame;
+                 //   ALOGI("hasSubtitles=%d",hasSubtitles);
+                 //   write_png("/storage/emulated/0/ass06.png",sp->imageFrame);
+                }else{
+                    vData->img = NULL;
+                }
+
                 vData->y = lastvp->out_buffer_video_yuv[0];
                 vData->u = lastvp->out_buffer_video_yuv[1];
                 vData->v = lastvp->out_buffer_video_yuv[2];
@@ -202,7 +215,6 @@ void VideoRefreshController::process() {
 
               //  mVideoStateInfo->messageQueueGL->put(&msg);
                 drawGL(glslFilter,vData);
-
 
             }
             mVideoStateInfo->frameQueueVideo->frameQueueNext();

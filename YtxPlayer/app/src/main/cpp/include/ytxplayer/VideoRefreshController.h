@@ -21,6 +21,7 @@ public:
     Lock mLock;
     GlslFilter *glslFilter=NULL;
     VideoStateInfo* mVideoStateInfo;
+    VMessageData *vData;
     VideoRefreshController(VideoStateInfo* mVideoStateInfo);
     ~VideoRefreshController();
 

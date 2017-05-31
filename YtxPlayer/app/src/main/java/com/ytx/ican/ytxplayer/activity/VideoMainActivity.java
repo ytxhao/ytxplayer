@@ -249,11 +249,10 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
                 PreferenceUtil.getInstance().putString(FILE_NAME,actvFileNameVideo.getText().toString().trim());
                 fileName = actvFileNameVideo.getText().toString().trim();
                 subtitles = actvFileNameSub.getText().toString().trim();
+                ytxVideoView.onDestroy();
                 if(!TextUtils.isEmpty(subtitles)){
                     ytxVideoView.setSubtitles(subtitles);
                 }
-
-                ytxVideoView.onDestroy();
                 ytxVideoView.setVideoPath(fileName);
                 ytxVideoView.start();
 
