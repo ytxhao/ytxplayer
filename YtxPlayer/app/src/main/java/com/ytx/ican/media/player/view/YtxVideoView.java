@@ -294,9 +294,12 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
             mSurfaceWidth = w;
             mSurfaceHeight = h;
-            YtxLog.d(TAG,"ytxhao test onSurfaceChanged width="+mSurfaceWidth+" height="+mSurfaceHeight);
+
             boolean isValidState = (mTargetState == STATE_PLAYING);
             boolean hasValidSize = !mRenderView.shouldWaitForResize() || (mVideoWidth == w && mVideoHeight == h);
+            YtxLog.d(TAG,"ytx onSurfaceChanged width="+mSurfaceWidth+" height="+mSurfaceHeight);
+            YtxLog.d(TAG,"ytx onSurfaceChanged mVideoWidth="+mVideoWidth+" mVideoHeight="+mVideoHeight);
+            YtxLog.d(TAG,"ytx onSurfaceChanged isValidState="+isValidState+" hasValidSize="+hasValidSize+" mSeekWhenPrepared="+mSeekWhenPrepared);
             if (mMediaPlayer != null && isValidState && hasValidSize) {
                 if (mSeekWhenPrepared != 0) {
                     seekTo(mSeekWhenPrepared);
@@ -312,7 +315,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
                 return;
             }
 
-            YtxLog.d(TAG,"ytxhao test onSurfaceCreated width="+width+" height="+height);
+            YtxLog.d(TAG,"ytx onSurfaceCreated width="+width+" height="+height);
             mSurfaceHolder = holder;
             if (mMediaPlayer != null)
                 bindSurfaceHolder(mMediaPlayer, holder);
@@ -490,7 +493,7 @@ public class YtxVideoView extends FrameLayout implements MediaController.MediaPl
 
     public void releaseWithoutStop() {
         YtxLog.d(TAG,"releaseWithoutStop");
-            release(true);
+        release(true);
 
     }
     private void openVideo() {

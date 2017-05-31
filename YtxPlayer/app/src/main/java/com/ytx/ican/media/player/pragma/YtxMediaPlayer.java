@@ -305,6 +305,7 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     @Override
     public void reset() {
         YtxLog.d(TAG,"reset");
+        _reset();
     }
 
     @Override

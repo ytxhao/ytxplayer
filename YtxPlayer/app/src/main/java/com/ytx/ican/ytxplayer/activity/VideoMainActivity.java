@@ -60,6 +60,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     private boolean isAddVideo = false;
     private boolean isAddSub = false;
     private boolean isFullScreen = false;
+    private int mVideoCurrentTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,8 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
 
         initView();
 
-        ytxVideoView.setVideoPath(filePath+files[0]);
-        ytxVideoView.start();
+      //  ytxVideoView.setVideoPath(filePath+files[0]);
+     //   ytxVideoView.start();
 
         FileExplorerEvents.getBus().register(this);
 
@@ -140,16 +141,34 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         super.onResume();
         YtxLog.d(TAG,"#### #### onResume");
 
-        ytxVideoView.onResume();
+
+//        if() {
+//            ytxVideoView.seekTo(mVideoCurrentTime);
+//            ytxVideoView.start();
+//        }
+
+       // ytxVideoView.onResume();
 
     }
 
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        YtxLog.d(TAG,"#### #### onRestart");
+        ytxVideoView.seekTo(mVideoCurrentTime);
+        ytxVideoView.start();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         YtxLog.d(TAG,"#### #### onPause");
-        ytxVideoView.onPause();
+        if(ytxVideoView.isPlaying()){
+            ytxVideoView.onPause();
+            mVideoCurrentTime = ytxVideoView.getCurrentPosition();
+        }
+
 
     }
 
@@ -307,8 +326,6 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
                 actvFileNameVideo.setText(f.getPath());
                 isAddVideo = false;
             }
-
-
 
         }
     }
