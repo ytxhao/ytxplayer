@@ -67,7 +67,7 @@ find_library( # Sets the name of the path variable.
 
 #----------------------------------------------------------------
 
-set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
+set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}")
 
 
 add_library( png-lib
@@ -190,7 +190,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavutil.so )
+                       ${LINK_DIR}/libavutil-55.so )
 
 add_library( swscale-lib
              SHARED
@@ -203,7 +203,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libswscale.so )
+                       ${LINK_DIR}/libswscale-4.so )
 
 add_library( swresample-lib
              SHARED
@@ -216,7 +216,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libswresample.so )
+                       ${LINK_DIR}/libswresample-2.so )
 
 
 add_library( avcodec-lib
@@ -230,7 +230,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavcodec.so )
+                       ${LINK_DIR}/libavcodec-57.so )
 
 add_library( avformat-lib
              SHARED
@@ -243,7 +243,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavformat.so )
+                       ${LINK_DIR}/libavformat-57.so )
 
 add_library( avfilter-lib
              SHARED
@@ -256,7 +256,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavfilter.so )
+                       ${LINK_DIR}/libavfilter-6.so )
 #-----------------------------------------------------------------
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in the

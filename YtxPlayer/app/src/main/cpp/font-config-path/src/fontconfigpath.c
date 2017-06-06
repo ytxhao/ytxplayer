@@ -41,8 +41,8 @@ JNIEXPORT void JNICALL android_media_player_FontSearchConfig_setFontSearchPath
 JNIEXPORT jstring JNICALL android_media_player_FontSearchConfig_getFontSearchPath
         (JNIEnv *env, jclass clazz){
 
-    ALOGI("getFontSearchPath font_search_path 12356=%s",get_font_search_path());
-    return (*env)->NewStringUTF(env, get_font_search_path);
+    //ALOGI("getFontSearchPath font_search_path 12356=%s",get_font_search_path());
+    return (*env)->NewStringUTF(env, (const char*)get_font_search_path);
 }
 
 
