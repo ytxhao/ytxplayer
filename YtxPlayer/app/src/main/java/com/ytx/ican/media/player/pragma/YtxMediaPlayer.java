@@ -142,11 +142,9 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                     libLoader.loadLibrary("avutil-55");
                     libLoader.loadLibrary("swresample-2");
                     libLoader.loadLibrary("swscale-4");
-                    libLoader.loadLibrary("postproc-54");
                     libLoader.loadLibrary("avcodec-57");
                     libLoader.loadLibrary("avformat-57");
                     libLoader.loadLibrary("avfilter-6");
-                    libLoader.loadLibrary("avdevice-57");
 
                     libLoader.loadLibrary("native-ytx-lib");
 
