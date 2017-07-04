@@ -1,6 +1,7 @@
 package com.ytx.ican.ytxplayer.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -24,7 +25,9 @@ import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.R;
+import com.ytx.ican.ytxplayer.constants.ActivityResultConst;
 import com.ytx.ican.ytxplayer.constants.ConstKey;
+import com.ytx.ican.ytxplayer.constants.KeyConst;
 import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
 import com.ytx.ican.ytxplayer.utils.FontSearchConfig;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
@@ -45,7 +48,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
 
     private AutoCompleteTextView actvFileNameVideo;
     private AutoCompleteTextView actvFileNameSub;
-    private Button btAddVideo ;
+
     private Button btAddSub ;
     private Button btPlay ;
     private Button btFullScreen;
@@ -56,11 +59,24 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     private String filePath;
     private String fileName;
     private String subtitles;
+    private String mVideoPath;
     private boolean playNext = false;
     private boolean isAddVideo = false;
     private boolean isAddSub = false;
     private boolean isFullScreen = false;
     private int mVideoCurrentTime;
+
+    public static Intent newIntent(Context context, String videoPath, String videoTitle) {
+        Intent intent = new Intent(context, VideoMainActivity.class);
+        intent.putExtra("videoPath", videoPath);
+        intent.putExtra("videoTitle", videoTitle);
+        return intent;
+    }
+
+    public static void intentTo(Context context, String videoPath, String videoTitle) {
+        context.startActivity(newIntent(context, videoPath, videoTitle));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +103,12 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
 
         initView();
 
+        mVideoPath = getIntent().getStringExtra("videoPath");
+        actvFileNameVideo.setText(mVideoPath);
       //  ytxVideoView.setVideoPath(filePath+files[0]);
      //   ytxVideoView.start();
 
-        FileExplorerEvents.getBus().register(this);
+     //   FileExplorerEvents.getBus().register(this);
 
     }
 
@@ -98,14 +116,14 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         ytxVideoView = (YtxVideoView) findViewById(R.id.ytxVideoView);
         actvFileNameVideo = (AutoCompleteTextView) findViewById(R.id.actvFileNameVedio);
         actvFileNameSub = (AutoCompleteTextView) findViewById(R.id.actvFileNameSub);
-        btAddVideo = (Button) findViewById(R.id.btAddVideo);
+
         btAddSub = (Button) findViewById(R.id.btAddSub);
         btPlay = (Button) findViewById(R.id.btPlay);
         btFullScreen = (Button) findViewById(R.id.btFullScreen);
         ivDragVideo = (ImageView) findViewById(R.id.ivDragVideo);
 
         ivDragVideo.setOnClickListener(this);
-        btAddVideo.setOnClickListener(this);
+
         btAddSub.setOnClickListener(this);
         btFullScreen.setOnClickListener(this);
         btPlay.setOnClickListener(this);
@@ -188,7 +206,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     protected void onDestroy() {
         super.onDestroy();
         YtxLog.d(TAG,"#### #### onDestroy");
-        FileExplorerEvents.getBus().unregister(this);
+      //  FileExplorerEvents.getBus().unregister(this);
         ytxVideoView.onDestroy();
     }
 
@@ -251,15 +269,10 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         int id = v.getId();
 
         switch (id){
-            case R.id.btAddVideo:
-                isAddVideo = true;
-                intent = new Intent(this, FileExplorerActivity.class);
-                startActivity(intent);
-                break;
             case R.id.btAddSub:
                 isAddSub = true;
-                intent = new Intent(this, FileExplorerActivity.class);
-                startActivity(intent);
+                intent = new Intent(this, FileExplorerSubTitleActivity.class);
+                startActivityForResult(intent, ActivityResultConst.FILE_EXPLORER_SUBTITLE_REQUEST_CODE);
                 break;
             case R.id.ivDragVideo:
                 actvFileNameVideo.showDropDown();
@@ -300,33 +313,43 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    @Subscribe
-    public void onClickFile(FileExplorerEvents.OnClickFile event) {
-        File f = event.mFile;
-        try {
-            f = f.getAbsoluteFile();
-            f = f.getCanonicalFile();
-            if (TextUtils.isEmpty(f.toString()))
-                f = new File("/");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (f.isDirectory()) {
-
-
-        } else if (f.exists()) {
-
-            YtxLog.d(TAG,"f.getPath()="+f.getPath()+" f.getName()="+f.getName());
-
-            if(isAddSub){
-                actvFileNameSub.setText(f.getPath());
-                isAddSub = false;
-            }else if(isAddVideo){
-                actvFileNameVideo.setText(f.getPath());
-                isAddVideo = false;
-            }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ActivityResultConst.FILE_EXPLORER_SUBTITLE_REQUEST_CODE && resultCode == RESULT_OK){
+            String subtitles = data.getStringExtra(KeyConst.FILE_EXPLORER_SUBTITLE);
+            actvFileNameSub.setText(subtitles);
         }
     }
+
+
+    //    @Subscribe
+//    public void onClickFile(FileExplorerEvents.OnClickFile event) {
+//        File f = event.mFile;
+//        try {
+//            f = f.getAbsoluteFile();
+//            f = f.getCanonicalFile();
+//            if (TextUtils.isEmpty(f.toString()))
+//                f = new File("/");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (f.isDirectory()) {
+//
+//
+//        } else if (f.exists()) {
+//
+//            YtxLog.d(TAG,"f.getPath()="+f.getPath()+" f.getName()="+f.getName());
+//
+//            if(isAddSub){
+//                actvFileNameSub.setText(f.getPath());
+//                isAddSub = false;
+//            }else if(isAddVideo){
+//                actvFileNameVideo.setText(f.getPath());
+//                isAddVideo = false;
+//            }
+//
+//        }
+//    }
 }
