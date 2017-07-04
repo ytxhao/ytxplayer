@@ -39,7 +39,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
         System.loadLibrary("avformat");
         System.loadLibrary("avdevice");
         System.loadLibrary("avfilter");
-        System.loadLibrary("native-ffplay-lib");
+        System.loadLibrary("native-ffmpeg-lib");
     }
 
     @Override
