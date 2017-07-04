@@ -52,7 +52,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     private ImageView ivDragVideo;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"titanic.mkv","gqfc.ts","rtmp://live.hkstv.hk.lxdns.com/live/hks"};
+    private String [] files = new String[]{"titanic.mkv","gqfc.ts","rtmp://live.hkstv.hk.lxdns.com/live/hks","rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov"};
     private String filePath;
     private String fileName;
     private String subtitles;
@@ -121,7 +121,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         adapter = new ArrayAdapter<>(this,R.layout.file_name_dropdow_item,contacts);
         actvFileNameVideo.setAdapter(adapter);
 
-
+//        actvFileNameVideo.setText("rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov");
         ytxMediaController = new YtxMediaController(this);
         ytxVideoView.setMediaController(ytxMediaController);
         ytxVideoView.requestFocus();

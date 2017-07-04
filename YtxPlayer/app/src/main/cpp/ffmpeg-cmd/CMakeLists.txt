@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions -Wall")
 
 add_library( # Sets the name of the library.
-             native-ffplay-lib
+             native-ffmpeg-lib
 
              # Sets the library as a shared library.
              SHARED
@@ -26,22 +26,8 @@ add_library( # Sets the name of the library.
              )
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/armeabi-v7a")
+set(LINK_DIR "${PROJECT_SOURCE_DIR}/../jniLibs/armeabi-v7a")
 
-
-
-add_library( sdl-lib
-             SHARED
-             IMPORTED )
-
-set_target_properties( # Specifies the target library.
-                       sdl-lib
-
-                       # Specifies the parameter you want to define.
-                       PROPERTIES IMPORTED_LOCATION
-
-                       # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libSDL-1.2.so )
 
 add_library( png-lib
              SHARED
@@ -54,7 +40,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libpng.so )
+                       ${LINK_DIR}/libpng16.so )
 
 
 add_library( harfbuzz-lib
@@ -163,7 +149,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavutil.so )
+                       ${LINK_DIR}/libavutil-55.so )
 
 add_library( swscale-lib
              SHARED
@@ -176,7 +162,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libswscale.so )
+                       ${LINK_DIR}/libswscale-4.so )
 
 add_library( swresample-lib
              SHARED
@@ -189,7 +175,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libswresample.so )
+                       ${LINK_DIR}/libswresample-2.so )
 
 
 add_library( avcodec-lib
@@ -203,7 +189,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavcodec.so )
+                       ${LINK_DIR}/libavcodec-57.so )
 
 add_library( avformat-lib
              SHARED
@@ -216,7 +202,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavformat.so )
+                       ${LINK_DIR}/libavformat-57.so )
 
 add_library( avfilter-lib
              SHARED
@@ -229,7 +215,7 @@ set_target_properties( # Specifies the target library.
                        PROPERTIES IMPORTED_LOCATION
 
                        # Provides the path to the library you want to import.
-                       ${LINK_DIR}/libavfilter.so )
+                       ${LINK_DIR}/libavfilter-6.so )
 #-----------------------------------------------------------------
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in the
@@ -237,14 +223,12 @@ set_target_properties( # Specifies the target library.
 
 
 target_link_libraries( # Specifies the target library.
-                       native-ffplay-lib
+                       native-ffmpeg-lib
 
                        # Links the target library to the log library
                        # included in the NDK.
 
                        ${log-lib}
-                       ${OpenSLES-lib}
-                       sdl-lib
                        png-lib
                        harfbuzz-lib
                        freetype-lib
