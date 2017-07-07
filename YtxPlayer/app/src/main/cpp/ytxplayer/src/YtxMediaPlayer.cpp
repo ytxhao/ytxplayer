@@ -77,6 +77,7 @@ YtxMediaPlayer::YtxMediaPlayer() {
     mDecoderVideo = NULL;
     mDecoderAudio = NULL;
     subtitles = NULL;
+    memset(fileType,0,sizeof(fileType));
 }
 
 YtxMediaPlayer::~YtxMediaPlayer() {
@@ -154,10 +155,33 @@ int YtxMediaPlayer::prepare() {
 
 }
 
+void YtxMediaPlayer::getFileType(const char* fileName, char* outputFileType)
+{
+    int i,j;
+    char ch;
+    i = strlen(fileName) - 1;
+    for(outputFileType[0]='\0';i>=0;i--)
+    {
+        if(fileName[i] == '.')
+        {
+            // 遇到文件类型分隔符
+            for(j=i; fileName[j]!='\0'; j++)
+            {
+                ch = fileName[j];
+                outputFileType[j-i] = ('A'<=ch && ch<='Z') ? (ch+'a'-'A'): ch;
+            }
+            outputFileType[j-i] = '\0';
+            break;
+        }
+    }
+
+}
 
 int YtxMediaPlayer::prepareAsync() {
 
     mCurrentState = MEDIA_PLAYER_PREPARING;
+    getFileType(filePath,fileType);
+    ALOGI("prepareAsync prepare fileType = %s",fileType);
     pthread_create(&mPlayerPrepareAsyncThread, NULL, prepareAsyncPlayer, this);
     return 0;
 }

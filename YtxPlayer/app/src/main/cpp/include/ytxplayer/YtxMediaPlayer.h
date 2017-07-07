@@ -67,6 +67,7 @@ public:
     //GLThread *mGLThread;
     static void* startPlayer(void* ptr);
     static void* prepareAsyncPlayer(void* ptr);
+    void getFileType(const char* fileName, char* outputFileType);
 
 
     void packetEnoughWait();
@@ -159,6 +160,7 @@ public:
 
     bool mRetransmitEndpointValid;
     const char *filePath;
+    char fileType[16]={0};
     char *subtitles=NULL;
     //AVFormatContext *pFormatCtx;
     int mAudioStreamIndex;
