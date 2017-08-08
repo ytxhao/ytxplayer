@@ -7,8 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,23 +16,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.squareup.otto.Subscribe;
-import com.ytx.ican.media.player.pragma.IMediaPlayer;
 import com.ytx.ican.media.player.pragma.YtxLog;
-import com.ytx.ican.media.player.pragma.YtxMediaPlayer;
 import com.ytx.ican.media.player.view.YtxMediaController;
 import com.ytx.ican.media.player.view.YtxVideoView;
 import com.ytx.ican.ytxplayer.R;
 import com.ytx.ican.ytxplayer.constants.ActivityResultConst;
-import com.ytx.ican.ytxplayer.constants.ConstKey;
 import com.ytx.ican.ytxplayer.constants.KeyConst;
-import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
 import com.ytx.ican.ytxplayer.utils.FontSearchConfig;
 import com.ytx.ican.ytxplayer.utils.PreferenceUtil;
 import com.ytx.ican.ytxplayer.utils.Utils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class VideoMainActivity extends SimpleBarRootActivity implements View.OnClickListener {
@@ -84,6 +74,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         YtxLog.d(TAG,"#### #### onCreate");
         setContentView(R.layout.activity_main);
         addMenu(R.id.videoSettings, R.drawable.ic_setting);
+        hideBaseLine(true);
         PreferenceUtil.initInstance(getApplicationContext(), PreferenceUtil.MODE_ENCRYPT_ALL);
 
         filePath = Environment.getExternalStorageDirectory()
@@ -220,8 +211,10 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     private void doConfigChanged(Configuration newConfig) {
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setUpLandLandscapeLayout();
+            hideTitleBar(true);
         } else {
             setupPortraitLayout();
+            hideTitleBar(false);
         }
     }
 
