@@ -13,6 +13,13 @@
 //该文件必须包含在源文件中(*.cpp),以免宏展开时提示重复定义的错误
 #include "ytxplayer/YtxMediaPlayer.h"
 #include "ytxplayer/ffmsg.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "../../sdl-custom/include/SdlAoutOpensles.h"
+#ifdef __cplusplus
+}
+#endif
 
 void printferr() {
     ALOGI("AVERROR_BSF_NOT_FOUND=%d\n", AVERROR_BSF_NOT_FOUND);
@@ -319,6 +326,8 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     msg.what = FFP_MSG_PREPARED;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
     mPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
+
+//    SDL_AoutAndroid_CreateForOpenSLES();
     pthread_exit(NULL);
 }
 

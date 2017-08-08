@@ -7,6 +7,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 
 add_subdirectory(font-config-path)
+add_subdirectory(sdl-custom)
 add_subdirectory(gl-engine)
 add_subdirectory(ytxplayer)
 add_subdirectory(ffmpeg-cmd)

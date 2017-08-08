@@ -64,7 +64,7 @@ bool AudioRefreshController::process(AVMessage *msg) {
            // result = (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
             SLAndroidSimpleBufferQueueState recQueueState;
             result = (*mAudioEngine->bqPlayerBufferQueue)->GetState(mAudioEngine->bqPlayerBufferQueue, &recQueueState);
-           // ALOGI("AudioRefreshController QueueState.count=%d QueueState.index=%d",recQueueState.count,recQueueState.index);
+            ALOGI("AudioRefreshController QueueState.count=%d QueueState.index=%d",recQueueState.count,recQueueState.index);
             if(recQueueState.index == 0){
                 result = (*mAudioEngine->bqPlayerBufferQueue)->Clear(mAudioEngine->bqPlayerBufferQueue);
                 audioFrameProcess();

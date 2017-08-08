@@ -67,7 +67,7 @@ find_library( # Sets the name of the path variable.
 
 #----------------------------------------------------------------
 
-set(LINK_DIR "${Project_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}")
+set(LINK_DIR "${PROJECT_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}")
 
 
 add_library( png-lib
@@ -271,6 +271,7 @@ target_link_libraries( # Specifies the target library.
                        android
                        ${log-lib}
                        ${OpenSLES-lib}
+                       native-sdl-lib
                        png-lib
                        harfbuzz-lib
                        freetype-lib
@@ -286,4 +287,5 @@ target_link_libraries( # Specifies the target library.
                        avformat-lib
                        avfilter-lib
                        native-gl-lib
+                       native-sdl-lib
                        )
