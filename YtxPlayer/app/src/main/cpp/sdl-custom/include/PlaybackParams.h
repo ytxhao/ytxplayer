@@ -4,11 +4,21 @@
 
 #ifndef YTXPLAYER_PLAYBACKPARAMS_H
 #define YTXPLAYER_PLAYBACKPARAMS_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "J4aBase.h"
 
 jobject J4AC_android_media_PlaybackParams__setSpeed(JNIEnv *env, jobject thiz, jfloat speed);
-jobject J4AC_android_media_PlaybackParams__setSpeed__catchAll(JNIEnv *env, jobject thiz, jfloat speed);
-jobject J4AC_android_media_PlaybackParams__setSpeed__asGlobalRef__catchAll(JNIEnv *env, jobject thiz, jfloat speed);
+
+jobject
+J4AC_android_media_PlaybackParams__setSpeed__catchAll(JNIEnv *env, jobject thiz, jfloat speed);
+
+jobject
+J4AC_android_media_PlaybackParams__setSpeed__asGlobalRef__catchAll(JNIEnv *env, jobject thiz,
+                                                                   jfloat speed);
+
 int J4A_loadClass__J4AC_android_media_PlaybackParams(JNIEnv *env);
 
 #define J4A_HAVE_SIMPLE__J4AC_android_media_PlaybackParams
@@ -17,5 +27,7 @@ int J4A_loadClass__J4AC_android_media_PlaybackParams(JNIEnv *env);
 #define J4AC_PlaybackParams__setSpeed__asGlobalRef__catchAll J4AC_android_media_PlaybackParams__setSpeed__asGlobalRef__catchAll
 #define J4AC_PlaybackParams__setSpeed__catchAll J4AC_android_media_PlaybackParams__setSpeed__catchAll
 #define J4A_loadClass__J4AC_PlaybackParams J4A_loadClass__J4AC_android_media_PlaybackParams
-
+#ifdef __cplusplus
+}
+#endif
 #endif //YTXPLAYER_PLAYBACKPARAMS_H

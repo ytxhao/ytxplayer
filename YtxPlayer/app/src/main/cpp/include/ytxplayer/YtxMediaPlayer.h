@@ -63,7 +63,7 @@ public:
     int start();
 
     VideoRefreshController *mVideoRefreshController;
-    AudioRefreshController *mAudioRefreshController;
+    //AudioRefreshController *mAudioRefreshController;
     //GLThread *mGLThread;
     static void* startPlayer(void* ptr);
     static void* prepareAsyncPlayer(void* ptr);

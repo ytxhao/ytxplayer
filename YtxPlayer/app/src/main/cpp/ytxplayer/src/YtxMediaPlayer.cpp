@@ -16,7 +16,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../../sdl-custom/include/SdlAoutOpensles.h"
+#include "SdlAoutOpensles.h"
+
 #ifdef __cplusplus
 }
 #endif
@@ -77,7 +78,7 @@ YtxMediaPlayer::YtxMediaPlayer() {
     mVideoStateInfo = new VideoStateInfo();
     mVideoStateInfo->mCurrentState = &mCurrentState;
     mVideoRefreshController = NULL;
-    mAudioRefreshController = NULL;
+    //mAudioRefreshController = NULL;
     //mGLThread = NULL;
     isRelease = false;
     mDecoderSubtitle = NULL;
@@ -108,9 +109,9 @@ YtxMediaPlayer::~YtxMediaPlayer() {
         delete mVideoRefreshController;
     }
 
-    if (mAudioRefreshController) {
-        delete mAudioRefreshController;
-    }
+//    if (mAudioRefreshController) {
+//        delete mAudioRefreshController;
+//    }
 
 //    if(mGLThread){
 //        delete mGLThread;
@@ -298,7 +299,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
 
     mPlayer->mVideoRefreshController = new VideoRefreshController(mPlayer->mVideoStateInfo);
 
-    mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
+    //mPlayer->mAudioRefreshController = new AudioRefreshController(mPlayer->mVideoStateInfo);
 
     mPlayer->mVideoStateInfo->vfilters_list = (const char **) GROW_ARRAY(
             mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
@@ -322,12 +323,15 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     msgVideoSize.arg2 = mPlayer->mVideoStateInfo->mVideoHeight;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msgVideoSize);
 
+    mPlayer->mVideoStateInfo->aout = SDL_AoutAndroid_CreateForOpenSLES();
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
+    if(mPlayer->mVideoStateInfo->aout == NULL){
+        msg.what = FFP_MSG_ERROR;
+    }
+
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
     mPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
-
-//    SDL_AoutAndroid_CreateForOpenSLES();
     pthread_exit(NULL);
 }
 
@@ -436,7 +440,7 @@ void YtxMediaPlayer::decodeMovie(void *ptr) {
     }
 
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-        mAudioRefreshController->startAsync();
+        //mAudioRefreshController->startAsync();
         mDecoderAudio->startAsync();
     }
 
@@ -544,7 +548,7 @@ void YtxMediaPlayer::decodeMovie(void *ptr) {
     }
 
     if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-        mAudioRefreshController->stop();
+        //mAudioRefreshController->stop();
         mDecoderAudio->stop();
         ALOGI("waiting on mDecoderAudio thread\n");
         if ((ret = mDecoderAudio->wait()) != 0) {
@@ -584,8 +588,10 @@ int YtxMediaPlayer::release() {
 
 int YtxMediaPlayer::stop() {
     ALOGI("YtxMediaPlayer::stop");
+
     mCurrentState = MEDIA_PLAYER_STOPPED;
     mVideoStateInfo->mMessageLoop->stop();
+    mVideoStateInfo->abort_request = 1;
     pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
     // playing = false;
     return 0;

@@ -4,8 +4,13 @@
 
 #ifndef YTXPLAYER_SDLANDROIDJNI_H
 #define YTXPLAYER_SDLANDROIDJNI_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <jni.h>
 #include "J4aBase.h"
+
 #define YTX_API_1_BASE                      1   // 1.0
 #define YTX_API_2_BASE_1_1                  2   // 1.1
 #define YTX_API_3_CUPCAKE                   3   // 1.5
@@ -31,21 +36,23 @@
 #define YTX_API_23_M                        23  // 6.0
 
 
-
 JavaVM *SDL_JNI_GetJvm();
 
-jint    SDL_JNI_SetupThreadEnv(JNIEnv **p_env);
-void    SDL_JNI_DetachThreadEnv();
+jint SDL_JNI_SetupThreadEnv(JNIEnv **p_env);
 
-int      SDL_JNI_ThrowException(JNIEnv *env, const char *exception, const char* msg);
-int      SDL_JNI_ThrowIllegalStateException(JNIEnv *env, const char* msg);
+void SDL_JNI_DetachThreadEnv();
+
+int SDL_JNI_ThrowException(JNIEnv *env, const char *exception, const char *msg);
+
+int SDL_JNI_ThrowIllegalStateException(JNIEnv *env, const char *msg);
 
 jobject SDL_JNI_NewObjectAsGlobalRef(JNIEnv *env, jclass clazz, jmethodID methodID, ...);
 
-void    SDL_JNI_DeleteGlobalRefP(JNIEnv *env, jobject *obj_ptr);
-void    SDL_JNI_DeleteLocalRefP(JNIEnv *env, jobject *obj_ptr);
+void SDL_JNI_DeleteGlobalRefP(JNIEnv *env, jobject *obj_ptr);
 
-int     SDL_Android_GetApiLevel();
+void SDL_JNI_DeleteLocalRefP(JNIEnv *env, jobject *obj_ptr);
+
+int SDL_Android_GetApiLevel();
 
 
 #define IJK_FIND_JAVA_CLASS(env__, var__, classsign__) \
@@ -94,4 +101,7 @@ int     SDL_Android_GetApiLevel();
         } \
     }while(0)
 
+#ifdef __cplusplus
+}
+#endif
 #endif //YTXPLAYER_SDLANDROIDJNI_H

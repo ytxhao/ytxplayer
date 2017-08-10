@@ -4,6 +4,10 @@
 
 #ifndef YTXPLAYER_SDLMISC_H
 #define YTXPLAYER_SDLMISC_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <memory.h>
 
@@ -29,8 +33,7 @@
 #define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
 #endif
 
-inline static void *mallocz(size_t size)
-{
+inline static void *mallocz(size_t size) {
     void *mem = malloc(size);
     if (!mem)
         return mem;
@@ -39,12 +42,14 @@ inline static void *mallocz(size_t size)
     return mem;
 }
 
-inline static void freep(void **mem)
-{
+inline static void freep(void **mem) {
     if (mem && *mem) {
         free(*mem);
         *mem = NULL;
     }
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif //YTXPLAYER_SDLMISC_H

@@ -148,10 +148,10 @@ int AudioRefreshController::audioFrameProcess() {
         af = audioDecodeFrame();
 
 //    /* update the audio clock with the pts */
-//    if (!isnan(af->pts))
-//        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;
-//    else
-//        audio_clock = NAN;
+    if (!isnan(af->pts))
+        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;
+    else
+        audio_clock = NAN;
 
 //    swr_convert(mVideoStateInfo->swrCtx, &(mVideoStateInfo->out_buffer_audio), MAX_AUDIO_FRAME_SIZE,
 //                (const uint8_t **) af->frame->data, af->frame->nb_samples);

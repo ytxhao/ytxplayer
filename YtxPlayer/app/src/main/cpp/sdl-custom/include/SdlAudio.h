@@ -4,6 +4,11 @@
 
 #ifndef YTXPLAYER_SDLAUDIO_H
 #define YTXPLAYER_SDLAUDIO_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "SdlStdinc.h"
 #include "SdlEndian.h"
 
@@ -76,4 +81,9 @@ void SDL_MixAudio(Uint8*       dst,
                   const Uint8* src,
                   Uint32       len,
                   int          volume);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif //YTXPLAYER_SDLAUDIO_H

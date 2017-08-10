@@ -34,6 +34,9 @@ private:
     bool                        prepare();
     bool                        decode(void* ptr);
     bool                        process(MAVPacket *mPacket);
+    bool                        audioOpen(int64_t wanted_channel_layout, int wanted_nb_channels,
+                                          int wanted_sample_rate,
+                                          struct AudioParams *audio_hw_params);
 
     int16_t*                    mSamples;
     int                         mSamplesSize;

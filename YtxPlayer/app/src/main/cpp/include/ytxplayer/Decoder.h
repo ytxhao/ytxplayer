@@ -25,9 +25,10 @@ public:
     int							packets();
     void                        flush();
     VideoStateInfo *mVideoStateInfo;
+    PacketQueue*                mQueue;
     //int pkt_serial;
 protected:
-    PacketQueue*                mQueue;
+
 
     virtual bool                prepare();
     virtual bool                decode(void* ptr);

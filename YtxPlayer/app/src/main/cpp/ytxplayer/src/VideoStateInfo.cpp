@@ -211,3 +211,26 @@ void VideoStateInfo::init_opts(void) {
 void VideoStateInfo::uninit_opts(void) {
     av_dict_free(&sws_dict);
 }
+
+
+Frame *VideoStateInfo::audioDecodeFrame() {
+
+    Frame *af;
+    do {
+
+        do {
+            af = frameQueueAudio->frameQueuePeekReadable();
+            frameQueueAudio->frameQueueNext();
+        } while (af == NULL);
+
+    } while (af->serial != pkt_serial_audio);
+
+    /* update the audio clock with the pts */
+    if (!isnan(af->pts))
+        audio_clock = af->pts + (double) af->frame->nb_samples / af->frame->sample_rate;
+    else
+        audio_clock = NAN;
+
+    return af;
+
+}

@@ -4,6 +4,10 @@
 
 #ifndef YTXPLAYER_ANDROID_AUDIO_TRACK_H
 #define YTXPLAYER_ANDROID_AUDIO_TRACK_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <stdint.h>
 #include <jni.h>
 
@@ -98,5 +102,7 @@ int SDL_Android_AudioTrack_write(JNIEnv *env, SDL_Android_AudioTrack *atrack, ui
 
 int  SDL_Android_AudioTrack_getAudioSessionId(JNIEnv *env, SDL_Android_AudioTrack *atrack);
 void SDL_Android_AudioTrack_setSpeed(JNIEnv *env, SDL_Android_AudioTrack *atrack, float speed);
-
+#ifdef __cplusplus
+}
+#endif
 #endif //YTXPLAYER_ANDROID_AUDIO_TRACK_H

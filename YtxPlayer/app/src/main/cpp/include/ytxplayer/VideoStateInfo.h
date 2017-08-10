@@ -15,8 +15,8 @@
 #include "MessageQueue.h"
 #include <ytxplayer/MessageLoop.h>
 #include "jni.h"
-
 #include <android/native_window_jni.h>
+#include "SdlAout.h"
 
 enum media_player_states {
     MEDIA_PLAYER_STATE_ERROR        = 0,
@@ -61,6 +61,7 @@ public:
 
     void init_opts(void);
     void uninit_opts(void);
+    Frame *audioDecodeFrame();
 public:
     AVFormatContext *pFormatCtx;
 
@@ -160,5 +161,22 @@ public:
     int sub_format = -1;
 
     ANativeWindow* window;
+    SDL_Aout *aout;
+    struct IJKFF_Pipeline *pipeline;
+    int abort_request = 0;
+    int64_t audio_callback_time = 0;
+    float       pf_playback_rate = 0;
+    int         pf_playback_rate_changed= 0;
+    float       pf_playback_volume= 0;
+    int         pf_playback_volume_changed= 0;
+    int audio_buf_index = 0;
+    unsigned int audio_buf_size = 0;
+    uint8_t *audio_buf = NULL;
+    struct AudioParams audio_tgt;
+    int audio_write_buf_size;
+    Frame *aFrame = NULL;
+    double audio_clock;
+    int muted = 0;
+    int audio_volume =0;
 };
 #endif //YTXPLAYER_VIDEOSTATEINFO_H

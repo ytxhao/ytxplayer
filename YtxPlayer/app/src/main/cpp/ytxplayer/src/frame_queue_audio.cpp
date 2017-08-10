@@ -18,6 +18,7 @@ void FrameQueueAudio::frameQueueUnrefItem(Frame *vp) {
         vp->out_buffer_audio = NULL;
     }
 
+    av_frame_unref(vp->frame);
 
 }
 
@@ -30,6 +31,10 @@ int FrameQueueAudio::frameQueueInit(int max_size, int keep_last) {
     for (i = 0; i < max_size; i++) {
         queue[i].out_buffer_audio = NULL;
         queue[i].out_buffer_audio_size = 0;
+
+        if (!(queue[i].frame = av_frame_alloc())) {
+            return AVERROR(ENOMEM);
+        }
     }
 
     return 1;
@@ -40,6 +45,7 @@ void FrameQueueAudio::frameQueueDestroy() {
     for (i = 0; i < max_size; i++) {
         Frame *vp = &queue[i];
         frameQueueUnrefItem(vp);
+        av_frame_free(&vp->frame);
     }
 
     pthread_mutex_destroy(&mutex);

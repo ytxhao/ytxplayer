@@ -31,6 +31,7 @@ add_library( # Sets the name of the library.
              src/AudioTrack.c
              src/AudioTrack.util.c
              src/PlaybackParams.c
+             src/SdlAudio.c
              )
 
 # Searches for a specified prebuilt library and stores the path as a
