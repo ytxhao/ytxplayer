@@ -213,9 +213,16 @@ void VideoStateInfo::uninit_opts(void) {
 }
 
 
-Frame *VideoStateInfo::audioDecodeFrame() {
+int VideoStateInfo::audioDecodeFrame() {
 
     Frame *af;
+
+
+    if(*mCurrentState == MEDIA_PLAYER_PAUSED){
+
+        return -1;
+    }
+
     do {
 
         do {
@@ -231,6 +238,8 @@ Frame *VideoStateInfo::audioDecodeFrame() {
     else
         audio_clock = NAN;
 
-    return af;
+    aFrame = af;
+    audio_buf = aFrame->out_buffer_audio;
+    return aFrame->out_buffer_audio_size;
 
 }

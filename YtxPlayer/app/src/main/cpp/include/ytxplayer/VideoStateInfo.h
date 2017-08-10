@@ -61,7 +61,7 @@ public:
 
     void init_opts(void);
     void uninit_opts(void);
-    Frame *audioDecodeFrame();
+    int audioDecodeFrame();
 public:
     AVFormatContext *pFormatCtx;
 

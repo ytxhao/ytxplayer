@@ -398,7 +398,7 @@ static int aout_open_audio(SDL_Aout *aout, const SDL_AudioSpec *desired, SDL_Aud
         CHECK_OPENSL_ERROR(ret, "%s: slBufferQueueItf->Enqueue(000...) failed", __func__);
     }
 
-    opaque->pause_on = 0;
+    opaque->pause_on = 1;
     opaque->abort_request = 0;
     opaque->audio_tid = SDL_CreateThreadEx(&opaque->_audio_tid, aout_thread, aout, "ff_aout_opensles");
     CHECK_COND_ERROR(opaque->audio_tid, "%s: failed to SDL_CreateThreadEx", __func__);

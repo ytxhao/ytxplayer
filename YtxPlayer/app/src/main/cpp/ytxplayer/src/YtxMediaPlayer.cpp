@@ -250,13 +250,31 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     //mPlayer->mVideoStateInfo->pFormatCtx = mPlayer->pFormatCtx;
     mPlayer->mVideoStateInfo->max_frame_duration = (mPlayer->mVideoStateInfo->pFormatCtx->iformat->flags &
                                                     AVFMT_TS_DISCONT) ? 10.0 : 3600.0;
-
     ALOGI("mVideoStateInfo->max_frame_duration=%lf\n",
           mPlayer->mVideoStateInfo->max_frame_duration);
     if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+        mPlayer->mVideoStateInfo->aout = SDL_AoutAndroid_CreateForOpenSLES();
+
+        if(mPlayer->mVideoStateInfo->aout == NULL){
+            AVMessage msg;
+            msg.what = FFP_MSG_ERROR;
+            msg.arg1 = MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES;
+            mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
+            mPlayer->mCurrentState = MEDIA_PLAYER_STATE_ERROR;
+            avformat_network_deinit();
+            pthread_exit(NULL);
+        }
+
+
         mPlayer->streamComponentOpen(mPlayer->mVideoStateInfo->streamAudio,
                                      mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO]);
         mPlayer->mDecoderAudio = new DecoderAudio(mPlayer->mVideoStateInfo);
+
+        mPlayer->mDecoderAudio->audioOpen(mPlayer->mVideoStateInfo->out_ch_layout,
+                                          mPlayer->mVideoStateInfo->out_channel_nb,
+                                          mPlayer->mVideoStateInfo->out_sample_rate,
+                                          &mPlayer->mVideoStateInfo->audio_tgt);
+
     }
 
     if (mPlayer->mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
@@ -323,13 +341,9 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     msgVideoSize.arg2 = mPlayer->mVideoStateInfo->mVideoHeight;
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msgVideoSize);
 
-    mPlayer->mVideoStateInfo->aout = SDL_AoutAndroid_CreateForOpenSLES();
+
     AVMessage msg;
     msg.what = FFP_MSG_PREPARED;
-    if(mPlayer->mVideoStateInfo->aout == NULL){
-        msg.what = FFP_MSG_ERROR;
-    }
-
     mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
     mPlayer->mCurrentState = MEDIA_PLAYER_PREPARED;
     pthread_exit(NULL);
@@ -345,9 +359,9 @@ int YtxMediaPlayer::resume() {
 int YtxMediaPlayer::start() {
     ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n", mCurrentState);
 
+    SDL_AoutPauseAudio(mVideoStateInfo->aout, 0);
     if (mCurrentState == MEDIA_PLAYER_PAUSED) {
         return resume();
-
     }
 
     pthread_create(&mPlayerThread, NULL, startPlayer, this);
@@ -600,6 +614,7 @@ int YtxMediaPlayer::stop() {
 int YtxMediaPlayer::pause() {
     ALOGI("YtxMediaPlayer::pause");
     mCurrentState = MEDIA_PLAYER_PAUSED;
+    SDL_AoutPauseAudio(mVideoStateInfo->aout, 1);
     return 0;
 }
 

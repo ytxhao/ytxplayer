@@ -41,23 +41,6 @@ DecoderAudio::~DecoderAudio() {
 
 bool DecoderAudio::prepare() {
 
-
-//    ALOGI("### out_ch_layout=%d out_sample_rate=%d out_channel_nb=%d",
-//          mVideoStateInfo->out_ch_layout,
-//          mVideoStateInfo->out_sample_rate,
-//          mVideoStateInfo->out_channel_nb);
-
-    ALOGI("### in_sample_rate=%d\n", mVideoStateInfo->in_sample_rate);
-    ALOGI("### in_sample_fmt=%d\n", mVideoStateInfo->in_sample_fmt);
-    ALOGI("### out_nb_samples=%d\n", mVideoStateInfo->out_nb_samples);
-    ALOGI("### out_sample_rate=%d\n", mVideoStateInfo->out_sample_rate);
-    ALOGI("### out_sample_fmt=%d\n", mVideoStateInfo->out_sample_fmt);
-    ALOGI("### out_channel_nb=%d\n", mVideoStateInfo->out_channel_nb);
-
-    ALOGI("### in_ch_layout=%d\n", mVideoStateInfo->in_ch_layout);
-    ALOGI("### out_ch_layout=%d\n", mVideoStateInfo->out_ch_layout);
-    audioOpen(mVideoStateInfo->out_ch_layout,mVideoStateInfo->out_channel_nb,mVideoStateInfo->out_sample_rate,&mVideoStateInfo->audio_tgt);
-
     mConvertCtx = swr_alloc();
     swr_alloc_set_opts(mConvertCtx,
                        mVideoStateInfo->out_ch_layout, mVideoStateInfo->out_sample_fmt,
@@ -253,9 +236,7 @@ static void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 
     while (len > 0) {
         if (mDecoderAudio->mVideoStateInfo->audio_buf_index >= mDecoderAudio->mVideoStateInfo->audio_buf_size) {
-            mDecoderAudio->mVideoStateInfo->aFrame = mDecoderAudio->mVideoStateInfo->audioDecodeFrame();
-            audio_size = mDecoderAudio->mVideoStateInfo->aFrame->out_buffer_audio_size;
-            mDecoderAudio->mVideoStateInfo->audio_buf = mDecoderAudio->mVideoStateInfo->aFrame->out_buffer_audio;
+            audio_size = mDecoderAudio->mVideoStateInfo->audioDecodeFrame();
             if (audio_size < 0) {
                 /* if error, just output silence */
                 mDecoderAudio->mVideoStateInfo->audio_buf = NULL;
@@ -277,12 +258,16 @@ static void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
         len1 = mDecoderAudio->mVideoStateInfo->audio_buf_size - mDecoderAudio->mVideoStateInfo->audio_buf_index;
         if (len1 > len)
             len1 = len;
-        if (!mDecoderAudio->mVideoStateInfo->muted && mDecoderAudio->mVideoStateInfo->audio_buf && mDecoderAudio->mVideoStateInfo->audio_volume == SDL_MIX_MAXVOLUME)
-            memcpy(stream, mDecoderAudio->mVideoStateInfo->audio_buf +mDecoderAudio-> mVideoStateInfo->audio_buf_index, len1);
-        else {
+        if (!mDecoderAudio->mVideoStateInfo->muted && mDecoderAudio->mVideoStateInfo->audio_buf && mDecoderAudio->mVideoStateInfo->audio_volume == SDL_MIX_MAXVOLUME) {
+            memcpy(stream, mDecoderAudio->mVideoStateInfo->audio_buf +
+                           mDecoderAudio->mVideoStateInfo->audio_buf_index, len1);
+        } else {
             memset(stream, 0, len1);
-            if (!mDecoderAudio->mVideoStateInfo->muted && mDecoderAudio->mVideoStateInfo->audio_buf)
-                SDL_MixAudio(stream, (uint8_t *)mDecoderAudio->mVideoStateInfo->audio_buf + mDecoderAudio->mVideoStateInfo->audio_buf_index, len1, mDecoderAudio->mVideoStateInfo->audio_volume);
+            if (!mDecoderAudio->mVideoStateInfo->muted && mDecoderAudio->mVideoStateInfo->audio_buf) {
+                SDL_MixAudio(stream, (uint8_t *) mDecoderAudio->mVideoStateInfo->audio_buf +
+                                     mDecoderAudio->mVideoStateInfo->audio_buf_index, len1,
+                             mDecoderAudio->mVideoStateInfo->audio_volume);
+            }
         }
         len -= len1;
         stream += len1;
