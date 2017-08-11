@@ -109,6 +109,11 @@ YtxMediaPlayer::~YtxMediaPlayer() {
         delete mVideoRefreshController;
     }
 
+
+    if(mVideoStateInfo->aout){
+       // SDL_AoutCloseAudio(mVideoStateInfo->aout);
+        SDL_AoutFreeP(&mVideoStateInfo->aout);
+    }
 //    if (mAudioRefreshController) {
 //        delete mAudioRefreshController;
 //    }
@@ -360,6 +365,7 @@ int YtxMediaPlayer::start() {
     ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n", mCurrentState);
 
     SDL_AoutPauseAudio(mVideoStateInfo->aout, 0);
+    SDL_AoutFlushAudio(mDecoderAudio->mVideoStateInfo->aout);
     if (mCurrentState == MEDIA_PLAYER_PAUSED) {
         return resume();
     }
@@ -418,6 +424,7 @@ void YtxMediaPlayer::checkSeekRequest() {
                 if (mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
                     mDecoderAudio->flush();
                     mDecoderAudio->enqueue(mVideoStateInfo->flushPkt);
+                    SDL_AoutFlushAudio(mDecoderAudio->mVideoStateInfo->aout);
                 }
 
                 if (mVideoStateInfo->st_index[AVMEDIA_TYPE_VIDEO] >= 0) {
@@ -600,6 +607,15 @@ int YtxMediaPlayer::release() {
     return 0;
 }
 
+int YtxMediaPlayer::reset() {
+    ALOGI("YtxMediaPlayer::reset");
+    mCurrentState = MEDIA_PLAYER_STOPPED;
+    mVideoStateInfo->mMessageLoop->stop();
+    mVideoStateInfo->abort_request = 1;
+    pthread_cond_signal(&mVideoStateInfo->continue_read_thread);
+    return 0;
+}
+
 int YtxMediaPlayer::stop() {
     ALOGI("YtxMediaPlayer::stop");
 
@@ -668,11 +684,6 @@ int YtxMediaPlayer::getDuration() {
 //    ss   = (ns % 60);
 
     return tms;
-}
-
-int YtxMediaPlayer::reset() {
-
-    return 0;
 }
 
 

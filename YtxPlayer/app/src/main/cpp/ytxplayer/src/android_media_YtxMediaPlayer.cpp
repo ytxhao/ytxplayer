@@ -466,6 +466,8 @@ JNIEXPORT jint JNICALL android_media_player_getDuration
 JNIEXPORT jint JNICALL android_media_player_reset
         (JNIEnv *env, jobject obj) {
 
+    YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
+    mPlayer->reset();
     return 0;
 }
 
