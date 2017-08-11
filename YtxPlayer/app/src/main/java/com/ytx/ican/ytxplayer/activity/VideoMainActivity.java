@@ -11,10 +11,15 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.media.player.view.YtxMediaController;
@@ -43,9 +48,12 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
     private Button btPlay ;
     private Button btFullScreen;
     private ImageView ivDragVideo;
-    private ArrayAdapter<String> adapter;
+    private AutoCompleteAdapter mAdapter;
     private ArrayList<String> contacts = new ArrayList<>();
-    private String [] files = new String[]{"titanic.mkv","gqfc.ts","rtmp://live.hkstv.hk.lxdns.com/live/hks","rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov"};
+    private String [] files = new String[]{
+            "rtmp://47.90.99.189:1935/live/demo",
+            "rtmp://live.hkstv.hk.lxdns.com/live/hks",
+            "rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov"};
     private String filePath;
     private String fileName;
     private String subtitles;
@@ -94,8 +102,7 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
 
         initView();
 
-        mVideoPath = getIntent().getStringExtra("videoPath");
-        actvFileNameVideo.setText(mVideoPath);
+
       //  ytxVideoView.setVideoPath(filePath+files[0]);
      //   ytxVideoView.start();
 
@@ -127,8 +134,17 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         actvFileNameSub.setHorizontallyScrolling(true);
         actvFileNameSub.setOnClickListener(this);
 
-        adapter = new ArrayAdapter<>(this,R.layout.file_name_dropdow_item,contacts);
-        actvFileNameVideo.setAdapter(adapter);
+        mVideoPath = getIntent().getStringExtra("videoPath");
+        contacts.add(mVideoPath);
+
+        for(int i=0;i<files.length;i++){
+            contacts.add(files[i]);
+        }
+
+        actvFileNameVideo.setText(contacts.get(0));
+        mAdapter = new AutoCompleteAdapter(this,contacts);
+
+        actvFileNameVideo.setAdapter(mAdapter);
 
 //        actvFileNameVideo.setText("rtsp://184.72.239.149/vod/mp4://BigBuckBunny_175k.mov");
         ytxMediaController = new YtxMediaController(this);
@@ -315,34 +331,119 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
         }
     }
 
+    private static class AutoCompleteAdapter extends BaseAdapter implements Filterable {
 
-    //    @Subscribe
-//    public void onClickFile(FileExplorerEvents.OnClickFile event) {
-//        File f = event.mFile;
-//        try {
-//            f = f.getAbsoluteFile();
-//            f = f.getCanonicalFile();
-//            if (TextUtils.isEmpty(f.toString()))
-//                f = new File("/");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (f.isDirectory()) {
-//
-//
-//        } else if (f.exists()) {
-//
-//            YtxLog.d(TAG,"f.getPath()="+f.getPath()+" f.getName()="+f.getName());
-//
-//            if(isAddSub){
-//                actvFileNameSub.setText(f.getPath());
-//                isAddSub = false;
-//            }else if(isAddVideo){
-//                actvFileNameVideo.setText(f.getPath());
-//                isAddVideo = false;
-//            }
-//
-//        }
-//    }
+        private ArrayFilter mFilter;
+
+        private ArrayList<String> contacts;
+
+        private Context context;
+
+        private ArrayList<String> mUnfilteredData;
+        AutoCompleteAdapter(Context context,ArrayList<String> contacts){
+            this.context = context;
+            this.contacts = contacts;
+        }
+
+        @Override
+        public int getCount() {
+            return contacts == null ? 0 : contacts.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return contacts.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            View view;
+            ViewHolder holder;
+            if(convertView==null){
+                view = View.inflate(context, R.layout.item_file_name, null);
+
+                holder = new ViewHolder();
+                holder.tvAccount = (TextView) view.findViewById(R.id.text);
+                holder.line = view.findViewById(R.id.line);
+                view.setTag(holder);
+            }else{
+                view = convertView;
+                holder = (ViewHolder) view.getTag();
+
+            }
+
+            holder.tvAccount.setText(contacts.get(position));
+
+            return view;
+        }
+
+        @Override
+        public Filter getFilter() {
+            if (mFilter == null) {
+                mFilter = new ArrayFilter();
+            }
+            return mFilter;
+        }
+
+        static class ViewHolder{
+            public TextView tvAccount;
+            public View line;
+        }
+
+
+        private class ArrayFilter extends Filter {
+
+
+            @Override
+            protected FilterResults performFiltering(CharSequence prefix) {
+                FilterResults results = new FilterResults();
+
+                if (mUnfilteredData == null) {
+                    mUnfilteredData = new ArrayList<>(contacts);
+                }
+
+                if (prefix == null || prefix.length() == 0) {
+                    ArrayList<String> list = mUnfilteredData;
+                    results.values = list;
+                    results.count = list.size();
+                } else {
+                    String prefixString = prefix.toString().toLowerCase();
+                    ArrayList<String> unfilteredValues = mUnfilteredData;
+                    int count = unfilteredValues.size();
+
+                    ArrayList<String> newValues = new ArrayList<>(count);
+
+                    for (int i = 0; i < count; i++) {
+                        String contact = unfilteredValues.get(i);
+                        if(!TextUtils.isEmpty(contact) && contact.startsWith(prefixString)){
+                            newValues.add(contact);
+                        }
+                    }
+
+                    results.values = newValues;
+                    results.count = newValues.size();
+                }
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                contacts = (ArrayList<String>) results.values;
+                if (results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
+
+        }
+    }
 }

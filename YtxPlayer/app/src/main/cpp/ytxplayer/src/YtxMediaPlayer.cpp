@@ -84,14 +84,21 @@ YtxMediaPlayer::YtxMediaPlayer() {
     mDecoderSubtitle = NULL;
     mDecoderVideo = NULL;
     mDecoderAudio = NULL;
-    subtitles = NULL;
     memset(fileType,0,sizeof(fileType));
+    subtitles = (char *) malloc(1024);
+    memset(subtitles,0,1024);
+
 }
 
 YtxMediaPlayer::~YtxMediaPlayer() {
 
     //  AudioEngine::releaseAudioEngine();
     //  GlEngine::releaseGlEngine();
+
+    if(subtitles!=NULL){
+        free(subtitles);
+        subtitles = NULL;
+    }
 
     if (mDecoderSubtitle) {
         delete mDecoderSubtitle;
@@ -148,9 +155,10 @@ int YtxMediaPlayer::setDataSource(const char *url) {
     return 0;
 }
 
-int YtxMediaPlayer::setSubtitles(char *url) {
+int YtxMediaPlayer::setSubtitles(const char *url) {
 
-    this->subtitles = url;
+    memset(subtitles,0,1024);
+    memcpy(subtitles,url,strlen(url));
     ALOGI("YtxMediaPlayer setSubtitles subtitles=%s\n", subtitles);
     return 0;
 }
@@ -263,7 +271,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
         if(mPlayer->mVideoStateInfo->aout == NULL){
             AVMessage msg;
             msg.what = FFP_MSG_ERROR;
-            msg.arg1 = MEDIA_ERROR_OPEN_STREAM_IS_SUBTITLES;
+            msg.arg1 = MEDIA_ERROR_OPEN_STREAM;
             mPlayer->mVideoStateInfo->mMessageLoop->enqueue(&msg);
             mPlayer->mCurrentState = MEDIA_PLAYER_STATE_ERROR;
             avformat_network_deinit();
@@ -328,8 +336,9 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
             mPlayer->mVideoStateInfo->vfilters_list, mPlayer->mVideoStateInfo->nb_vfilters);
 
 
-    ALOGI("mPlayer->subtitles=%s", mPlayer->subtitles);
-    if (mPlayer->subtitles != NULL) {
+
+    if (strlen(mPlayer->subtitles) != 0) {
+        ALOGI("mPlayer->subtitles=%s", mPlayer->subtitles);
         mPlayer->mVideoStateInfo->vfilters_list[mPlayer->mVideoStateInfo->nb_vfilters -
                                                 1] = mPlayer->mVideoStateInfo->join(
                 "subtitles=", mPlayer->subtitles);

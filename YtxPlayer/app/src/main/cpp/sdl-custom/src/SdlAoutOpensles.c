@@ -203,7 +203,7 @@ static int aout_thread(void *arg)
 
 static void aout_opensles_callback(SLAndroidSimpleBufferQueueItf caller, void *pContext)
 {
-    ALOGI("%s\n", __func__);
+    //ALOGI("%s\n", __func__);
     SDL_Aout        *aout   = pContext;
     SDL_Aout_Opaque *opaque = aout->opaque;
 

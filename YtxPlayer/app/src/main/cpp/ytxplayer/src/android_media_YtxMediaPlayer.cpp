@@ -5,6 +5,7 @@
 #define LOG_NDEBUG 0
 #define TAG "YTX-PLAYER-JNI"
 
+#include <jni.h>
 #include "ytxplayer/ALog-priv.h"
 #include <string>
 #include <ytxplayer/gl_engine.h>
@@ -294,10 +295,17 @@ JNIEXPORT jint JNICALL android_media_player_setDataSource
 JNIEXPORT jint JNICALL android_media_player_setSubtitles
         (JNIEnv *env, jobject obj, jstring url) {
 
-    char *subtitle = (char *) env->GetStringUTFChars(url, NULL);
-    ALOGI("subtitle=%s", subtitle);
+    const char *j_url = env->GetStringUTFChars(url, NULL);
     YtxMediaPlayer *mPlayer = getMediaPlayer(env, obj);
-    mPlayer->setSubtitles(subtitle);
+
+    if(j_url != NULL){
+
+        mPlayer->setSubtitles(j_url);
+
+    }
+
+
+    env->ReleaseStringUTFChars(url,j_url);
     return 0;
 }
 

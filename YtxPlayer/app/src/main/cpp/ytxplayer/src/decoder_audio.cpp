@@ -212,7 +212,7 @@ int DecoderAudio::streamHasEnoughPackets() {
 
 static void sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 {
-    ALOGI("sdl_audio_callback");
+    //ALOGI("sdl_audio_callback");
     DecoderAudio *mDecoderAudio = (DecoderAudio *) opaque;
 
     int audio_size;

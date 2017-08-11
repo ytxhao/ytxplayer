@@ -49,7 +49,7 @@ public:
 
     void disconnect();
 
-    int setSubtitles( char *url);
+    int setSubtitles( const char *url);
     int setDataSource(const char *url);
 
     int setDataSource(int fd, int64_t offset, int64_t length);
@@ -141,8 +141,6 @@ public:
 
     int reset_l();
 
-    YtxMediaPlayer *mPlayer;
-
     MediaPlayerListener     *mListener;
     void *mCookie;
 
@@ -160,8 +158,8 @@ public:
 
     bool mRetransmitEndpointValid;
     const char *filePath;
-    char fileType[16]={0};
-    char *subtitles=NULL;
+    char fileType[1024]={0};
+    char *subtitles;
     //AVFormatContext *pFormatCtx;
     int mAudioStreamIndex;
     int mVideoStreamIndex;
