@@ -119,7 +119,10 @@ YtxMediaPlayer::~YtxMediaPlayer() {
 
     if(mVideoStateInfo->aout){
        // SDL_AoutCloseAudio(mVideoStateInfo->aout);
-        SDL_AoutFreeP(&mVideoStateInfo->aout);
+        if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
+            SDL_AoutFreeP(&mVideoStateInfo->aout);
+        }
+
     }
 //    if (mAudioRefreshController) {
 //        delete mAudioRefreshController;
@@ -235,7 +238,8 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
         return 0;
     }
 
-
+//    ALOGD("ytxhao test r_frame_rate.num=%d,r_frame_rate.den=%d",mPlayer->mVideoStateInfo->pFormatCtx->streams[0]->r_frame_rate.num,mPlayer->mVideoStateInfo->pFormatCtx->streams[0]->r_frame_rate.den);
+//    ALOGD("ytxhao test video time_base.num=%d,time_base.den=%d",mPlayer->mVideoStateInfo->pFormatCtx->streams[0]->time_base.num,mPlayer->mVideoStateInfo->pFormatCtx->streams[0]->time_base.den);
     for (int i = 0; i < mPlayer->mVideoStateInfo->pFormatCtx->nb_streams; i++) {
         AVStream *st = mPlayer->mVideoStateInfo->pFormatCtx->streams[i];
         enum AVMediaType type = st->codecpar->codec_type;
@@ -372,9 +376,11 @@ int YtxMediaPlayer::resume() {
 
 int YtxMediaPlayer::start() {
     ALOGI("YtxMediaPlayer::start() mCurrentState=%d \n", mCurrentState);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        SDL_AoutPauseAudio(mVideoStateInfo->aout, 0);
+        SDL_AoutFlushAudio(mDecoderAudio->mVideoStateInfo->aout);
+    }
 
-    SDL_AoutPauseAudio(mVideoStateInfo->aout, 0);
-    SDL_AoutFlushAudio(mDecoderAudio->mVideoStateInfo->aout);
     if (mCurrentState == MEDIA_PLAYER_PAUSED) {
         return resume();
     }
@@ -639,7 +645,10 @@ int YtxMediaPlayer::stop() {
 int YtxMediaPlayer::pause() {
     ALOGI("YtxMediaPlayer::pause");
     mCurrentState = MEDIA_PLAYER_PAUSED;
-    SDL_AoutPauseAudio(mVideoStateInfo->aout, 1);
+    if(mVideoStateInfo->st_index[AVMEDIA_TYPE_AUDIO] >= 0){
+        SDL_AoutPauseAudio(mVideoStateInfo->aout, 1);
+    }
+
     return 0;
 }
 
