@@ -209,7 +209,12 @@ int YtxMediaPlayer::prepareAsync() {
     pthread_create(&mPlayerPrepareAsyncThread, NULL, prepareAsyncPlayer, this);
     return 0;
 }
-
+void log_callback(void* ptr, int level, const char* fmt,va_list vl)
+{
+    char line[1024] = {0};
+    vsnprintf(line, sizeof(line), fmt, vl);
+    ALOGI("%s",line);
+}
 void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
 
 
@@ -217,6 +222,7 @@ void *YtxMediaPlayer::prepareAsyncPlayer(void *ptr) {
     avfilter_register_all(); //添加滤镜
     av_register_all();
     avformat_network_init();
+    av_log_set_callback(log_callback);
     mPlayer->mVideoStateInfo->pFormatCtx = avformat_alloc_context();
 
     ALOGI("prepareAsyncPlayer prepare this->filePath=%s\n", mPlayer->filePath);
