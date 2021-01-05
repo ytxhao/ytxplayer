@@ -21,6 +21,7 @@ import com.ytx.ican.media.player.pragma.YtxLog;
 import com.ytx.ican.ytxplayer.R;
 import com.ytx.ican.ytxplayer.eventbus.FileExplorerEvents;
 import com.ytx.ican.ytxplayer.fragment.FileListFragment;
+import com.ytx.ican.ytxplayer.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -147,6 +148,14 @@ public class FileExplorerActivity extends BaseActivity implements FileListFragme
 
 
     private void todo() {
+        String filePath = Environment.getExternalStorageDirectory()
+                .getAbsolutePath() + "/" ;
+
+        //获取当前程序路径
+
+        String getFilesDir=getApplicationContext().getFilesDir().getAbsolutePath();
+        Utils.CopyAssets(this,"video",filePath);
+        Utils.CopyAssets(this,"fonts",getFilesDir);
         String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
         doOpenDirectory(ExternalStorageDirectory, false);

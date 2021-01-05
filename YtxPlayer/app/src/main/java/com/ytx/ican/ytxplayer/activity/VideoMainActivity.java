@@ -97,8 +97,8 @@ public class VideoMainActivity extends SimpleBarRootActivity implements View.OnC
 //        FontSearchConfig.setFontSearchPath(getFilesDir);
        // YtxLog.d(TAG,"getFilesDir="+getFilesDir+" FontSearchPath="+FontSearchConfig.getFontSearchPath());
 
-        Utils.CopyAssets(this,"video",filePath);
-        Utils.CopyAssets(this,"fonts",getFilesDir);
+//        Utils.CopyAssets(this,"video",filePath);
+//        Utils.CopyAssets(this,"fonts",getFilesDir);
 
         initView();
 

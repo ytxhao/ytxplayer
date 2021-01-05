@@ -125,7 +125,7 @@ void JNIMediaPlayerListener::notify(int msg, int ext1, int ext2) {
 
 static YtxMediaPlayer *getMediaPlayer(JNIEnv *env, jobject thiz) {
 
-    YtxMediaPlayer *const p = (YtxMediaPlayer *) env->GetIntField(thiz, fields.context);
+    YtxMediaPlayer *const p = (YtxMediaPlayer *) env->GetLongField(thiz, fields.context);
     return (p);
 }
 
