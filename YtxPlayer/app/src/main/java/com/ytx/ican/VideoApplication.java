@@ -1,8 +1,8 @@
 package com.ytx.ican;
 
 
+import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDexApplication;
 import android.util.DisplayMetrics;
 
 
@@ -11,7 +11,7 @@ import com.ytx.ican.ytxplayer.utils.ScreenUtil;
 
 
 
-public class VideoApplication extends MultiDexApplication {
+public class VideoApplication extends Application {
 
     private static String TAG = "VideoApplication";
 

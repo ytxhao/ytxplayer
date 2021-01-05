@@ -1,11 +1,20 @@
 package com.ytx.ican.ytxplayer.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.squareup.otto.Subscribe;
 import com.ytx.ican.media.player.pragma.YtxLog;
@@ -19,15 +28,16 @@ import java.io.IOException;
 public class FileExplorerActivity extends BaseActivity implements FileListFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "FileExplorerActivity";
+    private final int requestCode = 321;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_explorer);
-        String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
-                .getAbsolutePath();
-
-        doOpenDirectory(ExternalStorageDirectory, false);
-
+//        String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
+//                .getAbsolutePath();
+//
+//        doOpenDirectory(ExternalStorageDirectory, false);
+        checkPermission();
 
     }
 
@@ -81,5 +91,64 @@ public class FileExplorerActivity extends BaseActivity implements FileListFragme
             VideoMainActivity.intentTo(this, f.getPath(), f.getName());
            // finish();
         }
+    }
+
+
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            boolean havePermissionDenied = false;
+            int i = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                havePermissionDenied = true;
+            }
+            i = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                havePermissionDenied = true;
+            }
+            i = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                havePermissionDenied = true;
+            }
+            i = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                havePermissionDenied = true;
+            }
+
+            if (havePermissionDenied) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_PHONE_STATE}, this.requestCode);
+            } else {
+                this.todo();
+            }
+        } else{
+            this.todo();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == this.requestCode) {
+            boolean allPermissionGranted = true;
+            for (int i : grantResults) {
+                if (i != PackageManager.PERMISSION_GRANTED) {
+                    allPermissionGranted = false;
+                    Log.d(TAG, "onRequestPermissionsResult: " + i);
+                    break;
+                }
+            }
+            if (allPermissionGranted) {
+                this.todo();
+            }
+            Log.d(TAG, "onRequestPermissionsResult: " + allPermissionGranted);
+        }
+    }
+
+
+    private void todo() {
+        String ExternalStorageDirectory = Environment.getExternalStorageDirectory()
+                .getAbsolutePath();
+        doOpenDirectory(ExternalStorageDirectory, false);
     }
 }

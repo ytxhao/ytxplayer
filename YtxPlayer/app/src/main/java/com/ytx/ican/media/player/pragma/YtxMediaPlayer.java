@@ -9,6 +9,8 @@ import android.os.Message;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 
+import androidx.annotation.Keep;
+
 import com.ytx.ican.media.player.misc.IMediaDataSource;
 import com.ytx.ican.media.player.misc.ITrackInfo;
 import com.ytx.ican.media.player.render.VideoGlSurfaceView;
@@ -59,7 +61,8 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
     VideoGlSurfaceView glSurface;
     private EventHandler mEventHandler;
 
-    private int mNativeContext; // accessed by native methods
+    @Keep
+    private long mNativeContext; // accessed by native methods
     private int mNativeSurfaceTexture;  // accessed by native methods
     private int mListenerContext; // accessed by native methods
     private long mNativeMediaPlayer; // accessed by native methods
@@ -119,32 +122,33 @@ public class YtxMediaPlayer extends AbstractMediaPlayer {
                 if (libLoader == null)
                     libLoader = sLocalLibLoader;
 
-                    libLoader.loadLibrary("gnustl_shared");
-                    libLoader.loadLibrary("mp4v2");
-                    libLoader.loadLibrary("faad");
-                    libLoader.loadLibrary("faac");
-                    libLoader.loadLibrary("rtmp");
-                    libLoader.loadLibrary("x264");
-
-                    libLoader.loadLibrary("charset");
-                    libLoader.loadLibrary("iconv");
-                    libLoader.loadLibrary("xml2");
-
-                    libLoader.loadLibrary("png16");
-                    libLoader.loadLibrary("harfbuzz");
-                    libLoader.loadLibrary("freetype");
-
-                    libLoader.loadLibrary("fontconfig");
-                    libLoader.loadLibrary("fribidi");
-                    libLoader.loadLibrary("ass");
-
-
-                    libLoader.loadLibrary("avutil-55");
-                    libLoader.loadLibrary("swresample-2");
-                    libLoader.loadLibrary("swscale-4");
-                    libLoader.loadLibrary("avcodec-57");
-                    libLoader.loadLibrary("avformat-57");
-                    libLoader.loadLibrary("avfilter-6");
+//                    libLoader.loadLibrary("ssl");
+//                    libLoader.loadLibrary("crypto");
+//
+//                    libLoader.loadLibrary("faad");
+//                    libLoader.loadLibrary("fdk-aac");
+//                    libLoader.loadLibrary("rtmp");
+//                    libLoader.loadLibrary("x264");
+//
+//                    libLoader.loadLibrary("charset");
+//                    libLoader.loadLibrary("iconv");
+//                    libLoader.loadLibrary("xml2");
+//
+//                    libLoader.loadLibrary("png16");
+//                    libLoader.loadLibrary("harfbuzz");
+//                    libLoader.loadLibrary("freetype");
+//
+//                    libLoader.loadLibrary("fontconfig");
+//                    libLoader.loadLibrary("fribidi");
+//                    libLoader.loadLibrary("ass");
+//
+//
+//                    libLoader.loadLibrary("avutil");
+//                    libLoader.loadLibrary("swresample");
+//                    libLoader.loadLibrary("swscale");
+//                    libLoader.loadLibrary("avcodec");
+//                    libLoader.loadLibrary("avformat");
+//                    libLoader.loadLibrary("avfilter");
 
                     libLoader.loadLibrary("native-ytx-lib");
 

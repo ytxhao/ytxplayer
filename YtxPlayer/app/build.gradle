@@ -1,26 +1,25 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "29.0.3"
+    ndkVersion "21.3.6528147"
     defaultConfig {
         applicationId "com.ytx.ican.ytxplayer"
-        minSdkVersion 15
-        targetSdkVersion 22
+        minSdkVersion 26
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
-        ndk {
-            abiFilters 'armeabi-v7a'
-        }
         //--------------------------------------------------------------------------
         externalNativeBuild {
             cmake {
-//                abiFilters 'armeabi-v7a'
+                abiFilters 'arm64-v8a' , 'armeabi-v7a'
                 //  cFlags "-D__STDC_CONSTANT_MACROS"
-                cppFlags "-std=gnu++11 -D__STDC_CONSTANT_MACROS"
+                cppFlags "-std=c++11 -D__STDC_CONSTANT_MACROS"
+                arguments '-DANDROID_PLATFORM=android-26', '-DANDROID_TOOLCHAIN=clang',
+                        '-DANDROID_ARM_NEON=TRUE', '-DANDROID_STL=c++_static'
             }
         }
     }
@@ -45,14 +44,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.squareup:otto:1.3.8'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:multidex:1.0.0'
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.squareup:otto:1.3.8'
+//    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
+//    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'junit:junit:4.13.1'
 }

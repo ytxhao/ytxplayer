@@ -590,13 +590,13 @@ void GlEngine::setViewPort(int mSurfaceWidth, int mSurfaceHeight) {
 static jfieldID context;
 
 static GlEngine *getGlEngine(JNIEnv *env, jobject thiz) {
-    GlEngine *const p = (GlEngine *) env->GetIntField(thiz, context);
+    GlEngine *const p = (GlEngine *) env->GetLongField(thiz, context);
     return (p);
 }
 
 static GlEngine *setGlEngine(JNIEnv *env, jobject thiz, const GlEngine *glEngine) {
-    GlEngine *old = (GlEngine *) env->GetIntField(thiz, context);
-    env->SetIntField(thiz, context, (int) glEngine);
+    GlEngine *old = (GlEngine *) env->GetLongField(thiz, context);
+    env->SetLongField(thiz, context, (jlong) glEngine);
     return old;
 }
 

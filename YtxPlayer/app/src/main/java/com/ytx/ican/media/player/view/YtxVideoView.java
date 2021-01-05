@@ -4,8 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
+import android.os.Build;;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -19,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.VideoView;
+
+import androidx.annotation.NonNull;
 
 import com.ytx.ican.media.player.pragma.AndroidMediaPlayer;
 import com.ytx.ican.media.player.pragma.IMediaPlayer;

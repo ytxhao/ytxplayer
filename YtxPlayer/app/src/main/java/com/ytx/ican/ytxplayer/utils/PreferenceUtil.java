@@ -3,6 +3,7 @@ package com.ytx.ican.ytxplayer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 
@@ -285,9 +286,14 @@ public class PreferenceUtil {
 	}
 
 	private String getUniqueID(){
-		TelephonyManager TelephonyMgr = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
-		String strImei = TelephonyMgr.getDeviceId();
+		TelephonyManager telephonyMgr = (TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE);
+		String strImei;
 
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			strImei = telephonyMgr.getImei(0);
+		} else {
+			strImei = telephonyMgr.getDeviceId(0);
+		}
 		return strImei + DEFAULT_VALUE;
 	}
 

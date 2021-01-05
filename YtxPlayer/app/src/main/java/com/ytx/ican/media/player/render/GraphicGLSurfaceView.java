@@ -6,12 +6,13 @@ import android.content.pm.ConfigurationInfo;
 import android.graphics.PixelFormat;
 
 import android.opengl.GLSurfaceView;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+
+import androidx.annotation.NonNull;
 
 import com.ytx.ican.media.player.pragma.YtxLog;
 

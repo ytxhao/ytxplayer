@@ -3,8 +3,11 @@ package com.ytx.ican.ytxplayer.activity;
 
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ytx.ican.ytxplayer.R;
 import com.ytx.ican.ytxplayer.utils.Utils;
 

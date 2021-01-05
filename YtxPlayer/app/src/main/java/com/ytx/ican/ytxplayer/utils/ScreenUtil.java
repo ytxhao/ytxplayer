@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+
+import androidx.fragment.app.Fragment;
 
 import com.ytx.ican.ytxplayer.R;
 

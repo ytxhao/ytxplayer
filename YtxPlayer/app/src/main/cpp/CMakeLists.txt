@@ -6,11 +6,11 @@ cmake_minimum_required(VERSION 3.4.1)
 include_directories(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/sdl-custom/include)
 
 
-add_subdirectory(font-config-path)
+#add_subdirectory(font-config-path)
 add_subdirectory(sdl-custom)
 add_subdirectory(gl-engine)
 add_subdirectory(ytxplayer)
-add_subdirectory(ffmpeg-cmd)
+#add_subdirectory(ffmpeg-cmd)
 
 
 

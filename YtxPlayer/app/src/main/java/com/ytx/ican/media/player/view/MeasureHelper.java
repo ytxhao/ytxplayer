@@ -17,8 +17,9 @@
 package com.ytx.ican.media.player.view;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.ytx.ican.ytxplayer.R;
 

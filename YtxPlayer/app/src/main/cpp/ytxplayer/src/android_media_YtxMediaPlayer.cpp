@@ -131,8 +131,8 @@ static YtxMediaPlayer *getMediaPlayer(JNIEnv *env, jobject thiz) {
 
 static YtxMediaPlayer *setMediaPlayer(JNIEnv *env, jobject thiz, const YtxMediaPlayer *player) {
 
-    YtxMediaPlayer *old = (YtxMediaPlayer *) env->GetIntField(thiz, fields.context);
-    env->SetIntField(thiz, fields.context, (int) player);
+    YtxMediaPlayer *old = (YtxMediaPlayer *) env->GetLongField(thiz, fields.context);
+    env->SetLongField(thiz, fields.context, (jlong) player);
     return old;
 }
 
@@ -146,7 +146,7 @@ JNIEXPORT void JNICALL android_media_player_native_init
         return;
     }
 
-    fields.context = env->GetFieldID(clazz, "mNativeContext", "I");
+    fields.context = env->GetFieldID(clazz, "mNativeContext", "J");
     if (fields.context == NULL) {
         return;
     }

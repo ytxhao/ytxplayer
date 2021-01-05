@@ -19,7 +19,9 @@ package com.ytx.ican.ytxplayer.content;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Environment;
-import android.support.v4.content.AsyncTaskLoader;
+
+
+import androidx.loader.content.AsyncTaskLoader;
 
 import java.io.File;
 
